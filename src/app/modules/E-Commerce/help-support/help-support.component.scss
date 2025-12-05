@@ -1,0 +1,75 @@
+// Help & Support Component Styles
+// Most styling is handled by Tailwind CSS classes in the template
+
+// FAQ accordion animation
+button[class*="expand_more"] {
+  transition: transform 0.3s ease-in-out;
+}
+
+// Smooth FAQ answer expansion
+div[class*="mt-2"] {
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    transform: translateY(0);
+  }
+}
+
+// Contact option cards hover effect
+div[class*="bg-white"][class*="rounded-lg"] {
+  transition: all 0.3s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+}
+
+// Search bar focus effect
+input[type="text"] {
+  transition: all 0.2s ease-in-out;
+  
+  &:focus {
+    transform: scale(1.01);
+  }
+}
+
+// Button hover effects
+button[class*="bg-blue-600"] {
+  transition: all 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// Page fade in animation
+main {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

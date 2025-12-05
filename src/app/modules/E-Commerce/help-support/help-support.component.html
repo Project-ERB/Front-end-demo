@@ -1,0 +1,160 @@
+<div class="min-h-screen bg-white dark:bg-gray-900">
+  <!-- Header -->
+  <nav
+    class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-800 px-6 py-4 bg-white dark:bg-background-dark/50 backdrop-blur-sm z-10"
+  >
+    <div class="flex items-center gap-3 text-gray-900 dark:text-white">
+      <div
+        class="size-8 bg-blue-600 rounded-full flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-white text-sm"
+          >arrow_forward</span
+        >
+      </div>
+      <h2 class="text-xl font-bold leading-tight">E-Commerce ERP</h2>
+    </div>
+    <div class="flex items-center gap-6">
+      <a
+        routerLink="/home"
+        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+        >Home</a
+      >
+      <a
+        routerLink="/home"
+        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+        >Products</a
+      >
+      <a
+        routerLink="/cart"
+        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+        >Cart</a
+      >
+      <a
+        routerLink="/account/personal-information"
+        class="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
+        >Profile</a
+      >
+      <div
+        class="w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-white">person</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Help & Support Section -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        Help & Support
+      </h1>
+      <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+        Find answers to your questions or get in touch with our team. We're here
+        to help you solve any issues as quickly as possible.
+      </p>
+
+      <!-- Search Bar -->
+      <div class="max-w-2xl mx-auto">
+        <div class="relative">
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"
+            placeholder="Search by keyword (e.g., 'return policy')"
+            class="w-full px-6 py-4 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+          />
+          <button
+            (click)="onSearch()"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+          >
+            <span class="material-symbols-outlined text-2xl">search</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Frequently Asked Questions Section -->
+    <div
+      class="bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 rounded-lg p-6 mb-12"
+    >
+      <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+        Frequently Asked Questions
+      </h2>
+
+      <div class="space-y-4">
+        @for (faq of faqs(); track $index) {
+        <div
+          class="border-b border-gray-200 dark:border-gray-700 last:border-b-0 pb-4 last:pb-0"
+        >
+          <button
+            (click)="toggleFAQ(faq.id)"
+            class="w-full flex items-center justify-between text-left py-3 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          >
+            <span
+              class="text-lg font-semibold text-gray-900 dark:text-white pr-4"
+              >{{ faq.question }}</span
+            >
+            <span
+              class="material-symbols-outlined text-gray-500 dark:text-gray-400 transition-transform"
+              [class.rotate-180]="faq.isExpanded"
+            >
+              expand_more
+            </span>
+          </button>
+          <div
+            *ngIf="faq.isExpanded"
+            class="mt-2 text-gray-600 dark:text-gray-400 leading-relaxed"
+          >
+            {{ faq.answer }}
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Still Need Help? Section -->
+    <div class="mb-12">
+      <h2
+        class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center"
+      >
+        Still need help?
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        @for (option of contactOptions; track $index) {
+        <div
+          class="bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 rounded-lg p-6 flex flex-col items-center text-center"
+        >
+          <!-- Icon -->
+          <div
+            class="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center mb-4"
+          >
+            <span class="text-white font-semibold text-sm uppercase">{{
+              option.icon
+            }}</span>
+          </div>
+
+          <!-- Title -->
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            {{ option.title }}
+          </h3>
+
+          <!-- Description -->
+          <p class="text-gray-600 dark:text-gray-400 mb-6 flex-1">
+            {{ option.description }}
+          </p>
+
+          <!-- Button -->
+          <button
+            (click)="option.action()"
+            class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+          >
+            {{ option.buttonText }}
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

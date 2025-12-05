@@ -1,0 +1,341 @@
+<div class="categories-container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-section">
+        <span class="material-symbols-outlined logo-icon">store</span>
+        <div>
+          <h2 class="admin-title">Admin Panel</h2>
+          <p class="erp-subtitle">E-Commerce ERP</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu">
+      <a href="#" class="nav-item">
+        <span class="material-symbols-outlined">dashboard</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span>Orders</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span>Products</span>
+      </a>
+      <a href="#" class="nav-item active">
+        <span class="material-symbols-outlined">sell</span>
+        <span>Categories</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="material-symbols-outlined">people</span>
+        <span>Customers</span>
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer -->
+    <div class="sidebar-footer">
+      <a href="#" class="nav-item">
+        <span class="material-symbols-outlined">settings</span>
+        <span>Settings</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="material-symbols-outlined">help</span>
+        <span>Help</span>
+      </a>
+      <div class="user-profile">
+        <div class="user-avatar">AH</div>
+        <div class="user-info">
+          <p class="user-name">Alex Hartman</p>
+          <p class="user-role">Sales Manager</p>
+        </div>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </div>
+      <button class="btn-logout" (click)="logout()">
+        <span>Logout</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Header -->
+    <div class="content-header">
+      <div class="header-text">
+        <h1 class="page-title">Category Management</h1>
+        @if(!editMode){
+        <p class="page-subtitle">Organize your product categories with ease.</p>
+        } @if (editMode && selectedCategory) {
+        <p class="page-subtitle">Edit Category: {{ selectedCategory.name }}</p>
+        } @else if(editMode && !selectedCategory){
+        <p class="page-subtitle">Add New Category</p>
+        }
+      </div>
+      @if (!editMode) {
+      <button class="btn-add-category" (click)="addNewCategory()">
+        <span class="material-symbols-outlined">add</span>
+        <span>New Category</span></button
+      >}
+    </div>
+
+    <!-- Two Panel Layout -->
+    <div class="panels-container">
+      <!-- Left Panel: Category List -->
+      <div class="left-panel">
+        <div class="search-container">
+          <span class="material-symbols-outlined search-icon">search</span>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Filter categories..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+          />
+        </div>
+
+        <div class="category-list">
+          @for (category of getMainCategories(); track $index) {
+          <div
+            class="category-item"
+            [class.expanded]="category.expanded"
+            [class.selected]="selectedCategory?.id === category.id"
+          >
+            <div class="category-header" (click)="toggleCategory(category)">
+              <div class="category-info">
+                <span class="material-symbols-outlined category-icon">
+                  {{ getCategoryIcon(category) }}
+                </span>
+                <span class="category-name">{{ category.name }}</span>
+                @if (category.subcategoryCount > 0) {
+                <span
+                  class="category-count"
+                
+                >
+                  {{ category.subcategoryCount }}
+                </span>}
+              </div>
+              @if(category.subcategoryCount > 0){
+              <span
+                class="material-symbols-outlined expand-icon"
+              >
+                {{ category.expanded ? "expand_more" : "chevron_right" }}
+              </span>}
+            </div>
+
+            <!-- Subcategories -->
+             @if(category.expanded){
+            <div class="subcategory-list">
+              @for (subcat of getSubcategories(category.id); track $index) {
+              <div
+                
+                class="subcategory-item"
+                [class.selected]="selectedCategory?.id === subcat.id"
+                (click)="selectCategory(subcat)"
+              >
+                <span class="subcategory-name">{{ subcat.name }}</span>
+                <div class="subcategory-actions">
+                  <button
+                    class="action-icon-btn edit-btn"
+                    (click)="editSubcategory(subcat); $event.stopPropagation()"
+                    title="Edit"
+                  >
+                    <span class="material-symbols-outlined">edit</span>
+                  </button>
+                  <button
+                    class="action-icon-btn delete-btn"
+                    (click)="deleteCategory(subcat); $event.stopPropagation()"
+                    title="Delete"
+                  >
+                    <span class="material-symbols-outlined">delete</span>
+                  </button>
+                </div>
+              </div>
+            }
+            </div>}
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Right Panel: Subcategories Table or Edit Form -->
+      <div class="right-panel">
+        <!-- Subcategories Table View -->
+        @if (!editMode && selectedCategory && selectedCategory.parentId ===
+        null) {
+        <div class="subcategories-view">
+          <div class="breadcrumbs">
+            @for (crumb of getBreadcrumbs(); let last = $last; track $index) {
+            <span>
+              <span>{{ crumb }}</span>
+              @if (!last) {
+              <span class="breadcrumb-separator"> / </span>} </span
+            >}
+          </div>
+          <h2 class="subcategories-title">
+            Subcategories of {{ selectedCategory.name }}
+          </h2>
+
+          <div class="table-container">
+            <table class="subcategories-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Status</th>
+                  <th>Products</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (subcat of subcategories; track $index) {
+                <tr class="table-row">
+                  <td class="category-name-cell">
+                    <span class="material-symbols-outlined category-icon-small">
+                      {{ getCategoryIcon(subcat) }}
+                    </span>
+                    <span>{{ subcat.name }}</span>
+                  </td>
+                  <td class="status-cell">
+                    <span
+                      class="status-badge"
+                      [ngClass]="getStatusClass(subcat.status)"
+                    >
+                      {{ subcat.status }}
+                    </span>
+                  </td>
+                  <td class="products-cell">{{ subcat.productCount }}</td>
+                  <td class="actions-cell">
+                    <button
+                      class="action-icon-btn"
+                      (click)="editSubcategory(subcat)"
+                      title="More options"
+                    >
+                      <span class="material-symbols-outlined">more_vert</span>
+                    </button>
+                  </td>
+                </tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        }
+        <!-- Edit Form View -->
+        @if (editMode) {
+        <div class="edit-form-view">
+          <form class="category-form" (ngSubmit)="saveCategory()">
+            <div class="form-group">
+              <label for="categoryName">Category Name</label>
+              <input
+                type="text"
+                id="categoryName"
+                class="form-input"
+                [(ngModel)]="editForm.name"
+                name="categoryName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="urlSlug">URL Slug</label>
+              <input
+                type="text"
+                id="urlSlug"
+                class="form-input"
+                [(ngModel)]="editForm.slug"
+                name="urlSlug"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="parentCategory">Parent Category</label>
+              <select
+                id="parentCategory"
+                class="form-select"
+                [(ngModel)]="editForm.parentId"
+                name="parentCategory"
+              >
+                <option [value]="null">None</option>
+                @for(parent of getParentCategories(); track $index){
+                <option [value]="parent.id">
+                  {{ parent.name }}
+                </option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea
+                id="description"
+                class="form-textarea"
+                rows="4"
+                [(ngModel)]="editForm.description"
+                name="description"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Category Image</label>
+              <div class="image-upload-section">
+                @if (editForm.image) {
+                <img
+                  [src]="editForm.image"
+                  alt="Category"
+                  class="category-image-preview"
+                />}
+                <div class="image-upload-box">
+                  <span class="material-symbols-outlined upload-icon"
+                    >cloud_upload</span
+                  >
+                  <p>Click to upload or drag and drop</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="toggle-label">
+                <span>Status</span>
+                <label class="toggle-switch">
+                  <input
+                    type="checkbox"
+                    [checked]="editForm.status === 'Active'"
+                    (change)="
+                      editForm.status = $any($event.target).checked
+                        ? 'Active'
+                        : 'Inactive'
+                    "
+                  />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-status">{{ editForm.status }}</span>
+              </label>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn-cancel" (click)="cancelEdit()">
+                Cancel
+              </button>
+              <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+          </form>
+        </div>
+        }
+
+        <!-- Empty State -->
+        @if (!editMode && !selectedCategory) {
+        <div class="empty-state">
+          <div class="empty-icon">
+            <span class="material-symbols-outlined">folder_open</span>
+          </div>
+          <h3>Select a category to view details</h3>
+          <p>
+            Choose a category from the list to see its subcategories or edit its
+            details.
+          </p>
+        </div>
+        }
+      </div>
+    </div>
+  </main>
+</div>

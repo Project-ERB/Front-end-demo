@@ -1,0 +1,358 @@
+<div
+  class="relative flex h-screen w-full flex-col group/design-root overflow-hidden"
+>
+  <app-navbar-e-commerce></app-navbar-e-commerce>
+  <div class="flex flex-1 overflow-hidden">
+    <aside
+      class="flex h-full w-64 shrink-0 flex-col justify-between border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 p-4"
+    >
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-2">
+          <p
+            class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+          >
+            Store
+          </p>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">dashboard</span
+            >Dashboard
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">shopping_bag</span
+            >Orders
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">inventory_2</span
+            >Inventory
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">group</span
+            >Customers
+          </a>
+        </div>
+        <div class="flex flex-col gap-2">
+          <p
+            class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider"
+          >
+            Categories
+          </p>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:bg-primary/20 dark:text-white text-sm font-semibold"
+            href="#"
+          >
+            <span
+              class="material-symbols-outlined text-xl"
+              style="font-variation-settings: 'FILL' 1"
+              >devices</span
+            >Electronics
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">checkroom</span
+            >Apparel
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">chair</span>Home
+            Goods
+          </a>
+          <a
+            class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            href="#"
+          >
+            <span class="material-symbols-outlined text-xl">auto_stories</span
+            >Books
+          </a>
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-1 border-t border-gray-200 dark:border-gray-800 pt-4"
+      >
+        <a
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">settings</span
+          >Settings
+        </a>
+        <a
+          class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+          href="#"
+        >
+          <span class="material-symbols-outlined text-xl">help</span>Help
+        </a>
+      </div>
+    </aside>
+    <main class="flex flex-1 flex-col overflow-y-auto">
+      <div class="flex flex-col p-6 space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex flex-wrap gap-2 items-center">
+              <a
+                class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                href="#"
+                >Home</a
+              >
+              <span class="text-gray-500 dark:text-gray-400 text-sm font-medium"
+                >/</span
+              >
+              <span class="text-gray-800 dark:text-gray-200 text-sm font-medium"
+                >Electronics</span
+              >
+            </div>
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              Electronics
+            </h1>
+          </div>
+          <div class="flex items-center gap-4">
+            <div
+              class="flex h-10 w-56 items-center justify-center rounded-lg bg-gray-100 dark:bg-white/10 p-1"
+            >
+              <label
+                class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white has-[:checked]:dark:bg-gray-900 has-[:checked]:shadow-sm has-[:[:checked]:text-gray-800 has-[:checked]:dark:text-white text-gray-500 dark:text-gray-400 text-sm font-medium"
+              >
+                <span class="truncate">Grid View</span>
+                <input
+                  checked=""
+                  class="invisible w-0"
+                  name="view-toggle"
+                  type="radio"
+                  value="Grid View"
+                />
+              </label>
+              <label
+                class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white has-[:checked]:dark:bg-gray-900 has-[:checked]:shadow-sm has-[:checked]:text-gray-800 has-[:checked]:dark:text-white text-gray-500 dark:text-gray-400 text-sm font-medium"
+              >
+                <span class="truncate">List View</span>
+                <input
+                  class="invisible w-0"
+                  name="view-toggle"
+                  type="radio"
+                  value="List View"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-3 overflow-x-auto pb-2">
+          <button
+            class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-white/10 pl-3 pr-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/20"
+          >
+            <span class="material-symbols-outlined text-base">swap_vert</span>
+            <p class="text-gray-700 dark:text-gray-300 text-sm font-medium">
+              Sort by Price
+            </p>
+            <span
+              class="material-symbols-outlined text-base text-gray-500 dark:text-gray-400"
+              >arrow_drop_down</span
+            >
+          </button>
+          <button
+            class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-white/10 pl-3 pr-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/20"
+          >
+            <span class="material-symbols-outlined text-base"
+              >sort_by_alpha</span
+            >
+            <p class="text-gray-700 dark:text-gray-300 text-sm font-medium">
+              Sort by Name
+            </p>
+            <span
+              class="material-symbols-outlined text-base text-gray-500 dark:text-gray-400"
+              >arrow_drop_down</span
+            >
+          </button>
+          <button
+            class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-white dark:bg-white/10 pl-3 pr-3 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-white/20"
+          >
+            <span class="material-symbols-outlined text-base">filter_list</span>
+            <p class="text-gray-700 dark:text-gray-300 text-sm font-medium">
+              Filter
+            </p>
+            <span
+              class="material-symbols-outlined text-base text-gray-500 dark:text-gray-400"
+              >arrow_drop_down</span
+            >
+          </button>
+        </div>
+        <!-- todo  product-cards -->
+        <div
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+        >
+          <a
+            [routerLink]="['/product', 1]"
+            class="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div
+              class="aspect-square w-full bg-cover bg-center"
+              data-alt="A modern wristwatch on a white background."
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDoss8IzvTPcbe5Xa2-ohyC2GWaOoo-aXR-AGgCATm96iytpqII8UjPvmX_TcKg9D3VW6Ukj5jAlNhIRGe-WSjg4dwALc0x-HhTQY6zvbl9n3XkSddXwMvOshwviEzwezyI32krVqRIKKBsI3yyfuTYqylsCkIa7hmrhoKYrZLOJXz8L2OIOjGXonDuwMHaT4scZ1doSbcgrSqpJZ4wiid2IrAy50bRx0VHopKiC7Bf4lUfLwh2VeIYNeU64KGsUZic59Wlp4gjN6TP');
+              "
+            ></div>
+            <div class="flex flex-col p-4 space-y-3">
+              <h3 class="font-semibold text-gray-800 dark:text-white">
+                Chronos Watch X1
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                SKU: WX1-0012
+              </p>
+              <div class="flex items-center justify-between">
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  $299.99
+                </p>
+                <span
+                  class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/50 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:text-green-300"
+                  >In Stock: 78</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Supplier: Timekeepers Inc.
+              </p>
+              <button
+                class="flex h-10 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="material-symbols-outlined text-base"
+                  >add_shopping_cart</span
+                >
+                Add to Cart
+              </button>
+            </div>
+          </a>
+          <a
+            [routerLink]="['/product', 2]"
+            class="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div
+              class="aspect-square w-full bg-cover bg-center"
+              data-alt="A pair of red and black running shoes."
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDcPhjCLL558LXDxULxJAEftI0Yk2N8iChq8M0uDgvCt3-H47LS1RWrXGtM21DpJI_Yvfc_ChualFz0WUGG-ldv5uEnWmp-NeKNHFHVYrZ2RvwmzDP7n0h3MR0c_FaTMsnIMwxY60db86GoUs4_dR1KWbzsnCFr9PyfcX4XhMoYl_a151v_3rpecYW6TmZ8JlJXOpCjmKds-2hbG-Yq9hjv4DsrIc0wnC0Y37QHRNJvhSRWWLZhVRMarB--mHkgrG8ukLRNNfqMqaa');
+              "
+            ></div>
+            <div class="flex flex-col p-4 space-y-3">
+              <h3 class="font-semibold text-gray-800 dark:text-white">
+                Velocity Runners
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                SKU: RSH-V2-R
+              </p>
+              <div class="flex items-center justify-between">
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  $120.00
+                </p>
+                <span
+                  class="inline-flex items-center rounded-full bg-green-100 dark:bg-green-900/50 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:text-green-300"
+                  >In Stock: 150</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Supplier: Apex Gear
+              </p>
+              <button
+                class="flex h-10 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-primary text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="material-symbols-outlined text-base"
+                  >add_shopping_cart</span
+                >
+                Add to Cart
+              </button>
+            </div>
+          </a>
+          <a
+            [routerLink]="['/product', 3]"
+            class="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div
+              class="aspect-square w-full bg-cover bg-center"
+              data-alt="A pair of black wireless headphones."
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBjRogP2uEtZH9GNfGQhgcoYfPaXVZhl9IjxOSKPE8ExgB-bRgSyJy8JGeBE7aQy_vMLpVkxiIllEO_i49B6jljnvNsqOPvaDxbkWVExueMMoGQKZJbQTqgVvhd_G8lpAPPoq8ggf9-nAZMWIuCOKDYPXrsmwSMuuJ-JYUEAgDZsJHozvPo31NqDb6IVHYmHbb4vDf57_P84o1JgOnn8d5lwJ5TNQebLSr6Q6i3w9kSNzNuGN0P-k6ZtNupBT6JDk3nLX7l2xl1gr78');
+              "
+            ></div>
+            <div class="flex flex-col p-4 space-y-3">
+              <h3 class="font-semibold text-gray-800 dark:text-white">
+                Aura Headphones
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                SKU: HDP-AURA-BK
+              </p>
+              <div class="flex items-center justify-between">
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  $199.50
+                </p>
+                <span
+                  class="inline-flex items-center rounded-full bg-yellow-100 dark:bg-yellow-900/50 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:text-yellow-300"
+                  >Low Stock: 12</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Supplier: SoundWave
+              </p>
+              <button
+                class="flex h-10 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg material-symbols-outlined text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                <span class="material-symbols-outlined text-base"
+                  >add_shopping_cart</span
+                >
+                Add to Cart
+              </button>
+            </div>
+          </a>
+          <a
+            [routerLink]="['/product', 4]"
+            class="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 hover:shadow-lg transition-shadow cursor-pointer"
+          >
+            <div
+              class="aspect-square w-full bg-cover bg-center"
+              data-alt="A black smartwatch displaying a colorful interface."
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9s7h8ycR543b2mMHewlrlJAjbzf9eXH85vO0iO2h1J3J9X6rIOuNbLuXH0l3FqHFapJ-XHGVpzYFkj4B46GVSw3VZsE9g_CzW2fJUgqVvGBH4KN3jfr0b2sBjyoAlUy_8dtqDrIYHJL7lzEYZZ1Vdwt0uyY3MqwXbmaA1J8A7qRPCh7HxgkvwC8yZxXVzfJeWGt-pVt904zebEbwsTIcimaG8NPJC9h2CHa-uHKCidlVjHtkxdVOH7C88MbPzfa_VrJf8lyO2UJ27');
+              "
+            ></div>
+            <div class="flex flex-col p-4 space-y-3">
+              <h3 class="font-semibold text-gray-800 dark:text-white">
+                Connect Smartwatch
+              </h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                SKU: SW-C1-BLK
+              </p>
+              <div class="flex items-center justify-between">
+                <p class="text-lg font-bold text-gray-900 dark:text-white">
+                  $350.00
+                </p>
+                <span
+                  class="inline-flex items-center rounded-full bg-red-100 dark:bg-red-900/50 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:text-red-300"
+                  >Out of Stock</span
+                >
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                Supplier: TechLink
+              </p>
+              <button
+                class="flex h-10 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 gap-2 text-sm font-bold leading-normal tracking-[0.015em]"
+              >
+                View Details
+              </button>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+// Security Component Styles
+// Most styling is handled by Tailwind CSS classes in the template
+
+// Smooth transitions for sidebar menu items
+nav a {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateX(4px);
+  }
+}
+
+// Form input focus effects
+input[type="password"] {
+  transition: all 0.2s ease-in-out;
+
+  &:focus:not([readonly]) {
+    transform: scale(1.01);
+  }
+
+  &[readonly] {
+    cursor: not-allowed;
+  }
+}
+
+// Button hover effects
+button[class*="bg-blue-600"] {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+button[class*="bg-red-50"] {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+button[class*="bg-gray-200"] {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+// Active menu item indicator
+a[class*="bg-blue-50"] {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background-color: rgb(37, 99, 235);
+    border-radius: 0 2px 2px 0;
+  }
+}
+
+// 2FA status indicator animation
+div[class*="bg-green-100"] {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+// Smooth page transitions
+main {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
