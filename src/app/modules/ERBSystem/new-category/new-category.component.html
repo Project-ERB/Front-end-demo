@@ -1,0 +1,361 @@
+<div class="flex h-screen bg-gray-50">
+  <aside class="w-64 bg-white shadow-xl flex flex-col">
+    <div class="p-6 border-b border-gray-100">
+      <h1 class="text-xl font-semibold text-gray-800">Admin Panel</h1>
+      <p class="text-sm text-gray-500">E-Commerce ERP</p>
+    </div>
+    <nav class="flex-grow p-4 space-y-2">
+      <a
+        href="#"
+        class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg"
+      >
+        <svg
+          class="w-5 h-5 mr-3"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-10v10a1 1 0 001 1h3M14 10V6a2 2 0 00-2-2h-4a2 2 0 00-2 2v4"
+          ></path>
+        </svg>
+        Dashboard
+      </a>
+      <a
+        href="#"
+        class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg"
+      >
+        <svg
+          class="w-5 h-5 mr-3"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+          ></path>
+        </svg>
+        Products
+      </a>
+      <a
+        href="#"
+        class="flex items-center p-3 text-blue-600 bg-blue-50 rounded-lg font-medium"
+      >
+        <svg
+          class="w-5 h-5 mr-3"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+          ></path>
+        </svg>
+        Categories
+      </a>
+      <a
+        href="#"
+        class="flex items-center p-3 text-gray-600 hover:bg-gray-100 rounded-lg"
+      >
+        <svg
+          class="w-5 h-5 mr-3"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+          ></path>
+        </svg>
+        Orders
+      </a>
+    </nav>
+    <div class="p-4">
+      <button
+        class="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150"
+      >
+        Create Report
+      </button>
+    </div>
+  </aside>
+
+  <main class="flex-grow p-8 overflow-y-auto">
+    <header
+      class="flex items-center justify-between pb-6 border-b border-gray-200 mb-6"
+    >
+      <div class="flex items-center">
+        <span class="text-sm text-gray-500">Categories /</span>
+        <h2 class="ml-2 text-2xl font-semibold text-gray-900">Add New</h2>
+      </div>
+      <div class="flex space-x-3">
+        <button
+          (click)="cancel()"
+          class="py-2 px-4 text-gray-600 font-medium rounded-lg hover:bg-gray-100 transition duration-150"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="saveCategory()"
+          class="flex items-center py-2 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition duration-150"
+        >
+          <svg
+            class="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+            ></path>
+          </svg>
+          Save Category
+        </button>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="md:col-span-2 space-y-6">
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <h3 class="text-xl font-semibold mb-2 text-gray-800">
+            General Information
+          </h3>
+          <p class="text-sm text-gray-500 mb-6">
+            Create a new category to organize your products.
+          </p>
+
+          <div class="mb-4">
+            <label
+              for="categoryName"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Category Name <span class="text-red-500">*</span></label
+            >
+            <input
+              type="text"
+              id="categoryName"
+              name="categoryName"
+              [ngModel]="categoryName()"
+              (ngModelChange)="categoryName.set($event)"
+              placeholder="e.g. Summer Collection"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div class="mb-4">
+            <label
+              for="slug"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Slug</label
+            >
+            <div
+              class="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500"
+            >
+              <span
+                class="bg-gray-100 text-gray-600 text-sm px-3 py-2 border-r border-gray-300 whitespace-nowrap"
+                >store.com/categories/</span
+              >
+              <input
+                type="text"
+                id="slug"
+                name="categorySlug"
+                [ngModel]="categorySlug()"
+                (ngModelChange)="categorySlug.set($event)"
+                class="flex-grow px-3 py-2 bg-white text-gray-800 focus:outline-none"
+              />
+            </div>
+            <p class="mt-1 text-xs text-gray-500">
+              The "slug" is the URL-friendly version of the name. It is usually
+              all lowercase and contains only letters, numbers, and hyphens.
+            </p>
+          </div>
+
+          <div>
+            <label
+              for="description"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Description</label
+            >
+            <textarea
+              id="description"
+              name="categoryDescription"
+              [ngModel]="categoryDescription()"
+              (ngModelChange)="categoryDescription.set($event)"
+              placeholder="Enter a description for this category..."
+              rows="5"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">
+            Category Image
+          </h3>
+
+          <div
+            class="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer hover:border-blue-500 transition duration-150"
+          >
+            <div class="inline-block bg-gray-100 p-3 rounded-full mb-3">
+              <svg
+                class="w-8 h-8 text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                ></path>
+              </svg>
+            </div>
+            <p class="text-gray-700 font-medium">
+              Click to upload or drag and drop
+            </p>
+            <p class="text-xs text-gray-500 mt-1">
+              SVG, PNG, JPG or GIF (MAX. 800x400px)
+            </p>
+            <input
+              type="file"
+              class="hidden"
+              accept=".svg,.png,.jpg,.jpeg,.gif"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="md:col-span-1 space-y-6">
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">Status</h3>
+
+          <div class="flex justify-between items-center mb-4">
+            <label for="isActive" class="text-sm font-medium text-gray-700"
+              >Active</label
+            >
+            <div
+              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+            >
+              <input
+                type="checkbox"
+                name="isActive"
+                id="isActive"
+                [ngModel]="isActive()"
+                (ngModelChange)="isActive.set($event)"
+                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+              />
+              <label
+                for="isActive"
+                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+              ></label>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-center">
+            <label for="includeInMenu" class="text-sm font-medium text-gray-700"
+              >Include in Menu</label
+            >
+            <div
+              class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in"
+            >
+              <input
+                type="checkbox"
+                name="includeInMenu"
+                id="includeInMenu"
+                [ngModel]="includeInMenu()"
+                (ngModelChange)="includeInMenu.set($event)"
+                class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+              />
+              <label
+                for="includeInMenu"
+                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
+              ></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">Organization</h3>
+
+          <div class="mb-4">
+            <label
+              for="parentCategory"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Parent Category</label
+            >
+            <select
+              id="parentCategory"
+              name="parentCategory"
+              [ngModel]="categoryParent()"
+              (ngModelChange)="categoryParent.set($event)"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="none" selected>None (Top Level)</option>
+              <option value="clothing">Clothing</option>
+              <option value="accessories">Accessories</option>
+            </select>
+            <p class="mt-1 text-xs text-gray-500">
+              Assign a parent to create a sub-category.
+            </p>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">SEO Preview</h3>
+
+          <div class="mb-4">
+            <label
+              for="metaTitle"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Meta Title</label
+            >
+            <input
+              type="text"
+              id="metaTitle"
+              name="metaTitle"
+              [ngModel]="metaTitle()"
+              (ngModelChange)="metaTitle.set($event)"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label
+              for="metaDescription"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Meta Description</label
+            >
+            <textarea
+              id="metaDescription"
+              name="metaDescription"
+              [ngModel]="metaDescription()"
+              (ngModelChange)="metaDescription.set($event)"
+              rows="3"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

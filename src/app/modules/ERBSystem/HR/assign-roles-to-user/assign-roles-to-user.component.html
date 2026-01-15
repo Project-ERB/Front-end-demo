@@ -1,0 +1,180 @@
+<div class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white font-display min-h-screen flex flex-col overflow-x-hidden">
+  
+  <header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 bg-white dark:bg-[#151b2b] px-6 lg:px-10 py-3 shadow-sm">
+    <div class="flex items-center gap-4 text-[#111318] dark:text-white">
+      <div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg text-primary">
+        <span class="material-symbols-outlined">grid_view</span>
+      </div>
+      <h2 class="text-[#111318] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">ERP Admin</h2>
+    </div>
+    <div class="flex flex-1 justify-end gap-4 lg:gap-8 items-center">
+      <div class="hidden md:flex items-center gap-6 lg:gap-9">
+        <a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+        <a class="text-[#111318] dark:text-white text-sm font-medium leading-normal" href="#">Users</a>
+        <a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Settings</a>
+        <a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Logs</a>
+      </div>
+      <div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-slate-700">
+        <div class="hidden sm:flex flex-col items-end">
+          <span class="text-xs font-semibold">Jane Admin</span>
+          <span class="text-[10px] text-gray-500 dark:text-gray-400">Super Admin</span>
+        </div>
+        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-white dark:ring-[#101622] shadow-sm" 
+             style="background-image: url('https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80');">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout-container flex h-full grow flex-col pb-24">
+    <div class="flex flex-1 justify-center py-6 px-4 sm:px-6 lg:px-8">
+      <div class="layout-content-container flex flex-col w-full max-w-[1024px] flex-1">
+        
+        <nav class="flex flex-wrap gap-2 py-2 mb-4">
+          <a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal flex items-center gap-1" href="#">
+            <span class="material-symbols-outlined text-[18px]">home</span> Home
+          </a>
+          <span class="text-[#616f89] dark:text-gray-500 text-sm font-medium leading-normal">/</span>
+          <a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Users</a>
+          <span class="text-[#616f89] dark:text-gray-500 text-sm font-medium leading-normal">/</span>
+          <span class="text-[#111318] dark:text-white text-sm font-medium leading-normal">Assign Roles</span>
+        </nav>
+
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div class="flex flex-col gap-2">
+            <h1 class="text-[#111318] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight">User Role Management</h1>
+            <p class="text-[#616f89] dark:text-gray-400 text-base font-normal leading-normal max-w-2xl">Search for a user in the system and toggle their access permissions. Changes are logged for security auditing.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#1e2736] border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium shadow-sm hover:bg-slate-50 dark:hover:bg-[#253041] transition-colors">
+              <span class="material-symbols-outlined text-[18px]">group</span>
+              Bulk Assign
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          <div class="lg:col-span-4 flex flex-col gap-6 sticky top-24">
+            
+            <div class="bg-white dark:bg-[#1e2736] p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+              <h2 class="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">1. Select User</h2>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                  <span class="material-symbols-outlined">search</span>
+                </span>
+                <input [(ngModel)]="searchQuery"
+                       class="w-full bg-slate-50 dark:bg-[#151b2b] text-[#111318] dark:text-white rounded-lg border-slate-200 dark:border-slate-600 pl-10 pr-4 py-2.5 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-gray-400" 
+                       placeholder="Name, Email, or ID" 
+                       type="text"/>
+              </div>
+            </div>
+             @if(selectedUser){
+            <div  class="bg-white dark:bg-[#1e2736] rounded-xl border border-primary/30 shadow-md overflow-hidden relative group">
+              <div class="h-20 bg-gradient-to-r from-primary/80 to-blue-400"></div>
+              <div class="px-5 pb-5">
+                <div class="relative flex justify-between items-end -mt-10 mb-3">
+                  <div class="size-20 rounded-full border-4 border-white dark:border-[#1e2736] bg-white dark:bg-[#151b2b] shadow-sm bg-center bg-cover" 
+                       [style.background-image]="'url(' + selectedUser.avatarUrl + ')'">
+                  </div>
+                  <span class="mb-1 inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold border"
+                        [ngClass]="selectedUser.status === 'Active' ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800' : 'bg-red-50 text-red-700'">
+                        @if(selectedUser.status === 'Active'){
+                    <span class="size-1.5 rounded-full bg-green-500 animate-pulse" ></span> }
+                    {{ selectedUser.status }}
+                  </span>
+                </div>
+                <h3 class="text-xl font-bold text-[#111318] dark:text-white">{{ selectedUser.name }}</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">{{ selectedUser.email }}</p>
+                
+                <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-700">
+                  <div class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-gray-400 text-[20px] mt-0.5">badge</span>
+                    <div>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Employee ID</p>
+                      <p class="text-sm font-medium dark:text-gray-200">{{ selectedUser.employeeId }}</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start gap-3">
+                    <span class="material-symbols-outlined text-gray-400 text-[20px] mt-0.5">apartment</span>
+                    <div>
+                      <p class="text-xs text-gray-500 dark:text-gray-400 uppercase font-semibold">Department</p>
+                      <p class="text-sm font-medium dark:text-gray-200">{{ selectedUser.department }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>}
+
+          </div>
+
+          <div class="lg:col-span-8 flex flex-col gap-6">
+            <div class="bg-white dark:bg-[#1e2736] p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm h-full">
+              
+              <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
+                <h2 class="text-xl font-bold text-[#111318] dark:text-white">2. Assign Roles</h2>
+                <span class="text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-1 rounded">
+                  {{ activeRoleCount }} Active Roles
+                </span>
+              </div>
+                @for(category of roleCategories;track $index){
+              <div  class="mb-8 last:mb-0">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[18px]">{{ category.icon }}</span>
+                  {{ category.name }}
+                </h3>
+                
+                <div class="space-y-3">
+                  @for(role of category.roles;track $index){
+                  <div  
+                       class="flex items-start sm:items-center justify-between p-4 rounded-lg border transition-colors"
+                       [ngClass]="role.isActive 
+                        ? 'border-primary/20 bg-primary/5 dark:bg-primary/10 hover:border-primary/40' 
+                        : 'border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 hover:border-slate-300 dark:hover:border-slate-600'">
+                    
+                    <div class="flex-1 pr-4">
+                      <div class="flex items-center gap-2">
+                        <h4 class="text-base font-semibold text-[#111318] dark:text-white">{{ role.name }}</h4>
+                        <span class="material-symbols-outlined text-gray-400 text-[16px] cursor-help" [title]="role.tooltip">info</span>
+                      </div>
+                      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ role.description }}</p>
+                    </div>
+                    
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" class="sr-only peer" [checked]="role.isActive" (change)="toggleRole(role)"/>
+                      <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/80 rounded-full peer dark:bg-gray-700 
+                                  peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                                  after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all 
+                                  dark:border-gray-600 peer-checked:bg-primary"></div>
+                    </label>
+                  </div>}
+                </div>
+              </div>}
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#151b2b] border-t border-slate-200 dark:border-slate-800 p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-40">
+    <div class="max-w-[1024px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+        <span class="material-symbols-outlined text-[18px] text-orange-500">warning</span>
+        <span>All role changes are logged for security purposes.</span>
+      </div>
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <button class="flex-1 sm:flex-none px-6 py-2.5 rounded-lg border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400">
+          Cancel
+        </button>
+        <button (click)="saveAssignments()" class="flex-1 sm:flex-none px-6 py-2.5 rounded-lg  text-white font-medium bg-blue-700 transition-colors shadow-sm flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-[#151b2b]">
+          <span class="material-symbols-outlined text-[18px]">save</span>
+          Save Assignments
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

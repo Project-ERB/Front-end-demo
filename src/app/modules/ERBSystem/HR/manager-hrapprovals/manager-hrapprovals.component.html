@@ -1,0 +1,182 @@
+<div class="flex h-screen w-full bg-background-light dark:bg-background-dark">
+    <app-sidbar-manager-harapprovals></app-sidbar-manager-harapprovals>
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+  <div class="h-full overflow-y-auto w-full">
+    <div class="max-w-[1200px] mx-auto p-6 md:p-8 flex flex-col gap-8 pb-20">
+      
+      <header class="flex flex-wrap justify-between items-end gap-4">
+        <div class="flex flex-col gap-2">
+          <h1 class="text-[#111318] dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-tight">Pending Approvals</h1>
+          <p class="text-[#616f89] dark:text-gray-400 text-base font-normal leading-normal">Review and action HR requests from your team.</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="bg-white dark:bg-gray-800 border border-[#dbdfe6] dark:border-gray-700 text-[#111318] dark:text-white font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <span class="material-symbols-outlined text-xl">history</span>
+            History
+          </button>
+          <button class="bg-primary text-white font-medium px-4 py-2 rounded-lg text-sm flex items-center gap-2 bg-blue-700 transition-colors shadow-sm shadow-blue-500/30">
+            <span class="material-symbols-outlined text-xl">playlist_add_check</span>
+            Bulk Approve
+          </button>
+        </div>
+      </header>
+
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-[#dbdfe6] dark:border-gray-700 shadow-sm">
+          <div class="flex justify-between items-start">
+            <p class="text-[#616f89] dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Total Pending</p>
+            <span class="bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 p-1 rounded-md material-symbols-outlined text-xl">inbox</span>
+          </div>
+          <p class="text-[#111318] dark:text-white text-3xl font-bold leading-tight">12</p>
+          <p class="text-sm text-green-600 font-medium flex items-center gap-1 mt-1">
+            <span class="material-symbols-outlined text-sm">trending_down</span>
+            -2 from yesterday
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-orange-200 dark:border-orange-900/50 shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-16 h-16 bg-orange-500/10 rounded-bl-full -mr-4 -mt-4"></div>
+          <div class="flex justify-between items-start z-10">
+            <p class="text-[#616f89] dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Urgent Requests</p>
+            <span class="bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300 p-1 rounded-md material-symbols-outlined text-xl">warning</span>
+          </div>
+          <p class="text-[#111318] dark:text-white text-3xl font-bold leading-tight">3</p>
+          <p class="text-sm text-orange-600 font-medium mt-1">Action required within 24h</p>
+        </div>
+
+        <div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-gray-800 border border-[#dbdfe6] dark:border-gray-700 shadow-sm">
+          <div class="flex justify-between items-start">
+            <p class="text-[#616f89] dark:text-gray-400 text-sm font-semibold uppercase tracking-wider">Avg. Response Time</p>
+            <span class="bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 p-1 rounded-md material-symbols-outlined text-xl">timer</span>
+          </div>
+          <p class="text-[#111318] dark:text-white text-3xl font-bold leading-tight">4h</p>
+          <p class="text-sm text-[#616f89] dark:text-gray-500 font-medium mt-1">Target: &lt; 24h</p>
+        </div>
+      </section>
+
+      <section class="flex flex-col md:flex-row gap-4 bg-white dark:bg-gray-800 p-4 rounded-xl border border-[#dbdfe6] dark:border-gray-700 shadow-sm items-center">
+        <div class="relative flex-1 w-full">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#616f89] dark:text-gray-400">search</span>
+          <input class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-900 text-[#111318] dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-sm font-normal" placeholder="Search by requester, ID or summary..." type="text">
+        </div>
+        <div class="flex gap-3 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+          <div class="relative min-w-[140px]">
+            <select class="appearance-none w-full pl-3 pr-10 py-2.5 rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-900 text-[#111318] dark:text-white text-sm font-medium focus:outline-none focus:border-primary cursor-pointer">
+              <option>All Types</option>
+              <option>Leave Request</option>
+              <option>Expense Report</option>
+              <option>New Hire</option>
+            </select>
+            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[#616f89] pointer-events-none text-xl">expand_more</span>
+          </div>
+          <button class="flex items-center justify-center p-2.5 rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-900 text-[#616f89] hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" title="Filter Settings">
+            <span class="material-symbols-outlined">tune</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="@container">
+        <div class="flex flex-col overflow-hidden rounded-xl border border-[#dbdfe6] dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm">
+          <div class="overflow-x-auto">
+            <table class="w-full min-w-[800px]">
+              <thead class="bg-[#f8f9fa] dark:bg-gray-900/50 border-b border-[#dbdfe6] dark:border-gray-700">
+                <tr>
+                  <th class="px-4 py-3 w-12 text-center">
+                    <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary bg-white dark:bg-gray-700 dark:border-gray-600">
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Requester</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Type</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider w-1/4">Summary</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Details</th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Date</th>
+                  <th class="px-4 py-3 text-right text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[#dbdfe6] dark:divide-gray-700">
+                @for(req of requests;track $index){
+                <tr 
+                    class="group hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+                    [ngClass]="{'bg-orange-50/30 dark:bg-orange-900/5': req.isUrgent}">
+                  
+                  <td class="px-4 py-4 text-center">
+                    <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary bg-white dark:bg-gray-700 dark:border-gray-600">
+                  </td>
+
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full w-10 h-10 border border-gray-100 dark:border-gray-600" 
+                           [style.background-image]="'url(' + req.requester.avatarUrl + ')'"></div>
+                      <div class="flex flex-col">
+                        <span class="text-sm font-medium text-[#111318] dark:text-white">{{ req.requester.name }}</span>
+                        <span class="text-xs text-[#616f89] dark:text-gray-400">{{ req.requester.role }}</span>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="px-4 py-4">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
+                          [ngClass]="getTypeStyles(req.type)">
+                      <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getTypeDotColor(req.type)"></span>
+                      {{ req.type }}
+                    </span>
+                  </td>
+
+                  <td class="px-4 py-4">
+                    <div class="flex items-center gap-2">
+                      <p class="text-sm text-[#111318] dark:text-white font-medium">{{ req.title }}</p>
+                      @if(req.isUrgent){
+                      <span class="bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300 text-[10px] font-bold px-1.5 py-0.5 rounded border border-orange-200 dark:border-orange-800">URGENT</span>}
+                    </div>
+                    <p class="text-xs text-[#616f89] dark:text-gray-400 mt-0.5 truncate max-w-[200px]">{{ req.summary }}</p>
+                  </td>
+
+                  <td class="px-4 py-4">
+                    <ng-container [ngSwitch]="req.type">
+                        <span *ngSwitchCase="'Expense Report'" class="text-sm font-bold text-[#111318] dark:text-white font-mono">
+                           {{ req.details.primary | currency }}
+                        </span>
+                        <div *ngSwitchDefault class="flex flex-col">
+                            <span class="text-sm font-medium text-[#111318] dark:text-white">{{ req.details.primary }}</span>
+                            @if(req.details.secondary){
+                            <span  class="text-xs text-[#616f89] dark:text-gray-400">{{ req.details.secondary }}</span>}
+                        </div>
+                    </ng-container>
+                  </td>
+
+                  <td class="px-4 py-4">
+                    <span class="text-sm text-[#616f89] dark:text-gray-400">{{ req.date | date:'MMM d, h:mm a' }}</span>
+                  </td>
+
+                  <td class="px-4 py-4 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      <button class="p-1.5 rounded-lg text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20 transition-colors border border-transparent hover:border-green-200 dark:hover:border-green-900" title="Approve">
+                        <span class="material-symbols-outlined text-xl">check</span>
+                      </button>
+                      <button class="p-1.5 rounded-lg text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-900" title="Reject">
+                        <span class="material-symbols-outlined text-xl">close</span>
+                      </button>
+                      <div class="w-px h-6 bg-gray-200 dark:bg-gray-700 mx-1"></div>
+                      <button class="text-primary hover:text-blue-700 dark:hover:text-blue-400 text-sm font-medium hover:underline px-2">
+                        Details
+                      </button>
+                    </div>
+                  </td>
+
+                </tr>}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="px-4 py-3 border-t border-[#dbdfe6] dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex items-center justify-between">
+            <span class="text-sm text-[#616f89] dark:text-gray-400">Showing <span class="font-medium text-[#111318] dark:text-white">1</span> to <span class="font-medium text-[#111318] dark:text-white">{{ requests.length }}</span> of <span class="font-medium text-[#111318] dark:text-white">12</span> results</span>
+            <div class="flex gap-2">
+              <button class="px-3 py-1 rounded border border-[#dbdfe6] dark:border-gray-600 text-sm text-[#616f89] dark:text-gray-400 hover:bg-white dark:hover:bg-gray-800 disabled:opacity-50">Previous</button>
+              <button class="px-3 py-1 rounded border border-[#dbdfe6] dark:border-gray-600 text-sm text-[#111318] dark:text-white bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700">Next</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+</div>

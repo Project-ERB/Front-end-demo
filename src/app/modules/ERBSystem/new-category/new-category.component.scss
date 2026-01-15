@@ -1,0 +1,40 @@
+/* Custom styles for the toggle switches */
+
+.toggle-checkbox {
+  // Hide the default checkbox input
+  opacity: 0;
+  height: 0;
+  width: 0;
+
+  // When the checkbox is checked, style the track (label) and the handle (checkbox)
+  &:checked {
+    & + .toggle-label {
+      background-color: #3b82f6; // Blue-600 color when active
+    }
+
+    // Move the handle to the right when checked
+    &.toggle-checkbox {
+      left: 1.5rem; // Moves it about 6px from the right edge of the label/track
+      border-color: #3b82f6; // Blue border
+    }
+  }
+
+  // Position of the handle/knob
+  &.toggle-checkbox {
+    top: 0; // Align to the top of the label/track
+    left: 0; // Default position on the left
+    transition: left 0.2s ease-in-out; // Smooth transition for the slide
+  }
+}
+
+.toggle-label {
+  // Style for the track
+  display: block;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Ensure proper focus ring is visible for accessibility */
+input:focus, textarea:focus, select:focus {
+  outline: none; // Remove default outline
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); // Blue focus ring
+}

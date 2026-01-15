@@ -1,69 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  FormGroup,
-  FormControl,
-  Validators,
-  ReactiveFormsModule,
-  AbstractControl,
-} from '@angular/forms';
-import { FlowbiteService } from '../../../core/services/Flowbite.Service';
-import { initFlowbite } from 'flowbite';
-
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
-export class LoginComponent implements OnInit {
-  constructor(private flowbiteService: FlowbiteService) {}
+export class LoginComponent {
+loginForm: FormGroup;
+  isPasswordVisible: boolean = false;
 
-  ngOnInit(): void {
-    this.flowbiteService.loadFlowbite((flowbite) => {
-      initFlowbite();
+  constructor(private fb: FormBuilder) {
+    this.loginForm = this.fb.group({
+      identifier: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-  // todo  login form group
-  login_Form: FormGroup = new FormGroup(
-    {
-      email: new FormControl('', [
-        Validators.required,
-        Validators.email,
-        Validators.minLength(5),
-        Validators.maxLength(50),
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.maxLength(20),
-      ]),
-      confirmPassword: new FormControl('', [Validators.required]),
-    },
-    { validators: this.matching_passwords }
-  );
 
-  // todo    custom validator for password matching
-
-  matching_passwords(group: AbstractControl): null | Record<string, boolean> {
-    return group.get('password')?.value === group.get('confirmPassword')?.value
-      ? null
-      : { notMatching: true };
-  }
-  // todo  getter for form controls
-  get emailControl() {
-    return this.login_Form.get('email');
-  }
-  get passwordControl() {
-    return this.login_Form.get('password');
-  }
-  get confirmPasswordControl() {
-    return this.login_Form.get('confirmPassword');
+  togglePasswordVisibility(): void {
+    this.isPasswordVisible = !this.isPasswordVisible;
   }
 
-  submitLoginForm() {
-    if (this.login_Form.invalid) {
-      this.login_Form.markAllAsTouched();
-      return;
+  onLogin(): void {
+    if (this.loginForm.valid) {
+      console.log('Login Data:', this.loginForm.value);
+      // Integrate your authentication service here
+    } else {
+      this.loginForm.markAllAsTouched();
     }
   }
 }

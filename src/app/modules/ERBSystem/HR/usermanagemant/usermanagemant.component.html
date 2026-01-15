@@ -1,0 +1,232 @@
+<div class="flex h-screen w-full font-display bg-background-light dark:bg-background-dark text-[#111318] dark:text-white antialiased overflow-hidden">
+  
+  <div class="w-64 flex-shrink-0 bg-white dark:bg-[#1a202c] border-r border-[#dbdfe6] dark:border-gray-700 flex flex-col h-full">
+    <div class="p-4 flex items-center gap-3 border-b border-[#dbdfe6] dark:border-gray-700">
+      <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" 
+           style="background-image: url('https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80');">
+      </div>
+      <div class="flex flex-col">
+        <h1 class="text-[#111318] dark:text-white text-base font-medium leading-normal">ERP Admin</h1>
+        <p class="text-[#616f89] dark:text-gray-400 text-sm font-normal leading-normal">Super User</p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 p-4 overflow-y-auto flex-1">
+      @for( item of navItems;track $index){
+      <a href="#" 
+      
+         class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group"
+         [ngClass]="item.active ? 'bg-primary/10 text-primary' : 'hover:bg-[#f0f2f4] dark:hover:bg-gray-800'">
+        
+        <span class="material-symbols-outlined" 
+              [ngClass]="item.active ? 'text-primary fill-current' : 'text-[#616f89] dark:text-gray-400 group-hover:text-[#111318] dark:group-hover:text-white'">
+          {{ item.icon }}
+        </span>
+        <p class="text-sm font-medium leading-normal" 
+           [ngClass]="item.active ? 'text-primary' : 'text-[#111318] dark:text-gray-200'">
+          {{ item.label }}
+        </p>
+      </a>}
+    </div>
+
+    <div class="p-4 border-t border-[#dbdfe6] dark:border-gray-700">
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#f0f2f4] dark:hover:bg-gray-800 transition-colors group">
+        <span class="material-symbols-outlined text-[#616f89] dark:text-gray-400 group-hover:text-red-600">logout</span>
+        <p class="text-[#111318] dark:text-gray-200 text-sm font-medium leading-normal group-hover:text-red-600">Logout</p>
+      </a>
+    </div>
+  </div>
+
+  <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <div class="flex-1 overflow-y-auto p-6 md:p-10">
+      <div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+        
+        <div class="flex flex-wrap gap-2 items-center">
+          <a href="#" class="text-[#616f89] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors">Home</a>
+          <span class="text-[#616f89] dark:text-gray-500 text-sm">/</span>
+          <a href="#" class="text-[#616f89] dark:text-gray-400 text-sm font-medium hover:text-primary transition-colors">System</a>
+          <span class="text-[#616f89] dark:text-gray-500 text-sm">/</span>
+          <span class="text-[#111318] dark:text-gray-100 text-sm font-medium">Users</span>
+        </div>
+
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div class="flex flex-col gap-1">
+            <h1 class="text-[#111318] dark:text-white text-3xl font-black tracking-tight">User Management</h1>
+            <p class="text-[#616f89] dark:text-gray-400 text-base font-normal">Manage system access, roles, and user lifecycles.</p>
+          </div>
+          <button class="bg-blue-700 text-white flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg shadow-sm transition-colors text-sm font-bold">
+            <span class="material-symbols-outlined text-[20px]">add</span>
+            <span>Add New User</span>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          @for( stat of stats;track $index){
+          <div class="flex flex-col gap-1 rounded-xl p-5 bg-white dark:bg-[#1a202c] border border-[#dbdfe6] dark:border-gray-700 shadow-sm">
+            <div class="flex justify-between items-start">
+              <p class="text-[#616f89] dark:text-gray-400 text-sm font-medium">{{ stat.label }}</p>
+              <span class="material-symbols-outlined p-1.5 rounded-md text-[20px]" 
+                    [ngClass]="[stat.iconColorClass, stat.iconBgClass]">
+                {{ stat.icon }}
+              </span>
+            </div>
+            <div class="flex items-baseline gap-2 mt-2">
+              <p class="text-[#111318] dark:text-white text-2xl font-bold">{{ stat.value }}</p>
+              <p class="text-xs font-medium px-1.5 py-0.5 rounded flex items-center gap-0.5"
+                 [ngClass]="[stat.trendColorClass, stat.trendBgClass]">
+                <span class="material-symbols-outlined text-[12px]">{{ stat.trendIcon }}</span> 
+                {{ stat.trend }}
+              </p>
+            </div>
+          </div>}
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-between items-center bg-white dark:bg-[#1a202c] p-4 rounded-xl border border-[#dbdfe6] dark:border-gray-700 shadow-sm">
+          <div class="relative w-full sm:max-w-md">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-[#616f89] text-[20px]">search</span>
+            </div>
+            <input type="text" 
+                   class="block w-full pl-10 pr-3 py-2.5 border border-[#dbdfe6] dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 text-[#111318] dark:text-white placeholder-[#616f89] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition duration-150 ease-in-out" 
+                   placeholder="Search by name, email or ID...">
+          </div>
+          
+          <div class="flex gap-3 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+            <div class="relative min-w-[140px]">
+              <select class="appearance-none block w-full pl-3 pr-10 py-2.5 border border-[#dbdfe6] dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 text-[#111318] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
+                <option>All Roles</option>
+                <option>Super Admin</option>
+                <option>Manager</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#616f89]">
+                <span class="material-symbols-outlined text-[20px]">expand_more</span>
+              </div>
+            </div>
+            
+            <div class="relative min-w-[140px]">
+              <select class="appearance-none block w-full pl-3 pr-10 py-2.5 border border-[#dbdfe6] dark:border-gray-600 rounded-lg leading-5 bg-white dark:bg-gray-800 text-[#111318] dark:text-white focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#616f89]">
+                <span class="material-symbols-outlined text-[20px]">expand_more</span>
+              </div>
+            </div>
+            
+            <button class="flex items-center justify-center p-2.5 border border-[#dbdfe6] dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-[#616f89] hover:text-[#111318] hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+              <span class="material-symbols-outlined text-[20px]">tune</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-[#1a202c] rounded-xl border border-[#dbdfe6] dark:border-gray-700 shadow-sm overflow-hidden flex flex-col">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-[#dbdfe6] dark:divide-gray-700">
+              <thead class="bg-[#f9fafb] dark:bg-gray-800">
+                <tr>
+                  <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider w-10">
+                    <input type="checkbox" class="rounded border-[#dbdfe6] text-primary focus:ring-primary h-4 w-4 bg-white dark:bg-gray-700"/>
+                  </th>
+                  <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">User</th>
+                  <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Role</th>
+                  <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Department</th>
+                  <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Status</th>
+                  <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">Last Active</th>
+                  <th scope="col" class="relative px-6 py-4 w-10">
+                    <span class="sr-only">Actions</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white dark:bg-[#1a202c] divide-y divide-[#dbdfe6] dark:divide-gray-700">
+                @for(user of users;track $index){
+                <tr class="hover:bg-[#f9fafb] dark:hover:bg-gray-800/50 transition-colors">
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <input type="checkbox" class="rounded border-[#dbdfe6] text-primary focus:ring-primary h-4 w-4 bg-white dark:bg-gray-700"/>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="h-10 w-10 flex-shrink-0">
+                        @if(user.isAvatarImage){
+                        <div
+                             class="h-10 w-10 rounded-full bg-cover bg-center" 
+                             [style.background-image]="'url(' + user.avatarUrl + ')'">
+                        </div>}
+                        @else{
+                        <ng-template #initialsAvatar>
+                          <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                            {{ user.initials }}
+                          </div>
+                        </ng-template>}
+                      </div>
+                      <div class="ml-4">
+                        <div class="text-sm font-medium text-[#111318] dark:text-white">{{ user.name }}</div>
+                        <div class="text-sm text-[#616f89]">{{ user.email }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                          [ngClass]="getRoleClasses(user.role)">
+                      {{ user.role }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-[#616f89] dark:text-gray-300">
+                    {{ user.department }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                          [ngClass]="getStatusClasses(user.status)">
+                      {{ user.status }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-[#616f89] dark:text-gray-400">
+                    {{ user.lastActive }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-[#616f89] hover:text-primary dark:hover:text-white transition-colors">
+                      <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                    </button>
+                  </td>
+                </tr>}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="bg-white dark:bg-[#1a202c] px-4 py-3 flex items-center justify-between border-t border-[#dbdfe6] dark:border-gray-700 sm:px-6">
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-[#616f89]">
+                  Showing
+                  <span class="font-medium text-[#111318] dark:text-white">1</span>
+                  to
+                  <span class="font-medium text-[#111318] dark:text-white">{{ users.length }}</span>
+                  of
+                  <span class="font-medium text-[#111318] dark:text-white">2,453</span>
+                  results
+                </p>
+              </div>
+              <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-[#dbdfe6] bg-white dark:bg-gray-800 dark:border-gray-600 text-sm font-medium text-[#616f89] hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="sr-only">Previous</span>
+                    <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                  </a>
+                  <a href="#" class="relative inline-flex items-center px-4 py-2 border border-primary bg-primary/10 text-sm font-medium text-primary z-10">1</a>
+                  <a href="#" class="relative inline-flex items-center px-4 py-2 border border-[#dbdfe6] bg-white dark:bg-gray-800 dark:border-gray-600 text-sm font-medium text-[#616f89] hover:bg-gray-50 dark:hover:bg-gray-700">2</a>
+                  <a href="#" class="relative inline-flex items-center px-4 py-2 border border-[#dbdfe6] bg-white dark:bg-gray-800 dark:border-gray-600 text-sm font-medium text-[#616f89] hover:bg-gray-50 dark:hover:bg-gray-700">3</a>
+                  <span class="relative inline-flex items-center px-4 py-2 border border-[#dbdfe6] bg-white dark:bg-gray-800 dark:border-gray-600 text-sm font-medium text-[#616f89]">...</span>
+                  <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-[#dbdfe6] bg-white dark:bg-gray-800 dark:border-gray-600 text-sm font-medium text-[#616f89] hover:bg-gray-50 dark:hover:bg-gray-700">
+                    <span class="sr-only">Next</span>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                  </a>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

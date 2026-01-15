@@ -1,1 +1,33 @@
-<p>otp works!</p>
+<main class="min-h-screen w-full flex items-center justify-center bg-background-light p-4 font-display">
+    <div class="w-full max-w-md">
+        <div class="flex flex-col items-center justify-center p-6 md:p-8 bg-white border border-slate-200 rounded-xl shadow-lg">
+
+            <div class="p-3 mb-4 bg-primary/10 rounded-full">
+                <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"></path>
+        </svg>
+            </div>
+
+            <h1 class="text-slate-900 tracking-tight text-2xl sm:text-3xl font-bold leading-tight text-center pb-2">
+                Check your email
+            </h1>
+            <p class="text-slate-600 text-sm sm:text-base text-center pb-6">
+                We've sent a 6-digit code to <span class="font-medium text-slate-900">your.email@example.com</span>.
+            </p>
+
+            <div class="flex gap-2 sm:gap-3 justify-center w-full mb-6">
+                <input *ngFor="let control of otpControls; let i = index" #otpInput type="text" inputmode="numeric" maxlength="1" [formControl]="control" (input)="onInput($event, i)" (keydown)="onKeyDown($event, i)" class="flex h-14 w-full text-center text-lg sm:text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-primary/50 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 transition-all"
+                />
+            </div>
+
+            <button (click)="onVerify()" [disabled]="otpForm.invalid" class="w-full h-12 bg-primary text-white text-base font-bold rounded-lg hover:bg-primary/90 focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+        Verify Account
+      </button>
+
+            <p class="text-slate-500 text-sm py-4 text-center">
+                Didn't receive the code?
+                <a href="javascript:void(0)" class="font-semibold text-primary hover:underline">Resend code</a>
+            </p>
+        </div>
+    </div>
+</main>

@@ -1,172 +1,139 @@
-<div class="flex h-screen bg-gray-900 text-white">
-
-    <div class="hidden lg:flex flex-col justify-between p-12 w-1/2 bg-blue-600 relative overflow-hidden">
-
-        <div
-            class="absolute top-0 left-0 w-3/4 h-3/4 bg-blue-500 rounded-full opacity-30 transform -translate-x-1/2 -translate-y-1/2">
-        </div>
-        <div class="absolute top-8 left-8">
-            <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 21h7a2 2 0 002-2v-7m-9 9l-4-4m0 0l-4-4m4 4h8"></path>
-            </svg>
-        </div>
-
-        <div class="mt-20 z-10">
-            <h1 class="text-4xl mt-30 font-bold leading-tight">
-                Log in to your Dashboard
-            </h1>
-            <p class="mt-4 text-lg">
-                View all the analytics and grow your business from anywhere!
-            </p>
-            <br>
-            <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Rerum repellat dolorum, incidunt deleniti
-                possimus, nam ad ipsa amet aliquid ex maiores. Sequi, voluptate saepe. Modi officiis ex maxime quis
-                voluptatem!3</p>
-        </div>
-
-        <div class="relative mt-auto mb-8">
-            <div
-                class="absolute inset-x-0 bottom-0 h-64 bg-gray-800 rounded-lg shadow-2xl transform translate-y-8 scale-95 opacity-80 border border-gray-700">
-                <div class="p-4 text-sm text-gray-400">
-                    <div class="flex items-center space-x-2 mb-3">
-                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
-                        <span class="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="ml-auto text-xs text-gray-500">app.scberall.co</span>
-                    </div>
-                    <h3 class="text-lg font-semibold text-white mb-2">Statistics</h3>
-                    <div class="flex justify-between text-center mt-4">
-                        <div class="text-2xl font-bold">Visitors <br><span class="text-blue-400 font-medium">104</span>
-                        </div>
-                        <div class="text-2xl font-bold">Revenue <br><span class="text-green-400 font-medium">241</span>
-                        </div>
-                        <div class="text-2xl font-bold">Orders <br><span class="text-red-400 font-medium">781</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div
-            class="absolute bottom-0 right-0 w-3/4 h-3/4 bg-blue-500 rounded-full opacity-30 transform translate-x-1/2 translate-y-1/2">
-        </div>
+<div
+  class="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden p-4 md:p-6 bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-gray-200"
+>
+  <header
+    class="absolute top-0 left-0 flex w-full items-center justify-between p-6 sm:p-8"
+  >
+    <div class="flex items-center gap-3">
+      <div class="size-8 text-primary">
+        <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
+            fill="currentColor"
+          ></path>
+          <path
+            clip-rule="evenodd"
+            d="M10.4485 13.8519..."
+            fill="currentColor"
+            fill-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+      <h2 class="text-[#111318] dark:text-white text-lg font-bold">
+        Company Logo
+      </h2>
     </div>
+  </header>
 
-    <div class="flex items-center justify-center w-full lg:w-1/2 p-8 lg:p-16 relative overflow-hidden">
+  <main class="w-full max-w-md">
+    <div
+      class="rounded-xl border border-gray-200/80 dark:border-gray-700/60 bg-white dark:bg-[#151c2c] shadow-lg"
+    >
+      <div class="flex flex-col p-8 sm:p-10">
+        <h1
+          class="text-[#111318] dark:text-white tracking-tight text-3xl font-bold pb-2 text-center"
+        >
+          Customer Login
+        </h1>
+        <p class="text-center text-[#616f89] dark:text-gray-400 text-base">
+          Welcome back! Sign in to your account.
+        </p>
 
-        <div
-            class="absolute bottom-0 left-0 w-3/4 h-3/4 bg-slate-800 rounded-full opacity-30 transform -translate-x-1/2 translate-y-1/2">
-        </div>
-
-        <div
-            class="absolute top-0 right-0 w-3/4 h-3/4 bg-slate-800 rounded-full opacity-30 transform  translate-x-1/2 -translate-y-1/2">
-        </div>
-        <div class="w-full z-20">
-
-            <h2 class="text-4xl  mb-12" [class.!text-red-500]="login_Form.invalid && login_Form.touched">Log in
-            </h2>
-            <!-- todo          login form      -->
-            <form [formGroup]="login_Form" (ngSubmit)="submitLoginForm()">
-                <!--email input-->
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="email" name="floating_email" id="floating_email" formControlName="email"
-                        [class.!border-b-red-500]="emailControl?.touched&&emailControl?.errors"
-                        class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
-                        placeholder=" " required />
-                    <label for="floating_email" [class.!text-red-500]="emailControl?.touched&&emailControl?.errors"
-                        class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Email
-                    </label>
-                </div>
-                @if(emailControl?.touched && emailControl?.errors){
-                <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert">
-                    @if (emailControl?.getError('required')) {
-                    <p>Emial is required</p>
-                    }
-                    @if (emailControl?.getError('email')) {
-                    <p>Emial must be valid</p>
-                    }@if (emailControl?.getError('minLength')) {
-                    <p>email must have 5 charchters</p>
-                    }
-                    @if (emailControl?.getError('maxlength')) {
-                    <p>email Must have less than 50 charchters</p>
-                    }
-                </div>
-                }
-                <!-- password input -->
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="password" name="floating_password" id="floating_password" formControlName="password"
-                        [class.!border-b-red-500]="passwordControl?.touched&&passwordControl?.errors"
-                        class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
-                        placeholder=" " required />
-                    <label for="floating_password"
-                        [class.!text-red-500]="passwordControl?.touched&&passwordControl?.errors"
-                        class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Password
-                    </label>
-                </div>
-                @if (passwordControl?.touched &&passwordControl?.errors) {
-                <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert">
-                    @if (passwordControl?.getError('required')) {
-                    <p>Password is required</p>
-                    }
-                    @if (passwordControl?.getError('minlength')) {
-                    <p>Password must be at least 8 characters long</p>
-                    }
-                    @if (passwordControl?.getError('maxlength')) {
-                    <p>Password must be less than 20 characters long</p>
-                    }
-                </div>
-                }
-                <!-- confirm password -->
-                <div class="relative z-0 w-full mb-5 group">
-                    <input type="password" name="floating_confirm_password" id="floating_confirm_password"
-                        formControlName="confirmPassword"
-                        [class.!border-b-red-500]="confirmPasswordControl?.touched&&confirmPasswordControl?.errors"
-                        class="block py-2.5 px-0 w-full text-sm text-heading bg-transparent border-0 border-b-2 border-default-medium appearance-none focus:outline-none focus:ring-0 focus:border-brand peer"
-                        placeholder=" " required />
-                    <label for="floating_confirm_password"
-                        [class.!text-red-500]="confirmPasswordControl?.touched&&confirmPasswordControl?.errors"
-                        class="absolute text-sm text-body duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 peer-focus:text-fg-brand peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto">Confirm Password
-                    </label>
-                </div>
-                @if (confirmPasswordControl?.touched && confirmPasswordControl?.errors) {
-                <div class="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert">
-                    @if (confirmPasswordControl?.getError('required')) {
-                    <p>Confirm Password is required</p>
-                    }
-                </div>
-                }
-                <button [disabled]="login_Form.invalid" type="submit"
-                    class="disabled:opacity-30 w-full py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition duration-200 cursor-pointer">
-                    Sign in
-                </button>
-
-            </form>
-            <div class="flex items-center my-6">
-                <hr class="flex-grow border-gray-700">
-                <span class="px-3 text-gray-500 text-sm">Or</span>
-                <hr class="flex-grow border-gray-700">
+        <form
+          [formGroup]="loginForm"
+          (ngSubmit)="onLogin()"
+          class="mt-8 space-y-6"
+        >
+          <label class="flex flex-col">
+            <span
+              class="text-[#111318] dark:text-gray-200 text-sm font-medium pb-2"
+              >Username or Email</span
+            >
+            <div class="relative flex w-full items-center">
+              <span
+                class="material-symbols-outlined absolute left-3.5 text-gray-400 dark:text-gray-500"
+                >person</span
+              >
+              <input
+                formControlName="identifier"
+                class="form-input w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800/50 pl-11 pr-4 h-12 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                placeholder="Enter your email"
+                type="text"
+              />
             </div>
+          </label>
 
-            <button
-                class="w-full flex items-center justify-center py-3 border border-gray-700 bg-gray-900 hover:bg-gray-800 rounded-lg font-medium cursor-pointer transition duration-200">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-6 h-6">
-                    <path fill="#EA4335"
-                        d="M24 9.5c3.54 0 6.7 1.22 9.19 3.6l6.83-6.83C35.89 2.55 30.47 0 24 0 14.63 0 6.54 5.56 2.64 13.65l7.98 6.2C12.31 13.65 17.69 9.5 24 9.5z" />
-                    <path fill="#4285F4"
-                        d="M46.98 24.55c0-1.55-.14-3.04-.39-4.5H24v9.01h12.94c-.57 2.92-2.28 5.4-4.83 7.09l7.43 5.78c4.36-4.02 6.44-9.95 6.44-17.38z" />
-                    <path fill="#FBBC05"
-                        d="M10.62 28.85c-1.01-2.92-1.01-6.08 0-9l-7.98-6.2C-.97 19.03-.97 28.97 2.64 36.35l7.98-6.2z" />
-                    <path fill="#34A853"
-                        d="M24 48c6.48 0 11.92-2.13 15.89-5.8l-7.43-5.78c-2.06 1.39-4.72 2.22-8.46 2.22-6.31 0-11.69-4.15-13.38-9.65l-7.98 6.2C6.54 42.44 14.63 48 24 48z" />
-                </svg>
-                <span class="ml-3">Sign in with Google</span>
-            </button>
+          <label class="flex flex-col">
+            <span
+              class="text-[#111318] dark:text-gray-200 text-sm font-medium pb-2"
+              >Password</span
+            >
+            <div class="relative flex w-full items-center">
+              <span
+                class="material-symbols-outlined absolute left-3.5 text-gray-400 dark:text-gray-500"
+                >lock</span
+              >
+              <input
+                formControlName="password"
+                [type]="isPasswordVisible ? 'text' : 'password'"
+                class="form-input w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800/50 pl-11 pr-11 h-12 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                placeholder="Enter your password"
+              />
+
+              <button
+                type="button"
+                (click)="togglePasswordVisibility()"
+                class="absolute right-0 h-full px-3.5 text-gray-500 dark:text-gray-400 hover:text-primary"
+              >
+                <span class="material-symbols-outlined text-xl">
+                  {{ isPasswordVisible ? "visibility" : "visibility_off" }}
+                </span>
+              </button>
+            </div>
+          </label>
+
+          <div class="flex items-center justify-end">
+            <a
+              class="text-sm font-medium text-primary hover:underline cursor-pointer"
+              >Forgot Password?</a
+            >
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="loginForm.invalid"
+            class="flex w-full items-center justify-center rounded-lg h-12 bg-primary text-white text-base font-bold transition-all duration-200 hover:bg-primary/90 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Login
+          </button>
+        </form>
+
+        <div class="mt-8 text-center">
+          <p class="text-[#616f89] dark:text-gray-400 text-sm">
+            Don't have an account?
+            <a class="font-bold text-primary hover:underline cursor-pointer"
+              >Register Now</a
+            >
+          </p>
         </div>
+      </div>
     </div>
+  </main>
 
+  <footer class="absolute bottom-0 w-full py-6">
+    <div
+      class="container mx-auto px-4 text-center text-sm text-[#616f89] dark:text-gray-500"
+    >
+      <p>© 2026 Company Name. All Rights Reserved.</p>
+      <div class="mt-2 space-x-4">
+        <a class="hover:text-primary hover:underline cursor-pointer"
+          >Terms of Service</a
+        >
+        <span>·</span>
+        <a class="hover:text-primary hover:underline cursor-pointer"
+          >Privacy Policy</a
+        >
+      </div>
+    </div>
+  </footer>
 </div>

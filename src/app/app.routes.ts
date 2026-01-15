@@ -22,7 +22,7 @@ export const routes: Routes = [
       {
         path: 'register',
         loadComponent: () =>
-          import('./modules/Auth/register/register').then((c) => c.Register),
+          import('./modules/Auth/register/register.component').then((c) => c.RegisterComponent),
         title: 'Register',
       },
       {
@@ -44,39 +44,17 @@ export const routes: Routes = [
     ],
   },
 
-  // ERB Layout (roles + main app pages)
+  // ERB Layout 
   {
     path: '',
     loadComponent: () =>
       import('./core/layout/erb/erb.component').then((c) => c.ERBComponent),
     children: [
-      // Role-based pages
-      {
-        path: 'hr',
-        loadComponent: () =>
-          import('./modules/layouts/hr/hr/hr').then((m) => m.Hr),
-        title: 'HR',
-      },
-      {
-        path: 'ceo',
-        loadComponent: () =>
-          import('./modules/layouts/ceo/ceo/ceo.component').then(
-            (m) => m.CeoComponent
-          ),
-        title: 'CEO',
-      },
-      {
-        path: 'cfo',
-        loadComponent: () =>
-          import('./modules/layouts/cfo/cfo/cfo.component').then(
-            (m) => m.CfoComponent
-          ),
-        title: 'CFO',
-      },
+    
       {
         path: 'admin',
         loadComponent: () =>
-          import('./modules/layouts/admin/admin/admin.component').then(
+          import('./modules/ERBSystem/admin/admin.component').then(
             (m) => m.AdminComponent
           ),
         title: 'Admin',
@@ -84,7 +62,7 @@ export const routes: Routes = [
       {
         path: 'employee',
         loadComponent: () =>
-          import('./modules/layouts/employee/employee/employee.component').then(
+          import('./modules/ERBSystem/employee/employee.component').then(
             (m) => m.EmployeeComponent
           ),
         title: 'Employee',
@@ -92,11 +70,27 @@ export const routes: Routes = [
       {
         path: 'products',
         loadComponent: () =>
-          import('./modules/ERBSystem/products/products.component').then(
-            (m) => m.ProductsComponent
-          ),
+          import(
+            './modules/ERBSystem/Prodects/products/products.component'
+          ).then((m) => m.ProductsComponent),
         title: 'Products',
       },
+      {
+        path: 'AddProduect',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/Prodects/add-produect/add-produect.component'
+          ).then((a) => a.AddProduectComponent),
+        title: 'AddProduect',
+      },
+      // {
+      //   path: 'EditeProduect',
+      //   loadComponent: () =>
+      //     import(
+      //       './modules/ERBSystem/Prodects/edite-produect/edite-produect.component'
+      //     ).then((E) => E.EditeProduectComponent ),
+      //   title: 'EditeProduect',
+      // },
       {
         path: 'categories',
         loadComponent: () =>
@@ -104,6 +98,14 @@ export const routes: Routes = [
             (m) => m.CategoriesComponent
           ),
         title: 'Categories',
+      },
+      {
+        path: 'new-category',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/new-category/new-category.component'
+          ).then((m) => m.NewCategoryComponent),
+        title: 'New Category',
       },
     ],
   },
@@ -175,7 +177,72 @@ export const routes: Routes = [
       },
     ],
   },
-
+  // HR Layout
+   {
+    path: '',
+    loadComponent: () =>
+      import('./core/layout/hr/hr.component').then((H) => H.HRComponent),
+    children: [
+         {
+        path: 'usermanagemant',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/usermanagemant/usermanagemant.component'
+          ).then((U) => U.UsermanagemantComponent),
+        title: 'usermanagemant',
+      },
+      {
+        path: 'assign-roles',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/assign-roles-to-user/assign-roles-to-user.component'
+          ).then((A) => A.AssignRolesToUserComponent),
+        title: 'assign-roles',
+      },
+      {
+        path: 'manage-role',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/manage-role-permissions/manage-role-permissions.component'
+          ).then((M) => M.ManageRolePermissionsComponent),
+        title: 'manage-role',
+      },
+      {
+        path: 'hrapprovals',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/manager-hrapprovals/manager-hrapprovals.component'
+          ).then((m) => m.ManagerHRApprovalsComponent),
+        title: 'hrapprovals',
+      },
+      {
+        path: 'permission',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/permissionmanagement/permissionmanagement.component'
+          ).then((P) => P.PermissionmanagementComponent),
+        title: 'permissionmanagement',
+      },
+      {
+        path: 'super-admin',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/super-admin-overview/super-admin-overview.component'
+          ).then((m) => m.SuperAdminOverviewComponent),
+        title: 'super-admin',
+      },
+      {
+        path: 'rolemanagement',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/HR/rolemanagement/rolemanagement.component'
+          ).then((R) => R.RolemanagementComponent),
+        title: 'rolemanagement',
+      },
+      
+    ]
+    }
+,
   // Not Found
   {
     path: '**',
