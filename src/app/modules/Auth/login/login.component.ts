@@ -1,33 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-loginForm: FormGroup;
-  isPasswordVisible: boolean = false;
+  isPasswordVisible: WritableSignal<boolean> = signal(false);
+  private readonly _formBuilder = inject(FormBuilder);
+  private readonly _router = inject(Router);
 
-  constructor(private fb: FormBuilder) {
-    this.loginForm = this.fb.group({
-      identifier: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
-    });
-  }
-
+  loginForm: FormGroup = this._formBuilder.group({
+    identifier: ['', [Validators.required, Validators.minLength(3)]],
+    password: ['', [Validators.required, Validators.minLength(6)]],
+  });
   togglePasswordVisibility(): void {
-    this.isPasswordVisible = !this.isPasswordVisible;
+    this.isPasswordVisible.set(!this.isPasswordVisible());
   }
 
   onLogin(): void {
     if (this.loginForm.valid) {
       console.log('Login Data:', this.loginForm.value);
-      // Integrate your authentication service here
+      
     } else {
       this.loginForm.markAllAsTouched();
     }
+  }
+  ToRegister() {
+    this._router.navigate(['/register']);
   }
 }

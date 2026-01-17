@@ -171,7 +171,7 @@ export class CategoriesComponent {
   }
 
   updateFilteredCategories(): void {
-    if (!this.searchQuery.trim()) {
+    if (!this.searchQuery.trim()) { //لو النص فاضى 
       this.filteredCategories = [...this.categories];
     } else {
       const query = this.searchQuery.toLowerCase();

@@ -1,44 +1,53 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-  registerForm: FormGroup;
-  showPassword = false;
-  showConfirmPassword = false;
+  private readonly _FormBuilder = inject(FormBuilder);
+  private readonly _router = inject(Router);
+  showPassword: WritableSignal<boolean> = signal(false);
+  showConfirmPassword: WritableSignal<boolean> = signal(false);
 
-  constructor(private fb: FormBuilder) {
-    this.registerForm = this.fb.group(
-      {
-        username: ['', [Validators.required, Validators.minLength(3)]],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.minLength(8)]],
-        confirmPassword: ['', [Validators.required]],
-        agreeToTerms: [false, [Validators.requiredTrue]],
-      },
-      { validator: this.passwordMatchValidator }
-    );
-  }
+  registerForm: FormGroup = this._FormBuilder.group(
+    {
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      confirmPassword: ['', [Validators.required]],
+      agreeToTerms: [false, [Validators.requiredTrue]],
+    },
+    { validator: this.passwordMatchValidator }
+  );
 
   passwordMatchValidator(g: FormGroup) {
     return g.get('password')?.value === g.get('confirmPassword')?.value
       ? null
       : { mismatch: true };
   }
+  togglePassword() {
+    this.showPassword.set(!this.showPassword());
+  }
+
+  toggleConfirmPassword() {
+    this.showConfirmPassword.set(!this.showConfirmPassword());
+  }
 
   onSubmit() {
     if (this.registerForm.valid) {
       console.log('Form Submitted', this.registerForm.value);
     }
+  }
+  ToLogin() {
+    this._router.navigate(['/login']);
   }
 }

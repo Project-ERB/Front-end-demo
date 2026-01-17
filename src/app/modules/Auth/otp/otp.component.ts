@@ -1,9 +1,8 @@
 import { Component, ElementRef, QueryList, ViewChildren } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormArray, FormControl, ReactiveFormsModule,Validators } from '@angular/forms';
 @Component({
   selector: 'app-otp',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './otp.component.html',
   styleUrl: './otp.component.scss',
 })
