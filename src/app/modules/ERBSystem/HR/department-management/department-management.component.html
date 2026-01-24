@@ -1,0 +1,385 @@
+<div class="flex h-screen w-full">
+    <!-- Side Navigation -->
+    <app-hr-sidebar></app-hr-sidebar>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-main-gray">
+        <!-- Scrollable Container -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 pb-24">
+            <div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+                <!-- Page Heading -->
+                <div class="flex flex-wrap justify-between items-end gap-4">
+                    <div class="flex min-w-72 flex-col gap-2">
+                        <h2
+                            class="text-[#111318] dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
+                            Departments</h2>
+                        <p class="text-gray-600 dark:text-slate-400 text-base font-normal leading-normal">Manage
+                            company structure, department heads, and member counts.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            class="flex items-center justify-center rounded-lg h-10 px-4 bg-white dark:bg-slate-800 border border-[#dbdfe6] dark:border-slate-700 text-[#111318] dark:text-slate-200 text-sm font-medium gap-2 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">file_download</span>
+                            <span>Export</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <!-- Card 1 -->
+                    <div
+                        class="flex flex-col gap-2 rounded-lg p-6 border-l-4 border-emerald-500 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-base font-medium leading-normal text-slate-900 dark:text-slate-200">
+                                Total Departments
+                            </p>
+                            <span class="material-symbols-outlined text-emerald-600/80" style="font-size: 24px;">
+                                domain
+                            </span>
+                        </div>
+                        <p class="text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
+                            12
+                        </p>
+                        <p class="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">
+                                trending_up
+                            </span>
+                            +2 this quarter
+                        </p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div
+                        class="flex flex-col gap-2 rounded-lg p-6 border-l-4 border-orange-500 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900  hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-base font-medium leading-normal text-slate-900 dark:text-slate-200">
+                                Open Head Roles
+                            </p>
+                            <span class="material-symbols-outlined text-orange-500/80" style="font-size: 24px;">
+                                person_alert
+                            </span>
+                        </div>
+                        <p class="text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
+                            3
+                        </p>
+                        <p class="text-sm font-medium text-gray-600 dark:text-slate-400">
+                            Needs attention
+                        </p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div
+                        class="flex flex-col gap-2 rounded-lg p-6 border-l-4 border-sky-500 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-base font-medium leading-normal text-slate-900 dark:text-slate-200">
+                                Total Headcount
+                            </p>
+                            <span class="material-symbols-outlined text-blue-500/80" style="font-size: 24px;">
+                                groups
+                            </span>
+                        </div>
+                        <p class="text-3xl font-bold leading-tight tracking-tight text-slate-900 dark:text-white">
+                            248
+                        </p>
+                        <p class="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">
+                                trending_up
+                            </span>
+                            +12% growth
+                        </p>
+                    </div>
+                </div>
+                <!-- Toolbar: Search & Action -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-between items-center py-2">
+                    <!-- Search Bar -->
+                    <div
+                        class="w-full sm:max-w-md hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <label
+                            class="flex w-full items-center h-12 rounded-lg bg-white dark:bg-[#1a202c] border border-[#dbdfe6] dark:border-slate-700 focus-within:ring-2 focus-within:ring-main/20 overflow-hidden">
+                            <div class="flex items-center justify-center pl-4 text-gray-600 dark:text-slate-400">
+                                <span class="material-symbols-outlined" style="font-size: 24px;">search</span>
+                            </div>
+                            <input
+                                class="w-full h-full bg-transparent border-none focus:ring-0 text-[#111318] dark:text-white px-4 placeholder:text-gray-600 dark:placeholder:text-slate-500 text-base focus:outline-none"
+                                placeholder="Search by name, manager, or keyword..." />
+                        </label>
+                    </div>
+                    <!-- Add Button -->
+                    <button
+                        class="w-full sm:w-auto flex cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-main hover:bg-blue-700 text-white gap-2 text-sm font-bold leading-normal transition-colors shadow-sm shadow-blue-500/20">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">add</span>
+                        <span>Add Department</span>
+                    </button>
+                </div>
+                <!-- Data Table -->
+                <div
+                    class="flex flex-col rounded-xl border border-[#dbdfe6] dark:border-slate-700 bg-white dark:bg-[#1a202c] overflow-hidden shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead
+                                class="bg-[#f8fafc] dark:bg-slate-800 border-b border-[#dbdfe6] dark:border-slate-700">
+                                <tr>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-slate-400">
+                                        Department Name</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-slate-400">
+                                        Department Head</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-slate-400 text-center">
+                                        Members</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-slate-400">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-slate-400 text-right">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#dbdfe6] dark:divide-slate-700">
+                                <!-- Row 1 -->
+                                <tr class="group hover:bg-[#f8fafc] dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <p class="text-sm font-semibold text-[#111318] dark:text-white">Engineering
+                                            </p>
+                                            <p class="text-xs text-gray-600 dark:text-slate-400">Product development
+                                                &amp; QA</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="bg-center bg-no-repeat bg-cover rounded-full size-8 border border-white dark:border-slate-600 shadow-sm"
+                                                data-alt="Profile of Sarah Jenkins"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8MwuHNcZtUegS2qp-QDEZG7rQi68IwDKzjv2937RFa0E9zHSF0uM2k4dHZLwbNidZfNTqfCJ5BtgoghiNGnhk6JctLn4Iu4LoX3hs8WeZZMTp-N6X4ZEplLQQdAjxfrlbEb3th4cebK-RGKUD3vh_5jE1npS_RiZdXR3BufG3z8pXTdSP-Mi321AxcdNFeYHoQwWGMIzJwa6ABw1L0tPCAcMbtqtYlE4zy5nra_FxOuzbn5yuR8V4DcbBYrTCyr2DyodzelSLLSwo");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <p class="text-sm font-medium text-[#111318] dark:text-white">Sarah
+                                                    Jenkins</p>
+                                                <p class="text-xs text-gray-600 dark:text-slate-400">CTO</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                            45
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="relative flex h-2.5 w-2.5">
+                                                <span
+                                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                <span
+                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                                            </span>
+                                            <span
+                                                class="text-sm font-medium text-[#111318] dark:text-slate-200">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-gray-600 dark:text-slate-400 hover:text-main dark:hover:text-blue-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 20px;">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr class="group hover:bg-[#f8fafc] dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <p class="text-sm font-semibold text-[#111318] dark:text-white">Marketing
+                                            </p>
+                                            <p class="text-xs text-gray-600 dark:text-slate-400">Brand, Growth &amp;
+                                                Social</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="bg-center bg-no-repeat bg-cover rounded-full size-8 border border-white dark:border-slate-600 shadow-sm"
+                                                data-alt="Profile of Michael Ross"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC2DDYqtkjfvvrdIaOq1KEfm_60kJUrzXx5SUIP-GLeGUZKojNVfVkaSY_lxbHoYLQsenRbp_Uyw11n_2uHz62LMgTCvoWWD9H_uTgUxStOv9ueFH2hTFkp4EC3GazJszNwMij2_RgBPDU4Dx2XETVZGsB0MoLO_QiwAiRwbO4gQvHei6BrY2iXIYPhMAZ3FS3d0MLpuzBnP3QDx0zinG1KF3fgEi-5GUZQsphpGr5JzgbHmxwQK17ATdMt4-80YnZ3uNPt9hEiNOoM");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <p class="text-sm font-medium text-[#111318] dark:text-white">Michael
+                                                    Ross</p>
+                                                <p class="text-xs text-gray-600 dark:text-slate-400">VP of Marketing
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
+                                            12
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="relative flex h-2.5 w-2.5">
+                                                <span
+                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                                            </span>
+                                            <span
+                                                class="text-sm font-medium text-[#111318] dark:text-slate-200">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-gray-600 dark:text-slate-400 hover:text-main dark:hover:text-blue-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 20px;">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 3: Warning State -->
+                                <tr class="group hover:bg-[#f8fafc] dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <p class="text-sm font-semibold text-[#111318] dark:text-white">Human
+                                                Resources</p>
+                                            <p class="text-xs text-gray-600 dark:text-slate-400">People Ops &amp;
+                                                Culture</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div
+                                            class="flex items-center gap-2 p-1 pl-2 pr-3 rounded-full bg-orange-50 border border-orange-200 dark:bg-orange-900/20 dark:border-orange-800 w-fit">
+                                            <span class="material-symbols-outlined text-orange-600 dark:text-orange-400"
+                                                style="font-size: 16px;">warning</span>
+                                            <span
+                                                class="text-xs font-medium text-orange-700 dark:text-orange-300">Unassigned</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
+                                            5
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="relative flex h-2.5 w-2.5">
+                                                <span
+                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                                            </span>
+                                            <span
+                                                class="text-sm font-medium text-[#111318] dark:text-slate-200">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-gray-600 dark:text-slate-400 hover:text-main dark:hover:text-blue-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 20px;">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 4 -->
+                                <tr class="group hover:bg-[#f8fafc] dark:hover:bg-slate-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <p class="text-sm font-semibold text-[#111318] dark:text-white">Finance</p>
+                                            <p class="text-xs text-gray-600 dark:text-slate-400">Accounting &amp;
+                                                Payroll</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="bg-center bg-no-repeat bg-cover rounded-full size-8 border border-white dark:border-slate-600 shadow-sm"
+                                                data-alt="Profile of David Kim"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD0s0sMKeKupMDhJ_po4h62lSy65JkDj9w9zsVQnDdNH1Tx9zZ6oW0TEXu9V3gkqO7lHBdoIiw14npnp4MqhJ206dExXY8FhoRn5LMYKWQHixqYXjbmxMOnPA1tDbVozZuxxm4CKG_b7LPr7ZNz-_gKevLJ2aCEXLBpO2hdl17S7qotsOk7Bhl65n1GbbbqeyJg46DQAnPFRNelE3SmCKmHZ3090kiDq8d2SAE9aBgjUi3K5gzJ__1uFN0HZqyer1dbKE8FfKfAtXAp");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <p class="text-sm font-medium text-[#111318] dark:text-white">David Kim
+                                                </p>
+                                                <p class="text-xs text-gray-600 dark:text-slate-400">CFO</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-700 dark:text-slate-300">
+                                            8
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="relative flex h-2.5 w-2.5">
+                                                <span
+                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                                            </span>
+                                            <span
+                                                class="text-sm font-medium text-[#111318] dark:text-slate-200">Active</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-gray-600 dark:text-slate-400 hover:text-main dark:hover:text-blue-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 20px;">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Row 5: Inactive State -->
+                                <tr
+                                    class="group hover:bg-[#f8fafc] dark:hover:bg-slate-800/50 transition-colors opacity-60">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <p class="text-sm font-semibold text-[#111318] dark:text-white">Legacy
+                                                Operations</p>
+                                            <p class="text-xs text-gray-600 dark:text-slate-400">Archived department
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-gray-600 dark:text-slate-500 italic">--</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-500">
+                                            0
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="relative flex h-2.5 w-2.5">
+                                                <span
+                                                    class="relative inline-flex rounded-full h-2.5 w-2.5 bg-slate-400"></span>
+                                            </span>
+                                            <span
+                                                class="text-sm font-medium text-gray-600 dark:text-slate-400">Inactive</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button
+                                            class="text-gray-600 dark:text-slate-400 hover:text-main dark:hover:text-blue-400 p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-all">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size: 20px;">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div
+                        class="flex items-center justify-between px-6 py-4 border-t border-[#dbdfe6] dark:border-slate-700 bg-white dark:bg-[#1a202c]">
+                        <p class="text-sm text-gray-600 dark:text-slate-400">
+                            Showing <span class="font-medium text-[#111318] dark:text-white">1</span> to <span
+                                class="font-medium text-[#111318] dark:text-white">5</span> of <span
+                                class="font-medium text-[#111318] dark:text-white">12</span> results
+                        </p>
+                        <div class="flex gap-2">
+                            <button
+                                class="px-3 py-1 rounded border border-[#dbdfe6] dark:border-slate-600 text-sm text-gray-600 dark:text-slate-300 disabled:opacity-50 hover:bg-slate-50 dark:hover:bg-slate-700"
+                                disabled="">Previous</button>
+                            <button
+                                class="px-3 py-1 rounded border border-[#dbdfe6] dark:border-slate-600 text-sm text-gray-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

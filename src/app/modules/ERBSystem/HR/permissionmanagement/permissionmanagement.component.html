@@ -1,19 +1,24 @@
-<div class="relative flex h-screen w-full flex-col overflow-hidden">
-
-    <header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-6 py-3 z-20 shadow-sm">
+<div class="relative flex h-screen w-full flex-col main overflow-hidden">
+    <!-- navbar -->
+    <nav
+        class="flex-none  flex items-center justify-between whitespace-nowrap border-b border-gray-200 dark:border-border-dark bg-surface-light dark:bg-surface-dark px-6 py-3 z-20 shadow-sm">
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-4">
-                <div class="size-8 text-primary flex items-center justify-center bg-primary/10 rounded-lg">
+                <div class="size-8 text-main flex items-center justify-center bg-main/10 rounded-lg">
                     <span class="material-symbols-outlined">dataset</span>
                 </div>
-                <h2 class="text-text-main dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">ERP Admin</h2>
+                <h2 class="text-text-main dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">ERP Admin
+                </h2>
             </div>
             <div class="hidden md:flex flex-col min-w-40 !h-10 w-64">
-                <div class="flex w-full flex-1 items-stretch rounded-lg h-full ring-1 ring-border-light dark:ring-border-dark focus-within:ring-primary transition-all">
-                    <div class="text-text-sub dark:text-gray-400 flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-3 rounded-l-lg">
+                <div
+                    class="flex w-full flex-1 items-stretch rounded-lg h-full border border-gray-200 dark:ring-border-dark focus-within:ring-main transition-all">
+                    <div
+                        class="text-text-sub dark:text-gray-400 flex border-none bg-background-light dark:bg-background-dark items-center justify-center pl-3 rounded-l-lg">
                         <span class="material-symbols-outlined text-[20px]">search</span>
                     </div>
-                    <input class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg rounded-l-none border-none bg-background-light dark:bg-background-dark focus:ring-0 text-sm h-full placeholder:text-text-sub dark:placeholder:text-gray-500 px-3 text-text-main dark:text-white"
+                    <input
+                        class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg rounded-l-none border-none bg-background-light dark:bg-background-dark focus:ring-0 border text-sm h-full placeholder:text-text-sub dark:placeholder:text-gray-500 px-3 text-text-main dark:text-white focus:outline-none"
                         placeholder="Global search..." />
                 </div>
             </div>
@@ -21,172 +26,222 @@
 
         <div class="flex items-center gap-6">
             <nav class="hidden lg:flex items-center gap-6">
-                <a class="text-text-sub dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Dashboard</a>
-                <a class="text-text-sub dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Users</a>
-                <a class="text-text-sub dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Roles</a>
-                <a class="text-primary text-sm font-medium relative py-1" href="#">
-          Permissions
-          <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></span>
-        </a>
-                <a class="text-text-sub dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Settings</a>
+                <a class="text-gray-600 dark:text-gray-400 hover:text-main dark:hover:text-main text-sm font-medium transition-colors"
+                    href="#">Dashboard</a>
+                <a class="text-gray-600 dark:text-gray-400 hover:text-main dark:hover:text-main text-sm font-medium transition-colors"
+                    href="#">Users</a>
+                <a class="text-gray-600 dark:text-gray-400 hover:text-main dark:hover:text-main text-sm font-medium transition-colors"
+                    href="#">Roles</a>
+                <a class="text-main text-sm font-medium relative py-1" href="#">
+                    Permissions
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-main rounded-full"></span>
+                </a>
+                <a class="text-gray-600 dark:text-gray-400 hover:text-main dark:hover:text-main text-sm font-medium transition-colors"
+                    href="#">Settings</a>
             </nav>
             <div class="flex items-center gap-4 pl-4 border-l border-border-light dark:border-border-dark">
-                <button class="text-text-sub dark:text-gray-400 hover:text-primary">
-          <span class="material-symbols-outlined">notifications</span>
-        </button>
-                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-white dark:ring-gray-700 cursor-pointer" style='background-image: url("https://i.pravatar.cc/150?img=7");'></div>
+                <button class="text-text-sub dark:text-gray-400 hover:text-main transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-white dark:ring-gray-700 cursor-pointer hover:ring-main transition-all"
+                    style='background-image: url("https://i.pravatar.cc/150?img=7");'></div>
             </div>
         </div>
-    </header>
+    </nav>
 
     <div class="flex flex-1 overflow-hidden">
-        <main class="flex-1 overflow-y-auto p-4 md:p-8">
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 bg-main-gray">
             <div class="mx-auto max-w-7xl flex flex-col gap-6">
 
-                <div class="flex flex-wrap gap-2 items-center text-sm">
-                    <a class="text-text-sub dark:text-gray-400 hover:text-text-main dark:hover:text-white transition-colors" href="#">Settings</a>
-                    <span class="material-symbols-outlined text-[16px] text-text-sub dark:text-gray-500">chevron_right</span>
-                    <span class="text-text-main dark:text-white font-medium">Permission Management</span>
+                <div class="flex flex-wrap gap-2 items-center text-sm ">
+                    <a class=" dark:text-gray-400 hover:text-text-main dark:hover:text-white transition-colors cursor-pointer text-gray-600 hover:text-main"
+                        href="#">Settings</a>
+                    <span
+                        class="material-symbols-outlined text-[16px] text-gray-600 dark:text-gray-500">chevron_right</span>
+                    <span class="text-text-main dark:text-white font-medium text-gray-600">Permission
+                        Management</span>
                 </div>
 
-                <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 ">
                     <div class="flex flex-col gap-2">
-                        <h1 class="text-text-main dark:text-white text-3xl font-bold tracking-tight">Permission Management</h1>
-                        <p class="text-text-sub dark:text-gray-400 max-w-2xl">Manage system-wide permissions, create new capability tokens, and assign them to roles. Changes here affect user access immediately.</p>
+                        <h1 class="text-gray-900 dark:text-white text-3xl font-bold tracking-tight">Permission
+                            Management</h1>
+                        <p class="text-gray-600 dark:text-gray-400 max-w-2xl">Manage system-wide permissions, create new
+                            capability tokens, and assign them to roles. Changes here affect user access immediately.
+                        </p>
                     </div>
-                    <button class="flex items-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-sm shadow-primary/30 transition-all active:scale-95">
-            <span class="material-symbols-outlined text-[20px]">add</span>
-            <span class="font-semibold text-sm">Create Permission</span>
-          </button>
+                    <button
+                        class="flex items-center gap-2 bg-blue-700 text-white px-5 py-2.5 rounded-lg shadow-sm shadow-main/30 transition-all active:scale-95 cursor-pointer hover:bg-blue-800 hover:shadow-lg hover:shadow-blue-700/40">
+                        <span class="material-symbols-outlined text-[20px]">add</span>
+                        <span class="font-semibold text-sm">Create Permission</span>
+                    </button>
                 </div>
-
+                <!-- blocks -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-border-light dark:border-border-dark shadow-sm flex flex-col gap-1">
+                    <div
+                        class="bg-white boder border-gray-200 dark:bg-surface-dark p-5 rounded-xl dark:border-border-dark shadow-sm flex flex-col gap-1 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                         <div class="flex items-center justify-between">
                             <span class="text-text-sub dark:text-gray-400 text-sm font-medium">Total Permissions</span>
-                            <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-md text-[20px]">vpn_key</span>
+                            <span
+                                class="material-symbols-outlined text-main bg-main/10 p-1.5 rounded-md text-[20px]">vpn_key</span>
                         </div>
                         <span class="text-2xl font-bold text-text-main dark:text-white">142</span>
                         <span class="text-xs text-green-600 flex items-center gap-1 mt-1 font-medium">
-              <span class="material-symbols-outlined text-[14px]">trending_up</span> +12 this week
+                            <span class="material-symbols-outlined text-[14px]">trending_up</span> +12 this week
                         </span>
                     </div>
-                    <div class="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-border-light dark:border-border-dark shadow-sm flex flex-col gap-1">
+                    <div
+                        class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-gray-200 dark:border-border-dark shadow-sm flex flex-col gap-1 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                         <div class="flex items-center justify-between">
                             <span class="text-text-sub dark:text-gray-400 text-sm font-medium">Active Roles</span>
-                            <span class="material-symbols-outlined text-purple-600 bg-purple-100 dark:bg-purple-900/30 p-1.5 rounded-md text-[20px]">badge</span>
+                            <span
+                                class="material-symbols-outlined text-purple-600 bg-purple-100 dark:bg-purple-900/30 p-1.5 rounded-md text-[20px]">badge</span>
                         </div>
                         <span class="text-2xl font-bold text-text-main dark:text-white">8</span>
                         <span class="text-xs text-text-sub dark:text-gray-500 mt-1">Across 4 departments</span>
                     </div>
-                    <div class="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-border-light dark:border-border-dark shadow-sm flex flex-col gap-1">
+                    <div
+                        class="bg-white dark:bg-surface-dark p-5 rounded-xl border border-gray-200 dark:border-border-dark shadow-sm flex flex-col gap-1 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                         <div class="flex items-center justify-between">
                             <span class="text-text-sub dark:text-gray-400 text-sm font-medium">System Modules</span>
-                            <span class="material-symbols-outlined text-orange-600 bg-orange-100 dark:bg-orange-900/30 p-1.5 rounded-md text-[20px]">view_module</span>
+                            <span
+                                class="material-symbols-outlined text-orange-600 bg-orange-100 dark:bg-orange-900/30 p-1.5 rounded-md text-[20px]">view_module</span>
                         </div>
                         <span class="text-2xl font-bold text-text-main dark:text-white">12</span>
                         <span class="text-xs text-text-sub dark:text-gray-500 mt-1">Inventory, Sales, HR, etc.</span>
                     </div>
                 </div>
-
-                <div class="bg-surface-light dark:bg-surface-dark p-4 rounded-xl border border-border-light dark:border-border-dark shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between">
+                <!-- search bar -->
+                <div
+                    class="bg-white dark:bg-surface-dark p-4 rounded-xl border border-gray-200 dark:border-border-dark shadow-sm flex flex-col md:flex-row gap-4 items-center justify-between transition-all duration-300 hover:shadow-md">
                     <div class="flex flex-col md:flex-row gap-3 w-full md:w-auto flex-1">
-                        <div class="relative w-full md:max-w-xs">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-sub text-[20px]">search</span>
-                            <input class="w-full bg-background-light dark:bg-background-dark border-transparent focus:border-primary focus:ring-0 rounded-lg pl-10 py-2 text-sm text-text-main dark:text-white placeholder-text-sub" placeholder="Search by name or slug..." type="text"
-                            />
+                        <div class="relative w-full md:max-w-xs bg-gray-100 rounded-lg focus:outline-none">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-sub text-[20px]">search</span>
+                            <input
+                                class="w-full bg-background-light dark:bg-background-dark border-transparent focus rounded-lg pl-10 py-2 text-sm text-text-main dark:text-white placeholder-text-sub transition-all focus:ring-1 focus:ring-main"
+                                placeholder="Search by name or slug..." type="text" />
                         </div>
+
                         <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 no-scrollbar">
-                            <select class="bg-background-light dark:bg-background-dark border-transparent text-text-main dark:text-white text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-primary focus:border-primary min-w-[140px] cursor-pointer">
-                <option disabled="" selected="" value="">Filter by Module</option>
-                <option value="all">All Modules</option>
-                <option value="inventory">Inventory</option>
-                <option value="finance">Finance</option>
-                <option value="users">User Mgmt</option>
-              </select>
-                            <select class="bg-background-light dark:bg-background-dark border-transparent text-text-main dark:text-white text-sm rounded-lg px-3 py-2 focus:ring-1 focus:ring-primary focus:border-primary min-w-[140px] cursor-pointer">
-                <option disabled="" selected="" value="">Filter by Status</option>
-                <option value="all">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="deprecated">Deprecated</option>
-              </select>
+                            <select aria-label="selcion-1"
+                                class="bg-gray-100 dark:bg-background-dark text-text-main dark:text-white text-sm rounded-lg px-3 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                                <option disabled="" selected="" value="">Filter by Module</option>
+                                <option value="all">All Modules</option>
+                                <option value="inventory">Inventory</option>
+                                <option value="finance">Finance</option>
+                                <option value="users">User Mgmt</option>
+                            </select>
+                            <select aria-label="selcion-2"
+                                class="bg-gray-100 dark:bg-background-dark text-text-main dark:text-white text-sm rounded-lg px-3 py-2 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                                <option disabled="" selected="" value="">Filter by Status</option>
+                                <option value="all">All Statuses</option>
+                                <option value="active">Active</option>
+                                <option value="deprecated">Deprecated</option>
+                            </select>
                         </div>
                     </div>
                     <div class="flex items-center gap-2 w-full md:w-auto justify-end">
-                        <span class="text-xs text-text-sub dark:text-gray-500 font-medium whitespace-nowrap hidden sm:block">Showing 1-10 of 142</span>
-                        <button class="p-2 text-text-sub hover:text-primary dark:text-gray-400 dark:hover:text-white bg-background-light dark:bg-background-dark rounded-lg transition-colors border border-transparent hover:border-border-light dark:hover:border-border-dark">
-              <span class="material-symbols-outlined text-[20px]">refresh</span>
-            </button>
-                        <button class="p-2 text-text-sub hover:text-primary dark:text-gray-400 dark:hover:text-white bg-background-light dark:bg-background-dark rounded-lg transition-colors border border-transparent hover:border-border-light dark:hover:border-border-dark">
-              <span class="material-symbols-outlined text-[20px]">download</span>
-            </button>
+                        <span
+                            class="text-xs text-text-sub dark:text-gray-500 font-medium whitespace-nowrap hidden sm:block">Showing
+                            1-10 of 142</span>
+                        <button
+                            class="p-2 text-text-sub hover:text-main dark:text-gray-400 dark:hover:text-white bg-background-light dark:bg-background-dark rounded-lg transition-all border border-transparent hover:border-border-light dark:hover:border-border-dark bg-gray-100 hover:shadow-sm active:scale-90">
+                            <span class="material-symbols-outlined text-[20px] cursor-pointer">refresh</span>
+                        </button>
+                        <button
+                            class="p-2 text-text-sub hover:text-main dark:text-gray-400 dark:hover:text-white bg-background-light dark:bg-background-dark rounded-lg transition-all border border-transparent hover:border-border-light dark:hover:border-border-dark bg-gray-100 hover:shadow-sm active:scale-90">
+                            <span class="material-symbols-outlined text-[20px] cursor-pointer">download</span>
+                        </button>
                     </div>
                 </div>
-
-                <div class="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden flex flex-col flex-1">
+                <!-- table -->
+                <div
+                    class="bg-surface-light dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-border-dark shadow-sm overflow-hidden flex flex-col flex-1 transition-all duration-300 hover:shadow-lg">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left ">
                             <thead>
-                                <tr class="bg-background-light dark:bg-background-dark border-b border-border-light dark:border-border-dark text-xs uppercase text-text-sub dark:text-gray-400 font-semibold tracking-wider">
+                                <tr
+                                    class="bg-gray-100 dark:bg-background-dark border border-gray-200 dark:border-border-dark text-xs uppercase text-text-sub dark:text-gray-400 font-semibold tracking-wider">
                                     <th class="p-4 w-12 text-center">
-                                        <input class="rounded border-gray-300 text-primary focus:ring-primary bg-white dark:bg-gray-800 dark:border-gray-600" type="checkbox" />
+                                        <input aria-label="Select all permissions"
+                                            class="rounded border-gray-300 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600 cursor-pointer"
+                                            type="checkbox" />
                                     </th>
-                                    <th class="p-4 min-w-[200px]">Permission Name / Slug</th>
-                                    <th class="p-4 min-w-[140px]">Module</th>
-                                    <th class="p-4 min-w-[200px]">Assigned Roles</th>
-                                    <th class="p-4 min-w-[120px]">Status</th>
-                                    <th class="p-4 w-24 text-center">Actions</th>
+                                    <th class="p-4 min-w-[200px] text-gray-600">Permission Name / Slug</th>
+                                    <th class="p-4 min-w-[140px] text-gray-600">Module</th>
+                                    <th class="p-4 min-w-[200px] text-gray-600">Assigned Roles</th>
+                                    <th class="p-4 min-w-[120px] text-gray-600">Status</th>
+                                    <th class="p-4 w-24 text-center text-gray-600">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-border-light dark:divide-border-dark text-sm">
-                               @for(perm of permissions;track $index){
-                                <tr class="group hover:bg-background-light dark:hover:bg-gray-800/50 transition-colors">
+                            <tbody class="divide-y divide-border-light dark:divide-border-dark text-sm bg-white">
+                                @for(perm of permissions;track $index){
+                                <tr
+                                    class="group hover:bg-gray-50/80 dark:hover:bg-gray-800/40 transition-colors border-b border-gray-100 dark:border-gray-800">
                                     <td class="p-4 text-center">
-                                        <input class="rounded border-gray-300 text-primary focus:ring-primary bg-white dark:bg-gray-800 dark:border-gray-600" type="checkbox" />
+                                        <input aria-label="Select permission {{ perm.name }}"
+                                            class="rounded border-gray-300 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600 cursor-pointer"
+                                            type="checkbox" />
                                     </td>
                                     <td class="p-4">
                                         <div class="flex flex-col">
-                                            <span class="font-medium text-text-main dark:text-white">{{ perm.name }}</span>
-                                            <span class="text-xs text-text-sub font-mono mt-0.5 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded w-fit">{{ perm.slug }}</span>
+                                            <span class="font-medium text-text-main dark:text-white">{{ perm.name
+                                                }}</span>
+                                            <span
+                                                class="text-xs text-text-sub font-mono mt-0.5 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded w-fit">{{
+                                                perm.slug }}</span>
                                         </div>
                                     </td>
                                     <td class="p-4">
                                         <div class="flex items-center gap-2 text-text-main dark:text-gray-300">
-                                            <span class="size-2 rounded-full" [ngClass]="getModuleDotClass(perm.module)"></span> {{ perm.module }}
+                                            <span class="size-2 rounded-full transition-transform group-hover:scale-125"
+                                                [ngClass]="getModuleDotClass(perm.module)"></span> {{ perm.module }}
                                         </div>
                                     </td>
                                     <td class="p-4">
                                         <div class="flex flex-wrap gap-1.5">
                                             @if(perm.restricted){
-                                            <ng-container 
-                                            >
-                                                <span class="inline-flex items-center px-2 py-1 rounded bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-xs font-medium border border-red-100 dark:border-red-800">
-                          <span class="material-symbols-outlined text-[14px] mr-1">lock</span> Restricted
+                                            <ng-container>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-1 rounded bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 text-xs font-medium border border-red-100 dark:border-red-800 transition-all group-hover:shadow-sm">
+                                                    <span class="material-symbols-outlined text-[14px] mr-1">lock</span>
+                                                    Restricted
                                                 </span>
                                             </ng-container>}
-                                          @for(role of perm.assignedRoles;track $index){
+                                            @for(role of perm.assignedRoles;track $index){
                                             <ng-container>
-                                                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium border" [ngClass]="role === 'Super Admin' 
+                                                <span
+                                                    class="inline-flex items-center px-2 py-1 rounded text-xs font-medium border transition-all hover:shadow-sm"
+                                                    [ngClass]="role === 'Super Admin' 
                               ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-800' 
                               : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700'">
-                          {{ role }}
-                        </span>
+                                                    {{ role }}
+                                                </span>
                                             </ng-container>}
                                         </div>
                                     </td>
                                     <td class="p-4">
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border" [ngClass]="getStatusClass(perm.status)">
-                      <span class="size-1.5 rounded-full" [ngClass]="getStatusDotClass(perm.status)"></span> {{ perm.status }}
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all group-hover:shadow-sm"
+                                            [ngClass]="getStatusClass(perm.status)">
+                                            <span class="size-1.5 rounded-full"
+                                                [ngClass]="getStatusDotClass(perm.status)"></span> {{ perm.status }}
                                         </span>
                                     </td>
                                     <td class="p-4 text-center">
-                                        <div class="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button class="p-1.5 text-text-sub hover:text-primary hover:bg-primary/10 rounded transition-colors" title="Edit">
-                        <span class="material-symbols-outlined text-[18px]">edit</span>
-                      </button>
-                                            <button class="p-1.5 text-text-sub hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors" title="Delete">
-                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                      </button>
+                                        <div
+                                            class="flex items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 transform group-hover:translate-x-0">
+                                            <button
+                                                class="p-1.5 text-gray-900 dark:text-gray-300 hover:text-main hover:bg-main/10 rounded transition-colors cursor-pointer"
+                                                title="Edit">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-900 dark:text-gray-300 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors cursor-pointer"
+                                                title="Delete">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>}
@@ -195,27 +250,35 @@
                         </table>
                     </div>
 
-                    <div class="border-t border-border-light dark:border-border-dark px-4 py-3 flex items-center justify-between bg-surface-light dark:bg-surface-dark">
+                    <div
+                        class="border-t border-gray-200 dark:border-border-dark px-4 py-3 flex items-center justify-between bg-white dark:bg-surface-dark">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm text-text-sub dark:text-gray-400">Rows per page:</span>
-                            <select class="bg-background-light dark:bg-background-dark border-transparent text-sm rounded py-1 pl-2 pr-6 focus:ring-1 focus:ring-primary cursor-pointer text-text-main dark:text-white">
-                <option>10</option>
-                <option>20</option>
-                <option>50</option>
-              </select>
+                            <span class="text-sm text-text-sub dark:text-gray-400 font-medium">Rows per page:</span>
+                            <select aria-label="selection-3"
+                                class="bg-gray-100 dark:bg-background-dark border-transparent text-sm rounded py-1 pl-2 pr-6 focus:ring-1 focus:ring-main cursor-pointer text-text-main dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
+                                <option>10</option>
+                                <option>20</option>
+                                <option>50</option>
+                            </select>
                         </div>
                         <div class="flex gap-1">
-                            <button class="p-1 rounded-md hover:bg-background-light dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 disabled:opacity-50">
-                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-              </button>
-                            <button class="px-3 py-1 rounded-md bg-primary text-white text-sm font-medium">1</button>
-                            <button class="px-3 py-1 rounded-md hover:bg-background-light dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 text-sm font-medium transition-colors">2</button>
-                            <button class="px-3 py-1 rounded-md hover:bg-background-light dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 text-sm font-medium transition-colors">3</button>
+                            <button
+                                class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 disabled:opacity-50 transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                            </button>
+                            <button
+                                class="px-3 py-1 rounded-md bg-main text-white text-sm font-medium hover:shadow-md transition-shadow shadow-main/20">1</button>
+                            <button
+                                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 text-sm font-medium transition-all hover:shadow-sm">2</button>
+                            <button
+                                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 text-sm font-medium transition-all hover:shadow-sm">3</button>
                             <span class="px-2 py-1 text-text-sub dark:text-gray-400">...</span>
-                            <button class="px-3 py-1 rounded-md hover:bg-background-light dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 text-sm font-medium transition-colors">15</button>
-                            <button class="p-1 rounded-md hover:bg-background-light dark:hover:bg-gray-800 text-text-sub dark:text-gray-400">
-                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-              </button>
+                            <button
+                                class="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 text-sm font-medium transition-all hover:shadow-sm">15</button>
+                            <button
+                                class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-text-sub dark:text-gray-400 transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                            </button>
                         </div>
                     </div>
                 </div>

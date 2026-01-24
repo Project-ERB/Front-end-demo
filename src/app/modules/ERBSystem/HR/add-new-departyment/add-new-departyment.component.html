@@ -1,0 +1,156 @@
+<div
+    class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden">
+    <div class="flex h-screen w-full overflow-hidden">
+        <!-- SideNavBar -->
+       <app-hr-sidebar></app-hr-sidebar>
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col bg-main-gray h-full overflow-y-auto bg-background-light dark:bg-background-dark relative">
+            <!-- Top Navigation / Breadcrumbs -->
+            <div class="px-6 py-4 md:px-10 lg:px-20 pt-8 pb-4">
+                <div class="flex flex-wrap gap-2 items-center text-sm">
+                    <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-main transition-colors"
+                        href="#">Hr</a>
+                    <span class="text-slate-400 dark:text-slate-600 font-medium">/</span>
+                    <a class="text-slate-500 dark:text-slate-400 font-medium hover:text-main transition-colors"
+                        href="#">Departments</a>
+                    <span class="text-slate-400 dark:text-slate-600 font-medium">/</span>
+                    <span class="text-main font-bold dark:text-white">Add New</span>
+                </div>
+            </div>
+            <div class="flex-1 px-6 md:px-10 lg:px-20 pb-20">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Page Heading -->
+                    <div class="mb-8">
+                        <h1
+                            class="text-slate-900 dark:text-white text-3xl md:text-4xl font-bold leading-tight tracking-tight mb-2">
+                            Add New Department</h1>
+                        <p class="text-slate-500 dark:text-slate-400 text-base md:text-lg">Define a new organizational
+                            unit, assign leadership, and configure basic settings.</p>
+                    </div>
+                    <!-- Form Card -->
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <!-- Form Header (Optional Visual Separation) -->
+                        <div
+                            class="border-b border-slate-100 dark:border-slate-700 px-6 py-4 bg-slate-50/50 dark:bg-slate-800/50">
+                            <h2 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-main text-xl">edit_document</span>
+                                Department Details
+                            </h2>
+                        </div>
+                        <form class="p-6 md:p-8 flex flex-col gap-8">
+                            <!-- Row 1: Name & Code -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-slate-900 dark:text-slate-200 text-sm font-semibold">Department
+                                        Name <span class="text-red-500">*</span></span>
+                                    <input
+                                        class="form-input w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white h-12 px-4 focus:border-main focus:ring-1 focus:ring-main placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all"
+                                        placeholder="e.g. Global Logistics" type="text" />
+                                </label>
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-slate-900 dark:text-slate-200 text-sm font-semibold">Department
+                                        Code <span class="text-slate-400 font-normal">(Optional)</span></span>
+                                    <div class="relative">
+                                        <input
+                                            class="form-input w-full rounded-lg bordmd border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white h-12 px-4 focus:border-main focus:ring-1 focus:ring-main placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all uppercase"
+                                            placeholder="e.g. LOG-001" type="text" />
+                                        <div class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                            <span class="material-symbols-outlined text-[20px]">qr_code</span>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <!-- Row 2: Description -->
+                            <label class="flex flex-col gap-2">
+                                <span
+                                    class="text-slate-900 dark:text-slate-200 text-sm font-semibold">Description</span>
+                                <textarea
+                                    class="form-textarea w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white min-h-[120px] p-4 focus:border-main focus:ring-1 focus:ring-main placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all resize-y"
+                                    placeholder="Briefly describe the responsibilities, scope, and function of this department..."></textarea>
+                            </label>
+                            <hr class="border-slate-100 dark:border-slate-700" />
+                            <!-- Row 3: Leadership & Parent -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Department Head (Rich Select) -->
+                                <label class="flex flex-col gap-2 relative group cursor-pointer">
+                                    <span class="text-slate-900 dark:text-slate-200 text-sm font-semibold">Department
+                                        Head</span>
+                                    <!-- Pseudo Select Box -->
+                                    <div class="relative w-full">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <span class="material-symbols-outlined text-slate-400">search</span>
+                                        </div>
+                                        <input
+                                            class="form-input w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white h-12 pl-10 pr-10 focus:border-main focus:ring-1 focus:ring-main placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all"
+                                            placeholder="Search employee..." type="text" />
+                                        <div
+                                            class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                            <span class="material-symbols-outlined text-slate-400">expand_more</span>
+                                        </div>
+                                    </div>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Assign a manager to lead this
+                                        organizational unit.</p>
+                                    <!-- Simulated Dropdown (Hidden by default, shown for demo visual if needed, but let's keep it simple as input first) -->
+                                </label>
+                                <!-- Parent Department -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-slate-900 dark:text-slate-200 text-sm font-semibold">Parent
+                                        Department</span>
+                                    <select
+                                        class="form-select w-full rounded-md border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-900 text-slate-900 dark:text-white h-12 px-4 focus:border-main focus:ring-1 focus:ring-main transition-all">
+                                        <option disabled="" selected="" value="">Select parent department...</option>
+                                        <option value="none">None (Top Level)</option>
+                                        <option value="ops">Operations</option>
+                                        <option value="hr">Human Resources</option>
+                                        <option value="eng">Engineering</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <!-- Row 4: Settings / Toggles -->
+                            <div
+                                class="bg-slate-50 dark:bg-slate-900/50 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border border-slate-100 dark:border-slate-700/50">
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="p-2 bg-white dark:bg-slate-800 rounded shadow-sm border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">
+                                        <span
+                                            class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <p class="text-slate-900 dark:text-white text-sm font-semibold">Cost Center</p>
+                                        <p class="text-slate-500 dark:text-slate-400 text-xs">Does this department
+                                            manage its own budget?</p>
+                                    </div>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" value="" />
+                                    <div
+                                        class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-main/20 dark:peer-focus:ring-main/30 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-main">
+                                    </div>
+                                    <span
+                                        class="ms-3 text-sm font-medium text-slate-900 dark:text-slate-300">Enabled</span>
+                                </label>
+                            </div>
+                            <!-- Actions -->
+                            <div
+                                class="flex flex-col-reverse sm:flex-row gap-4 pt-4 border-t border-slate-100 dark:border-slate-700 justify-end">
+                                <button
+                                    class="px-6 py-3 rounded-lg text-slate-600 dark:text-slate-300 bg-white dark:bg-transparent border border-slate-200 dark:border-slate-600 font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors w-full sm:w-auto text-center cursor-pointer active:scale-95 duration-200"
+                                    type="button">
+                                    Cancel
+                                </button>
+                                <button
+                                    class="px-6 py-3 rounded-lg text-white bg-main font-medium hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900 transition-all shadow-lg shadow-blue-500/30 w-full sm:w-auto text-center flex items-center justify-center gap-2 cursor-pointer active:scale-95 duration-200"
+                                    type="button">
+                                    <span class="material-symbols-outlined text-[20px]">add</span>
+                                    Create Department
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

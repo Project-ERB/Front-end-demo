@@ -1,4 +1,4 @@
-<main class="flex flex-1 justify-center items-center p-4 sm:p-6 lg:p-8 min-h-screen bg-background-light dark:bg-background-dark font-display">
+<main class= "flex flex-1 justify-center bg-gray-50 items-center p-4 sm:p-6 lg:p-8 min-h-screen bg-background-light dark:bg-background-dark font-display">
     <div class="w-full max-w-6xl">
         <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[720px] bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden">
             <div class="relative hidden lg:flex flex-col justify-center p-12 bg-gray-100 dark:bg-gray-900/50">
@@ -28,7 +28,7 @@
                 formControlName="username"
                 type="text"
                 placeholder="Enter your username"
-                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary h-12 p-3"
+                class="w-full rounded-lg border-gray-300 border-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 active:outline-none"
               />
             </label>
 
@@ -41,7 +41,7 @@
                 formControlName="email"
                 type="email"
                 placeholder="Enter your email"
-                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary h-12 p-3"
+                class="w-full rounded-lg border-gray-300 dark:border-gray-600 border-1 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 "
               />
             </label>
 
@@ -55,12 +55,12 @@
                   [type]="showPassword() ? 'text' : 'password'"
                   formControlName="password"
                   placeholder="Enter your password"
-                  class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary h-12 p-3 pr-12"
+                  class="w-full rounded-lg border-gray-300 border-1  dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 pr-12"
                 />
                 <button
                   type="button"
                   (click)="togglePassword()"
-                  class="absolute right-3 top-3 text-gray-400 hover:text-primary"
+                  class="absolute right-3 top-3 text-gray-400 hover:text"
                 >
                   <span class="material-symbols-outlined">{{
                     showPassword() ? "visibility_off" : "visibility"
@@ -82,12 +82,12 @@
                   [type]="showConfirmPassword() ? 'text' : 'password'"
                   formControlName="confirmPassword"
                   placeholder="Confirm your password"
-                  class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-primary focus:border-primary h-12 p-3 pr-12"
+                  class="w-full rounded-lg border-gray-300 border-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 pr-12"
                 />
                 <button
                   type="button"
                   (click)="toggleConfirmPassword()"
-                  class="absolute right-3 top-3 text-gray-400 hover:text-primary"
+                  class="absolute right-3 top-3 text-gray-400 hover:text"
                 >
                   <span class="material-symbols-outlined">{{
                     showConfirmPassword() ? "visibility_off" : "visibility"
@@ -99,23 +99,23 @@
 
                     <div class="flex flex-col gap-4">
                         <div class="flex items-start gap-3">
-                            <input formControlName="agreeToTerms" id="terms" type="checkbox" class="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary" />
+                            <input formControlName="agreeToTerms" id="terms" type="checkbox" class="h-5 w-5 rounded border-gray-300 text focus:ring" />
                             <label for="terms" class="text-sm text-gray-500 dark:text-gray-300">
                 By creating an account, you agree to our
-                <a href="#" class="font-semibold text-primary hover:underline"
+                <a href="#" class="font-semibold text hover:underline"
                   >Terms of Service</a
                 >.
               </label>
                         </div>
 
-                        <button type="submit" [disabled]="registerForm.invalid" class="h-12 w-full bg-primary hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors">
+                        <button type="submit" [disabled]="registerForm.invalid" class="h-12 w-full bg-main hover:bg-hover-main disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors cursor-pointer">
               Create Account
             </button>
                     </div>
 
                     <p class="text-sm text-center text-gray-500 dark:text-gray-300">
                         Already have an account?
-                        <span class="font-semibold text-primary hover:underline cursor-pointer" (click)="ToLogin()">Log In</span
+                        <span class="font-semibold text hover:underline cursor-pointer" (click)="ToLogin()">Log In</span
             >
           </p>
         </form>

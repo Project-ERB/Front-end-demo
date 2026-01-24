@@ -1,72 +1,53 @@
-<aside class="w-72 hidden md:flex flex-col border-r border-border-dark bg-gray-900 shrink-0 h-full transition-all duration-300">
-    <div class="flex h-full flex-col justify-between p-4">
-        <div class="flex flex-col gap-6">
-            <div class="flex items-center gap-3 px-2">
-                <div class="size-10 flex items-center justify-center rounded-lg bg-primary text-white">
-                    <span class="material-symbols-outlined text-2xl">admin_panel_settings</span
-          >
+<aside
+  class="w-72 hidden md:flex flex-col border-r text border-gray-200 shrink-0 h-full transition-all duration-300">
+  <div class="flex h-full flex-col justify-between p-4">
+    <div class="flex flex-col gap-6">
+      <div class="flex items-center gap-3 px-2">
+        <div class="size-10 flex items-center justify-center rounded-lg bg-main text-white">
+          <span class="material-symbols-outlined text-2xl">admin_panel_settings</span>
         </div>
         <div class="flex flex-col">
-          <h1 class="text-white text-lg font-bold leading-tight">
-            Admin Console
+          <h1 class="text-main text-lg font-bold leading-tight">
+            Admin dashboard
           </h1>
-          <p class="text-slate-400 text-xs font-normal">v3.4.0 (Stable)</p>
+          <p class="text-main text-xs font-normal">v3.4.0 (Stable)</p>
         </div>
       </div>
 
       <nav class="flex flex-col gap-1 overflow-y-auto pr-1">
-        <div
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary border-l-2 border-primary mb-1"
-        >
+        <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600 border-l-2 mb-1 cursor-pointer hover:bg-gray-100">
           <span class="material-symbols-outlined text-[22px]">dashboard</span>
-                    <p class="text-sm font-medium leading-normal">Dashboard</p>
-                </div>
+          <p class="text-sm font-medium leading-normal">Dashboard</p>
+        </div>
 
-                <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark group cursor-pointer transition-colors">
-                    <span class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-white">group</span
-          >
-          <p
-            class="text-slate-400 group-hover:text-white text-sm font-medium leading-normal"
-          >
+        <div
+          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark group cursor-pointer transition-colors hover:bg-gray-100">
+          <span class="material-symbols-outlined text-[22px] text-gray-600 ">group</span>
+          <p class="text-gray-600 text-sm font-medium leading-normal">
             User Management
           </p>
         </div>
 
-        <div class="flex flex-col gap-1 my-1">
-          <div
-            (click)="isHrExpanded = !isHrExpanded"
-            class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-surface-dark group cursor-pointer transition-colors select-none"
-          >
+        <div class="flex flex-col gap-1 my-1 rounded-lg">
+          <div (click)="isHrExpanded = !isHrExpanded"
+            class="flex items-center justify-between px-3 py-2.5 rounded-lg bg-surface-dark group cursor-pointer transition-colors select-none hover:bg-gray-100">
             <div class="flex items-center gap-3">
-              <span class="material-symbols-outlined text-[22px] text-white"
-                >badge</span
-              >
-              <p class="text-white text-sm font-medium leading-normal">
+              <span class="material-symbols-outlined text-[22px] text-gray-600">badge</span>
+              <p class="text-gray-600 text-sm font-medium leading-normal">
                 HR Management
               </p>
             </div>
-            <span
-              class="material-symbols-outlined text-[20px] text-slate-400 transform transition-transform"
-              [class.rotate-180]="!isHrExpanded"
-              >expand_less</span
-            >
+            <span class="material-symbols-outlined text-[20px] text-slate-400 transform transition-transform"
+              [class.rotate-180]="!isHrExpanded">expand_less</span>
           </div>
 
           <div *ngIf="isHrExpanded" class="flex flex-col gap-1 pl-4 relative">
-            <div
-              class="absolute left-6 top-1 bottom-1 w-px bg-border-dark"
-            ></div>
-            <div
-              *ngFor="let item of hrItems"
-              class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-dark group cursor-pointer transition-colors pl-6"
-            >
-              <span
-                class="material-symbols-outlined text-[18px] text-slate-500 group-hover:text-slate-300"
-                >{{ item.icon }}</span
-              >
-              <p
-                class="text-slate-400 group-hover:text-white text-sm font-medium"
-              >
+            <div class="absolute left-6 top-1 bottom-1 w-px bg-border-dark"></div>
+            <div *ngFor="let item of hrItems"
+              class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-dark group cursor-pointer transition-colors pl-6 hover:bg-gray-100 relative">  
+              <span class="material-symbols-outlined text-[18px] text-slate-500 ">{{ item.icon
+                }}</span>
+              <p class="text-gray-600 text-sm font-medium">
                 {{ item.label }}
               </p>
             </div>
@@ -74,39 +55,29 @@
         </div>
 
         <div
-          class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-dark group cursor-pointer transition-colors"
-        >
-          <span
-            class="material-symbols-outlined text-[22px] text-slate-400 group-hover:text-white"
-            >verified_user</span
-          >
-          <p
-            class="text-slate-400 group-hover:text-white text-sm font-medium leading-normal"
-          >
+          class="flex items-center gap-3 px-3 text py-2.5 rounded-lg hover:bg-surface-dark group cursor-pointer transition-colors hover:bg-gray-100">
+          <span class="material-symbols-outlined text-[22px] text-gray-600 ">verified_user</span>
+          <p class=" text-gray-600 text-sm font-medium leading-normal">
             Roles & Permissions
           </p>
         </div>
       </nav>
     </div>
 
-    <div
-      class="flex items-center gap-3 rounded-lg bg-surface-dark p-3 border border-border-dark mt-auto"
-    >
-      <div
-        class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-        style="background-image: url('https://i.pravatar.cc/150?u=marcus')"
-      ></div>
+    <div class="flex items-center gap-3 rounded-lg border border-gray-200 p-3  mt-auto">
+      <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 "
+        style="background-image: url('https://i.pravatar.cc/150?u=marcus')"></div>
       <div class="flex flex-col overflow-hidden">
-        <h1 class="text-white text-sm font-medium leading-normal truncate">
+        <h1 class="text-gray-600 text-sm font-medium leading-normal truncate">
           Marcus Reynolds
         </h1>
         <p class="text-slate-400 text-xs font-normal leading-normal truncate">
           super_admin&#64;shopco.com
         </p>
       </div>
-      <button class="ml-auto text-slate-400 hover:text-white">
+      <button class="ml-auto text-slate-400 cursor-pointer">
         <span class="material-symbols-outlined text-xl">logout</span>
-                    </button>
-                </div>
-            </div>
+      </button>
+    </div>
+  </div>
 </aside>

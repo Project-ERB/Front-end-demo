@@ -16,25 +16,16 @@
         <div class="space-y-4">
           @for (item of cartItems(); track $index) {
           <div
-            class="flex flex-col sm:flex-row gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-background-dark/50"
-          >
+            class="flex flex-col sm:flex-row gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-background-dark/50">
             <!-- Product Image -->
-            <div
-              class="w-full sm:w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800"
-            >
-              <img
-                [src]="item.imageUrl"
-                [alt]="item.name"
-                class="w-full h-full object-cover"
-              />
+            <div class="w-full sm:w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+              <img [src]="item.imageUrl" [alt]="item.name" class="w-full h-full object-cover" alt />
             </div>
 
             <!-- Product Details -->
             <div class="flex-1 flex flex-col justify-between">
               <div>
-                <h3
-                  class="font-semibold text-lg text-gray-900 dark:text-white mb-1"
-                >
+                <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-1">
                   {{ item.name }}
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
@@ -46,32 +37,21 @@
               <div class="flex items-center justify-between">
                 <!-- Quantity Selector -->
                 <div class="flex items-center gap-3">
-                  <button
-                    (click)="decreaseQuantity(item)"
-                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300"
-                  >
-                    <span class="material-symbols-outlined text-base"
-                      >remove</span
-                    >
+                  <button (click)="decreaseQuantity(item)"
+                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 cursor-pointer">
+                    <span class="material-symbols-outlined text-base">remove</span>
                   </button>
-                  <span
-                    class="w-12 text-center font-medium text-gray-900 dark:text-white"
-                    >{{ item.quantity }}</span
-                  >
-                  <button
-                    (click)="increaseQuantity(item)"
-                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300"
-                  >
+                  <span class="w-12 text-center font-medium text-gray-900 dark:text-white">{{ item.quantity }}</span>
+                  <button (click)="increaseQuantity(item)"
+                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 cursor-pointer">
                     <span class="material-symbols-outlined text-base">add</span>
                   </button>
                 </div>
 
                 <!-- Remove Button -->
-                <button
-                  (click)="removeItem(item.id)"
-                  class="flex items-center gap-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
-                >
-                  <span class="material-symbols-outlined text-lg">delete</span>
+                <button (click)="removeItem(item.id)"
+                  class="flex items-center gap-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 cursor-pointer">
+                  <span class="material-symbols-outlined text-lg ">delete</span>
                 </button>
               </div>
             </div>
@@ -92,20 +72,11 @@
         <!-- Empty Cart Message -->
         @if(cartItems().length === 0){
         <div class="text-center py-12">
-          <span
-            class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4"
-            >shopping_cart</span
-          >
-          <p
-            class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2"
-          >
+          <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">shopping_cart</span>
+          <p class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
             Your cart is empty
           </p>
-          <a
-            routerLink="/home"
-            class="text-blue-600 dark:text-blue-400 hover:underline"
-            >Continue Shopping</a
-          >
+          <a routerLink="/home" class="text-blue-600 dark:text-blue-400 hover:underline">Continue Shopping</a>
         </div>
         }
       </div>
@@ -113,96 +84,65 @@
       <!-- Order Summary Section -->
       <div class="lg:col-span-1">
         <div class="sticky top-8">
-          <div
-            class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-background-dark/50"
-          >
+          <div class="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-background-dark/50">
             <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
               Order Summary
             </h2>
 
             <!-- Price Breakdown -->
             <div class="space-y-3 mb-6">
-              <div
-                class="flex justify-between text-gray-700 dark:text-gray-300"
-              >
+              <div class="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>Subtotal</span>
                 <span>${{ subtotal.toFixed(2) }}</span>
               </div>
-              <div
-                class="flex justify-between text-gray-700 dark:text-gray-300"
-              >
+              <div class="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>Shipping</span>
                 <span>${{ shippingCost.toFixed(2) }}</span>
               </div>
-              <div
-                class="flex justify-between text-gray-700 dark:text-gray-300"
-              >
+              <div class="flex justify-between text-gray-700 dark:text-gray-300">
                 <span>Estimated Tax</span>
                 <span>${{ estimatedTax.toFixed(2) }}</span>
               </div>
             </div>
 
             <!-- Total -->
-            <div
-              class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6"
-            >
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6">
               <div class="flex justify-between items-center">
-                <span class="text-lg font-bold text-gray-900 dark:text-white"
-                  >Total</span
-                >
-                <span class="text-2xl font-bold text-gray-900 dark:text-white"
-                  >${{ total.toFixed(2) }}</span
-                >
+                <span class="text-lg font-bold text-gray-900 dark:text-white">Total</span>
+                <span class="text-2xl font-bold text-gray-900 dark:text-white">${{ total.toFixed(2) }}</span>
               </div>
             </div>
 
             <!-- Promo Code -->
             <div class="mb-6">
-              <label
-                class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
-                >Promo Code</label
-              >
+              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Promo Code</label>
               <div class="flex gap-2">
-                <input
-                  type="text"
-                  [(ngModel)]="promoCode"
-                  placeholder="Enter code"
-                  class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <button
-                  (click)="applyPromoCode()"
-                  class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium"
-                >
+                <input type="text" [(ngModel)]="promoCode" placeholder="Enter code"
+                  class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button (click)="applyPromoCode()"
+                  class="px-4 py-2 bg-gray-200 dark:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium">
                   Apply
                 </button>
               </div>
             </div>
 
             <!-- Checkout Button -->
-            <button
-              (click)="proceedToCheckout()"
-              class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 mb-4 transition-colors"
-            >
+            <button (click)="proceedToCheckout()"
+              class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold cursor-pointer rounded-lg flex items-center justify-center gap-2 mb-4 transition-colors">
               <span class="material-symbols-outlined">lock</span>
               Proceed to Checkout
             </button>
 
             <!-- OR Divider -->
             <div class="flex items-center gap-4 mb-4">
-              <div
-                class="flex-1 border-t border-gray-300 dark:border-gray-600"
-              ></div>
+              <div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
               <span class="text-sm text-gray-500 dark:text-gray-400">OR</span>
-              <div
-                class="flex-1 border-t border-gray-300 dark:border-gray-600"
-              ></div>
+              <div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
             </div>
 
             <!-- Express Checkout -->
-            <button
-              (click)="expressCheckout()"
-              class="w-full py-3 bg-black dark:bg-gray-800 hover:bg-gray-900 dark:hover:bg-gray-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors"
-            >
+            <button (click)="expressCheckout()"
+              class="w-full py-3 bg-black dark:bg-gray-800 hover:bg-gray-900 dark:hover:bg-gray-700 cursor-pointer text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors">
               <span class="font-bold">XP</span>
             </button>
           </div>
@@ -219,21 +159,12 @@
           © 2024 E-Commerce ERP. All Rights Reserved.
         </p>
         <div class="flex gap-6">
-          <a
-            href="#"
-            class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >Help</a
-          >
-          <a
-            href="#"
-            class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >Returns Policy</a
-          >
-          <a
-            href="#"
-            class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
-            >Contact Us</a
-          >
+          <a href="#"
+            class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Help</a>
+          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Returns
+            Policy</a>
+          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Contact
+            Us</a>
         </div>
       </div>
     </div>

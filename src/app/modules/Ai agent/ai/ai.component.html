@@ -1,0 +1,146 @@
+<div class="flex min-h-screen w-full overflow-x-hidden bg-main-gray bg-background-light dark:bg-background-dark font-display">
+    <!-- SideNavBar -->
+    <aside
+        class="flex flex-col w-64 bg-white dark:bg-slate-900 border-r border-gray-200 dark:border-gray-800 p-4 shrink-0">
+        <div class="flex flex-col justify-between h-full">
+            <div class="flex flex-col gap-6">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 px-2">
+                    <div class="w-10 h-10 bg-cover bg-center rounded-lg"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCKhpYvmE_4Ee-H7poIxY6_IoIpbePxIKTZvyVB4K0EABvYjwLGcuvS2OtfkGvWZhKVM-vS5PmAQEnt90N4bSoQK_dkQ-T9WhdiQc1I4c-fgZG8EMeNPxDA16O6FoDnoj8H37Sr9GwQaxcH4X9Ny4Fs68aOm8TduVu7ciJqh_gaDoSHmn6SlTyf0iBXfNayNrhNVTq7jIxA1MMoC5SAIsVFHG1vMRPQ3k0XFrX6aCck2nD9girYRa4vN3l7iluUY_yaPThPkJYElXXg');">
+                    </div>
+                    <div class="flex flex-col">
+                        <h1 class="text-gray-900 dark:text-gray-100 text-base font-bold leading-normal">AI Insights</h1>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm leading-normal">ERP System</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex flex-col gap-2">
+                    <a routerLink="/dashboard"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 focus:text-main focus:bg-main/10 hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span class="material-symbols-outlined ">dashboard</span>
+                        <p class=" text-sm font-medium focus:text-main focus:bg-main/10">Dashboard</p>
+                    </a>
+                    <a routerLink="/history"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span
+                            class="material-symbols-outlined text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">history</span>
+                        <p class="text-gray-900 dark:text-white text-sm font-medium">History</p>
+                    </a>
+                    <a routerLink="/reports"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span
+                            class="material-symbols-outlined text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">folder</span>
+                        <p class="text-gray-900 dark:text-white text-sm font-medium">Saved Reports</p>
+                    </a>
+                    <a routerLink="/help"
+                        class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span
+                            class="material-symbols-outlined text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">help</span>
+                        <p class="text-gray-900 dark:text-white text-sm font-medium">Help</p>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Footer Buttons -->
+            <div class="flex flex-col gap-4">
+                <button
+                    class="flex w-full items-center justify-center h-10 px-4 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700">
+                    New Query
+                </button>
+                <a routerLink="/settings"
+                    class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span
+                        class="material-symbols-outlined text-gray-500 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white">settings</span>
+                    <p class="text-gray-900 dark:text-white text-sm font-medium">Settings</p>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col p-6 lg:p-10">
+        <div class="w-full max-w-4xl mx-auto flex flex-col h-full">
+
+            <!-- Header Bar -->
+            <header class="flex items-center justify-between mb-8">
+                <div class="relative flex-1 max-w-lg">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-400">search</span>
+                    <input type="search" placeholder="Search past queries or reports..."
+                        class="w-full h-10 pl-10 pr-4 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex items-center gap-4 ml-6">
+                    <button class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                        <span class="material-symbols-outlined text-gray-500 dark:text-gray-400">notifications</span>
+                    </button>
+                    <div class="w-10 h-10 bg-cover bg-center rounded-full"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBKqCfgRDjiSXzAMnUNwf5GbH6A89f7J6wXL-tjMA_F8i1JlIhckRwF6yvOTFh1aV4fuqsxYStgmLHtAgJAGq5T2VI0iFYkGYp76C8B0BhMD2ZqqWZewlQsKTj1Y7d8MIM5ayPxSzGfetxB8cUsqZCP5j8n9NTUW8hK1OKowbtLknjZHXmLMSOtnsvot-eyVYUtQ0WDYaCNPJrv96AVblf0gC_0otAffOaVRxcQiKf3maDwUixBj_QWW2s-T_FkYYsB2NWi2Lb1KiGI');">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Heading -->
+            <div class="flex flex-wrap justify-between gap-3 mb-6">
+                <div class="flex min-w-72 flex-col gap-2">
+                    <p class="text-gray-900 dark:text-white text-4xl font-black leading-tight">
+                        Welcome, Alexa! How can I help?
+                    </p>
+                    <p class="text-gray-500 dark:text-gray-400 text-base leading-normal">
+                        Ask questions, generate reports, or apply commands using natural language.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Chips -->
+            <div class="flex flex-col flex-1">
+                <div class="flex flex-col gap-4 mt-auto">
+                    <div class="flex gap-3 flex-wrap">
+                        <button
+                            class="flex h-8 items-center justify-center gap-x-2 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 hover:bg-blue-100">
+                            <p class="text-gray-900 dark:text-white text-sm font-medium">Show daily sales</p>
+                        </button>
+                        <button
+                            class="flex h-8 items-center justify-center gap-x-2 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 hover:bg-blue-100">
+                            <p class="text-gray-900 dark:text-white text-sm font-medium">Generate Q4 inventory report
+                            </p>
+                        </button>
+                        <button
+                            class="flex h-8 items-center justify-center gap-x-2 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 hover:bg-blue-100">
+                            <p class="text-gray-900 dark:text-white text-sm font-medium">Top 10 selling products</p>
+                        </button>
+                    </div>
+
+                    <!-- Composer -->
+                    <div class="flex items-center gap-3 w-full">
+                        <div
+                            class="flex w-full items-stretch rounded-xl h-full shadow border border-gray-200 dark:border-gray-800">
+                            <textarea
+                                class="flex w-full min-w-0 flex-1 resize-none rounded-l-xl text-gray-900 dark:text-white bg-white dark:bg-gray-900 placeholder-gray-500 dark:placeholder-gray-400 px-4 py-4 text-base font-normal focus:outline-none"
+                                placeholder="Ask a question or type a command..." rows="1"></textarea>
+
+                            <div class="flex items-center gap-2 pr-3 bg-white dark:bg-gray-900 rounded-r-xl">
+                                <button
+                                    class="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    <span
+                                        class="material-symbols-outlined text-gray-500 dark:text-gray-400">attach_file</span>
+                                </button>
+                                <button
+                                    class="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+                                    <span class="material-symbols-outlined text-gray-500 dark:text-gray-400">mic</span>
+                                </button>
+                                <button
+                                    class="min-w-[84px] max-w-[480px] flex items-center justify-center h-9 px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700">
+                                    Generate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>

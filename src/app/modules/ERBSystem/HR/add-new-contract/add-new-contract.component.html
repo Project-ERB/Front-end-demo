@@ -1,0 +1,396 @@
+<div class="bg-background-light dark:bg-background-dark main font-display text-black antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+        <!-- Sidebar -->
+        <app-hr-sidebar></app-hr-sidebar>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-main-gray">
+            <!-- Top Navbar -->
+            <nav
+                class="flex items-center justify-between whitespace-nowrap border-b border-gray-200 bg-white px-8 py-3 shrink-0 z-10">
+                <div class="flex items-center gap-4 lg:hidden">
+                    <button class="text-gray-600 hover:text-main">
+                        <span class="material-symbols-outlined">menu</span>
+                    </button>
+                    <span class="font-bold text-lg">HR Dashboard</span>
+                </div>
+                <!-- Spacer for desktop layout balance -->
+                <div class="hidden lg:block"></div>
+                <div class="flex items-center gap-6 ml-auto">
+                    <!-- Search -->
+                    <div
+                        class="hidden md:flex items-center h-10 w-64 bg-[#f0f2f4] rounded-lg px-3 focus-within:ring-2 focus-within:ring-main/20 transition-all">
+                        <span class="material-symbols-outlined text-gray-600">search</span>
+                        <input
+                            class="w-full bg-transparent border-none text-sm text-black placeholder-gray-600 focus:ring-0"
+                            placeholder="Search..." type="text" />
+                    </div>
+                    <!-- Notifications -->
+                    <button class="relative text-gray-600 hover:text-main transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span
+                            class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <!-- User Profile -->
+                    <div class="flex items-center gap-3 pl-4 border-l border-gray-200">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-sm font-medium text-black">Sarah Jenkins</p>
+                            <p class="text-xs text-gray-600">HR Manager</p>
+                        </div>
+                        <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-white shadow-sm cursor-pointer"
+                            data-alt="User Avatar"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDHiyLDXU6-PCrI0ctxCx3d6y0rMv11Yhd_kAe6L4qPLCHbWfRpsFL2snptDwy5AM4zGuz2Qm3IVdAeGMZP-J3MoSF8kIhbDC8_MXHyN5Vu9qk1eYKd5TpnOU0I8Ylt2krQZE4YktUfYWeXKNJPlGQkyhSMTX6o2uPHZgdipg0fivSk_LSSIHaHaN9xDLs6bXbmnUoeDPsKxntNN96hdxpCzBawNhoayrlpoEToEwMK2ZSl0Zphigc6a9k144X5HnNM75e3y-DYNPPl");'>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto bg-background-light p-4 md:p-8 scroll-smooth">
+                <div class="max-w-5xl mx-auto flex flex-col gap-6 pb-20">
+                    <!-- Breadcrumbs -->
+                    <div class="flex items-center gap-2 text-sm">
+                        <a class="text-gray-600 hover:text-main font-medium transition-colors" href="#">Hr</a>
+                        <span class="text-gray-600 material-symbols-outlined text-[16px]">chevron_right</span>
+                        <a class="text-gray-600 hover:text-main font-medium transition-colors" href="#">Contracts</a>
+                        <span class="text-gray-600 material-symbols-outlined text-[16px]">chevron_right</span>
+                        <span class="text-main font-bold">Add New Contract</span>
+                    </div>
+                    <!-- Page Header -->
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                        <div>
+                            <h1 class="text-3xl md:text-4xl font-bold text-black tracking-tight mb-2">Create New
+                                Contract</h1>
+                            <p class="text-gray-600 text-base max-w-2xl">Fill in the details below to generate a new
+                                employment contract for a new hire or existing employee.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button
+                                class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-[#f9fafb] shadow-sm transition- cursor-pointer active:scale-95 duration-200">
+                                <span class="material-symbols-outlined text-[20px]">upload_file</span>
+                                Import Data
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Main Form Grid -->
+                    <form class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-4" onsubmit="event.preventDefault();">
+                        <!-- Left Column: main Details -->
+                        <div class="lg:col-span-2 flex flex-col gap-6">
+                            <!-- Section 1: Employee Information -->
+                            <section
+                                class="bg-white rounded-xl shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] border border-gray-200 overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                                <div
+                                    class="px-6 py-4 border-b border-[#f0f2f4] flex justify-between items-center bg-gray-50/50">
+                                    <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                                        <span
+                                            class="flex items-center justify-center size-6 rounded-full bg-main/10 text-main text-xs font-bold">1</span>
+                                        Employee Information
+                                    </h2>
+                                </div>
+                                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-black mb-1.5">Employee
+                                            Name</label>
+                                        <div
+                                            class="flex w-full items-stretch rounded-lg h-11 bg-[#f0f2f4] focus-within:ring-2 focus-within:ring-main/20 transition-all">
+                                            <div class="text-gray-600 flex items-center justify-center pl-3">
+                                                <span
+                                                    class="material-symbols-outlined  text-[20px] focus:outline-none">person_search</span>
+                                            </div>
+                                            <input
+                                                class="w-full bg-transparent  text-sm px-3 text-black placeholder-gray-600 focus:ring-0 focus:outline-none"
+                                                placeholder="Search existing employee or type new name" type="text" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Job Title</label>
+                                        <input
+                                            class="w-full h-11 bg-[#f0f2f4] border-none rounded-lg px-4 text-sm focus:ring-2 focus:ring-main/20 focus:outline-none"
+                                            placeholder="e.g. Senior Product Designer" type="text" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Department</label>
+                                        <select aria-label="select"
+                                            class="w-full h-11 bg-[#f0f2f4] border-none rounded-lg px-4 text-sm text-black focus:ring-2 focus:ring-main/20 focus:outline-none">
+                                            <option>Select Department</option>
+                                            <option>Engineering</option>
+                                            <option>Design</option>
+                                            <option>Marketing</option>
+                                            <option>Human Resources</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Email
+                                            Address</label>
+                                        <input
+                                            class="w-full h-11 bg-[#f0f2f4] border-none rounded-lg px-4 text-sm focus:ring-2 focus:ring-main/20 focus:outline-none"
+                                            placeholder="email@company.com" type="email" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Location</label>
+                                        <div
+                                            class="flex w-full items-stretch rounded-lg h-11 bg-[#f0f2f4] focus-within:ring-2 focus-within:ring-main/20 transition-all">
+                                            <div class="text-gray-600 flex items-center justify-center pl-3">
+                                                <span class="material-symbols-outlined text-[20px]">location_on</span>
+                                            </div>
+                                            <input
+                                                class="w-full bg-transparent border-none text-sm px-3 text-black placeholder-gray-600 focus:ring-0 focus:outline-none"
+                                                placeholder="City, Country" type="text" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <!-- Section 2: Contract Details -->
+                            <section
+                                class="bg-white rounded-xl shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] border border-gray-200 overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                                <div class="px-6 py-4 border-b border-[#f0f2f4] bg-gray-50/50">
+                                    <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                                        <span
+                                            class="flex items-center justify-center size-6 rounded-full bg-main/10 text-main text-xs font-bold">2</span>
+                                        Contract Specifics
+                                    </h2>
+                                </div>
+                                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-black mb-2">Contract
+                                            Type</label>
+                                        <div class="flex gap-4">
+                                            <label class="cursor-pointer flex-1">
+                                                <input checked="" class="peer sr-only" name="contract_type"
+                                                    type="radio" />
+                                                <div
+                                                    class="h-full rounded-lg border border-gray-200 p-4 hover:bg-[#f9fafb] peer-checked:border-main peer-checked:bg-main/5 peer-checked:ring-1 peer-checked:ring-main transition-all">
+                                                    <div class="font-semibold text-sm mb-1 text-black">Full-Time
+                                                    </div>
+                                                    <div class="text-xs text-gray-600">Permanent role with benefits
+                                                    </div>
+                                                </div>
+                                            </label>
+                                            <label class="cursor-pointer flex-1">
+                                                <input class="peer sr-only" name="contract_type" type="radio" />
+                                                <div
+                                                    class="h-full rounded-lg border border-gray-200 p-4 hover:bg-[#f9fafb] peer-checked:border-main peer-checked:bg-main/5 peer-checked:ring-1 peer-checked:ring-main transition-all">
+                                                    <div class="font-semibold text-sm mb-1 text-black">Contractor
+                                                    </div>
+                                                    <div class="text-xs text-gray-600">Fixed term, no benefits</div>
+                                                </div>
+                                            </label>
+                                            <label class="cursor-pointer flex-1">
+                                                <input class="peer sr-only" name="contract_type" type="radio" />
+                                                <div
+                                                    class="h-full rounded-lg border border-gray-200 p-4 hover:bg-[#f9fafb] peer-checked:border-main peer-checked:bg-main/5 peer-checked:ring-1 peer-checked:ring-main transition-all">
+                                                    <div class="font-semibold text-sm mb-1 text-black">Internship
+                                                    </div>
+                                                    <div class="text-xs text-gray-600">Temporary learning role</div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Start
+                                            Date</label>
+                                        <div
+                                            class="flex items-center bg-[#f0f2f4] rounded-lg h-11 px-3 focus-within:ring-2 focus-within:ring-main/20">
+                                            <span
+                                                class="material-symbols-outlined text-gray-600 text-[20px]">calendar_today</span>
+                                            <input aria-label="input"
+                                                class="w-full bg-transparent border-none text-sm text-black focus:ring-0 focus:outline-none"
+                                                type="date" />
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <label class="block text-sm font-medium text-black mb-1.5">End Date</label>
+                                        <div
+                                            class="flex items-center bg-[#f0f2f4] rounded-lg h-11 px-3 focus-within:ring-2 focus-within:ring-main/20 mb-2">
+                                            <span
+                                                class="material-symbols-outlined text-gray-600 text-[20px]">event_busy</span>
+                                            <input aria-label="input"
+                                                class="w-full bg-transparent border-none text-sm text-black focus:ring-0 focus:outline-none"
+                                                type="date" />
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <input class="rounded border-gray-300 text-main focus:ring-main/20"
+                                                id="indefinite" type="checkbox" />
+                                            <label class="text-xs text-gray-600 font-medium" for="indefinite">Indefinite
+                                                Contract</label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Probation
+                                            Period</label>
+                                        <select aria-label="select"
+                                            class="w-full h-11 bg-[#f0f2f4] border-none rounded-lg px-4 text-sm text-black focus:ring-2 focus:ring-main/20">
+                                            <option>3 Months</option>
+                                            <option>6 Months</option>
+                                            <option>None</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </section>
+                            <!-- Section 3: Legal Terms -->
+                            <section
+                                class="bg-white rounded-xl shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] border border-gray-200 overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                                <div
+                                    class="px-6 py-4 border-b border-[#f0f2f4] bg-gray-50/50 flex justify-between items-center">
+                                    <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                                        <span
+                                            class="flex items-center justify-center size-6 rounded-full bg-main/10 text-main text-xs font-bold">3</span>
+                                        Terms &amp; Conditions
+                                    </h2>
+                                    <button class="text-sm text-main font-medium hover:underline">Load
+                                        Template</button>
+                                </div>
+                                <div class="p-6">
+                                    <label class="block text-sm font-medium text-black mb-2">Additional
+                                        Clauses</label>
+                                    <div
+                                        class="border border-gray-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-main/20 focus-within:border-main">
+                                        <!-- Toolbar -->
+                                        <div class="bg-gray-50 border-b border-gray-200 px-3 py-2 flex gap-2">
+                                            <button class="p-1 rounded hover:bg-gray-200 text-gray-600"><span
+                                                    class="material-symbols-outlined text-[18px]">format_bold</span></button>
+                                            <button class="p-1 rounded hover:bg-gray-200 text-gray-600"><span
+                                                    class="material-symbols-outlined text-[18px]">format_italic</span></button>
+                                            <button class="p-1 rounded hover:bg-gray-200 text-gray-600"><span
+                                                    class="material-symbols-outlined text-[18px]">format_underlined</span></button>
+                                            <div class="w-px h-5 bg-gray-300 my-auto mx-1"></div>
+                                            <button class="p-1 rounded hover:bg-gray-200 text-gray-600"><span
+                                                    class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+                                        </div>
+                                        <textarea
+                                            class="w-full h-32 p-4 border-none resize-none focus:ring-0 text-sm text-black"
+                                            placeholder="Enter any specific terms, non-compete clauses, or additional notes here..."></textarea>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <!-- Right Column: Compensation & Actions -->
+                        <div class="flex flex-col gap-6">
+                            <!-- Financials Card -->
+                            <section
+                                class="bg-white rounded-xl shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] border border-gray-200 overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                                <div class="px-6 py-4 border-b border-[#f0f2f4] bg-gray-50/50">
+                                    <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-main">payments</span>
+                                        Compensation
+                                    </h2>
+                                </div>
+                                <div class="p-6 flex flex-col gap-5">
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Base
+                                            Salary</label>
+                                        <div class="relative rounded-lg">
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <span class="text-gray-600 font-medium">$</span>
+                                            </div>
+                                            <input
+                                                class="block w-full rounded-lg border-none bg-[#f0f2f4] py-2.5 pl-7 pr-12 text-black focus:ring-2 focus:ring-main/20 placeholder:text-gray-600 focus:outline-none"
+                                                placeholder="0.00" type="number" />
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <span class="text-gray-600 text-sm">USD</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Payment
+                                            Frequency</label>
+                                        <select aria-label="select"
+                                            class="w-full h-11 bg-[#f0f2f4] border-none rounded-lg px-4 text-sm text-black focus:ring-2 focus:ring-main/20">
+                                            <option>Monthly</option>
+                                            <option>Bi-Weekly</option>
+                                            <option>Weekly</option>
+                                            <option>Annually</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-black mb-1.5">Sign-on Bonus
+                                            (Optional)</label>
+                                        <div class="relative rounded-lg">
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <span class="text-gray-600 font-medium">$</span>
+                                            </div>
+                                            <input
+                                                class="block w-full rounded-lg border-none bg-[#f0f2f4] py-2.5 pl-7 pr-12 text-black focus:ring-2 focus:ring-main/20 placeholder:text-gray-600 focus:outline-none"
+                                                placeholder="0.00" type="number" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <!-- Attachments Card -->
+                            <section curoser-pointer active:scale-95 duration-200
+                                class="bg-white rounded-xl shadow-[0_1px_3px_0_rgba(0,0,0,0.05)] border border-gray-200 overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                                <div class="px-6 py-4 border-b border-[#f0f2f4] bg-gray-50/50">
+                                    <h2 class="text-lg font-bold text-black flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-main">attach_file</span>
+                                        Documents
+                                    </h2>
+                                </div>
+                                <div class="p-6">
+                                    <!-- Upload Area -->
+                                    <label for="uploadDocument"
+                                        class="flex justify-center rounded-lg border-2 border-dashed border-gray-200 px-6 py-8 hover:bg-gray-50 transition-colors cursor-pointer group">
+
+                                        <div class="text-center">
+                                            <span
+                                                class="material-symbols-outlined mx-auto text-[32px] text-gray-600 group-hover:text-main mb-2">
+                                                cloud_upload
+                                            </span>
+                                            <div class="mt-1 text-sm text-gray-600">
+                                                <span class="font-medium text-main hover:underline">
+                                                    Click to upload
+                                                </span>
+                                                or drag and drop
+                                            </div>
+                                            <p class="text-xs text-[#9ca3af] mt-1">PDF, DOCX up to 10MB</p>
+                                        </div>
+                                        <input type="file" id="uploadDocument" class="hidden"
+                                            accept=".pdf,.doc,.docx" />
+                                    </label>
+                                    <!-- Uploaded File Item -->
+                                    <div class="mt-4 flex items-center justify-between p-3 bg-[#f0f2f4] rounded-lg">
+                                        <div class="flex items-center gap-3 overflow-hidden">
+                                            <span class="material-symbols-outlined text-red-500">picture_as_pdf</span>
+                                            <div class="flex flex-col min-w-0">
+                                                <p class="text-sm font-medium text-black truncate">
+                                                    offer_letter_draft_v1.pdf
+                                                </p>
+                                                <p class="text-xs text-gray-600">2.4 MB</p>
+                                            </div>
+                                        </div>
+                                        <input type="file" id="replaceFile" class="hidden" />
+                                        <label for="replaceFile" class="cursor-pointer text-gray-600 hover:text-main"
+                                            title="Replace file">
+                                            <span class="material-symbols-outlined text-[18px]">
+                                                upload_file
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <!-- Sticky Bottom Action Bar (Mobile/Tablet Friendly, or just bottom of flow) -->
+                        <div class="lg:col-span-3 mt-6 pb-6">
+                            <div
+                                class="flex flex-col-reverse sm:flex-row justify-end gap-4 pt-6 border-t border-gray-200">
+                                <button
+                                    class="px-6 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-black hover:bg-gray-200 transition-colors cursor-pointer active:scale-95 duration-200">
+                                    Cancel
+                                </button>
+                                <button
+                                    class="px-6 py-2.5 rounded-lg text-sm font-medium text-black bg-white border border-gray-200 shadow-sm hover:bg-[#f9fafb] transition-colors cursor-pointer active:scale-95 duration-200">
+                                    Save as Draft
+                                </button>
+                                <button
+                                    class="px-6 py-2.5 rounded-lg text-sm font-medium text-white bg-main shadow-md shadow-main/20 hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-95 duration-200">
+                                    <span class="material-symbols-outlined text-[20px]">check</span>
+                                    Create Contract
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>

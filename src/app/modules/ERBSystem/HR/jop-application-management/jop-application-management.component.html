@@ -1,0 +1,530 @@
+<div class="flex h-screen w-full overflow-hidden">
+    <!-- Sidebar -->
+    <app-hr-sidebar></app-hr-sidebar>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative bg-main-gray">
+        <!-- Header Bar -->
+        <header
+            class="h-16 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-surface-dark flex items-center justify-between px-6 shrink-0 z-10">
+            <!-- Breadcrumbs -->
+            <div class="flex items-center gap-2 text-sm">
+                <a class="text-gray-600 dark:text-gray-400 hover:text-main transition-colors" href="#">HR
+                    Dashboard</a>
+                <span class="text-[#dbdfe6] dark:text-gray-600">/</span>
+                <a class="text-gray-600 dark:text-gray-400 hover:text-main transition-colors" href="#">Recruitment</a>
+                <span class="text-[#dbdfe6] dark:text-gray-600">/</span>
+                <span class="text-black dark:text-gray-100 font-medium">Applications</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    class="relative p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-[24px]">notifications</span>
+                    <span
+                        class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border border-white dark:border-surface-dark"></span>
+                </button>
+                <button
+                    class="relative p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors">
+                    <span class="material-symbols-outlined text-[24px]">settings</span>
+                </button>
+            </div>
+        </header>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-6 lg:px-12 pb-12">
+            <div class="max-w-[1200px] mx-auto flex flex-col gap-6">
+                <!-- Page Heading & CTA -->
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-black dark:text-white text-3xl font-black tracking-tight">Job Applications
+                        </h2>
+                        <p class="text-gray-600 dark:text-gray-400 text-base">Manage and track all incoming candidate
+                            applications.</p>
+                    </div>
+                    <button
+                        class="flex items-center gap-2 bg-main hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm transition-colors group active:scale-95 duration-200 cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px]">add</span>
+                        <span>Add Application</span>
+                    </button>
+                </div>
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- 1st card -->
+                    <div
+                        class="bg-white dark:bg-surface-dark border-l-4 border-blue-500 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Applicants</p>
+                            <span
+                                class="material-symbols-outlined text-main bg-blue-100 rounded-md px-1.5 dark:text-gray-500 text-[20px]">groups</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-black dark:text-white text-2xl font-bold">1,248</p>
+                            <span
+                                class="text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 text-xs px-1.5 py-0.5 rounded font-medium">+12%</span>
+                        </div>
+                    </div>
+                    <!-- 2nd card -->
+                    <div
+                        class="bg-white dark:bg-surface-dark border-l-4 border-yellow-500 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Pending Review</p>
+                            <span
+                                class="material-symbols-outlined text-yellow-600 bg-yellow-100 rounded-md px-1.5 dark:text-gray-500 text-[20px]">hourglass_empty</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-black dark:text-white text-2xl font-bold">45</p>
+                            <span
+                                class="text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 text-xs px-1.5 py-0.5 rounded font-medium">+5%</span>
+                        </div>
+                    </div>
+                    <!-- 3rd card -->
+                    <div
+                        class="bg-white dark:bg-surface-dark border-l-4 border-indigo-500 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Interviewing</p>
+                            <span
+                                class="material-symbols-outlined text-indigo-500 bg-indigo-100 px-1.5 rounded-md dark:text-gray-500 text-[20px]">record_voice_over</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-black dark:text-white text-2xl font-bold">12</p>
+                            <span
+                                class="text-gray-600 dark:text-gray-500 text-xs px-1.5 py-0.5 rounded font-medium">0%</span>
+                        </div>
+                    </div>
+                    <!-- 4th card -->
+                    <div
+                        class="bg-white dark:bg-surface-dark border-l-4 border-pink-500 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Offers Sent</p>
+                            <span
+                                class="material-symbols-outlined text-pink-500 bg-pink-100 px-1.5 rounded-md dark:text-gray-500 text-[20px]">verified</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-black dark:text-white text-2xl font-bold">3</p>
+                            <span
+                                class="text-emerald-600 bg-emerald-50 dark:bg-emerald-500/10 dark:text-emerald-400 text-xs px-1.5 py-0.5 rounded font-medium">+2%</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Filter and Search -->
+                <div class="flex flex-col lg:flex-row gap-4">
+                    <!-- Search -->
+                    <div class="flex-1 relative">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-600 dark:text-gray-400">
+                            <span class="material-symbols-outlined">search</span>
+                        </div>
+                        <input
+                            class="pl-10 w-full h-11 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-black dark:text-white focus:ring-2 focus:ring-main/20 placeholder:text-gray-600 dark:placeholder:text-gray-500 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1 focus:outline-none"
+                            placeholder="Search candidates..." type="text" />
+                    </div>
+                    <!-- Filters -->
+                    <div class="flex gap-4 overflow-x-auto pb-1 lg:pb-0 ">
+                        <div class="relative min-w-[160px] ">
+                            <select
+                            aria-label="Select All"
+                                class="w-full h-11 pl-3 pr-10 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-black dark:text-white  focus:ring-main/10 focus: appearance-none cursor-pointer focus:outline-none">
+                                <option disabled="" selected="" value="">Job Position</option>
+                                <option value="frontend">Frontend Dev</option>
+                                <option value="product">Product Designer</option>
+                                <option value="marketing">Marketing Manager</option>
+                            </select>
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-600">
+                                <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                            </div>
+                        </div>
+                        <div class="relative min-w-[160px]">
+                            <select
+                            aria-label="Select All"
+                                class="w-full h-11 pl-3 pr-10 bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-black dark:text-white  focus:ring-main/10 focus: appearance-none cursor-pointer focus:outline-none">
+                                <option disabled="" selected="" value="">Status</option>
+                                <option value="new">New Applied</option>
+                                <option value="interview">Interviewing</option>
+                                <option value="offer">Offer Sent</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                            <div
+                                class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-600">
+                                <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                            </div>
+                        </div>
+                        <button
+                            class="h-11 px-4 flex items-center justify-center bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            title="Filter Settings">
+                            <span class="material-symbols-outlined text-[20px]">filter_list</span>
+                        </button>
+                        <!-- Toggle View -->
+                        <div
+                            class="flex bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 rounded-lg p-1 h-11 shrink-0">
+                            <button
+                                class="px-3 rounded bg-gray-100 dark:bg-gray-700 text-black dark:text-white flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[20px]">table_rows</span>
+                            </button>
+                            <button
+                                class="px-3 rounded hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 flex items-center justify-center transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">view_kanban</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Data Table Card -->
+                <div
+                    class="bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm overflow-hidden flex flex-col hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                                    <th
+                                        class="py-4 pl-6 pr-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 min-w-[50px] w-[50px]">
+                                        <input
+                                        aria-label="Select All"
+                                            class="rounded border-gray-200 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600"
+                                            type="checkbox" />
+                                    </th>
+                                    <th
+                                        class="py-4 px-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400">
+                                        Candidate</th>
+                                    <th
+                                        class="py-4 px-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400">
+                                        Applied Position</th>
+                                    <th
+                                        class="py-4 px-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400">
+                                        Date Applied</th>
+                                    <th
+                                        class="py-4 px-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400">
+                                        Status</th>
+                                    <th
+                                        class="py-4 px-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 text-center">
+                                        Resume</th>
+                                    <th
+                                        class="py-4 px-4 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:text-gray-400 text-right pr-6">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#dbdfe6] dark:divide-gray-800">
+                                <!-- Row 1 -->
+                                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="py-4 pl-6 pr-4">
+                                        <input
+                                        aria-label="Select All"
+                                            class="rounded border-gray-200 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600"
+                                            type="checkbox" />
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                                                data-alt="Portrait of Sarah Jenkins"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAusJR7ZVRqaatTxMhfF6nO9sRGr10zHYB84GOKOrak2RQaz2-DpGQxCLMMlfMXr32Z3zt0XX9BhcLT7DIZ-QSAFinYJYQhF4-9cpOc8XY1UDfkXVfGZ6y_87SBO0Z2oIV54c9T8Na1TPH6ND0YYqbRrHdorx7FJQxbb82k522fyB3Uo_yeaE3X9oPv97ig59ohD63-CS11wxnioBZLpLtGCkIb6_L93_5oGsx-K7tOsf4CMi3kLWAyybjvRES05AcoOlvQI86RNCnQ");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-semibold text-black dark:text-white">Sarah
+                                                    Jenkins</span>
+                                                <span
+                                                    class="text-xs text-gray-600 dark:text-gray-400">sarah.j@example.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-black dark:text-white">Senior
+                                                Product Designer</span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Design Dept</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 text-sm text-gray-600 dark:text-gray-300">Oct 24, 2023</td>
+                                    <td class="py-4 px-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                            New Applied
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button
+                                            class="text-gray-600 hover:text-main dark:text-gray-400 dark:hover:text-main transition-colors"
+                                            title="View Resume">
+                                            <span class="material-symbols-outlined text-[20px]">description</span>
+                                        </button>
+                                    </td>
+                                    <td class="py-4 px-4 text-right pr-6">
+                                        <div
+                                            class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                                title="Approve">
+                                                <span class="material-symbols-outlined text-[20px]">check</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                title="Reject">
+                                                <span class="material-symbols-outlined text-[20px]">close</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-main hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="py-4 pl-6 pr-4">
+                                        <input
+                                        aria-label="Select All"
+                                            class="rounded border-gray-200 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600"
+                                            type="checkbox" />
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                                                data-alt="Portrait of Michael Chen"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDey2YRElC94sx6duQ2FilWxC-eXzEQD98XrjW8DI6AeyQ_c-m-klcQiUf3vjNN9qLbXP4BbPtbXzJHIJT_WCAiLNdwbLD2tPPMQS1rx3SiPJ6dTwD8_JkVZ9rQyCNTVJrY5PdfgvnDBsnL2sQAFpuiBHUtBqgEAiLPOHNBnr9DqAJue_tFAWuyttrwgaYLPohK0u-m904LWYhMxYnxTzob5HqIt28O1ofb-xL78GkohQ9lDQV3SJjcqfdm8ib0dlFm6K7mIu4Jssk7");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-semibold text-black dark:text-white">Michael
+                                                    Chen</span>
+                                                <span
+                                                    class="text-xs text-gray-600 dark:text-gray-400">m.chen@example.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-black dark:text-white">Frontend
+                                                Developer</span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Engineering</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 text-sm text-gray-600 dark:text-gray-300">Oct 23, 2023</td>
+                                    <td class="py-4 px-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                            Interviewing
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button
+                                            class="text-gray-600 hover:text-main dark:text-gray-400 dark:hover:text-main transition-colors"
+                                            title="View Resume">
+                                            <span class="material-symbols-outlined text-[20px]">description</span>
+                                        </button>
+                                    </td>
+                                    <td class="py-4 px-4 text-right pr-6">
+                                        <div
+                                            class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                                title="Approve">
+                                                <span class="material-symbols-outlined text-[20px]">check</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                title="Reject">
+                                                <span class="material-symbols-outlined text-[20px]">close</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-main hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="py-4 pl-6 pr-4">
+                                        <input
+                                        aria-label="Select All"
+                                            class="rounded border-gray-200 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600"
+                                            type="checkbox" />
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                                                data-alt="Portrait of Emily Davis"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDF7A40hnxuxSixAuTtCN82GkAw9SezMNfy8vA9hgLXaR0kY2VxcqKhTWcuAqBW3k9c6iT9q5_Zfld2lmX_qnwDsL2FcwtOCKgo9mkUzw-RAdyuvoP7RQodKRdkxuvYi1JO0Tfasjd_j7POy0A8XGB1zd0pS94weKOak_xNa7vJMzbZfSK0zvsJ0WuFY_qfVigTjL15ylZ6CjcmNThLgZX0SAfqvdaTBOa-Lwjn_VkXGxHnlNU2R-gil-33SR9uGjVhYDk4t2HtzTRV");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-semibold text-black dark:text-white">Emily
+                                                    Davis</span>
+                                                <span
+                                                    class="text-xs text-gray-600 dark:text-gray-400">emily.d@example.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-black dark:text-white">Marketing
+                                                Manager</span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Marketing</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 text-sm text-gray-600 dark:text-gray-300">Oct 21, 2023</td>
+                                    <td class="py-4 px-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                            Offer Sent
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button
+                                            class="text-gray-600 hover:text-main dark:text-gray-400 dark:hover:text-main transition-colors"
+                                            title="View Resume">
+                                            <span class="material-symbols-outlined text-[20px]">description</span>
+                                        </button>
+                                    </td>
+                                    <td class="py-4 px-4 text-right pr-6">
+                                        <div
+                                            class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                                title="Approve">
+                                                <span class="material-symbols-outlined text-[20px]">check</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                title="Reject">
+                                                <span class="material-symbols-outlined text-[20px]">close</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-main hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 4 -->
+                                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="py-4 pl-6 pr-4">
+                                        <input
+                                        aria-label="Select All"
+                                            class="rounded border-gray-200 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600"
+                                            type="checkbox" />
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 font-bold border border-gray-200 dark:border-gray-700"
+                                                data-alt="Initials of James Wilson">JW</div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-semibold text-black dark:text-white">James
+                                                    Wilson</span>
+                                                <span
+                                                    class="text-xs text-gray-600 dark:text-gray-400">j.wilson@example.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-black dark:text-white">Customer
+                                                Success</span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Sales</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 text-sm text-gray-600 dark:text-gray-300">Oct 20, 2023</td>
+                                    <td class="py-4 px-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800">
+                                            Rejected
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button
+                                            class="text-gray-600 hover:text-main dark:text-gray-400 dark:hover:text-main transition-colors"
+                                            title="View Resume">
+                                            <span class="material-symbols-outlined text-[20px]">description</span>
+                                        </button>
+                                    </td>
+                                    <td class="py-4 px-4 text-right pr-6">
+                                        <div
+                                            class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-main hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!-- Row 5 -->
+                                <tr class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="py-4 pl-6 pr-4">
+                                        <input
+                                        aria-label="Select All"
+                                            class="rounded border-gray-200 text-main focus:ring-main bg-white dark:bg-gray-800 dark:border-gray-600"
+                                            type="checkbox" />
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                                                data-alt="Portrait of Olivia Martin"
+                                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCFmXuC_oyBPQleBMdQTTqh2WqVNkLG0oFYQRnZSi4En3DzRBU6kY0UGM3TLH2biTE9460M9_denB9AtGtEwjyWhuC-co2Kemen8AJcZqQcQD13DlVAbg_EiMIrHdr0MndFO21OJBacRMb7S7f6D6BXWsJbAxSuV8znXR-X_I4TCYRqU1kHQ47ZO5VbDTfE0izpQiwTmPbpsY1mwNUt11Fz_8tCbyDgeKXAII3ybL3FfmmoeJ7KSYvVqWjy_Wibnff6X7JWiPm0O7zJ");'>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-sm font-semibold text-black dark:text-white">Olivia
+                                                    Martin</span>
+                                                <span
+                                                    class="text-xs text-gray-600 dark:text-gray-400">olivia.m@example.com</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-medium text-black dark:text-white">Product
+                                                Manager</span>
+                                            <span class="text-xs text-gray-600 dark:text-gray-400">Product</span>
+                                        </div>
+                                    </td>
+                                    <td class="py-4 px-4 text-sm text-gray-600 dark:text-gray-300">Oct 18, 2023</td>
+                                    <td class="py-4 px-4">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                            New Applied
+                                        </span>
+                                    </td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button
+                                            class="text-gray-600 hover:text-main dark:text-gray-400 dark:hover:text-main transition-colors"
+                                            title="View Resume">
+                                            <span class="material-symbols-outlined text-[20px]">description</span>
+                                        </button>
+                                    </td>
+                                    <td class="py-4 px-4 text-right pr-6">
+                                        <div
+                                            class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-md transition-colors"
+                                                title="Approve">
+                                                <span class="material-symbols-outlined text-[20px]">check</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                                                title="Reject">
+                                                <span class="material-symbols-outlined text-[20px]">close</span>
+                                            </button>
+                                            <button
+                                                class="p-1.5 text-gray-600 hover:text-main hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Footer -->
+                    <div
+                        class="bg-white dark:bg-surface-dark px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between">
+                        <span class="text-sm text-gray-600 dark:text-gray-400">
+                            Showing <span class="font-medium text-black dark:text-white">1-5</span> of <span
+                                class="font-medium text-black dark:text-white">45</span>
+                        </span>
+                        <div class="flex gap-2">
+                            <button
+                                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-800 disabled:opacity-50"
+                                disabled="">Previous</button>
+                            <button
+                                class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 text-sm text-gray-600 dark:text-gray-400 font-medium hover:bg-gray-50 dark:hover:bg-gray-800">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

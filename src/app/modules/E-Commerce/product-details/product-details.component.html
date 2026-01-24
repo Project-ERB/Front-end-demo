@@ -32,6 +32,7 @@
         <div class="flex lg:flex-col gap-4 order-2 lg:order-1">
           @for(image of productImages; let i = $index; track i){
           <button
+          aria-label="Select image {{ i + 1 }}"
             (click)="selectImage(i)"
             [class.border-2]="selectedImageIndex() === i"
             [class.border-primary]="selectedImageIndex() === i"
@@ -40,6 +41,7 @@
             <img
               [src]="image.url"
               [alt]="image.alt"
+              alt
               class="w-full h-full object-cover"
             /></button
           >}
@@ -102,6 +104,7 @@
           <div class="flex gap-3">
             @for (color of colorOptions; track $index) {
             <button
+            aria-label="Select color {{ color.name }}"
               (click)="selectColor(color.name)"
               [class.ring-2]="selectedColor() === color.name"
               [class.ring-primary]="selectedColor() === color.name"
@@ -126,6 +129,7 @@
               <span class="material-symbols-outlined text-xl">remove</span>
             </button>
             <input
+            aria-label="Quantity"
               type="number"
               [value]="quantity()"
               readonly

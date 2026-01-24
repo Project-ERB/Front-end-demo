@@ -1,0 +1,449 @@
+<div class="flex h-screen w-full overflow-hidden main">
+    <!-- Side Navigation -->
+    <app-hr-sidebar></app-hr-sidebar>
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-main-gray">
+        <!-- navbar -->
+        <nav
+            class="flex h-16 flex-shrink-0 items-center justify-between border-b border-[#e5e7eb] dark:border-gray-800 bg-white dark:bg-[#1a202c] px-8">
+            <div class="flex items-center gap-4">
+                <h2 class="text-lg font-bold text-[#111318] dark:text-white">Overview</h2>
+            </div>
+            <div class="flex items-center gap-6">
+                <!-- Search -->
+                <div class="relative w-64 bg-main-gray rounded-lg focus:outline-none">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#616f89]"
+                        style="font-size: 20px;">search</span>
+                    <input
+                        class="h-10 w-full rounded-lg border-none bg-background-light dark:bg-gray-800 pl-10 pr-4 text-sm text-[#111318] dark:text-white placeholder-[#616f89] focus:ring-2 focus:ring-main/50 focus:outline-none"
+                        placeholder="Search employees, candidates..." type="text" />
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <button
+                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light dark:bg-gray-800 text-[#111318] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">notifications</span>
+                        <span
+                            class="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 border border-white"></span>
+                    </button>
+                    <button
+                        class="flex h-10 w-10 items-center justify-center rounded-lg bg-background-light dark:bg-gray-800 text-[#111318] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">help</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
+            <div class="mx-auto max-w-7xl flex flex-col gap-8">
+                <!-- Page Heading & Action -->
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h1 class="text-3xl font-bold tracking-tight text-[#111318] dark:text-white">Welcome back, Jane!
+                        </h1>
+                        <p class="text-[#616f89] dark:text-gray-400">Here's what's happening with your team today.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-white dark:bg-gray-800 px-4 py-2.5 text-sm font-medium text-[#111318] dark:text-white shadow-sm border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer active:scale-95">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">add_circle</span>
+                            Add Employee
+                        </button>
+                        <button
+                            class="flex items-center gap-2 rounded-lg bg-main px-4 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-main/90 transition-colors cursor-pointer active:scale-95 duration-200">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">post_add</span>
+                            Post New Job
+                        </button>
+                    </div>
+                </div>
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <!-- 1st card -->
+                    <div
+                        class="rounded-xl border-l-4 border-main  dark:border-gray-700 bg-white dark:bg-[#1a202c] p-6 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-[#616f89] dark:text-gray-400">Total Employees</p>
+                            <span class="material-symbols-outlined text-main bg-main/10 p-1 rounded-md"
+                                style="font-size: 20px;">groups</span>
+                        </div>
+                        <div class="mt-4 flex items-baseline gap-2">
+                            <p class="text-3xl font-bold text-[#111318] dark:text-white">1,240</p>
+                            <span
+                                class="flex items-center text-xs font-medium text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span>
+                                12%
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-[#616f89] dark:text-gray-500">Vs last month</p>
+                    </div>
+                    <!-- 2nd card -->
+                    <div
+                        class="rounded-xl border-l-4 border-violet-500 dark:border-gray-700 bg-white dark:bg-[#1a202c] p-6 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-[#616f89] dark:text-gray-400">Open Positions</p>
+                            <span
+                                class="material-symbols-outlined text-purple-600 bg-purple-100 dark:bg-purple-900/20 p-1 rounded-md"
+                                style="font-size: 20px;">work</span>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-3xl font-bold text-[#111318] dark:text-white">8</p>
+                        </div>
+                        <p class="mt-1 text-xs text-[#616f89] dark:text-gray-500">2 urgent roles</p>
+                    </div>
+                    <!-- 3d card -->
+                    <div
+                        class="rounded-xl border-l-4 border-sky-500 dark:border-gray-700 bg-white dark:bg-[#1a202c] p-6 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-[#616f89] dark:text-gray-400">New Applications</p>
+                            <span
+                                class="material-symbols-outlined text-blue-500 bg-blue-100 dark:bg-blue-900/20 p-1 rounded-md"
+                                style="font-size: 20px;">description</span>
+                        </div>
+                        <div class="mt-4 flex items-baseline gap-2">
+                            <p class="text-3xl font-bold text-[#111318] dark:text-white">45</p>
+                            <span
+                                class="flex items-center text-xs font-medium text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400 px-2 py-0.5 rounded-full">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span>
+                                5%
+                            </span>
+                        </div>
+                        <p class="mt-1 text-xs text-[#616f89] dark:text-gray-500">This week</p>
+                    </div>
+                    <!-- 4th card -->
+                    <div
+                        class="rounded-xl border-l-4 border-orange-500 dark:border-orange-900/30 bg-orange-50/50 dark:bg-orange-900/10 p-6 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between">
+                            <p class="text-sm font-medium text-orange-800 dark:text-orange-400">Expiring Contracts</p>
+                            <span
+                                class="material-symbols-outlined text-orange-600 bg-white dark:bg-orange-900/40 p-1 rounded-md"
+                                style="font-size: 20px;">warning</span>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-3xl font-bold text-[#111318] dark:text-white">3</p>
+                        </div>
+                        <p class="mt-1 text-xs font-medium text-orange-700 dark:text-orange-300">Action Needed</p>
+                    </div>
+                </div>
+                <!-- Charts & Tables Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Recruitment Funnel -->
+                    <div
+                        class="col-span-1 lg:col-span-2 rounded-xl dark:border-gray-700 bg-white dark:bg-[#1a202c] p-6 shadow-sm flex flex-col hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-base font-bold text-[#111318] dark:text-white">Recruitment Funnel</h3>
+                                <p class="text-sm text-[#616f89] dark:text-gray-400">Active candidates pipeline</p>
+                            </div>
+                            <button class="text-sm font-medium text-main hover:text-main/80">View Report</button>
+                        </div>
+                        <!-- Custom Chart Visualization -->
+                        <div class="flex-1 w-full min-h-[240px] flex items-end justify-between gap-4 px-4 pb-2">
+                            <!-- Bar 1 -->
+                            <div class="flex flex-col items-center gap-2 flex-1 group cursor-pointer">
+                                <div
+                                    class="text-sm font-bold text-[#111318] dark:text-white group-hover:-translate-y-1 transition-transform">
+                                    142</div>
+                                <div
+                                    class="w-full bg-blue-100 dark:bg-blue-900/30 rounded-t-lg relative h-48 overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 w-full bg-main transition-all duration-500"
+                                        style="height: 100%;"></div>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">
+                                    Applied</p>
+                            </div>
+                            <!-- Bar 2 -->
+                            <div class="flex flex-col items-center gap-2 flex-1 group cursor-pointer">
+                                <div
+                                    class="text-sm font-bold text-[#111318] dark:text-white group-hover:-translate-y-1 transition-transform">
+                                    68</div>
+                                <div
+                                    class="w-full bg-blue-100 dark:bg-blue-900/30 rounded-t-lg relative h-48 overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 w-full bg-main/80 transition-all duration-500"
+                                        style="height: 48%;"></div>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">
+                                    Screening</p>
+                            </div>
+                            <!-- Bar 3 -->
+                            <div class="flex flex-col items-center gap-2 flex-1 group cursor-pointer">
+                                <div
+                                    class="text-sm font-bold text-[#111318] dark:text-white group-hover:-translate-y-1 transition-transform">
+                                    32</div>
+                                <div
+                                    class="w-full bg-blue-100 dark:bg-blue-900/30 rounded-t-lg relative h-48 overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 w-full bg-main/60 transition-all duration-500"
+                                        style="height: 22%;"></div>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">
+                                    Interview</p>
+                            </div>
+                            <!-- Bar 4 -->
+                            <div class="flex flex-col items-center gap-2 flex-1 group cursor-pointer">
+                                <div
+                                    class="text-sm font-bold text-[#111318] dark:text-white group-hover:-translate-y-1 transition-transform">
+                                    12</div>
+                                <div
+                                    class="w-full bg-blue-100 dark:bg-blue-900/30 rounded-t-lg relative h-48 overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 w-full bg-main/40 transition-all duration-500"
+                                        style="height: 8%;"></div>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">
+                                    Offer</p>
+                            </div>
+                            <!-- Bar 5 -->
+                            <div class="flex flex-col items-center gap-2 flex-1 group cursor-pointer">
+                                <div
+                                    class="text-sm font-bold text-[#111318] dark:text-white group-hover:-translate-y-1 transition-transform">
+                                    8</div>
+                                <div
+                                    class="w-full bg-green-100 dark:bg-green-900/30 rounded-t-lg relative h-48 overflow-hidden">
+                                    <div class="absolute bottom-0 left-0 w-full bg-green-500 transition-all duration-500"
+                                        style="height: 6%;"></div>
+                                </div>
+                                <p
+                                    class="text-xs font-semibold text-[#616f89] dark:text-gray-400 uppercase tracking-wider">
+                                    Hired</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Department Headcount -->
+                    <div
+                        class="col-span-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a202c] p-6 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-base font-bold text-[#111318] dark:text-white">Headcount</h3>
+                                <p class="text-sm text-[#616f89] dark:text-gray-400">By department</p>
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-[#616f89] cursor-pointer hover:text-main">more_horiz</span>
+                        </div>
+                        <div class="flex flex-col gap-5">
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 w-24">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
+                                        <span class="material-symbols-outlined" style="font-size: 18px;">code</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-[#111318] dark:text-white">Tech</span>
+                                </div>
+                                <div
+                                    class="flex-1 h-2 rounded-full bg-background-light dark:bg-gray-800 overflow-hidden">
+                                    <div class="h-full bg-main w-[65%] rounded-full"></div>
+                                </div>
+                                <span class="text-sm font-bold text-[#111318] dark:text-white w-8 text-right">45%</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 w-24">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 18px;">storefront</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-[#111318] dark:text-white">Sales</span>
+                                </div>
+                                <div
+                                    class="flex-1 h-2 rounded-full bg-background-light dark:bg-gray-800 overflow-hidden">
+                                    <div class="h-full bg-purple-500 w-[25%] rounded-full"></div>
+                                </div>
+                                <span class="text-sm font-bold text-[#111318] dark:text-white w-8 text-right">25%</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 w-24">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-green-100 dark:bg-green-900/20 flex items-center justify-center text-green-600">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 18px;">local_shipping</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-[#111318] dark:text-white">Logistics</span>
+                                </div>
+                                <div
+                                    class="flex-1 h-2 rounded-full bg-background-light dark:bg-gray-800 overflow-hidden">
+                                    <div class="h-full bg-green-500 w-[20%] rounded-full"></div>
+                                </div>
+                                <span class="text-sm font-bold text-[#111318] dark:text-white w-8 text-right">20%</span>
+                            </div>
+                            <div class="flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3 w-24">
+                                    <div
+                                        class="h-8 w-8 rounded-lg bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size: 18px;">support_agent</span>
+                                    </div>
+                                    <span class="text-sm font-medium text-[#111318] dark:text-white">HR</span>
+                                </div>
+                                <div
+                                    class="flex-1 h-2 rounded-full bg-background-light dark:bg-gray-800 overflow-hidden">
+                                    <div class="h-full bg-orange-500 w-[10%] rounded-full"></div>
+                                </div>
+                                <span class="text-sm font-bold text-[#111318] dark:text-white w-8 text-right">10%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bottom Section: Recent Applications & Tasks -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Recent Applications List -->
+                    <div
+                        class="col-span-1 lg:col-span-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a202c] p-0 shadow-sm overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div
+                            class="flex items-center justify-between p-6 border-b border-gray-100 dark:border-gray-800">
+                            <h3 class="text-base font-bold text-[#111318] dark:text-white">Recent Applications</h3>
+                            <a class="text-sm font-medium text-main hover:text-main/80" href="#">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-gray-50 dark:bg-gray-800/50 text-[#616f89] dark:text-gray-400">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium">Candidate</th>
+                                        <th class="px-6 py-3 font-medium">Position</th>
+                                        <th class="px-6 py-3 font-medium">Date</th>
+                                        <th class="px-6 py-3 font-medium">Status</th>
+                                        <th class="px-6 py-3 font-medium text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                                                    SJ
+                                                </div>
+                                                <span class="font-medium text-[#111318] dark:text-white">Sarah
+                                                    Jenkins</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-[#111318] dark:text-gray-300">UX Designer</td>
+                                        <td class="px-6 py-4 text-[#616f89] dark:text-gray-400">Oct 24, 2023</td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                                Reviewing
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="text-[#616f89] hover:text-main dark:text-gray-400 dark:hover:text-main">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">visibility</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs">
+                                                    MR
+                                                </div>
+                                                <span class="font-medium text-[#111318] dark:text-white">Michael
+                                                    Ross</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-[#111318] dark:text-gray-300">DevOps Engineer</td>
+                                        <td class="px-6 py-4 text-[#616f89] dark:text-gray-400">Oct 23, 2023</td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                                Interview
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="text-[#616f89] hover:text-main dark:text-gray-400 dark:hover:text-main">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">visibility</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-3">
+                                                <div
+                                                    class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-xs">
+                                                    EL
+                                                </div>
+                                                <span class="font-medium text-[#111318] dark:text-white">Emma Liu</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-[#111318] dark:text-gray-300">Product Manager</td>
+                                        <td class="px-6 py-4 text-[#616f89] dark:text-gray-400">Oct 22, 2023</td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                                                New
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 text-right">
+                                            <button
+                                                class="text-[#616f89] hover:text-main dark:text-gray-400 dark:hover:text-main">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">visibility</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- Today's Tasks -->
+                    <div
+                        class="col-span-1 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#1a202c] p-6 shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <h3 class="text-base font-bold text-[#111318] dark:text-white mb-6">Pending Tasks</h3>
+                        <div class="flex flex-col gap-4">
+                            <div
+                                class="flex items-start gap-3 p-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-colors cursor-pointer group bg-main-gray">
+                                <div class="mt-0.5 h-2 w-2 rounded-full bg-red-500 flex-shrink-0"></div>
+                                <div class="flex flex-col gap-1 w-full">
+                                    <p
+                                        class="text-sm font-medium text-[#111318] dark:text-white group-hover:text-main">
+                                        Review contract renewal</p>
+                                    <p class="text-xs text-[#616f89] dark:text-gray-400">For: Alex Morgan • Due Today
+                                    </p>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined text-[#616f89] opacity-0 group-hover:opacity-100 transition-opacity"
+                                    style="font-size: 18px;">arrow_forward</span>
+                            </div>
+                            <div
+                                class="flex items-start gap-3 p-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-colors cursor-pointer group bg-main-gray">
+                                <div class="mt-0.5 h-2 w-2 rounded-full bg-yellow-500 flex-shrink-0"></div>
+                                <div class="flex flex-col gap-1 w-full">
+                                    <p
+                                        class="text-sm font-medium text-[#111318] dark:text-white group-hover:text-main">
+                                        Approve leave request</p>
+                                    <p class="text-xs text-[#616f89] dark:text-gray-400">For: David Chen • Due Tomorrow
+                                    </p>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined text-[#616f89] opacity-0 group-hover:opacity-100 transition-opacity"
+                                    style="font-size: 18px;">arrow_forward</span>
+                            </div>
+                            <div
+                                class="flex items-start gap-3 p-3 rounded-lg bg-background-light dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-colors cursor-pointer group bg-main-gray">
+                                <div class="mt-0.5 h-2 w-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                                <div class="flex flex-col gap-1 w-full">
+                                    <p
+                                        class="text-sm font-medium text-[#111318] dark:text-white group-hover:text-main">
+                                        Onboarding session</p>
+                                    <p class="text-xs text-[#616f89] dark:text-gray-400">With: New Interns • Friday 2pm
+                                    </p>
+                                </div>
+                                <span
+                                    class="material-symbols-outlined text-[#616f89] opacity-0 group-hover:opacity-100 transition-opacity"
+                                    style="font-size: 18px;">arrow_forward</span>
+                            </div>
+                            <button
+                                class="mt-2 w-full text-center text-sm font-medium text-main hover:underline">View
+                                all tasks</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

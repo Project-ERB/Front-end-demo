@@ -1,0 +1,596 @@
+<div class="flex min-h-screen w-full overflow-hidden">
+    <!-- Side Navigation -->
+    <app-hr-sidebar
+        class="flex w-64 flex-col border-r border-[#e5e7eb] dark:border-gray-800 bg-white dark:bg-black fixed h-full z-20"></app-hr-sidebar>
+    <!-- Main Content Area -->
+    <main class="ml-64 flex flex-1 flex-col h-screen overflow-hidden relative bg-main-gray">
+        <!-- Top Navigation Bar -->
+        <nav
+            class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#e5e7eb] dark:border-gray-800 bg-white dark:bg-black px-8 py-3 shrink-0">
+            <div class="flex items-center gap-4 text-black dark:text-white">
+                <!-- Breadcrumbs -->
+                <div class="flex items-center gap-2 text-sm">
+                    <a class="text-gray-600 dark:text-gray-400 font-medium hover:text-main" href="#">Dashboard</a>
+                    <span
+                        class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-base">chevron_right</span>
+                    <a class="text-gray-600 dark:text-gray-400 font-medium hover:text-main" href="#">HR</a>
+                    <span
+                        class="material-symbols-outlined text-gray-600 dark:text-gray-400 text-base">chevron_right</span>
+                    <span class="text-black dark:text-white font-semibold">Talent Pool</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <!-- Global Search -->
+                <label class="hidden md:flex flex-col min-w-64 !h-10">
+                    <div
+                        class="flex w-full flex-1 items-center rounded-lg h-full bg-[#f0f2f4] dark:bg-gray-800 px-3 gap-2 border border-transparent focus-within:border-main/50 transition-all">
+                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400"
+                            style="font-size: 20px;">search</span>
+                        <input
+                            class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-black dark:text-white placeholder:text-gray-600 focus:outline-0 text-sm font-normal leading-normal border-none p-0 focus:ring-0"
+                            placeholder="Search across ERP..." value="" />
+                    </div>
+                </label>
+                <!-- Notifications & Profile -->
+                <div class="flex items-center gap-3">
+                    <button
+                        class="flex items-center justify-center size-10 rounded-full hover:bg-[#f0f2f4] dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition-colors relative">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">notifications</span>
+                        <span
+                            class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-black"></span>
+                    </button>
+                    <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 cursor-pointer border border-[#e5e7eb] dark:border-gray-700"
+                        data-alt="User Avatar Profile Picture"
+                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCvkUkRYMFDUj0uYGCB7Hr6s3leKcCh5HYq0kHKCFLkbU8Jl3OGPp4rcQqhDRly7T-iDKbHzjKBrMGv-YeQOndHdE7tuYWhgHeZ-wxYvKFBOn48IRZvAmw0HI0NokmoOFUdvTSbx1mad__PrFpvOPXJ1COkKT7Re8Q-Xb5m1B6cfhY8o7M5iI3Rpc_YRLu__MbUw-bqId8AJybaImlk0Rnqqf-oBhGiPCbKwY--cfAIJ6z-pxx9vYLdQnV2VKL1paDXf2y2c2BidLCO");'>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Scrollable Page Content -->
+        <div class="flex flex-1 overflow-hidden">
+            <div class="flex-1 overflow-y-auto p-8">
+                <div class="mx-auto max-w-7xl flex flex-col gap-6">
+                    <!-- Page Header & Key Actions -->
+                    <div class="flex flex-wrap items-end justify-between gap-4">
+                        <div class="flex flex-col gap-1">
+                            <h2 class="text-black dark:text-white tracking-tight text-3xl font-bold leading-tight">
+                                Talent Pool</h2>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm font-normal">Manage candidate
+                                relationships and potential hires outside active applications.</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button
+                                class="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm font-medium active:scale-95 shadow-sm">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">upload_file</span>
+                                <span class="whitespace-nowrap">Import Data</span>
+                            </button>
+                            <button
+                                class="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg bg-main px-4 text-white hover:bg-main/90 transition-colors text-sm font-medium shadow-sm active:scale-95 duration-200">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">add</span>
+                                <span class="whitespace-nowrap">Add Candidate</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- 1s card -->
+                        <div
+                            class="flex flex-col justify-between rounded-xl bg-white dark:bg-black p-5 shadow-sm border-l-4 border-emerald-500 dark:border-gray-800 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Total Candidates
+                                </p>
+                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-600"
+                                    style="font-size: 20px;">groups</span>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p class="text-black dark:text-white text-2xl font-bold leading-tight">1,248</p>
+                                <div
+                                    class="flex items-center text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded text-xs font-medium">
+                                    <span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span>
+                                    <span>12%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 2nd card -->
+                        <div
+                            class="flex flex-col justify-between rounded-xl bg-white dark:bg-black p-5 shadow-sm border-l-4 border-green-500 dark:border-gray-800 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">New this Week</p>
+                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-600"
+                                    style="font-size: 20px;">person_add</span>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p class="text-black dark:text-white text-2xl font-bold leading-tight">24</p>
+                                <div
+                                    class="flex items-center text-green-600 bg-green-50 dark:bg-green-900/20 px-1.5 py-0.5 rounded text-xs font-medium">
+                                    <span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span>
+                                    <span>5%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 3rd card -->
+                        <div
+                            class="flex flex-col justify-between rounded-xl bg-white dark:bg-black p-5 shadow-sm border-l-4 border-gray-500 dark:border-gray-800 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <p class="text-gray-600 dark:text-gray-400 text-sm font-medium">Available
+                                    Immediately</p>
+                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-600"
+                                    style="font-size: 20px;">schedule</span>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <p class="text-black dark:text-white text-2xl font-bold leading-tight">86</p>
+                                <p class="text-gray-600 dark:text-gray-500 text-xs font-medium mb-1">Passively
+                                    looking</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Filters & Search Toolbar -->
+                    <div class="flex flex-col md:flex-row gap-3 p-1 rounded-xl">
+                        <!-- Search Candidate specific -->
+                        <div
+                            class="flex items-center rounded-lg bg-white dark:bg-black border border-[#e5e7eb] dark:border-gray-800 px-3 py-2 w-full md:w-80 shadow-sm focus-within:ring-2 focus-within:ring-main/20 transition-all hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                            <span class="material-symbols-outlined text-gray-600" style="font-size: 20px;">search</span>
+                            <input
+                                class="ml-2 w-full bg-transparent text-sm text-black dark:text-white placeholder-gray-600 border-none focus:ring-0 p-0 focus:outline-none"
+                                placeholder="Search by name, email, or keywords..." type="text" />
+                        </div>
+                        <!-- Dropdowns -->
+                        <div class="flex gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-hide">
+                            <button
+                                class="flex items-center gap-2 h-10 px-3 bg-white dark:bg-black border border-[#e5e7eb] dark:border-gray-800 rounded-lg text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 whitespace-nowrap shadow-sm">
+                                <span>Role</span>
+                                <span class="material-symbols-outlined text-gray-600"
+                                    style="font-size: 18px;">expand_more</span>
+                            </button>
+                            <button
+                                class="flex items-center gap-2 h-10 px-3 bg-white dark:bg-black border border-[#e5e7eb] dark:border-gray-800 rounded-lg text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 whitespace-nowrap shadow-sm">
+                                <span>Skills</span>
+                                <span class="material-symbols-outlined text-gray-600"
+                                    style="font-size: 18px;">expand_more</span>
+                            </button>
+                            <button
+                                class="flex items-center gap-2 h-10 px-3 bg-white dark:bg-black border border-[#e5e7eb] dark:border-gray-800 rounded-lg text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 whitespace-nowrap shadow-sm">
+                                <span>Availability</span>
+                                <span class="material-symbols-outlined text-gray-600"
+                                    style="font-size: 18px;">expand_more</span>
+                            </button>
+                            <button
+                                class="flex items-center gap-2 h-10 px-3 bg-white dark:bg-black border border-[#e5e7eb] dark:border-gray-800 rounded-lg text-sm font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 whitespace-nowrap shadow-sm">
+                                <span>Status</span>
+                                <span class="material-symbols-outlined text-gray-600"
+                                    style="font-size: 18px;">expand_more</span>
+                            </button>
+                        </div>
+                        <div class="ml-auto flex items-center gap-2">
+                            <button
+                                class="flex items-center justify-center size-10 bg-white dark:bg-black border border-[#e5e7eb] dark:border-gray-800 rounded-lg text-gray-600 hover:text-main hover:border-main transition-colors shadow-sm"
+                                title="Grid View">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">grid_view</span>
+                            </button>
+                            <button
+                                class="flex items-center justify-center size-10 bg-main/10 border border-main/20 rounded-lg text-main transition-colors shadow-sm"
+                                title="List View">
+                                <span class="material-symbols-outlined" style="font-size: 20px;">view_list</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- table -->
+                    <div
+                        class="bg-white dark:bg-black rounded-xl border border-[#e5e7eb] dark:border-gray-800 shadow-sm overflow-hidden flex flex-col flex-1 min-h-[400px] hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr
+                                        class="border-b border-[#e5e7eb] dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
+                                        <th class="p-4 w-12">
+                                            <input aria-label="Select All"
+                                                class="rounded border-gray-300 text-main focus:ring-main size-4 bg-white dark:bg-gray-700 dark:border-gray-600"
+                                                type="checkbox" />
+                                        </th>
+                                        <th
+                                            class="p-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            Candidate Name</th>
+                                        <th
+                                            class="p-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            Role</th>
+                                        <th
+                                            class="p-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            Top Skills</th>
+                                        <th
+                                            class="p-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            Status</th>
+                                        <th
+                                            class="p-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider">
+                                            Availability</th>
+                                        <th
+                                            class="p-4 text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider text-right">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#e5e7eb] dark:divide-gray-800">
+                                    <!-- Row 1 (Selected) -->
+                                    <tr
+                                        class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 bg-main/5 dark:bg-main/10 transition-colors cursor-pointer border-l-4 border-l-main">
+                                        <td class="p-4">
+                                            <input checked=""
+                                                    aria-label="Select Candidate Sarah Jenkins"
+                                                class="rounded border-gray-300 text-main focus:ring-main size-4 bg-white dark:bg-gray-700 dark:border-gray-600"
+                                                type="checkbox" />
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-sm"
+                                                    data-alt="Candidate Sarah Portrait"
+                                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCAuw-VQkysMMdM5EMj4LBClMQ-qa2qV1ETMrUjCbzoN3LAczQY4Ce9D9g8TwG99wvxQEpqG9likfnWaQ-hZV2XKKy2kVgt6xhiiZTKyZYT1HT5isztAZWl0KLSkGgFeDAEBcE_VNuZaTkb4lSD-qbgH5ueKxDO1PNhYCXo4iBvg6vUrWwLEjektmZXyYYfpP7z0bDr-hJVTLUguxBwaaMl8jYWFhet1ZTJ64r4SoySGw4kNsd6QeALW8237yrz2AQWwhFvbAQAcmfx");'>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-sm font-semibold text-black dark:text-white">Sarah
+                                                        Jenkins</span>
+                                                    <span
+                                                        class="text-xs text-gray-600 dark:text-gray-400">sarah.j@example.com</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white">Senior UX
+                                                Designer</span>
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-100 dark:border-blue-800">Figma</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">React</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">+2</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300">
+                                                Open to Work
+                                            </span>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white font-medium">Jun 1,
+                                                2024</span>
+                                        </td>
+                                        <td class="p-4 text-right">
+                                            <button
+                                                class="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">more_vert</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 2 -->
+                                    <tr
+                                        class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer border-l-4 border-l-transparent">
+                                        <td class="p-4">
+                                            <input
+                                                aria-label="Select Candidate Marcus Liu"
+                                                class="rounded border-gray-300 text-main focus:ring-main size-4 bg-white dark:bg-gray-700 dark:border-gray-600"
+                                                type="checkbox" />
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-sm"
+                                                    data-alt="Candidate Marcus Portrait"
+                                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwb9tOap9glP1oALpEv-7OZ6zPwyunSgf5azu3YcgFh2AeAP43czbTCc3Px4mVsskMigV9-n_V_2279sjFqnLCt4_NZ2ctYIUGMGnamTxAVLR-mn2WIHPlvSFGvjYYfZqFqOU_clDY2kpnypR0w-wSzvlb481BVxHFYZeef_5GRu7oyf60TK3mE_Z9LS1k1qha2RUM74qwfFBkULBMIqoWz63QQjLgSjV1QgkPnd-XgWzOj7odPDNBsKQUs2Vvjro_0O25XV3TpzMe");'>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span
+                                                        class="text-sm font-semibold text-black dark:text-white">Marcus
+                                                        Liu</span>
+                                                    <span
+                                                        class="text-xs text-gray-600 dark:text-gray-400">marcus.liu@dev.co</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white">Full Stack
+                                                Developer</span>
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-100 dark:border-blue-800">Node.js</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">Python</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">AWS</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">
+                                                Passive
+                                            </span>
+                                        </td>
+                                        <td class="p-4">
+                                            <span
+                                                class="text-sm text-black dark:text-white font-medium">Immediate</span>
+                                        </td>
+                                        <td class="p-4 text-right">
+                                            <button
+                                                class="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">more_vert</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 3 -->
+                                    <tr
+                                        class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer border-l-4 border-l-transparent">
+                                        <td class="p-4">
+                                            <input
+                                                aria-label="Select Candidate Sarah Jenkins"
+                                                class="rounded border-gray-300 text-main focus:ring-main size-4 bg-white dark:bg-gray-700 dark:border-gray-600"
+                                                type="checkbox" />
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-sm"
+                                                    data-alt="Candidate Elena Portrait"
+                                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCTNHfXzh46TrHw5tD--o_8dk0jDEODP1UHNQiV_AgqkFauIhdqWlkSLLE8NQnps24Xn-Po-G2_M-mUBawhogejN7s-NeufRwBWBPk6jH2ULZ3YqEI1rfo71jgNhXtRo93usFkz_hnKxCRQS8dvU5T5PWIArOxtDNZA1Tpulzj9FinIE2OFEw5sZ7pTaGLCjfXCITCJtw4GJ6LAHNJJ47wdp72u-M5o-IKu_l33j6cmfM8v-fpVDSt7GjCXtrQg4cXxopiDO_hxk18E");'>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-sm font-semibold text-black dark:text-white">Elena
+                                                        Rodriguez</span>
+                                                    <span
+                                                        class="text-xs text-gray-600 dark:text-gray-400">elena.rod@design.io</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white">Product
+                                                Manager</span>
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-100 dark:border-blue-800">Agile</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">Jira</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300">
+                                                Interviewing
+                                            </span>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white font-medium">2 Weeks
+                                                Notice</span>
+                                        </td>
+                                        <td class="p-4 text-right">
+                                            <button
+                                                class="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">more_vert</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Row 4 -->
+                                    <tr
+                                        class="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors cursor-pointer border-l-4 border-l-transparent">
+                                        <td class="p-4">
+                                            <input
+                                                aria-label="Select Candidate David Kim"
+                                                class="rounded border-gray-300 text-main focus:ring-main size-4 bg-white dark:bg-gray-700 dark:border-gray-600"
+                                                type="checkbox" />
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-sm"
+                                                    data-alt="Candidate David Portrait"
+                                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAhYA-zHZ7LYjKSRH8Y8AsyrlakbMO9VLI6qEGV-tM-xnUsioyFAZo1ns2Yc1qj3LEj0XuieY46zd6lwh0qDqEJBYRIkPNz8PL6TRsW9lV-9LvfzpMvTHxb69o_DADiiT3KhGj57m9rQHdh3CjhRtf6yutn9fsIMs8GXzTkhwlm-A-Z38Tp2mHjtMQRwNqPTpcM4i0Vt5YSu5BibN30PdUSA7uAJ9jw6OlqXnVOU9laEOUzZR9LxoB7saTJkHRuo4kqH7Y95Fwm6uHD");'>
+                                                </div>
+                                                <div class="flex flex-col">
+                                                    <span class="text-sm font-semibold text-black dark:text-white">David
+                                                        Kim</span>
+                                                    <span
+                                                        class="text-xs text-gray-600 dark:text-gray-400">d.kim@tech.net</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white">DevOps
+                                                Engineer</span>
+                                        </td>
+                                        <td class="p-4">
+                                            <div class="flex flex-wrap gap-1.5">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-100 dark:border-blue-800">Docker</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">K8s</span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600">Terraform</span>
+                                            </div>
+                                        </td>
+                                        <td class="p-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300">
+                                                Blacklisted
+                                            </span>
+                                        </td>
+                                        <td class="p-4">
+                                            <span class="text-sm text-black dark:text-white font-medium">N/A</span>
+                                        </td>
+                                        <td class="p-4 text-right">
+                                            <button
+                                                class="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size: 20px;">more_vert</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Pagination -->
+                        <div
+                            class="flex items-center justify-between p-4 border-t border-[#e5e7eb] dark:border-gray-800 mt-auto bg-gray-50/50 dark:bg-gray-800/50">
+                            <p class="text-xs text-gray-600 dark:text-gray-400">Showing <span
+                                    class="font-medium text-black dark:text-white">1-10</span> of <span
+                                    class="font-medium text-black dark:text-white">1,248</span> candidates</p>
+                            <div class="flex gap-2">
+                                <button
+                                    class="flex items-center justify-center size-8 rounded border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-black text-gray-600 hover:bg-gray-50 disabled:opacity-50">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">chevron_left</span>
+                                </button>
+                                <button
+                                    class="flex items-center justify-center size-8 rounded border border-[#e5e7eb] dark:border-gray-700 bg-white dark:bg-black text-gray-600 hover:bg-gray-50 disabled:opacity-50">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size: 16px;">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Profile Drawer/Panel (Right Side) -->
+            <aside
+                class="w-[400px] border-l border-[#e5e7eb] dark:border-gray-800 bg-white dark:bg-black flex flex-col h-full shadow-xl z-10 shrink-0">
+                <!-- Drawer Header -->
+                <div class="flex items-start justify-between p-6 border-b border-[#e5e7eb] dark:border-gray-800">
+                    <div class="flex gap-4">
+                        <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-16 shadow-md border-2 border-white dark:border-gray-700"
+                            data-alt="Profile Detail Sarah Jenkins"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDw-Bt7hXMcr7RE7MXpVI9HGRyYPnzy_2bjdhCgevS95NOJPIX333l8kHSwA-KexAXXQ2joJbYciZuV8Z0O4EkbqCymP7l20a_GPnHrnWXPSTOOpvvnpGvfCnKe6XwLCQZDaiq-3UiCKFEvyZ94ZJaXpcrDHchaQ1RE2ttXuBNTb8i5Epn649yvF0K8carVpLjJakyYPVv-rOQ0MSHm3_iOg6c0geT-Eo2UlvNVeDX64JJoeSPcq30v85bpPpRBh7FYn0qeDXIew3mS");'>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <h3 class="text-lg font-bold text-black dark:text-white leading-tight">Sarah Jenkins
+                            </h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Senior UX Designer</p>
+                            <div class="flex items-center gap-1 mt-1">
+                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-500"
+                                    style="font-size: 14px;">location_on</span>
+                                <span class="text-xs text-gray-600 dark:text-gray-500">San Francisco, CA</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">close</span>
+                    </button>
+                </div>
+                <!-- Action Bar -->
+                <div
+                    class="flex items-center gap-2 p-4 border-b border-[#e5e7eb] dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 h-9 rounded-md bg-white dark:bg-gray-800 border border-[#e5e7eb] dark:border-gray-700 text-xs font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">mail</span>
+                        Email
+                    </button>
+                    <button
+                        class="flex-1 flex items-center justify-center gap-2 h-9 rounded-md bg-white dark:bg-gray-800 border border-[#e5e7eb] dark:border-gray-700 text-xs font-medium text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+                        Edit
+                    </button>
+                    <button
+                        class="size-9 flex items-center justify-center rounded-md bg-white dark:bg-gray-800 border border-[#e5e7eb] dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">more_horiz</span>
+                    </button>
+                </div>
+                <!-- Tabs -->
+                <div class="flex items-center px-6 border-b border-[#e5e7eb] dark:border-gray-800">
+                    <button class="px-1 py-3 text-sm font-medium text-main border-b-2 border-main">Overview</button>
+                    <button
+                        class="px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-200">Resume</button>
+                    <button
+                        class="px-4 py-3 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-gray-200">Notes</button>
+                </div>
+                <!-- Scrollable Detail Content -->
+                <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+                    <!-- Job Associate Widget -->
+                    <div class="rounded-lg border border-dashed border-main/40 bg-main/5 p-4 flex flex-col gap-3">
+                        <div class="flex items-center gap-2 text-main">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">work_outline</span>
+                            <span class="text-sm font-semibold">Associate Job Position</span>
+                        </div>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">Link Sarah to an open position to start
+                            the hiring pipeline.</p>
+                        <select
+                            aria-label="Select Candidate Sarah Jenkins"
+                            class="w-full text-sm rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 py-1.5 focus:border-main focus:ring-main">
+                            <option>Select a job...</option>
+                            <option>Senior Product Designer</option>
+                            <option>Design System Lead</option>
+                        </select>
+                        <button class="w-full h-8 rounded bg-main text-white text-xs font-medium hover:bg-main/90">Link
+                            Profile</button>
+                    </div>
+                    <!-- Contact Info -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-500">
+                            Contact Information</h4>
+                        <div class="flex items-center gap-3 text-sm">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-[#f0f2f4] dark:bg-gray-800 text-gray-600">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">mail</span>
+                            </div>
+                            <span class="text-black dark:text-white">sarah.j@example.com</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-[#f0f2f4] dark:bg-gray-800 text-gray-600">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">call</span>
+                            </div>
+                            <span class="text-black dark:text-white">+1 (555) 123-4567</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-sm">
+                            <div
+                                class="flex items-center justify-center size-8 rounded-full bg-[#f0f2f4] dark:bg-gray-800 text-gray-600">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">link</span>
+                            </div>
+                            <a class="text-main hover:underline" href="#">linkedin.com/in/sarahj</a>
+                        </div>
+                    </div>
+                    <!-- Skills Matrix -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-500">
+                            Skills Matrix</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span
+                                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">User
+                                Research</span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">Prototyping</span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">Figma</span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">HTML/CSS</span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-1 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-700">React
+                                Basic</span>
+                        </div>
+                    </div>
+                    <!-- Attachments -->
+                    <div class="flex flex-col gap-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-500">
+                            Attachments</h4>
+                        <div
+                            class="flex items-center justify-between p-3 rounded-lg border border-[#e5e7eb] dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer group">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded bg-red-50 dark:bg-red-900/20 text-red-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined"
+                                        style="font-size: 24px;">picture_as_pdf</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span
+                                        class="text-sm font-medium text-black dark:text-white">Sarah_Resume_2024.pdf</span>
+                                    <span class="text-xs text-gray-600 dark:text-gray-500">Added on May 20,
+                                        2024</span>
+                                </div>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-600 group-hover:text-main"
+                                style="font-size: 20px;">download</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>

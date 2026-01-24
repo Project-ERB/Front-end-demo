@@ -1,6 +1,6 @@
-<div class="relative flex min-h-screen flex-col items-center justify-center overflow-x-hidden p-4 md:p-6 bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-gray-200">
+<div class="relative flex min-h-screen flex-col bg-main-gray items-center justify-center overflow-x-hidden p-4 md:p-6 bg-background-light dark:bg-background-dark font-display main text-[#111318] dark:text-gray-200">
     <div class="flex items-center gap-3">
-        <div class="size-8 text-primary">
+        <div class="size-8 text-main">
             <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
@@ -18,7 +18,7 @@
             Company Logo
         </h2>
     </div>
-    <main class="w-full max-w-md">
+    <main class="w-full max-w-md shadow-2xl mt-10 mb-16">
         <div class="rounded-xl border border-gray-200/80 dark:border-gray-700/60 bg-white dark:bg-[#151c2c] shadow-lg">
             <div class="flex flex-col p-8 sm:p-10">
                 <h1 class="text-[#111318] dark:text-white tracking-tight text-3xl font-bold pb-2 text-center">
@@ -41,7 +41,7 @@
               >
               <input
                 formControlName="identifier"
-                class="form-input w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800/50 pl-11 pr-4 h-12 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                class="form-input w-full rounded-lg border-1 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800/50 pl-11 pr-4 h-12 focus:ring-2 focus:ring-main focus:border-main transition-all"
                 placeholder="Enter your email"
                 type="text"
               />
@@ -61,14 +61,14 @@
               <input
                 formControlName="password"
                 [type]="isPasswordVisible() ? 'text' : 'password'"
-                class="form-input w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800/50 pl-11 pr-11 h-12 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                class="form-input w-full rounded-lg border-1 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800/50 pl-11 pr-11 h-12 focus:ring-2 focus:ring-main focus:border-main transition-all"
                 placeholder="Enter your password"
               />
 
               <button
                 type="button"
                 (click)="togglePasswordVisibility()"
-                class="absolute right-0 h-full px-3.5 text-gray-500 dark:text-gray-400 hover:text-primary"
+                class="absolute right-0 h-full px-3.5 text-gray-500 dark:text-gray-400 hover:text-main"
               >
                 <span class="material-symbols-outlined text-xl">
                   {{ isPasswordVisible ()? "visibility" : "visibility_off" }}
@@ -78,14 +78,14 @@
           </label>
 
                     <div class="flex items-center justify-end">
-                        <a class="text-sm font-medium text-primary hover:underline cursor-pointer">Forgot Password?</a
+                        <a class="text-sm font-medium text-main hover:underline cursor-pointer">Forgot Password?</a
             >
           </div>
 
           <button
             type="submit"
             [disabled]="loginForm.invalid"
-            class="flex w-full items-center justify-center rounded-lg h-12 bg-primary text-white text-base font-bold transition-all duration-200 hover:bg-primary/90 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex w-full items-center justify-center cursor-pointer rounded-lg h-12 bg-main text-white text-base font-bold transition-all duration-200 hover:bg-main/90 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
             Login
           </button>
@@ -94,7 +94,7 @@
         <div class="mt-8 text-center">
           <p class="text-[#616f89] dark:text-gray-400 text-sm">
             Don't have an account?
-            <span (click)="ToRegister()" class="font-bold text-primary hover:underline cursor-pointer"
+            <span (click)="ToRegister()" class="font-bold text-main hover:underline cursor-pointer"
               >Register Now</span
             >
           </p>

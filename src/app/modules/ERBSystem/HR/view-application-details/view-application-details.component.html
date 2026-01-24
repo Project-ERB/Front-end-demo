@@ -1,0 +1,404 @@
+<div
+    class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white font-display min-h-screen flex flex-col">
+    <!-- Top Navigation -->
+    <nav
+        class="bg-white dark:bg-[#1e232e] border-b border-solid border-[#f0f2f4] dark:border-[#2a313d] px-6 lg:px-10 py-3 sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto flex items-center justify-between whitespace-nowrap">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-4 text-[#111318] dark:text-white">
+                    <div class="size-8 bg-main/10 rounded-lg flex items-center justify-center text-main">
+                        <span class="material-symbols-outlined">dashboard</span>
+                    </div>
+                    <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">HR Dashboard</h2>
+                </div>
+                <div class="hidden lg:flex items-center gap-9">
+                    <a class="text-gray-600 hover:text-main dark:text-gray-400 text-sm font-medium leading-normal transition-colors"
+                        href="#">Dashboard</a>
+                    <a class="text-gray-600 hover:text-main dark:text-gray-400 text-sm font-medium leading-normal transition-colors"
+                        href="#">Jobs</a>
+                    <a class="text-main text-sm font-bold leading-normal" href="#">Applications</a>
+                    <a class="text-gray-600 hover:text-main dark:text-gray-400 text-sm font-medium leading-normal transition-colors"
+                        href="#">Candidates</a>
+                    <a class="text-gray-600 hover:text-main dark:text-gray-400 text-sm font-medium leading-normal transition-colors"
+                        href="#">Reports</a>
+                </div>
+            </div>
+            <div class="flex flex-1 justify-end gap-6 items-center">
+                <label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+                    <div class="flex w-full flex-1 items-stretch rounded-lg h-full relative">
+                        <div
+                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-600">
+                            <span class="material-symbols-outlined text-[20px]">search</span>
+                        </div>
+                        <input
+                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] focus:outline-0 focus:ring-2 focus:ring-main/20 border-none bg-[#f0f2f4] dark:bg-[#2a313d] dark:text-white h-full placeholder:text-gray-600 px-4 pl-10 text-sm font-normal leading-normal transition-all"
+                            placeholder="Search candidates..." value="" />
+                    </div>
+                </label>
+                <button
+                    class="relative p-2 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-[#1e232e]"></span>
+                </button>
+                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-white dark:border-[#1e232e] shadow-sm"
+                    data-alt="User profile picture showing a smiling professional"
+                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCaJCJ6hqimt0TnuexQXdllL31fx0jfDrKlCS9Uen3Ls1n5yudQJf-HFjH7vswg5kW2yIAjIwdnFCrTpcpD65TCH3LSfhmZ8BtWWnnED9FymIBgoM00KAWXEztQWhTARqwIWEgQn5CPJC8h4mQIEd9UIWDN4eNaUYOUg9tBlqEHKGJXwl75r62wbRh4GMIlWc3ntZ6r6fBQPSUSL05OPGJFPFW25rBfoGQrIGhHenC6rGzWn9C_en4c8K0jpmpx68XXpdpspxfNRWAP");'>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="flex-1 w-full max-w-[1440px] mx-auto px-6 lg:px-10 py-6 pb-20 bg-main-gray">
+        <!-- Breadcrumbs -->
+        <nav class="flex flex-wrap gap-2 mb-6">
+            <a class="text-gray-600 hover:text-main transition-colors text-sm font-medium leading-normal flex items-center gap-1"
+                href="#">
+                <span class="material-symbols-outlined text-[18px]">work</span> Jobs
+            </a>
+            <span class="text-gray-600 text-sm font-medium leading-normal">/</span>
+            <a class="text-gray-600 hover:text-main transition-colors text-sm font-medium leading-normal"
+                href="#">Senior UX Designer</a>
+            <span class="text-gray-600 text-sm font-medium leading-normal">/</span>
+            <span class="text-[#111318] dark:text-white text-sm font-medium leading-normal">Sarah Jenkins</span>
+        </nav>
+        <!-- Header Area -->
+        <div
+            class="bg-white dark:bg-[#1e232e] rounded-xl border border-[#e5e7eb] dark:border-[#2a313d] shadow-sm p-6 mb-6 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div class="flex gap-5">
+                    <div class="relative">
+                        <div class="bg-center bg-no-repeat bg-cover rounded-xl size-20 shadow-inner"
+                            data-alt="Candidate profile picture"
+                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuACcwSnVusz1r0ph4p0D3p-LtnWnMLNQH92FHMQPxf5lZZYIN0unNSAUc7LOnkBy-3Vn1PbUTqy6P-5lDXXq0O4tCBq7JZfw6-D9ee2IAS5VoesQZDPupX_BXOh5zVCHxAxlvl1ckpL7RDx3HL4Em8VPT_OkoY6V3bdbH8DP9v7cpYhGjOS5b5u4LH7t_7yESXYDMeF-iBYFjddPaTpKRBZFrPHenwshp6co5_QofmCrSp87YTpJ8-r0Ty1ErGhL6rxqUw-tTOmj5S_");'>
+                        </div>
+                        <div
+                            class="absolute -bottom-2 -right-2 bg-green-500 rounded-full p-1 border-2 border-white dark:border-[#1e232e]">
+                            <span class="material-symbols-outlined text-white text-[14px] block">check</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center gap-1">
+                        <h1 class="text-[#111318] dark:text-white text-3xl font-bold leading-tight tracking-tight">Sarah
+                            Jenkins</h1>
+                        <div class="flex flex-wrap items-center gap-x-2 text-gray-600 dark:text-gray-400 text-sm">
+                            <span>Applied for <span class="font-semibold text-main">Senior UX Designer</span></span>
+                            <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                            <span>ID: #48291</span>
+                            <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+                            <span>2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    <button class="flex-1 md:flex-none h-10 px-4 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 dark:border-red-800 dark:text-red-400 font-bold text-sm transition-colors flex items-center justify-center gap-2 cursor-pointer active:scale-95 duration-200">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                        Reject
+                    </button>
+                    <button
+                        class="flex-1 md:flex-none h-10 px-4 rounded-lg bg-main hover:bg-blue-700 text-white shadow-md shadow-blue-500/20 font-bold text-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95 duration-200">
+                        <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                        Schedule Interview
+                    </button>
+                    <button
+                        class="h-10 w-10 rounded-lg border border-[#e5e7eb] dark:border-[#2a313d] hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-600 flex items-center justify-center transition-colors cursor-pointer active:scale-95 duration-200">
+                        <span class="material-symbols-outlined">more_vert</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Chips / Quick Stats -->
+            <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-[#f0f2f4] dark:border-[#2a313d]">
+                <div
+                    class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
+                    <span class="material-symbols-outlined text-main text-[18px]">adjust</span>
+                    <span class="text-main text-sm font-semibold">Interviewing</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f2f4] dark:bg-[#2a313d]">
+                    <span class="material-symbols-outlined text-gray-600 text-[18px]">work_history</span>
+                    <span class="text-[#111318] dark:text-gray-200 text-sm font-medium">5 Yrs Experience</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f2f4] dark:bg-[#2a313d]">
+                    <span class="material-symbols-outlined text-[#0077b5] text-[18px]">link</span>
+                    <span class="text-[#111318] dark:text-gray-200 text-sm font-medium">LinkedIn</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f2f4] dark:bg-[#2a313d]">
+                    <span class="material-symbols-outlined text-gray-600 text-[18px]">public</span>
+                    <span class="text-[#111318] dark:text-gray-200 text-sm font-medium">Remote (SF Based)</span>
+                </div>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f0f2f4] dark:bg-[#2a313d]">
+                    <span class="material-symbols-outlined text-gray-600 text-[18px]">attach_money</span>
+                    <span class="text-[#111318] dark:text-gray-200 text-sm font-medium">$120k - $140k</span>
+                </div>
+            </div>
+        </div>
+        <!-- Layout Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <!-- Left Sidebar: Profile Details -->
+            <div class="lg:col-span-3 flex flex-col gap-6">
+                <div
+                    class="bg-white dark:bg-[#1e232e] rounded-xl border border-[#e5e7eb] dark:border-[#2a313d] shadow-sm overflow-hidden hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <div class="p-4 border-b border-[#f0f2f4] dark:border-[#2a313d]">
+                        <h3 class="font-bold text-[#111318] dark:text-white">Contact Info</h3>
+                    </div>
+                    <div class="p-4 flex flex-col gap-4">
+                        <div class="flex items-start gap-3 group cursor-pointer">
+                            <div
+                                class="size-8 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-600 group-hover:text-main transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">mail</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs text-gray-600 font-medium uppercase tracking-wide">Email</p>
+                                <p class="text-sm font-medium text-[#111318] dark:text-gray-200 truncate"
+                                    title="sarah.jenkins@example.com">sarah.jenkins@example.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 group cursor-pointer">
+                            <div
+                                class="size-8 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-600 group-hover:text-main transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">call</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs text-gray-600 font-medium uppercase tracking-wide">Phone</p>
+                                <p class="text-sm font-medium text-[#111318] dark:text-gray-200">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 group cursor-pointer">
+                            <div
+                                class="size-8 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-600 group-hover:text-main transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">location_on</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs text-gray-600 font-medium uppercase tracking-wide">Location</p>
+                                <p class="text-sm font-medium text-[#111318] dark:text-gray-200">San Francisco, CA</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 group cursor-pointer">
+                            <div
+                                class="size-8 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-600 group-hover:text-main transition-colors">
+                                <span class="material-symbols-outlined text-[20px]">language</span>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-xs text-gray-600 font-medium uppercase tracking-wide">Portfolio</p>
+                                <a class="text-sm font-medium text-main hover:underline" href="#">sarahux.design</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-white dark:bg-[#1e232e] rounded-xl border border-[#e5e7eb] dark:border-[#2a313d] shadow-sm p-4 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <h3 class="font-bold text-[#111318] dark:text-white mb-3">Skills</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span
+                            class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300">Figma</span>
+                        <span
+                            class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300">Prototyping</span>
+                        <span
+                            class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300">User
+                            Research</span>
+                        <span
+                            class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300">HTML/CSS</span>
+                        <span
+                            class="px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-xs font-medium text-gray-700 dark:text-gray-300">Design
+                            Systems</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Center Column: Main Content -->
+            <div class="lg:col-span-6 flex flex-col gap-6">
+                <!-- Tabs -->
+                <div
+                    class="bg-white dark:bg-[#1e232e] rounded-xl border border-[#e5e7eb] dark:border-[#2a313d] shadow-sm hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <div
+                        class="flex overflow-x-auto border-b border-[#f0f2f4] dark:border-[#2a313d] px-2 hide-scrollbar">
+                        <button
+                            class="flex items-center gap-2 px-4 py-4 border-b-2 border-main text-main font-bold text-sm whitespace-nowrap">
+                            <span class="material-symbols-outlined text-[20px]">description</span>
+                            Application Info
+                        </button>
+                        <button
+                            class="flex items-center gap-2 px-4 py-4 border-b-2 border-transparent text-gray-600 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50 font-medium text-sm whitespace-nowrap transition-all rounded-t-lg">
+                            <span class="material-symbols-outlined text-[20px]">folder_open</span>
+                            Resume &amp; Files
+                        </button>
+                        <button
+                            class="flex items-center gap-2 px-4 py-4 border-b-2 border-transparent text-gray-600 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50 font-medium text-sm whitespace-nowrap transition-all rounded-t-lg">
+                            <span class="material-symbols-outlined text-[20px]">forum</span>
+                            Interview Notes
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <!-- Resume Preview Section -->
+                        <div class="mb-8">
+                            <h3
+                                class="text-sm font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">attachment</span> Resume
+                            </h3>
+                            <div
+                                class="flex items-center justify-between p-4 rounded-lg border border-[#e5e7eb] dark:border-[#2a313d] bg-gray-50 dark:bg-[#1a1f28] hover:border-main/50 transition-colors group">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="size-10 bg-red-100 dark:bg-red-900/30 text-red-600 rounded-lg flex items-center justify-center">
+                                        <span class="material-symbols-outlined">picture_as_pdf</span>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="text-sm font-bold text-[#111318] dark:text-white group-hover:text-main transition-colors">
+                                            Sarah_Jenkins_Resume_UX.pdf</p>
+                                        <p class="text-xs text-gray-600">2.4 MB • Added 2 days ago</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button
+                                        class="size-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 transition-colors"
+                                        title="Preview">
+                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                    </button>
+                                    <button
+                                        class="size-8 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 transition-colors"
+                                        title="Download">
+                                        <span class="material-symbols-outlined text-[20px]">download</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Cover Letter -->
+                        <div class="mb-8">
+                            <h3
+                                class="text-sm font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">format_quote</span> Cover Letter
+                            </h3>
+                            <div
+                                class="prose prose-sm max-w-none text-[#111318] dark:text-gray-300 leading-relaxed bg-[#f9fafb] dark:bg-[#1a1f28] p-5 rounded-lg border border-[#f0f2f4] dark:border-[#2a313d]">
+                                <p class="mb-3">Dear Hiring Manager,</p>
+                                <p class="mb-3">I have been following Acme Corp's design evolution over the past few
+                                    years, and I was thrilled to see the opening for a Senior UX Designer. With 5 years
+                                    of experience designing complex enterprise applications, I believe my background
+                                    aligns perfectly with your team's current challenges.</p>
+                                <p class="mb-3">In my current role at TechStream, I led the redesign of the core
+                                    dashboard which resulted in a 40% increase in user engagement and a significant drop
+                                    in support tickets. I am passionate about data-driven design and building accessible
+                                    interfaces.</p>
+                                <p>I look forward to the possibility of discussing how I can contribute to your team.
+                                </p>
+                                <p class="mt-4 font-medium">Best regards,<br />Sarah</p>
+                            </div>
+                        </div>
+                        <!-- Q&A -->
+                        <div>
+                            <h3
+                                class="text-sm font-bold text-gray-600 uppercase tracking-wide mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[18px]">quiz</span> Screening Questions
+                            </h3>
+                            <div class="space-y-4">
+                                <div
+                                    class="p-4 rounded-lg border border-[#f0f2f4] dark:border-[#2a313d] hover:bg-gray-50 dark:hover:bg-[#1a1f28] transition-colors">
+                                    <p class="text-sm font-medium text-gray-600 mb-1">Why do you want to work here?</p>
+                                    <p class="text-sm text-[#111318] dark:text-gray-200">I admire the company's
+                                        commitment to sustainability and user-centric approach to product development.
+                                    </p>
+                                </div>
+                                <div
+                                    class="p-4 rounded-lg border border-[#f0f2f4] dark:border-[#2a313d] hover:bg-gray-50 dark:hover:bg-[#1a1f28] transition-colors">
+                                    <p class="text-sm font-medium text-gray-600 mb-1">What is your expected salary
+                                        range?</p>
+                                    <p class="text-sm text-[#111318] dark:text-gray-200">$120,000 - $140,000 per year.
+                                    </p>
+                                </div>
+                                <div
+                                    class="p-4 rounded-lg border border-[#f0f2f4] dark:border-[#2a313d] hover:bg-gray-50 dark:hover:bg-[#1a1f28] transition-colors">
+                                    <p class="text-sm font-medium text-gray-600 mb-1">Are you willing to relocate?</p>
+                                    <p class="text-sm text-[#111318] dark:text-gray-200">Yes, open to relocation within
+                                        California.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Right Sidebar: Activity & Notes -->
+            <div class="lg:col-span-3 flex flex-col gap-6">
+                <!-- Internal Score -->
+                <div class="bg-gradient-to-br from-main to-blue-600 rounded-xl shadow-lg p-5 text-white hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <p class="text-blue-100 text-sm font-medium mb-2">Overall Match Score</p>
+                    <div class="flex items-end gap-2 mb-2">
+                        <span class="text-4xl font-bold">88%</span>
+                        <span class="text-blue-100 text-sm mb-1.5">Strong Match</span>
+                    </div>
+                    <div class="w-full bg-blue-800/50 h-1.5 rounded-full mt-2">
+                        <div class="bg-white h-1.5 rounded-full" style="width: 88%"></div>
+                    </div>
+                </div>
+                <!-- Notes Input -->
+                <div
+                    class="bg-white dark:bg-[#1e232e] rounded-xl border border-[#e5e7eb] dark:border-[#2a313d] shadow-sm p-4 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-bold text-[#111318] dark:text-white">Internal Notes</h3>
+                        <button class="text-xs font-medium text-main hover:underline">View All</button>
+                    </div>
+                    <div class="relative">
+                        <textarea
+                            class="w-full bg-[#f6f6f8] dark:bg-[#2a313d] border-none rounded-lg p-3 text-sm text-[#111318] dark:text-white focus:ring-2 focus:ring-main/20 resize-none placeholder-gray-400"
+                            placeholder="Add a note..." rows="3"></textarea>
+                        <div class="flex justify-end mt-2">
+                            <button
+                                class="bg-main hover:bg-blue-700 text-white text-xs font-bold py-1.5 px-3 rounded-md transition-colors">Save
+                                Note</button>
+                        </div>
+                    </div>
+                    <!-- Recent Note Item -->
+                    <div class="mt-4 pt-4 border-t border-[#f0f2f4] dark:border-[#2a313d]">
+                        <div class="flex gap-2 mb-1">
+                            <div class="size-5 rounded-full bg-cover bg-center" data-alt="Reviewer Avatar"
+                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBNNWPepvLUklSu0K7jtz8nLSLIWnbSVBzDc2YBYG2GBWPS4N2M1676wCGquLK2X7zUEYdMWnwBgnKAeIDoGkysr-lkvKh1tyyUXAebs12hx_VRIQAbqu6RTx_54R_sg7aec7CX13e7pj_b_T8119JPxK97FCVtEcZAkjWiUmUHeUp4woQ59vL5kiZRBnEqsZVIeANMrvPHLNX3P4Vj1SLF_7-fEU2P_wjxAszmN5WUDDRt8O5eSpov78Z7Q5J1lNrqjS5t9bjuhPOK");'>
+                            </div>
+                            <span class="text-xs font-bold text-[#111318] dark:text-white">Mike Ross</span>
+                            <span class="text-xs text-gray-600">5h ago</span>
+                        </div>
+                        <p class="text-xs text-[#4b5563] dark:text-gray-400 leading-relaxed">Impressive portfolio. I
+                            particularly liked the case study on the banking app. Definitely worth an interview.</p>
+                    </div>
+                </div>
+                <!-- Activity Log / Timeline -->
+                <div
+                    class="bg-white dark:bg-[#1e232e] rounded-xl border border-[#e5e7eb] dark:border-[#2a313d] shadow-sm p-4 hover:shadow-lg dark:hover:shadow-black/50 transition-all duration-300 hover:-translate-y-1">
+                    <h3 class="font-bold text-[#111318] dark:text-white mb-4">Activity Log</h3>
+                    <div class="relative pl-4 space-y-6">
+                        <!-- Vertical Line -->
+                        <div class="absolute left-1 top-2 bottom-2 w-0.5 bg-[#f0f2f4] dark:bg-[#2a313d]"></div>
+                        <!-- Timeline Item 1 -->
+                        <div class="relative pl-4">
+                            <div
+                                class="absolute left-0 -translate-x-[5px] top-1.5 size-2.5 rounded-full bg-main ring-4 ring-white dark:ring-[#1e232e]">
+                            </div>
+                            <p class="text-xs text-gray-600 mb-0.5">Today, 10:23 AM</p>
+                            <p class="text-sm font-medium text-[#111318] dark:text-white">Moved to <span
+                                    class="text-main">Interviewing</span></p>
+                            <p class="text-xs text-gray-600">by Sarah H.</p>
+                        </div>
+                        <!-- Timeline Item 2 -->
+                        <div class="relative pl-4">
+                            <div
+                                class="absolute left-0 -translate-x-[5px] top-1.5 size-2.5 rounded-full bg-gray-300 dark:bg-gray-600 ring-4 ring-white dark:ring-[#1e232e]">
+                            </div>
+                            <p class="text-xs text-gray-600 mb-0.5">Yesterday, 4:00 PM</p>
+                            <p class="text-sm font-medium text-[#111318] dark:text-white">Screening completed</p>
+                            <p class="text-xs text-gray-600">Score: 4/5</p>
+                        </div>
+                        <!-- Timeline Item 3 -->
+                        <div class="relative pl-4">
+                            <div
+                                class="absolute left-0 -translate-x-[5px] top-1.5 size-2.5 rounded-full bg-gray-300 dark:bg-gray-600 ring-4 ring-white dark:ring-[#1e232e]">
+                            </div>
+                            <p class="text-xs text-gray-600 mb-0.5">2 Days Ago</p>
+                            <p class="text-sm font-medium text-[#111318] dark:text-white">Application Received</p>
+                            <p class="text-xs text-gray-600">Source: LinkedIn</p>
+                        </div>
+                    </div>
+                    <button
+                        class="w-full mt-4 py-2 text-xs font-bold text-gray-600 hover:text-main hover:bg-gray-50 dark:hover:bg-[#2a313d] rounded-lg transition-colors">
+                        View Full History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
