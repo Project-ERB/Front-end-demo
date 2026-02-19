@@ -1,0 +1,346 @@
+<div class="flex min-h-screen w-full bg-[#f6f6f8] font-sans text-[#111318]">
+
+    <!-- ═══ SIDEBAR ════════════════════════════════════════════════════ -->
+    <aside class="hidden w-64 shrink-0 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
+        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
+            <div class="flex items-center gap-2">
+                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
+                    <span class="material-symbols-outlined text-xl">analytics</span>
+                </div>
+                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
+            </div>
+        </div>
+        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
+            <nav class="flex flex-col gap-1">
+                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
+                <a *ngFor="let item of navItems" href="#"
+                    [ngClass]="item.active ? 'bg-[#1e3b8a]/10 text-[#1e3b8a]' : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
+                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
+                    {{ item.label }}
+                </a>
+            </nav>
+            <div class="flex flex-col gap-4">
+                <div class="rounded-xl bg-[#eff6ff] p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
+                            <span class="material-symbols-outlined text-sm">support_agent</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
+                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
+                        alt="Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
+                    <div>
+                        <p class="text-sm font-semibold text-[#0f172a]">Jane Doe</p>
+                        <p class="text-xs text-[#64748b]">Enterprise Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══ MAIN ════════════════════════════════════════════════════════ -->
+    <main class="flex min-w-0 flex-1 flex-col">
+
+        <!-- Page Header -->
+        <header class="border-b border-[#dbdee6] bg-white px-8 py-5">
+            <!-- Breadcrumbs -->
+            <nav class="mb-4 flex items-center text-sm text-[#616c89]">
+                <a href="#" class="hover:text-[#1e3b8a] transition-colors">Marketing</a>
+                <span class="material-symbols-outlined mx-1 text-xs">chevron_right</span>
+                <a href="#" class="hover:text-[#1e3b8a] transition-colors">Discounts</a>
+                <span class="material-symbols-outlined mx-1 text-xs">chevron_right</span>
+                <span class="font-medium text-[#111318]">{{ discount.name }}</span>
+            </nav>
+
+            <!-- Title & Actions -->
+            <div class="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-center gap-3">
+                        <h1 class="text-3xl font-black tracking-tight text-[#111318]">{{ discount.name }}</h1>
+                        <span
+                            class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold"
+                            [ngClass]="discount.status === 'Active'
+                                ? 'border-emerald-200 bg-emerald-100 text-emerald-800'
+                                : 'border-[#dbdee6] bg-[#f6f6f8] text-[#616c89]'">
+                            <span class="size-1.5 rounded-full"
+                                [ngClass]="discount.status === 'Active' ? 'bg-emerald-600' : 'bg-[#94a3b8]'"></span>
+                            {{ discount.status }}
+                        </span>
+                    </div>
+                    <p class="text-sm text-[#616c89]">
+                        Created on {{ discount.createdOn }} • Last edited by
+                        <span class="font-medium text-[#111318]">{{ discount.lastEditedBy }}</span>
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button (click)="duplicate()"
+                        class="flex items-center justify-center gap-2 rounded-lg border border-[#dbdee6] bg-white px-4 py-2 text-sm font-semibold text-[#111318] transition-colors hover:bg-[#f6f6f8]">
+                        <span class="material-symbols-outlined text-[18px]">content_copy</span>
+                        Duplicate
+                    </button>
+                    <button (click)="toggleDisable()"
+                        class="flex items-center justify-center gap-2 rounded-lg border border-[#dbdee6] bg-white px-4 py-2 text-sm font-semibold transition-colors hover:bg-[#f6f6f8]"
+                        [ngClass]="discount.status === 'Active' ? 'text-red-600 border-red-200 hover:bg-red-50' : 'text-emerald-600 border-emerald-200 hover:bg-emerald-50'">
+                        <span class="material-symbols-outlined text-[18px]">{{ discount.status === 'Active' ? 'pause' :
+                            'play_arrow' }}</span>
+                        {{ discount.status === 'Active' ? 'Disable' : 'Enable' }}
+                    </button>
+                    <button (click)="editDiscount()"
+                        class="flex items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-900">
+                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                        Edit Discount
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="flex-1 overflow-y-auto px-8 py-8">
+            <div class="mx-auto max-w-7xl">
+                <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+
+                    <!-- ── Left Column ──────────────────────────────────── -->
+                    <div class="space-y-6 lg:col-span-2">
+
+                        <!-- Overview -->
+                        <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                            <div
+                                class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/50 px-6 py-4">
+                                <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
+                                    <span class="material-symbols-outlined text-[#1e3b8a]">info</span>
+                                    Overview
+                                </h3>
+                            </div>
+                            <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
+                                <div>
+                                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-[#616c89]">Discount
+                                        Code</p>
+                                    <div class="flex items-center gap-2">
+                                        <code
+                                            class="rounded border border-[#dbdee6] bg-[#f6f6f8] px-2 py-1 font-mono text-lg font-bold text-[#111318]">
+                                            {{ discount.code }}
+                                        </code>
+                                        <button (click)="copyCode()" title="Copy Code"
+                                            class="p-1 text-[#94a3b8] transition-colors hover:text-[#1e3b8a]">
+                                            <span class="material-symbols-outlined text-[18px]">content_copy</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-[#616c89]">Internal
+                                        Description</p>
+                                    <p class="text-sm text-[#111318]">{{ discount.description }}</p>
+                                </div>
+                                <div>
+                                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-[#616c89]">Start
+                                        Date</p>
+                                    <p class="text-sm font-medium text-[#111318]">{{ discount.startDate }}</p>
+                                </div>
+                                <div>
+                                    <p class="mb-1 text-xs font-medium uppercase tracking-wide text-[#616c89]">End Date
+                                    </p>
+                                    <p class="text-sm font-medium text-[#111318]">{{ discount.endDate }}</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Value & Type -->
+                        <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                            <div
+                                class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/50 px-6 py-4">
+                                <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
+                                    <span class="material-symbols-outlined text-[#1e3b8a]">percent</span>
+                                    Value &amp; Type
+                                </h3>
+                            </div>
+                            <div class="grid grid-cols-1 gap-4 p-6 md:grid-cols-3">
+                                <div class="rounded-lg border border-[#dbdee6] bg-[#f6f6f8] p-4">
+                                    <p class="mb-2 text-xs font-medium uppercase tracking-wide text-[#616c89]">Discount
+                                        Type</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[#1e3b8a]">money_off</span>
+                                        <span class="text-lg font-bold text-[#111318]">{{ discount.type }}</span>
+                                    </div>
+                                </div>
+                                <div class="rounded-lg border border-[#dbdee6] bg-[#f6f6f8] p-4">
+                                    <p class="mb-2 text-xs font-medium uppercase tracking-wide text-[#616c89]">Value</p>
+                                    <div class="flex items-end gap-2">
+                                        <span class="text-2xl font-black text-[#1e3b8a]">{{ discount.value }}</span>
+                                        <span class="mb-0.5 text-sm font-medium text-[#616c89]">off</span>
+                                    </div>
+                                </div>
+                                <div class="rounded-lg border border-[#dbdee6] bg-[#f6f6f8] p-4">
+                                    <p class="mb-2 text-xs font-medium uppercase tracking-wide text-[#616c89]">Applies
+                                        To</p>
+                                    <div class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-[#616c89]">shopping_cart</span>
+                                        <span class="text-base font-bold text-[#111318]">{{ discount.appliesTo }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Usage & Rules -->
+                        <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                            <div
+                                class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/50 px-6 py-4">
+                                <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
+                                    <span class="material-symbols-outlined text-[#1e3b8a]">gavel</span>
+                                    Usage &amp; Rules
+                                </h3>
+                            </div>
+                            <table class="w-full text-sm">
+                                <tbody class="divide-y divide-[#f6f6f8]">
+                                    <tr *ngFor="let rule of discount.rules">
+                                        <td class="w-1/3 px-6 py-4 font-medium text-[#616c89]">{{ rule.label }}</td>
+                                        <td class="px-6 py-4">
+                                            <ng-container *ngIf="!rule.badge">
+                                                <span class="font-semibold text-[#111318]"
+                                                    [innerHTML]="rule.value"></span>
+                                            </ng-container>
+                                            <ng-container *ngIf="rule.badge">
+                                                <span
+                                                    class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium"
+                                                    [ngClass]="rule.badgeClass">
+                                                    {{ rule.value }}
+                                                </span>
+                                            </ng-container>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </section>
+
+                        <!-- Targeting -->
+                        <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                            <div
+                                class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/50 px-6 py-4">
+                                <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
+                                    <span class="material-symbols-outlined text-[#1e3b8a]">target</span>
+                                    Targeting
+                                </h3>
+                                <a href="#" class="text-xs font-bold text-[#1e3b8a] hover:underline">View All</a>
+                            </div>
+                            <div class="p-6">
+                                <p class="mb-4 text-sm text-[#616c89]">{{ discount.targetingDescription }}</p>
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-[#94a3b8]">
+                                            Includes Collections</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span *ngFor="let tag of discount.includesCollections"
+                                                class="inline-flex items-center rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
+                                                {{ tag }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-[#f6f6f8] pt-4">
+                                        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-[#94a3b8]">
+                                            Excludes Products</p>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span *ngFor="let tag of discount.excludesProducts"
+                                                class="inline-flex items-center rounded-full border border-[#dbdee6] bg-[#f6f6f8] px-3 py-1 text-sm font-medium text-[#616c89]">
+                                                {{ tag }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div><!-- /left col -->
+
+                    <!-- ── Right Column: Performance ────────────────────── -->
+                    <div class="lg:col-span-1">
+                        <section class="sticky top-6 rounded-xl border border-[#dbdee6] bg-white p-6 shadow-sm">
+                            <h3 class="mb-6 flex items-center gap-2 text-base font-bold text-[#111318]">
+                                <span class="material-symbols-outlined text-[#1e3b8a]">monitoring</span>
+                                Performance
+                            </h3>
+                            <div class="space-y-6">
+
+                                <!-- Key Metrics -->
+                                <div class="space-y-4">
+                                    <div class="rounded-lg border border-blue-100 bg-blue-50 p-4">
+                                        <p class="mb-1 text-sm font-medium text-[#616c89]">Total Sales Generated</p>
+                                        <p class="text-3xl font-black tracking-tight text-[#111318]">
+                                            {{ performance.totalSales }}
+                                        </p>
+                                        <p class="mt-1 flex items-center text-xs font-medium text-emerald-600">
+                                            <span class="material-symbols-outlined mr-1 text-sm">trending_up</span>
+                                            {{ performance.salesTrend }}
+                                        </p>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="rounded-lg border border-[#dbdee6] p-3">
+                                            <p class="mb-1 text-xs font-medium text-[#616c89]">Total Redemptions</p>
+                                            <p class="text-xl font-bold text-[#111318]">{{ performance.redemptions |
+                                                number }}</p>
+                                            <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-[#f6f6f8]">
+                                                <div class="h-full rounded-full bg-[#1e3b8a]"
+                                                    [style.width]="redemptionPercent + '%'"></div>
+                                            </div>
+                                            <p class="mt-1 text-[10px] text-[#94a3b8]">{{ redemptionPercent }}% of limit
+                                            </p>
+                                        </div>
+                                        <div class="rounded-lg border border-[#dbdee6] p-3">
+                                            <p class="mb-1 text-xs font-medium text-[#616c89]">Discount Amount</p>
+                                            <p class="text-xl font-bold text-[#111318]">{{ performance.discountAmount }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Redemption Trend Chart -->
+                                <div class="border-t border-[#f6f6f8] pt-6">
+                                    <div class="mb-4 flex items-center justify-between">
+                                        <p class="text-sm font-bold text-[#111318]">Redemption Trend</p>
+                                        <select [(ngModel)]="chartPeriod"
+                                            class="cursor-pointer border-none bg-transparent text-xs font-medium text-[#616c89] focus:ring-0 outline-none">
+                                            <option value="30">Last 30 Days</option>
+                                            <option value="7">Last 7 Days</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- CSS Bar Chart -->
+                                    <div class="relative flex h-40 items-end justify-between gap-1 px-2">
+                                        <!-- Grid lines -->
+                                        <div class="pointer-events-none absolute inset-0 flex flex-col justify-between">
+                                            <div *ngFor="let _ of [1,2,3,4,5]" class="h-px w-full bg-[#f6f6f8]"></div>
+                                        </div>
+                                        <!-- Bars -->
+                                        <div *ngFor="let bar of chartBars; let i = index; let last = last"
+                                            class="relative z-10 w-full rounded-t-sm transition-colors"
+                                            [ngClass]="last ? 'bg-[#1e3b8a] hover:bg-blue-900' : 'bg-[#1e3b8a]/20 hover:bg-[#1e3b8a]/40'"
+                                            [style.height]="bar + '%'" [title]="'Day ' + (i + 1)">
+                                        </div>
+                                    </div>
+                                    <div class="mt-2 flex justify-between px-1 text-[10px] text-[#94a3b8]">
+                                        <span>Jun 1</span>
+                                        <span>Jun 15</span>
+                                        <span>Jun 30</span>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-[#f6f6f8] pt-4">
+                                    <button (click)="viewFullReport()"
+                                        class="w-full rounded-lg py-2 text-sm font-bold text-[#1e3b8a] transition-colors hover:bg-blue-50">
+                                        View Full Report
+                                    </button>
+                                </div>
+
+                            </div>
+                        </section>
+                    </div>
+
+                </div><!-- /grid -->
+            </div>
+        </div>
+    </main>
+</div>

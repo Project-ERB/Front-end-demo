@@ -1,0 +1,966 @@
+<div
+    class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-slate-50 font-sans text-slate-900 antialiased">
+
+    <!-- Navigation -->
+    <header
+        class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3 shadow-sm">
+        <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3 text-[#1e3b8a]">
+                <div class="flex size-8 items-center justify-center rounded bg-[#1e3b8a]/10 text-[#1e3b8a]">
+                    <span class="material-symbols-outlined text-[20px]">dataset</span>
+                </div>
+                <h2 class="text-lg font-bold leading-tight tracking-tight text-slate-900">ERP Dashboard</h2>
+            </div>
+            <div class="hidden md:flex h-10 min-w-40 max-w-64">
+                <div
+                    class="flex h-full w-full items-stretch rounded-lg bg-slate-100 focus-within:ring-2 focus-within:ring-[#1e3b8a]/20">
+                    <div class="flex items-center justify-center pl-3 text-slate-500">
+                        <span class="material-symbols-outlined text-[20px]">search</span>
+                    </div>
+                    <input
+                        class="flex-1 rounded-lg border-none bg-transparent px-3 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                        placeholder="Search products, orders..." type="text" />
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-1 justify-end gap-4">
+            <div class="flex gap-2">
+                <button
+                    class="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                </button>
+                <button
+                    class="flex size-10 items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>
+                </button>
+            </div>
+            <div class="size-10 overflow-hidden rounded-full border-2 border-slate-100">
+                <img alt="User Profile" class="h-full w-full object-cover"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0jVI590utfRP87n1BhZl7IBUIRLt5hJG4vKr2n06gq6G6BWr6u741p-7gBmwwLqYTUkscIkKbRG0OVxulPvQXZKvH9TQEsPVsfzwD8uOovUm5jSFxCFe9__jTs4AlJbfTMxDohPT2KX7kHIHoQx7u4FoDDVhPJiwZphOW0EA-dkUpKQQcUfAx96DmeLICkx0MEuiktequnUHN4A6KaroAXZ2EMK1GOCK9FA9GtoeO287KjMKYni13R_Svssvn89Gz5XaDt7igzSht" />
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 px-4 py-6 sm:px-8 lg:px-12 xl:px-40">
+        <div class="mx-auto max-w-[1280px]">
+
+            <!-- Breadcrumbs -->
+            <nav class="mb-6 flex items-center gap-2 text-sm text-slate-500">
+                <a class="cursor-pointer hover:text-[#1e3b8a]" href="#">Inventory</a>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                <a class="cursor-pointer hover:text-[#1e3b8a]" href="#">Products</a>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                <span class="font-semibold text-slate-900">{{ productName }}</span>
+            </nav>
+
+            <!-- Product Header -->
+            <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                <div class="flex gap-6">
+                    <div
+                        class="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <img [alt]="productName" class="h-full w-full object-cover" [src]="productImageUrl" />
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">{{ productName }}</h1>
+                            <span
+                                class="inline-flex items-center rounded-full border border-green-200 bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">{{
+                                productStatus }}</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-sm text-slate-500">
+                            <span class="flex items-center gap-1"><span
+                                    class="material-symbols-outlined text-[18px]">tag</span>SKU: {{ productSku }}</span>
+                            <span class="h-1 w-1 rounded-full bg-slate-300"></span>
+                            <span class="flex items-center gap-1"><span
+                                    class="material-symbols-outlined text-[18px]">inventory_2</span>Stock: {{ totalStock
+                                }} units</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50">
+                        <span class="material-symbols-outlined text-[20px]">content_copy</span>Duplicate
+                    </button>
+                    <button
+                        class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-semibold text-white shadow-sm hover:bg-[#1e3b8a]/90">
+                        <span class="material-symbols-outlined text-[20px]">save</span>Update Product
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="mb-8 border-b border-slate-200">
+                <nav class="-mb-px flex gap-8">
+                    <button *ngFor="let tab of tabs" (click)="setActiveTab(tab.id)"
+                        [class]="tab.active
+              ? 'inline-flex items-center border-b-2 border-[#1e3b8a] py-4 text-sm font-bold text-[#1e3b8a]'
+              : 'inline-flex items-center border-b-2 border-transparent py-4 text-sm font-medium text-slate-500 hover:border-slate-300 hover:text-slate-700'">
+                        <span
+                            [class]="'material-symbols-outlined mr-2 text-[20px]' + (tab.active ? ' text-[#1e3b8a]' : '')">{{
+                            tab.icon }}</span>
+                        {{ tab.label }}
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content Grid -->
+            <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- GENERAL TAB                                 -->
+                <!-- ═══════════════════════════════════════════ -->
+                <ng-container *ngIf="activeTab === 'general'">
+
+                    <!-- Left: forms -->
+                    <div class="flex flex-col gap-6 lg:col-span-2">
+
+                        <!-- Basic Information -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
+                            <h3 class="mb-6 text-lg font-bold text-slate-900">Basic Information</h3>
+                            <div class="space-y-6">
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                    <div class="space-y-1.5">
+                                        <label class="block text-sm font-semibold text-slate-700"
+                                            for="product-name">Product Name</label>
+                                        <input id="product-name" [(ngModel)]="generalForm.productName"
+                                            class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                            type="text" />
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label class="block text-sm font-semibold text-slate-700" for="sku">SKU</label>
+                                        <div class="relative">
+                                            <input id="sku" [value]="generalForm.sku" readonly
+                                                class="w-full cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-500 focus:outline-none"
+                                                type="text" />
+                                            <span
+                                                class="material-symbols-outlined absolute right-3 top-2.5 text-[20px] text-slate-400">lock</span>
+                                        </div>
+                                        <p class="text-xs text-slate-400">SKU cannot be changed after creation.</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="block text-sm font-semibold text-slate-700" for="short-desc">Short
+                                        Description</label>
+                                    <textarea id="short-desc" [(ngModel)]="generalForm.shortDescription"
+                                        [maxlength]="shortDescMaxLength"
+                                        class="h-24 w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"></textarea>
+                                    <div class="flex justify-end">
+                                        <span class="text-xs text-slate-400">{{ shortDescCharCount }}/{{
+                                            shortDescMaxLength }} characters</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Full Description -->
+                        <div
+                            class="flex flex-1 flex-col rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:p-8">
+                            <h3 class="mb-4 text-lg font-bold text-slate-900">Full Description</h3>
+                            <div
+                                class="flex min-h-[400px] flex-1 flex-col overflow-hidden rounded-lg border border-slate-200">
+                                <div
+                                    class="flex flex-wrap items-center gap-1 border-b border-slate-200 bg-slate-50 px-3 py-2">
+                                    <button (click)="execFormat('bold')"
+                                        class="rounded p-1.5 text-slate-600 hover:bg-slate-200" title="Bold"><span
+                                            class="material-symbols-outlined text-[20px]">format_bold</span></button>
+                                    <button (click)="execFormat('italic')"
+                                        class="rounded p-1.5 text-slate-600 hover:bg-slate-200" title="Italic"><span
+                                            class="material-symbols-outlined text-[20px]">format_italic</span></button>
+                                    <button (click)="execFormat('underline')"
+                                        class="rounded p-1.5 text-slate-600 hover:bg-slate-200" title="Underline"><span
+                                            class="material-symbols-outlined text-[20px]">format_underlined</span></button>
+                                    <div class="mx-1 h-6 w-px bg-slate-300"></div>
+                                    <button (click)="execFormat('insertUnorderedList')"
+                                        class="rounded p-1.5 text-slate-600 hover:bg-slate-200"
+                                        title="Bullet List"><span
+                                            class="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>
+                                    <button (click)="execFormat('insertOrderedList')"
+                                        class="rounded p-1.5 text-slate-600 hover:bg-slate-200"
+                                        title="Numbered List"><span
+                                            class="material-symbols-outlined text-[20px]">format_list_numbered</span></button>
+                                    <div class="mx-1 h-6 w-px bg-slate-300"></div>
+                                    <button class="rounded p-1.5 text-slate-600 hover:bg-slate-200" title="Link"><span
+                                            class="material-symbols-outlined text-[20px]">link</span></button>
+                                    <button class="rounded p-1.5 text-slate-600 hover:bg-slate-200" title="Image"><span
+                                            class="material-symbols-outlined text-[20px]">image</span></button>
+                                </div>
+                                <div class="prose max-w-none flex-1 bg-white p-4 focus:outline-none"
+                                    contenteditable="true" (input)="onRichTextInput($event)"
+                                    [innerHTML]="safeFullDescription"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: sidebar -->
+                    <div class="flex flex-col gap-6">
+
+                        <!-- Organization -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <h3 class="mb-4 text-base font-bold text-slate-900">Organization</h3>
+                            <div class="space-y-6">
+                                <div class="space-y-1.5">
+                                    <label class="block text-sm font-semibold text-slate-700"
+                                        for="brand-select">Brand</label>
+                                    <div class="relative">
+                                        <select id="brand-select" [(ngModel)]="generalForm.brand"
+                                            class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
+                                            <option *ngFor="let b of brands" [value]="b">{{ b }}</option>
+                                        </select>
+                                        <span
+                                            class="material-symbols-outlined pointer-events-none absolute right-3 top-3 text-[20px] text-slate-500">expand_more</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-semibold text-slate-700">Category</label>
+                                    <div
+                                        class="max-h-64 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                        <ul class="space-y-1">
+                                            <li *ngFor="let cat of categories">
+                                                <button *ngIf="!cat.children" (click)="selectCategory(cat)"
+                                                    [class]="cat.selected
+                            ? 'flex w-full items-center justify-between gap-2 rounded bg-[#1e3b8a]/10 px-2 py-1.5 text-left text-sm font-medium text-[#1e3b8a]'
+                            : 'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-slate-600 hover:bg-slate-200'">
+                                                    <span>{{ cat.label }}</span>
+                                                    <span *ngIf="cat.selected"
+                                                        class="material-symbols-outlined text-[16px]">check</span>
+                                                </button>
+                                                <ng-container *ngIf="cat.children">
+                                                    <button (click)="toggleCategory(cat)"
+                                                        [class]="cat.expanded
+                              ? 'flex w-full items-center gap-2 rounded bg-slate-200 px-2 py-1.5 text-left text-sm font-medium text-slate-900'
+                              : 'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-slate-600 hover:bg-slate-200'">
+                                                        <span class="material-symbols-outlined text-[16px]">{{
+                                                            cat.expanded ? 'expand_more' : 'chevron_right' }}</span>
+                                                        <span>{{ cat.label }}</span>
+                                                    </button>
+                                                    <ul *ngIf="cat.expanded"
+                                                        class="ml-6 mt-1 space-y-1 border-l border-slate-300 pl-2">
+                                                        <li *ngFor="let child of cat.children">
+                                                            <button (click)="selectCategory(child, cat)"
+                                                                [class]="child.selected
+                                  ? 'flex w-full items-center justify-between gap-2 rounded bg-[#1e3b8a]/10 px-2 py-1.5 text-left text-sm font-medium text-[#1e3b8a]'
+                                  : 'flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm text-slate-600 hover:bg-slate-200'">
+                                                                <span>{{ child.label }}</span>
+                                                                <span *ngIf="child.selected"
+                                                                    class="material-symbols-outlined text-[16px]">check</span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </ng-container>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <button
+                                        class="mt-2 flex items-center gap-1 text-xs font-semibold text-[#1e3b8a] hover:underline">
+                                        <span class="material-symbols-outlined text-[14px]">add</span>Create New
+                                        Category
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <h3 class="mb-4 text-base font-bold text-slate-900">Product Tags</h3>
+                            <div class="mb-3 flex flex-wrap gap-2">
+                                <span *ngFor="let tag of tags"
+                                    class="inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">
+                                    {{ tag.label }}
+                                    <button (click)="removeTag(tag.id)" class="text-slate-400 hover:text-slate-600">
+                                        <span class="material-symbols-outlined text-[14px]">close</span>
+                                    </button>
+                                </span>
+                            </div>
+                            <div class="relative">
+                                <input [(ngModel)]="newTag" (keyup.enter)="addTag()"
+                                    class="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-3 pr-10 text-xs text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                    placeholder="Add a tag..." type="text" />
+                                <button (click)="addTag()"
+                                    class="absolute right-2 top-2 text-slate-400 hover:text-[#1e3b8a]">
+                                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Visibility -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <ng-container *ngFor="let channel of visibilityChannels; let last = last">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-sm font-bold text-slate-900">{{ channel.label }}</h3>
+                                        <p class="mt-1 text-xs text-slate-500">{{ channel.description }}</p>
+                                    </div>
+                                    <label class="relative inline-flex cursor-pointer items-center">
+                                        <input type="checkbox" class="sr-only peer" [checked]="channel.enabled"
+                                            (change)="toggleVisibility(channel.key)" />
+                                        <div
+                                            class="peer h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#1e3b8a] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-[#1e3b8a]/20">
+                                        </div>
+                                    </label>
+                                </div>
+                                <hr *ngIf="!last" class="my-4 border-slate-100" />
+                            </ng-container>
+                        </div>
+
+                    </div>
+                </ng-container>
+                <!-- END GENERAL TAB -->
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- PRICING TAB                                 -->
+                <!-- ═══════════════════════════════════════════ -->
+                <ng-container *ngIf="activeTab === 'pricing'">
+
+                    <!-- Left: pricing forms -->
+                    <div class="flex flex-col gap-6 lg:col-span-2">
+
+                        <!-- Base Pricing -->
+                        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div
+                                class="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-6 py-4">
+                                <h3 class="text-lg font-bold text-slate-900">Base Pricing</h3>
+                                <div class="flex items-center gap-1 text-xs text-slate-500">
+                                    <span class="material-symbols-outlined text-[16px]">currency_exchange</span>USD
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                                    <!-- Unit Cost -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700" for="unit-cost">Unit Cost
+                                            (Expenses) <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <span class="text-sm text-slate-500">$</span>
+                                            </div>
+                                            <input id="unit-cost" [(ngModel)]="pricingForm.unitCost"
+                                                class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-7 pr-3 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                placeholder="0.00" type="number" min="0" step="0.01" />
+                                        </div>
+                                        <p class="text-xs text-slate-500">The cost to manufacture or acquire the
+                                            product.</p>
+                                    </div>
+
+                                    <!-- Unit Price -->
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700" for="unit-price">Unit Price
+                                            (Selling) <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                <span class="text-sm text-slate-500">$</span>
+                                            </div>
+                                            <input id="unit-price" [(ngModel)]="pricingForm.unitPrice"
+                                                class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-7 pr-3 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                placeholder="0.00" type="number" min="0" step="0.01" />
+                                        </div>
+                                        <p class="text-xs text-slate-500">The price customers will see.</p>
+                                    </div>
+
+                                    <!-- Tax toggle -->
+                                    <div class="border-t border-slate-100 pt-4 md:col-span-2">
+                                        <label class="inline-flex cursor-pointer items-center">
+                                            <input type="checkbox" class="sr-only peer"
+                                                [(ngModel)]="pricingForm.chargeTax" />
+                                            <div
+                                                class="relative h-6 w-11 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#1e3b8a] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#1e3b8a]/20">
+                                            </div>
+                                            <span class="ml-3 text-sm font-medium text-slate-700">Charge tax on this
+                                                product</span>
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tax Configuration -->
+                        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div class="border-b border-slate-100 bg-slate-50 px-6 py-4">
+                                <h3 class="text-lg font-bold text-slate-900">Tax Configuration</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700" for="tax-name">Tax
+                                            Name</label>
+                                        <input id="tax-name" [(ngModel)]="pricingForm.taxName"
+                                            class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                            placeholder="e.g. VAT Standard" type="text" />
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700" for="tax-code">Tax
+                                            Code</label>
+                                        <input id="tax-code" [(ngModel)]="pricingForm.taxCode"
+                                            class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm uppercase text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                            placeholder="e.g. T20" type="text" />
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-slate-700" for="tax-rate">Rate
+                                            Percentage (%)</label>
+                                        <div class="relative">
+                                            <input id="tax-rate" [(ngModel)]="pricingForm.taxRate"
+                                                class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-3 pr-7 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                placeholder="0.00" type="number" min="0" max="100" step="0.01" />
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                                <span class="text-sm text-slate-500">%</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-col justify-end space-y-2 pb-2">
+                                        <div
+                                            class="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 p-3">
+                                            <span class="text-sm font-medium text-slate-700">Is Active</span>
+                                            <label class="inline-flex cursor-pointer items-center">
+                                                <input type="checkbox" class="sr-only peer"
+                                                    [(ngModel)]="pricingForm.taxActive" />
+                                                <div
+                                                    class="relative h-5 w-9 rounded-full bg-slate-200 after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-slate-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-[#1e3b8a] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none">
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Info Banner -->
+                                <div
+                                    class="mt-6 flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                                    <span class="material-symbols-outlined mt-0.5 text-blue-600">info</span>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-blue-900">Tax Override</h4>
+                                        <p class="mt-1 text-sm text-blue-800">This tax configuration will override the
+                                            default category tax settings for this specific product.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Profit Analysis sidebar -->
+                    <div class="flex flex-col gap-6">
+                        <div
+                            class="sticky top-24 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+
+                            <!-- Gradient header -->
+                            <div class="flex items-center gap-2 bg-gradient-to-r from-[#1e3b8a] to-blue-700 px-6 py-4">
+                                <span class="material-symbols-outlined text-white">analytics</span>
+                                <h3 class="text-lg font-bold text-white">Profit Analysis</h3>
+                            </div>
+
+                            <div class="space-y-6 p-6">
+
+                                <!-- Price breakdown -->
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-slate-500">Unit Selling Price</span>
+                                        <span class="font-bold text-slate-900">${{ fmt(pricingForm.unitPrice) }}</span>
+                                    </div>
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-slate-500">Unit Cost</span>
+                                        <span class="font-medium text-red-500">-${{ fmt(pricingForm.unitCost) }}</span>
+                                    </div>
+                                    <div *ngIf="pricingForm.chargeTax"
+                                        class="flex items-center justify-between text-sm">
+                                        <span class="text-slate-500">Tax Amount ({{ pricingForm.taxRate }}%)</span>
+                                        <span class="font-medium text-slate-500">(${{ fmt(taxAmount) }})</span>
+                                    </div>
+                                    <div class="my-2 h-px bg-slate-200"></div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-base font-bold text-slate-900">Profit Per Unit</span>
+                                        <span class="text-lg font-extrabold" [class.text-green-600]="profitPerUnit >= 0"
+                                            [class.text-red-500]="profitPerUnit < 0">
+                                            ${{ fmt(profitPerUnit) }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Margin bar -->
+                                <div class="rounded-lg border border-slate-100 bg-slate-50 p-4">
+                                    <div class="mb-2 flex items-end justify-between">
+                                        <span class="text-xs font-semibold uppercase text-slate-400">Margin</span>
+                                        <span class="text-2xl font-bold text-[#1e3b8a]">{{ fmt(marginPercent, 1)
+                                            }}%</span>
+                                    </div>
+                                    <div class="h-2.5 w-full overflow-hidden rounded-full bg-slate-200">
+                                        <!-- Use inline style for dynamic width — Tailwind can't handle runtime values -->
+                                        <div class="h-2.5 rounded-full bg-[#1e3b8a] transition-all duration-500"
+                                            [style.width.%]="marginBarPct"></div>
+                                    </div>
+                                    <p class="mt-2 text-xs text-slate-500">
+                                        <span [class]="marginHealthClass">{{ marginHealthLabel }}</span>
+                                        Keep it above 40%.
+                                    </p>
+                                </div>
+
+                                <!-- Discount tip -->
+                                <div
+                                    class="flex items-start gap-3 rounded-md border border-yellow-100 bg-yellow-50 p-3">
+                                    <span
+                                        class="material-symbols-outlined mt-0.5 text-[18px] text-yellow-600">lightbulb</span>
+                                    <p class="text-xs text-yellow-800">
+                                        Considering a discount? A 20% sale would reduce your margin to
+                                        <strong>{{ fmt(discountedMarginPercent, 1) }}%</strong>.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="border-t border-slate-100 bg-slate-50 p-4">
+                                <div class="flex items-center justify-between text-xs text-slate-500">
+                                    <span>Last updated</span>
+                                    <span>Just now</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </ng-container>
+                <!-- END PRICING TAB -->
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- STYLES TAB                                  -->
+                <!-- ═══════════════════════════════════════════ -->
+                <ng-container *ngIf="activeTab === 'styles'">
+
+                    <!-- Left: variants + gallery -->
+                    <div class="flex flex-col gap-6 lg:col-span-2">
+
+                        <!-- Toolbar -->
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <h3 class="text-lg font-bold text-slate-900">Product Variants</h3>
+                            <div class="flex gap-3">
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-2.5 top-2.5 text-[20px] text-slate-400">filter_list</span>
+                                    <input [(ngModel)]="variantFilter"
+                                        class="h-10 w-48 rounded-lg border border-slate-200 bg-white pl-10 pr-4 text-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a] lg:w-64"
+                                        placeholder="Filter variants..." type="text" />
+                                </div>
+                                <button
+                                    class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a]/10 px-4 text-sm font-semibold text-[#1e3b8a] hover:bg-[#1e3b8a]/20">
+                                    <span class="material-symbols-outlined text-[18px]">add</span>Add Variant
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Variants Table -->
+                        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm">
+                                    <thead class="bg-slate-50 text-xs uppercase text-slate-500">
+                                        <tr>
+                                            <th class="w-12 px-6 py-4 font-semibold">
+                                                <input type="checkbox" [checked]="selectAll"
+                                                    (change)="toggleSelectAll()"
+                                                    class="rounded border-slate-300 text-[#1e3b8a] focus:ring-[#1e3b8a]" />
+                                            </th>
+                                            <th class="px-6 py-4 font-semibold">Variant</th>
+                                            <th class="px-6 py-4 font-semibold">Size</th>
+                                            <th class="px-6 py-4 font-semibold">Price</th>
+                                            <th class="px-6 py-4 font-semibold">Stock</th>
+                                            <th class="px-6 py-4 text-right font-semibold">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100">
+                                        <tr *ngFor="let variant of filteredVariants"
+                                            class="group transition-colors hover:bg-slate-50"
+                                            [class.bg-slate-50]="variant.selected">
+                                            <td class="px-6 py-4">
+                                                <input type="checkbox" [checked]="variant.selected"
+                                                    (change)="toggleVariant(variant.id)"
+                                                    class="rounded border-slate-300 text-[#1e3b8a] focus:ring-[#1e3b8a]" />
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-3">
+                                                    <div
+                                                        class="h-10 w-10 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                                                        <img [alt]="variant.color" class="h-full w-full object-cover"
+                                                            [src]="variant.thumbnailUrl" />
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-bold text-slate-900">{{ variant.color }}</div>
+                                                        <div class="text-xs text-slate-500">SKU: {{ variant.sku }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600">{{
+                                                    variant.size }}</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span class="font-medium text-slate-900">${{ variant.price.toFixed(2)
+                                                    }}</span>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <div class="flex items-center gap-2">
+                                                    <div class="h-2 w-16 overflow-hidden rounded-full bg-slate-100">
+                                                        <div class="h-full rounded-full transition-all"
+                                                            [class]="getStockBarClass(variant.stockLevel)"
+                                                            [style.width.%]="variant.stockPercentage"></div>
+                                                    </div>
+                                                    <span class="text-xs text-slate-500">{{ variant.stock }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="px-6 py-4 text-right">
+                                                <button class="p-1 text-slate-400 hover:text-[#1e3b8a]">
+                                                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                                                </button>
+                                                <button (click)="deleteVariant(variant.id)"
+                                                    class="ml-1 p-1 text-slate-400 hover:text-red-500">
+                                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="filteredVariants.length === 0">
+                                            <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                                                <span
+                                                    class="material-symbols-outlined mb-2 block text-4xl">inventory_2</span>
+                                                <p class="text-sm font-medium">No variants found</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- Pagination -->
+                            <div
+                                class="flex items-center justify-between border-t border-slate-200 bg-slate-50 px-6 py-3">
+                                <div class="text-xs text-slate-500">Showing {{ pageStart }}-{{ pageEnd }} of {{
+                                    totalVariants }} variants</div>
+                                <div class="flex gap-2">
+                                    <button (click)="prevPage()" [disabled]="currentPage === 1"
+                                        class="flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-400 hover:text-[#1e3b8a] disabled:opacity-50">
+                                        <span class="material-symbols-outlined text-[16px]">chevron_left</span>
+                                    </button>
+                                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                                        class="flex h-8 w-8 items-center justify-center rounded border border-slate-200 bg-white text-slate-400 hover:text-[#1e3b8a] disabled:opacity-50">
+                                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Media Gallery -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <div class="mb-4 flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900">Media Gallery</h3>
+                                    <p class="text-sm text-slate-500">Upload images for the selected style (Navy Blue)
+                                    </p>
+                                </div>
+                                <button class="text-sm font-semibold text-[#1e3b8a] hover:underline">Select from
+                                    Library</button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-5">
+                                <div
+                                    class="group relative flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 hover:border-[#1e3b8a] hover:bg-[#1e3b8a]/5">
+                                    <span
+                                        class="material-symbols-outlined mb-2 text-3xl text-slate-400 group-hover:text-[#1e3b8a]">cloud_upload</span>
+                                    <span
+                                        class="text-xs font-semibold text-slate-500 group-hover:text-[#1e3b8a]">Upload</span>
+                                    <input class="absolute inset-0 cursor-pointer opacity-0" multiple type="file"
+                                        accept="image/*" (change)="onFileSelected($event)" />
+                                </div>
+                                <div *ngFor="let image of galleryImages"
+                                    class="group relative aspect-square overflow-hidden rounded-lg border border-slate-200">
+                                    <img [alt]="image.alt"
+                                        class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                        [src]="image.url" />
+                                    <div
+                                        class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                                        <button (click)="removeImage(image.id)"
+                                            class="rounded-full bg-white p-1.5 text-red-500 hover:bg-red-50">
+                                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        </button>
+                                    </div>
+                                    <div *ngIf="image.isMain"
+                                        class="absolute bottom-0 left-0 right-0 bg-black/60 p-1 text-center text-[10px] font-medium text-white">
+                                        Main Image</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: specs + inventory -->
+                    <div class="flex flex-col gap-6">
+                        <div class="sticky top-24 rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+                                <h3 class="text-lg font-bold text-slate-900">Technical Specs</h3>
+                                <button class="text-[#1e3b8a] hover:text-[#1e3b8a]/80">
+                                    <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                                </button>
+                            </div>
+                            <div class="p-6">
+                                <div class="mb-6 flex gap-2">
+                                    <input [(ngModel)]="newSpecAttribute" (keyup.enter)="addSpec()"
+                                        class="h-9 flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                        placeholder="Add attribute..." type="text" />
+                                    <button (click)="addSpec()"
+                                        class="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">
+                                        <span class="material-symbols-outlined text-[18px]">check</span>
+                                    </button>
+                                </div>
+                                <div class="space-y-4">
+                                    <ng-container *ngFor="let spec of specs; let last = last">
+                                        <div class="group flex items-center justify-between">
+                                            <div class="flex flex-col">
+                                                <span
+                                                    class="text-xs font-semibold uppercase tracking-wider text-slate-400">{{
+                                                    spec.label }}</span>
+                                                <span class="text-sm font-medium text-slate-900">{{ spec.value }}</span>
+                                            </div>
+                                            <button (click)="removeSpec(spec.key)"
+                                                class="text-slate-400 opacity-0 hover:text-red-500 group-hover:opacity-100">
+                                                <span class="material-symbols-outlined text-[16px]">close</span>
+                                            </button>
+                                        </div>
+                                        <hr *ngIf="!last" class="border-slate-100" />
+                                    </ng-container>
+                                    <p *ngIf="specs.length === 0" class="text-center text-xs text-slate-400">No
+                                        specifications added yet.</p>
+                                </div>
+                            </div>
+                            <div class="rounded-b-xl border-t border-slate-100 bg-slate-50 p-4">
+                                <a class="flex items-center justify-center gap-1 text-xs font-bold text-[#1e3b8a] hover:underline"
+                                    href="#">
+                                    View Full Specification Sheet <span
+                                        class="material-symbols-outlined text-[14px]">open_in_new</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Inventory Summary -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <h4 class="mb-4 text-sm font-bold text-slate-900">Inventory Summary</h4>
+                            <div class="mb-2 flex items-center justify-between">
+                                <span class="text-sm text-slate-500">Total Stock</span>
+                                <span class="text-sm font-medium text-slate-900">{{ totalStock }}</span>
+                            </div>
+                            <div class="mb-2 flex items-center justify-between">
+                                <span class="text-sm text-slate-500">Variants</span>
+                                <span class="text-sm font-medium text-slate-900">{{ variantCount }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-500">Avg. Price</span>
+                                <span class="text-sm font-medium text-slate-900">${{ averagePrice.toFixed(2) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </ng-container>
+                <!-- END STYLES TAB -->
+
+                <!-- ═══════════════════════════════════════════ -->
+                <!-- SPECIFICATIONS TAB                          -->
+                <!-- ═══════════════════════════════════════════ -->
+                <ng-container *ngIf="activeTab === 'specifications'">
+
+                    <!-- Left: attribute rows -->
+                    <div class="flex flex-col gap-6 lg:col-span-2">
+
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Product Attributes</h3>
+                            <p class="text-sm text-slate-500">Define technical specifications for this product.</p>
+                        </div>
+
+                        <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div class="p-6">
+                                <div class="space-y-4">
+
+                                    <!-- Column headers -->
+                                    <div
+                                        class="grid grid-cols-12 gap-4 border-b border-slate-100 pb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                                        <div class="col-span-4">Attribute Name</div>
+                                        <div class="col-span-7">Value</div>
+                                        <div class="col-span-1"></div>
+                                    </div>
+
+                                    <!-- Attribute rows -->
+                                    <div *ngFor="let attr of specAttributes"
+                                        class="group grid grid-cols-12 items-center gap-4">
+
+                                        <!-- Name input -->
+                                        <div class="col-span-4">
+                                            <input [(ngModel)]="attr.name" [id]="'attr-name-' + attr.id"
+                                                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                placeholder="Attribute name" type="text" />
+                                        </div>
+
+                                        <!-- Value: text with optional unit suffix -->
+                                        <div class="col-span-7" *ngIf="attr.type === 'text'">
+                                            <div class="relative">
+                                                <input [(ngModel)]="attr.value" [id]="'attr-val-' + attr.id"
+                                                    class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                    [class.pr-12]="attr.unit" placeholder="Value" type="text" />
+                                                <span *ngIf="attr.unit"
+                                                    class="absolute right-3 top-2.5 text-xs font-medium text-slate-400">{{
+                                                    attr.unit }}</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Value: select -->
+                                        <div class="col-span-7" *ngIf="attr.type === 'select'">
+                                            <div class="relative">
+                                                <select [(ngModel)]="attr.value"
+                                                    class="w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
+                                                    <option *ngFor="let opt of attr.options" [value]="opt">{{ opt }}
+                                                    </option>
+                                                </select>
+                                                <span
+                                                    class="material-symbols-outlined pointer-events-none absolute right-3 top-2 text-[20px] text-slate-400">expand_more</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Remove button -->
+                                        <div class="col-span-1 flex justify-center">
+                                            <button (click)="removeSpecAttribute(attr.id)"
+                                                class="flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500">
+                                                <span class="material-symbols-outlined text-[20px]">close</span>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Empty state -->
+                                    <div *ngIf="specAttributes.length === 0"
+                                        class="py-8 text-center text-sm text-slate-400">
+                                        No attributes yet. Add your first row below.
+                                    </div>
+
+                                </div>
+
+                                <!-- Add row button -->
+                                <div class="mt-6 border-t border-slate-100 pt-4">
+                                    <button (click)="addSpecAttribute()"
+                                        class="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-slate-300 bg-slate-50 py-3 text-sm font-semibold text-slate-600 transition-all hover:border-slate-400 hover:bg-slate-100 hover:text-[#1e3b8a]">
+                                        <span class="material-symbols-outlined text-[20px]">add</span>
+                                        Add New Attribute Row
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Unit Settings + Metadata -->
+                    <div class="flex flex-col gap-6">
+
+                        <!-- Unit Settings -->
+                        <div class="rounded-xl border border-slate-200 bg-white shadow-sm">
+                            <div class="flex items-center justify-between border-b border-slate-100 px-6 py-4">
+                                <h3 class="text-lg font-bold text-slate-900">Unit Settings</h3>
+                            </div>
+                            <div class="space-y-5 p-6">
+
+                                <!-- UoM -->
+                                <div>
+                                    <label class="mb-2 block text-sm font-semibold text-slate-700">Unit of Measure
+                                        (UoM)</label>
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div class="col-span-1">
+                                            <input [(ngModel)]="specSettings.uomCode"
+                                                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-center text-sm font-medium uppercase text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                placeholder="Code" type="text" maxlength="6" />
+                                        </div>
+                                        <div class="col-span-2">
+                                            <input [(ngModel)]="specSettings.uomName"
+                                                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                                placeholder="Name" type="text" />
+                                        </div>
+                                    </div>
+                                    <p class="mt-2 text-xs text-slate-500">Base unit for inventory tracking.</p>
+                                </div>
+
+                                <hr class="border-slate-100" />
+
+                                <!-- Classification -->
+                                <div>
+                                    <label class="mb-2 block text-sm font-semibold text-slate-700">Product
+                                        Classification</label>
+                                    <div class="relative">
+                                        <select [(ngModel)]="specSettings.classification"
+                                            class="w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
+                                            <option *ngFor="let opt of classificationOptions" [value]="opt.value">{{
+                                                opt.label }}</option>
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                        </div>
+                                    </div>
+                                    <p class="mt-2 text-xs text-slate-500">Determines shipping and tax calculation
+                                        rules.</p>
+                                </div>
+
+                                <!-- Tax Category -->
+                                <div>
+                                    <label class="mb-2 block text-sm font-semibold text-slate-700">Tax Category</label>
+                                    <div class="relative">
+                                        <select [(ngModel)]="specSettings.taxCategory"
+                                            class="w-full appearance-none rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-900 focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
+                                            <option *ngFor="let opt of taxCategoryOptions" [value]="opt.value">{{
+                                                opt.label }}</option>
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- System Metadata -->
+                        <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <h4 class="mb-4 text-sm font-bold text-slate-900">System Metadata</h4>
+
+                            <div class="mb-3 flex items-center justify-between border-b border-slate-100 pb-3">
+                                <span class="text-sm text-slate-500">Created By</span>
+                                <div class="flex items-center gap-2">
+                                    <div class="h-5 w-5 overflow-hidden rounded-full bg-slate-200">
+                                        <img class="h-full w-full object-cover" [src]="specMetadata.avatarUrl"
+                                            alt="Avatar" />
+                                    </div>
+                                    <span class="text-xs font-medium text-slate-900">{{ specMetadata.createdBy }}</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2 flex items-center justify-between">
+                                <span class="text-sm text-slate-500">Created At</span>
+                                <span class="font-mono text-xs font-medium text-slate-900">{{ specMetadata.createdAt
+                                    }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-slate-500">Last Updated</span>
+                                <span class="font-mono text-xs font-medium text-slate-900">{{ specMetadata.lastUpdated
+                                    }}</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </ng-container>
+                <!-- END SPECIFICATIONS TAB -->
+
+            </div><!-- /grid -->
+        </div>
+    </main>
+
+</div>

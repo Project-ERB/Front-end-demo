@@ -170,32 +170,32 @@ export const routes: Routes = [
         title: 'rolemanagement',
       },
       {
-        path:'hr-Overview',
+        path: 'hr-Overview',
         loadComponent: () => import('./modules/ERBSystem/HR/hr-overview/hr-overview.component').then((H) => H.HrOverviewComponent),
         title: 'hr-Overview'
       },
       {
-        path:'employee-management',
+        path: 'employee-management',
         loadComponent: () => import('./modules/ERBSystem/HR/employee-management-page/employee-management-page.component').then((E) => E.EmployeeManagementPageComponent),
         title: 'employee-management'
       },
       {
-        path:'department-management',
+        path: 'department-management',
         loadComponent: () => import('./modules/ERBSystem/HR/department-management/department-management.component').then((D) => D.DepartmentManagementComponent),
         title: 'Department-management'
       },
       {
-        path:'job-applications-management',
+        path: 'job-applications-management',
         loadComponent: () => import('./modules/ERBSystem/HR/jop-application-management/jop-application-management.component').then((J) => J.JopApplicationManagementComponent),
         title: 'job-applications-management'
       },
       {
-        path :'contract-management',
+        path: 'contract-management',
         loadComponent: () => import('./modules/ERBSystem/HR/contract-management/contract-management.component').then((C) => C.ContractManagementComponent),
         title: 'contract-management'
       },
       {
-        path :'candidate-management',
+        path: 'candidate-management',
         loadComponent: () => import('./modules/ERBSystem/HR/candidate-management/candidate-management.component').then((C) => C.CandidateManagementComponent),
         title: 'candidate-management'
       },
@@ -205,7 +205,7 @@ export const routes: Routes = [
         title: 'add-new-employee',
       },
       {
-        path:'edit-employee',
+        path: 'edit-employee',
         loadComponent: () => import('./modules/ERBSystem/HR/edit-employee-info/edit-employee-info.component').then((E) => E.EditEmployeeInfoComponent),
         title: 'edit-employee'
       },
@@ -215,21 +215,96 @@ export const routes: Routes = [
         title: 'add-new-department',
       },
       {
-        path:'view-application-details',
+        path: 'view-application-details',
         loadComponent: () => import('./modules/ERBSystem/HR/view-application-details/view-application-details.component').then((V) => V.ViewApplicationDetailsComponent),
         title: 'view-application-details'
       },
       {
-        path:'new-contract-page',
+        path: 'new-contract-page',
         loadComponent: () => import('./modules/ERBSystem/HR/add-new-contract/add-new-contract.component').then((N) => N.AddNewContractComponent),
         title: 'new-contract-page'
       },
       {
-        path:'edit-contract-page',
+        path: 'edit-contract-page',
         loadComponent: () => import('./modules/ERBSystem/HR/edit-contract-page/edit-contract-page.component').then((E) => E.EditContractPageComponent),
         title: 'edit-contract-page'
-      }
+      },
 
+      {
+        path: 'admin-dashboard',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-dash/admin-dash.component').then((A) => A.AdminDashComponent),
+        title: 'admin-dashboard'
+      },
+      {
+        path: 'create-user',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/create-user/create-user.component').then((C) => C.CreateUserComponent),
+        title: 'create-user'
+      },
+      {
+        path: 'log-detail/:id',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/log-detail/log-detail.component').then((L) => L.LogDetailComponent),
+        title: 'log-detail'
+      },
+      {
+        path: 'system-logs',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/system-logs/system-logs.component').then((S) => S.SystemLogsComponent),
+        title: 'system-logs'
+      },
+      {
+        path: 'user-management',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/user-management/user-management.component').then((U) => U.UserManagementComponent),
+        title: 'user-management'
+      },
+      {
+        path: 'sales-analysis',
+        loadComponent: () => import('./modules/ERBSystem/Sales/sales-analysis/sales-analysis.component').then((S) => S.SalesAnalysisComponent),
+        title: 'sales-analysis'
+      },
+      {
+        path: 'category-management',
+        loadComponent: () => import('./modules/ERBSystem/Sales/category-mangement/category-mangement.component').then((C) => C.CategoryMangementComponent),
+        title: 'category-management'
+      },
+      {
+        path: 'category-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/Sales/category-detail/category-detail.component').then((C) => C.CategoryDetailComponent),
+        title: 'category-details'
+      },
+      {
+        path: 'product-management',
+        loadComponent: () => import('./modules/ERBSystem/Sales/product-mangement/product-mangement.component').then((P) => P.ProductMangementComponent),
+        title: 'product-management'
+      },
+      {
+        path: 'add-product',
+        loadComponent: () => import('./modules/ERBSystem/Sales/add-product/add-product.component').then((A) => A.AddProductComponent),
+        title: 'add-product'
+      },
+      {
+        path: 'view-product/:id',
+        loadComponent: () => import('./modules/ERBSystem/Sales/veiw-product/veiw-product.component').then((V) => V.VeiwProductComponent),
+        title: 'view-product'
+      },
+      {
+        path: 'discount-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/Discount/discount-mangement/discount-mangement.component').then((D) => D.DiscountMangementComponent),
+        title: 'discount-management'
+      },
+      {
+        path: 'create-discount',
+        loadComponent: () => import('./modules/ERBSystem/HR/Discount/creat-discount/creat-discount.component').then((C) => C.CreatDiscountComponent),
+        title: 'create-discount'
+      },
+      {
+        path: 'create-target',
+        loadComponent: () => import('./modules/ERBSystem/HR/Discount/create-target/create-target.component').then((C) => C.CreateTargetComponent),
+        title: 'create-target'
+      },
+      {
+        path: 'discount-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/Discount/discount-details/discount-details.component').then((D) => D.DiscountDetailsComponent),
+        title: 'discount-details'
+      }
     ]
   }
   ,

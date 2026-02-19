@@ -1,0 +1,339 @@
+<div class="flex h-screen w-full overflow-hidden bg-[#f6f6f8] font-sans text-[#0f172a]">
+
+    <!-- ═══════════════════════════════════════════
+       SIDEBAR — same as all previous components
+  ════════════════════════════════════════════ -->
+    <aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
+        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
+            <div class="flex items-center gap-2">
+                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
+                    <span class="material-symbols-outlined text-xl">analytics</span>
+                </div>
+                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
+            </div>
+        </div>
+
+        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
+            <nav class="flex flex-col gap-1">
+                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
+                <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
+            ? 'bg-[#1e3b8a]/10 text-[#1e3b8a] hover:bg-[#1e3b8a]/20'
+            : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
+                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
+                    {{ item.label }}
+                </a>
+            </nav>
+
+            <div class="flex flex-col gap-4">
+                <div class="rounded-xl bg-[#eff6ff] p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
+                            <span class="material-symbols-outlined text-sm">support_agent</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
+                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
+                        alt="User Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
+                    <div>
+                        <p class="text-sm font-semibold text-[#0f172a]">Jane Doe</p>
+                        <p class="text-xs text-[#64748b]">Enterprise Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════
+       MAIN
+  ════════════════════════════════════════════ -->
+    <div class="flex flex-1 flex-col overflow-hidden">
+
+        <!-- ── Top header ──────────────────────────────────────────────── -->
+        <header class="flex h-16 shrink-0 items-center justify-between border-b border-[#e2e8f0] bg-white px-8">
+            <nav class="flex items-center gap-2 text-sm text-[#64748b]">
+                <a href="#" class="transition-colors hover:text-[#1e3b8a]">Home</a>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                <span class="font-medium text-[#0f172a]">Discounts</span>
+            </nav>
+            <div class="flex items-center gap-3">
+                <button
+                    class="relative rounded-full p-2 text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-[#334155]">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute right-2 top-2 h-2 w-2 rounded-full border border-white bg-red-500"></span>
+                </button>
+                <button
+                    class="flex items-center gap-1.5 rounded-full border border-[#e2e8f0] bg-white px-3 py-1.5 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f8fafc]">
+                    <span class="material-symbols-outlined text-[18px]">help</span>
+                    Help
+                </button>
+            </div>
+        </header>
+
+        <!-- ── Scrollable content ───────────────────────────────────────── -->
+        <div class="flex-1 overflow-y-auto p-8" style="scrollbar-width:thin;scrollbar-color:#cbd5e1 #f1f5f9;">
+
+            <!-- Page title + actions -->
+            <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-[#0f172a]">Discount Management</h1>
+                    <p class="mt-1 text-sm text-[#64748b]">Manage active and scheduled campaigns across all channels.
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <button (click)="exportData()"
+                        class="inline-flex items-center gap-2 rounded-lg border border-[#e2e8f0] bg-white px-4 py-2.5 text-sm font-semibold text-[#374151] shadow-sm transition-colors hover:bg-[#f8fafc]">
+                        <span class="material-symbols-outlined text-[20px]">file_upload</span>
+                        Export
+                    </button>
+                    <button (click)="createDiscount()"
+                        class="inline-flex items-center gap-2 rounded-lg bg-[#1e3b8a] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-800">
+                        <span class="material-symbols-outlined text-[20px]">add</span>
+                        Create Discount
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── Stats cards ──────────────────────────────────────────── -->
+            <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div *ngFor="let stat of stats" class="rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="rounded-lg p-3" [ngClass]="[stat.iconBg, stat.iconColor]">
+                            <span class="material-symbols-outlined">{{ stat.icon }}</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[#64748b]">{{ stat.label }}</p>
+                            <p class="text-2xl font-bold text-[#0f172a]">{{ stat.value }}</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center gap-2 text-xs font-medium">
+                        <span class="flex items-center" [ngClass]="stat.trendUp ? 'text-green-600' : 'text-blue-600'">
+                            <span class="material-symbols-outlined text-[16px]">{{ stat.trendUp ? 'trending_up' :
+                                'trending_flat' }}</span>
+                            {{ stat.trend }}
+                        </span>
+                        <span class="text-[#94a3b8]">{{ stat.trendNote }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Table card ───────────────────────────────────────────── -->
+            <div class="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
+
+                <!-- Filters bar -->
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#e2e8f0] px-6 py-4">
+
+                    <!-- Search -->
+                    <div class="relative w-full max-w-md">
+                        <span
+                            class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-[#94a3b8]">search</span>
+                        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()"
+                            placeholder="Search by code, name, or type…"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] py-2.5 pl-10 pr-4 text-sm text-[#0f172a] placeholder-[#94a3b8] transition-all focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+
+                    <!-- Status + Target selects -->
+                    <div class="flex flex-wrap items-center gap-3">
+
+                        <div class="relative">
+                            <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()"
+                                class="cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white py-2.5 pl-4 pr-9 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f8fafc] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                [ngClass]="selectedStatus ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                                <option value="">Status: All</option>
+                                <option value="Active">Active</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Expired">Expired</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">expand_more</span>
+                        </div>
+
+                        <div class="relative">
+                            <select [(ngModel)]="selectedTarget" (ngModelChange)="onFilterChange()"
+                                class="cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white py-2.5 pl-4 pr-9 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f8fafc] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                [ngClass]="selectedTarget ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                                <option value="">Target: All</option>
+                                <option value="Retail">Retail</option>
+                                <option value="Wholesale">Wholesale</option>
+                                <option value="New Users">New Users</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">expand_more</span>
+                        </div>
+
+                        <!-- Clear filters -->
+                        <button *ngIf="activeFilterCount > 0" (click)="clearFilters()"
+                            class="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
+                            Clear
+                        </button>
+
+                        <button
+                            class="rounded-lg border border-[#e2e8f0] bg-white p-2.5 text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#374151]">
+                            <span class="material-symbols-outlined">filter_list</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-[#64748b]">
+                        <thead class="bg-[#f8fafc] text-xs font-semibold uppercase tracking-wider text-[#64748b]">
+                            <tr>
+                                <th class="w-12 px-6 py-4">
+                                    <input type="checkbox" [checked]="allPageSelected"
+                                        (change)="toggleAll($any($event.target).checked)"
+                                        class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
+                                </th>
+                                <th class="px-6 py-4">Discount Code</th>
+                                <th class="px-6 py-4">Campaign Name</th>
+                                <th class="px-6 py-4">Type</th>
+                                <th class="px-6 py-4">Validity</th>
+                                <th class="px-6 py-4 text-center">Usage</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-[#f1f5f9] bg-white">
+
+                            <tr *ngFor="let d of pagedDiscounts" class="group transition-colors hover:bg-[#f8fafc]"
+                                [ngClass]="d.selected ? 'bg-[#eff6ff]' : ''">
+                                <!-- Checkbox -->
+                                <td class="px-6 py-4">
+                                    <input type="checkbox" [(ngModel)]="d.selected"
+                                        class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
+                                </td>
+
+                                <!-- Code + copy -->
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-mono font-semibold"
+                                            [ngClass]="d.expired ? 'text-[#94a3b8] line-through' : 'text-[#0f172a]'">{{
+                                            d.code }}</span>
+                                        <button *ngIf="!d.expired" (click)="copyCode(d.code)"
+                                            class="text-[#94a3b8] opacity-0 transition-all hover:text-[#64748b] group-hover:opacity-100"
+                                            [title]="copiedCode === d.code ? 'Copied!' : 'Copy code'">
+                                            <span class="material-symbols-outlined text-[16px]">
+                                                {{ copiedCode === d.code ? 'check' : 'content_copy' }}
+                                            </span>
+                                        </button>
+                                    </div>
+                                </td>
+
+                                <!-- Campaign -->
+                                <td class="px-6 py-4 font-medium"
+                                    [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#0f172a]'">
+                                    {{ d.campaign }}
+                                </td>
+
+                                <!-- Type badge -->
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2.5 py-0.5 text-xs font-medium"
+                                        [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#374151]'">
+                                        <span class="material-symbols-outlined text-[14px]">{{ d.typeIcon }}</span>
+                                        {{ d.typeLabel }}
+                                    </span>
+                                </td>
+
+                                <!-- Validity -->
+                                <td class="px-6 py-4" [ngClass]="d.expired ? 'text-[#94a3b8]' : ''">{{ d.validity }}
+                                </td>
+
+                                <!-- Usage -->
+                                <td class="px-6 py-4 text-center" [ngClass]="d.expired ? 'text-[#94a3b8]' : ''">
+                                    {{ d.usage | number }}
+                                </td>
+
+                                <!-- Status badge -->
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset"
+                                        [ngClass]="statusClass(d.status)">
+                                        <span class="h-1.5 w-1.5 rounded-full"
+                                            [ngClass]="statusDotClass(d.status)"></span>
+                                        {{ d.status }}
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-4 text-right">
+                                    <button (click)="moreActions(d)"
+                                        class="text-[#94a3b8] transition-colors hover:text-[#1e3b8a]">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="pagedDiscounts.length === 0">
+                                <td colspan="8" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <span
+                                            class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
+                                        <p class="font-medium text-[#64748b]">No discounts match your filters.</p>
+                                        <button (click)="clearFilters()"
+                                            class="text-sm font-medium text-[#1e3b8a] hover:underline">
+                                            Clear all filters
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ── Pagination ────────────────────────────────────────── -->
+                <div class="flex items-center justify-between border-t border-[#e2e8f0] bg-white px-6 py-4">
+                    <p class="hidden text-sm text-[#64748b] sm:block">
+                        Showing
+                        <span class="font-semibold text-[#0f172a]">{{ showingFrom }}–{{ showingTo }}</span>
+                        of
+                        <span class="font-semibold text-[#0f172a]">{{ totalItems }}</span>
+                        results
+                    </p>
+
+                    <nav class="inline-flex -space-x-px rounded-lg shadow-sm">
+                        <!-- Prev -->
+                        <button (click)="prevPage()" [disabled]="currentPage === 1"
+                            class="flex h-9 w-9 items-center justify-center rounded-l-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#1e3b8a] disabled:cursor-not-allowed disabled:opacity-40">
+                            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                        </button>
+
+                        <!-- Page numbers -->
+                        <ng-container *ngFor="let page of pageNumbers">
+                            <span *ngIf="page === '...'"
+                                class="flex h-9 w-9 items-center justify-center border border-[#e2e8f0] text-xs text-[#64748b]">…</span>
+                            <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
+                  ? 'z-10 bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
+                  : 'bg-white text-[#374151] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                                class="flex h-9 w-9 items-center justify-center border text-sm transition-colors">{{
+                                page }}</button>
+                        </ng-container>
+
+                        <!-- Next -->
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                            class="flex h-9 w-9 items-center justify-center rounded-r-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#1e3b8a] disabled:cursor-not-allowed disabled:opacity-40">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </nav>
+                </div>
+
+            </div><!-- /table card -->
+
+            <!-- Footer -->
+            <footer class="mt-8 pb-8 text-center text-sm text-[#94a3b8]">
+                © 2024 Acme ERP Solutions. All rights reserved.
+            </footer>
+
+        </div><!-- /scrollable content -->
+    </div><!-- /main -->
+</div>

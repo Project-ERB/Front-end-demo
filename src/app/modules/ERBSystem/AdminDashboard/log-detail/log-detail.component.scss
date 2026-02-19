@@ -1,0 +1,31 @@
+/* log-detail.component.css */
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+/* Preserve JSON whitespace formatting in the code block */
+pre {
+    white-space: pre;
+    tab-size: 2;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
