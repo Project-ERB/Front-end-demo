@@ -256,6 +256,11 @@ export const routes: Routes = [
         title: 'user-management'
       },
       {
+        path: 'admin-login',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-login/admin-login.component').then((A) => A.AdminLoginComponent),
+        title: 'admin-login'
+      },
+      {
         path: 'sales-analysis',
         loadComponent: () => import('./modules/ERBSystem/Sales/sales-analysis/sales-analysis.component').then((S) => S.SalesAnalysisComponent),
         title: 'sales-analysis'
