@@ -1,0 +1,675 @@
+<div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f6f7f8] font-sans text-[#111418]">
+
+    <!-- ═══════════════════════════════════════════
+       SIDEBAR — same as all previous components
+  ════════════════════════════════════════════ -->
+    <aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
+        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
+            <div class="flex items-center gap-2">
+                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
+                    <span class="material-symbols-outlined text-xl">analytics</span>
+                </div>
+                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
+            </div>
+        </div>
+
+        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
+            <nav class="flex flex-col gap-1">
+                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
+                <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
+            ? 'bg-[#1e3b8a]/10 text-[#1e3b8a] hover:bg-[#1e3b8a]/20'
+            : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
+                    class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
+                    {{ item.label }}
+                </a>
+            </nav>
+
+            <div class="flex flex-col gap-4">
+                <div class="rounded-xl bg-[#eff6ff] p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
+                            <span class="material-symbols-outlined text-sm">support_agent</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
+                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
+                        alt="User Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-[#0f172a]">Jane Doe</span>
+                        <span class="text-xs text-[#64748b]">Enterprise Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════
+       MAIN
+  ════════════════════════════════════════════ -->
+    <main class="flex flex-1 flex-col overflow-y-auto">
+
+        <!-- ── Top header ──────────────────────────────────────────────── -->
+        <header
+            class="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between border-b border-[#f0f2f4] bg-white px-6">
+            <div class="flex items-center gap-4">
+                <h2 class="text-lg font-bold text-[#111418]">ERP Dashboard</h2>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Search -->
+                <div class="relative hidden lg:block">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#617289]">search</span>
+                    <input type="text" placeholder="Search products…"
+                        class="h-9 w-56 rounded-lg border-none bg-[#f0f2f4] pl-9 pr-3 text-sm text-[#111418] placeholder-[#617289] focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                </div>
+                <button
+                    class="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-[#f0f2f4]">
+                    <span class="material-symbols-outlined text-[#111418]">notifications</span>
+                </button>
+                <button
+                    class="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:bg-[#f0f2f4]">
+                    <span class="material-symbols-outlined text-[#111418]">settings</span>
+                </button>
+                <div class="h-10 w-10 overflow-hidden rounded-full border-2 border-white shadow-sm">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
+                        alt="User Profile" class="h-full w-full object-cover" />
+                </div>
+            </div>
+        </header>
+
+        <!-- ── Page body ──────────────────────────────────────────────── -->
+        <div class="mx-auto flex w-full max-w-4xl flex-col gap-8 px-4 py-8 sm:px-8">
+
+            <!-- Breadcrumb + title row -->
+            <div class="flex flex-col gap-4">
+                <div class="flex flex-wrap gap-2 text-sm text-[#617289]">
+                    <a href="#" class="font-medium hover:underline">Home</a>
+                    <span>/</span>
+                    <a href="#" class="font-medium hover:underline">Products</a>
+                    <span>/</span>
+                    <span class="font-medium text-[#111418]">Add New</span>
+                </div>
+
+                <div class="flex flex-wrap items-end justify-between gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h1 class="text-3xl font-extrabold tracking-tight text-[#111418] md:text-4xl">Add New Product
+                        </h1>
+                        <p class="text-base text-[#617289]">Create a new product entry in your catalog.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button (click)="cancel()"
+                            class="h-10 rounded-lg border border-[#dbe0e6] bg-white px-4 text-sm font-bold text-[#111418] transition-colors hover:bg-[#f8fafc]">
+                            Cancel
+                        </button>
+                        <button (click)="saveDraft()"
+                            class="h-10 rounded-lg bg-[#eef4ff] px-4 text-sm font-bold text-[#1e3b8a] transition-colors hover:bg-[#dbe9ff]">
+                            Save Draft
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Stepper ──────────────────────────────────────────────── -->
+            <div class="rounded-xl border border-[#f0f2f4] bg-white p-6 shadow-sm">
+                <div class="relative mx-auto flex w-full max-w-3xl items-center justify-between">
+
+                    <!-- Track background -->
+                    <div class="absolute left-0 top-5 h-1 w-full rounded-full bg-[#f0f2f4]"></div>
+                    <!-- Active track -->
+                    <div class="absolute left-0 top-5 h-1 rounded-full bg-[#1e3b8a] transition-all duration-500"
+                        [style.width]="progressPercent"></div>
+
+                    <!-- Step bubbles -->
+                    <div *ngFor="let step of steps; let i = index"
+                        class="relative z-10 flex cursor-pointer flex-col items-center gap-2 transition-opacity"
+                        [ngClass]="i > currentStep ? 'opacity-50 hover:opacity-80' : 'opacity-100'"
+                        (click)="goToStep(i)">
+                        <!-- Circle -->
+                        <div class="flex h-10 w-10 items-center justify-center rounded-full ring-4 ring-white transition-all duration-300"
+                            [ngClass]="i < currentStep
+                ? 'bg-[#1e3b8a] text-white shadow-md'
+                : i === currentStep
+                  ? 'bg-[#1e3b8a] text-white shadow-md'
+                  : 'border-2 border-[#dbe0e6] bg-white text-[#617289]'">
+                            <!-- Completed: show checkmark -->
+                            <span *ngIf="i < currentStep" class="material-symbols-outlined text-xl">check</span>
+                            <!-- Current or pending: show step icon -->
+                            <span *ngIf="i >= currentStep" class="material-symbols-outlined text-xl">{{ step.icon
+                                }}</span>
+                        </div>
+
+                        <!-- Label -->
+                        <span class="whitespace-nowrap text-sm font-medium"
+                            [ngClass]="i === currentStep ? 'font-bold text-[#1e3b8a]' : 'text-[#617289]'">{{ step.label
+                            }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Form card ──────────────────────────────────────────────── -->
+            <div class="overflow-hidden">
+                <div class="flex flex-col gap-8 p-6 md:p-8">
+
+                    <!-- Section heading -->
+                    <div class="border-b border-[#f0f2f4] pb-4">
+                        <p class="mt-1 text-sm text-[#617289]">
+                            <ng-container *ngIf="currentStep === 0">Identify the product with a unique code and
+                                description.</ng-container>
+                            <ng-container *ngIf="currentStep === 1">Configure the base pricing, cost, tax rules and
+                                profit margins.</ng-container>
+                            <ng-container *ngIf="currentStep === 2">Configure colours, sizes, and variant
+                                options.</ng-container>
+                        </p>
+                    </div>
+
+                    <!-- ── Step 0: General Info ────────────────────────── -->
+                    <ng-container *ngIf="currentStep === 0">
+
+                        <!-- Product Name + Code / SKU row -->
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                            <!-- Product Name -->
+                            <label class="flex flex-col gap-2">
+                                <span class="text-sm font-medium text-[#111418]">
+                                    Product Name <span class="text-red-500">*</span>
+                                </span>
+                                <input type="text" [(ngModel)]="form.productName" placeholder="e.g. Men's Oxford Shirt"
+                                    class="h-11 w-full rounded-lg border border-[#dbe0e6] bg-white px-4 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                            </label>
+
+                            <!-- Code + SKU sub-grid -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <!-- Product Code -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-sm font-medium text-[#111418]">Product Code</span>
+                                    <input type="text" [(ngModel)]="form.productCode" placeholder="PROD-001"
+                                        class="h-11 w-full rounded-lg border border-[#dbe0e6] bg-white px-4 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                </label>
+
+                                <!-- SKU -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-sm font-medium text-[#111418]">
+                                        SKU <span class="text-red-500">*</span>
+                                    </span>
+                                    <div class="relative">
+                                        <input type="text" [(ngModel)]="form.sku" placeholder="SKU-12345"
+                                            class="h-11 w-full rounded-lg border border-[#dbe0e6] bg-white px-4 pr-10 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                        <span *ngIf="form.sku.length >= 5"
+                                            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-[18px] text-green-500">check_circle</span>
+                                    </div>
+                                    <span class="text-xs text-[#617289]">Must be unique across catalog.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Short Description -->
+                        <label class="flex flex-col gap-2">
+                            <span class="text-sm font-medium text-[#111418]">Short Description</span>
+                            <textarea [(ngModel)]="form.shortDescription" maxlength="160" rows="3"
+                                placeholder="Enter a brief summary for SEO and lists…"
+                                class="w-full resize-none rounded-lg border border-[#dbe0e6] bg-white p-4 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20"></textarea>
+                            <div class="flex justify-end">
+                                <span class="text-xs text-[#617289]">{{ shortDescLength }}/160 characters</span>
+                            </div>
+                        </label>
+
+                        <!-- Full Description (rich-text mockup) -->
+                        <div class="flex flex-col gap-2">
+                            <span class="text-sm font-medium text-[#111418]">Full Description</span>
+                            <div
+                                class="overflow-hidden rounded-lg border border-[#dbe0e6] bg-white transition-all focus-within:border-[#1e3b8a] focus-within:ring-2 focus-within:ring-[#1e3b8a]/20">
+                                <!-- Toolbar -->
+                                <div
+                                    class="flex items-center gap-1 overflow-x-auto border-b border-[#f0f2f4] bg-[#f8fafc] p-2">
+                                    <ng-container *ngFor="let btn of toolbarButtons">
+                                        <button type="button" [title]="btn.title"
+                                            class="rounded p-1.5 text-[#617289] transition-colors hover:bg-[#e2e8f0] hover:text-[#111418]">
+                                            <span class="material-symbols-outlined text-xl">{{ btn.icon }}</span>
+                                        </button>
+                                        <!-- separator -->
+                                        <div *ngIf="btn.sep" class="mx-1 h-6 w-px bg-[#dbe0e6]"></div>
+                                    </ng-container>
+                                </div>
+                                <!-- Editor area -->
+                                <textarea [(ngModel)]="form.fullDescription" rows="8"
+                                    placeholder="Start typing product details here…"
+                                    class="w-full resize-y border-none bg-transparent p-4 text-sm text-[#111418] placeholder-[#94a3b8] outline-none"></textarea>
+                            </div>
+                        </div>
+                    </ng-container>
+
+                    <!-- ── Step 1: Pricing & Tax ───────────────────────── -->
+                    <ng-container *ngIf="currentStep === 1">
+                        <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+
+                            <!-- Left column -->
+                            <div class="flex flex-col gap-6">
+
+                                <!-- Base Price -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-sm font-medium text-[#111418]">Base Price <span
+                                            class="text-red-500">*</span></span>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute left-4 top-1/2 -translate-y-1/2 font-medium text-[#617289]">$</span>
+                                        <input type="number" [(ngModel)]="pricing.basePrice" placeholder="0.00"
+                                            step="0.01" min="0"
+                                            class="h-11 w-full rounded-lg border border-[#dbe0e6] bg-white pl-8 pr-4 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                    </div>
+                                    <span class="text-xs text-[#617289]">The selling price before tax.</span>
+                                </label>
+
+                                <!-- Cost per Item -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-sm font-medium text-[#111418]">Cost per Item</span>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute left-4 top-1/2 -translate-y-1/2 font-medium text-[#617289]">$</span>
+                                        <input type="number" [(ngModel)]="pricing.costPerItem" placeholder="0.00"
+                                            step="0.01" min="0"
+                                            class="h-11 w-full rounded-lg border border-[#dbe0e6] bg-white pl-8 pr-4 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                    </div>
+                                    <span class="text-xs text-[#617289]">Your cost to purchase or manufacture one
+                                        unit.</span>
+                                </label>
+
+                                <!-- Price includes tax toggle -->
+                                <div
+                                    class="flex items-center justify-between rounded-lg border border-[#dbe0e6] bg-[#f8fafc] p-4">
+                                    <div class="flex flex-col gap-0.5">
+                                        <span class="text-sm font-medium text-[#111418]">Price includes tax</span>
+                                        <span class="text-xs text-[#617289]">If enabled, tax is calculated from the base
+                                            price.</span>
+                                    </div>
+                                    <!-- Toggle switch -->
+                                    <button type="button" (click)="pricing.priceIncludesTax = !pricing.priceIncludesTax"
+                                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1e3b8a] focus:ring-offset-2"
+                                        [ngClass]="pricing.priceIncludesTax ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'"
+                                        [attr.aria-checked]="pricing.priceIncludesTax" role="switch">
+                                        <span
+                                            class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
+                                            [ngClass]="pricing.priceIncludesTax ? 'translate-x-5' : 'translate-x-0.5'"></span>
+                                    </button>
+                                </div>
+
+                            </div><!-- /left column -->
+
+                            <!-- Right column -->
+                            <div class="flex flex-col gap-6">
+
+                                <!-- Tax Category -->
+                                <label class="flex flex-col gap-2">
+                                    <span class="text-sm font-medium text-[#111418]">Tax Category</span>
+                                    <div class="relative">
+                                        <select [(ngModel)]="pricing.taxCategory"
+                                            class="h-11 w-full cursor-pointer appearance-none rounded-lg border border-[#dbe0e6] bg-white px-4 pr-10 text-sm text-[#111418] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20">
+                                            <option *ngFor="let opt of taxOptions" [value]="opt.value">{{ opt.label }}
+                                            </option>
+                                        </select>
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#617289]">
+                                            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <!-- Estimated Margin card (live) -->
+                                <div class="rounded-lg border border-blue-100 bg-blue-50 p-5">
+                                    <h4 class="mb-4 flex items-center gap-2 text-sm font-bold text-[#111418]">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-[#1e3b8a]">trending_up</span>
+                                        Estimated Margin
+                                    </h4>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <!-- Profit per item -->
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-xs text-[#617289]">Profit per Item</span>
+                                            <span class="text-lg font-bold"
+                                                [ngClass]="profitPerItem >= 0 ? 'text-green-600' : 'text-red-600'">
+                                                {{ (pricing.basePrice !== null || pricing.costPerItem !== null) ?
+                                                formatCurrency(profitPerItem) : '$0.00' }}
+                                            </span>
+                                        </div>
+                                        <!-- Margin % -->
+                                        <div class="flex flex-col gap-1">
+                                            <span class="text-xs text-[#617289]">Margin</span>
+                                            <span class="text-lg font-bold text-[#111418]">
+                                                {{ (pricing.basePrice && pricing.basePrice > 0) ? (marginPercent |
+                                                number:'1.1-1') + '%' : '— %' }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 border-t border-blue-100 pt-4">
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-[#617289]">
+                                                Final Price ({{ pricing.priceIncludesTax ? 'Tax Included' : 'Inc. Tax'
+                                                }})
+                                            </span>
+                                            <span class="font-bold text-[#111418]">
+                                                {{ pricing.basePrice ? formatCurrency(finalPriceIncTax) : '$0.00' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div><!-- /right column -->
+                        </div>
+                    </ng-container>
+
+                    <!-- ── Step 2: Styles & Variants ──────────────────── -->
+                    <ng-container *ngIf="currentStep === 2">
+
+                        <!-- Header row with "has variants" toggle -->
+                        <div
+                            class="flex flex-col items-start justify-between gap-3 border-b border-[#f0f2f4] pb-4 sm:flex-row sm:items-center">
+                            <div class="flex flex-col gap-0.5">
+                                <h3 class="text-base font-bold text-[#111418]">Product Variants</h3>
+                                <p class="text-sm text-[#617289]">Define attributes like color or size to create product
+                                    variations.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-[#617289]">Does this product have variants?</span>
+                                <button type="button" (click)="hasVariants = !hasVariants"
+                                    class="relative inline-flex h-6 w-12 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#1e3b8a] focus:ring-offset-2"
+                                    [ngClass]="hasVariants ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
+                                    <span
+                                        class="inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform"
+                                        [ngClass]="hasVariants ? 'translate-x-7' : 'translate-x-1'"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="hasVariants">
+
+                            <!-- ── Attribute builder ────────────────────────────── -->
+                            <div class="flex flex-col gap-4">
+                                <h4 class="text-sm font-bold text-[#111418]">Variant Attributes</h4>
+
+                                <!-- Attribute rows -->
+                                <div *ngFor="let attr of attributes; let i = index"
+                                    class="flex flex-col items-start gap-4 rounded-lg border border-[#f0f2f4] bg-[#f8fafc] p-4 md:flex-row md:items-end">
+                                    <!-- Attribute name select -->
+                                    <label class="flex w-full flex-col gap-2 md:w-1/4">
+                                        <span class="text-sm font-medium text-[#111418]">Attribute Name</span>
+                                        <select [(ngModel)]="attr.name"
+                                            class="h-10 w-full rounded-lg border border-[#dbe0e6] bg-white px-3 text-sm text-[#111418] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20">
+                                            <option *ngFor="let opt of attributeOptions" [value]="opt">{{ opt }}
+                                            </option>
+                                        </select>
+                                    </label>
+
+                                    <!-- Values tag input -->
+                                    <label class="flex w-full flex-1 flex-col gap-2">
+                                        <span class="text-sm font-medium text-[#111418]">Values <span
+                                                class="text-[#617289] font-normal">(press Enter to add)</span></span>
+                                        <div
+                                            class="flex min-h-[2.5rem] flex-wrap items-center gap-1.5 rounded-lg border border-[#dbe0e6] bg-white px-2 py-1.5 transition-all focus-within:border-[#1e3b8a] focus-within:ring-2 focus-within:ring-[#1e3b8a]/20">
+                                            <!-- Tags -->
+                                            <span *ngFor="let val of attr.values"
+                                                class="flex items-center gap-1 rounded bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800">
+                                                {{ val }}
+                                                <button type="button" (click)="removeValue(attr, val)"
+                                                    class="transition-colors hover:text-red-500">
+                                                    <span class="material-symbols-outlined text-[13px]">close</span>
+                                                </button>
+                                            </span>
+                                            <!-- Input -->
+                                            <input type="text" [(ngModel)]="attr.inputVal"
+                                                (keydown)="addValueOnEnter($event, attr)"
+                                                placeholder="Type and press Enter…"
+                                                class="min-w-[120px] flex-1 bg-transparent text-sm outline-none placeholder-[#94a3b8]" />
+                                        </div>
+                                    </label>
+
+                                    <!-- Delete attribute -->
+                                    <button type="button" (click)="removeAttribute(i)"
+                                        class="h-10 rounded-lg border border-red-200 px-3 text-red-600 transition-colors hover:bg-red-50"
+                                        title="Remove attribute">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </div>
+
+                                <!-- Add Another Attribute -->
+                                <button type="button" (click)="addAttribute()"
+                                    class="self-start flex items-center gap-1.5 text-sm font-bold text-[#1e3b8a] hover:underline">
+                                    <span class="material-symbols-outlined text-[18px]">add</span>
+                                    Add Another Attribute
+                                </button>
+
+                                <!-- Generate Variants -->
+                                <div class="flex justify-end border-t border-[#f0f2f4] pt-4">
+                                    <button type="button" (click)="generateVariants()"
+                                        class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white shadow-md transition-colors hover:bg-blue-900">
+                                        <span class="material-symbols-outlined text-[18px]">autorenew</span>
+                                        Generate Variants
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- ── Generated Variants table ─────────────────────── -->
+                            <div *ngIf="generatedVariants.length > 0" class="flex flex-col gap-4">
+
+                                <!-- Section header + bulk actions -->
+                                <div class="flex items-center justify-between">
+                                    <h4 class="text-sm font-bold text-[#111418]">
+                                        Generated Variants ({{ generatedVariants.length }})
+                                    </h4>
+                                    <div class="flex items-center gap-2">
+                                        <button (click)="bulkEditPrice()"
+                                            class="text-xs font-medium text-[#1e3b8a] hover:underline">Bulk Edit
+                                            Price</button>
+                                        <span class="text-[#cbd5e1]">|</span>
+                                        <button (click)="bulkEditStock()"
+                                            class="text-xs font-medium text-[#1e3b8a] hover:underline">Bulk Edit
+                                            Stock</button>
+                                    </div>
+                                </div>
+
+                                <!-- Table -->
+                                <div class="overflow-x-auto rounded-lg border border-[#dbe0e6]">
+                                    <table class="w-full border-collapse text-left text-sm">
+                                        <thead
+                                            class="border-b border-[#dbe0e6] bg-[#f8fafc] text-xs font-semibold uppercase tracking-wider text-[#617289]">
+                                            <tr>
+                                                <th class="w-10 p-4">
+                                                    <input type="checkbox" [checked]="allVariantsSelected"
+                                                        (change)="toggleAllVariants($any($event.target).checked)"
+                                                        class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
+                                                </th>
+                                                <th class="p-4">Variant</th>
+                                                <th class="w-44 p-4">SKU</th>
+                                                <th class="w-32 p-4">Price Override</th>
+                                                <th class="w-32 p-4">Stock</th>
+                                                <th class="w-14 p-4 text-center">Del</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-[#f0f2f4] bg-white">
+                                            <tr *ngFor="let variant of generatedVariants; let vi = index"
+                                                class="group transition-colors hover:bg-[#f8fafc]"
+                                                [ngClass]="variant.selected ? 'bg-[#eff6ff]' : ''">
+                                                <!-- Checkbox -->
+                                                <td class="p-4">
+                                                    <input type="checkbox" [(ngModel)]="variant.selected"
+                                                        class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
+                                                </td>
+                                                <!-- Combo label -->
+                                                <td class="p-4 font-medium text-[#111418]">{{ variant.combo }}</td>
+                                                <!-- SKU input -->
+                                                <td class="p-4">
+                                                    <input type="text" [(ngModel)]="variant.sku"
+                                                        class="h-8 w-full rounded border border-[#dbe0e6] bg-white px-2 text-xs outline-none transition-all focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a]" />
+                                                </td>
+                                                <!-- Price -->
+                                                <td class="p-4">
+                                                    <div class="relative">
+                                                        <span
+                                                            class="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-[#94a3b8]">$</span>
+                                                        <input type="number" [(ngModel)]="variant.price"
+                                                            class="h-8 w-full rounded border border-[#dbe0e6] bg-white pl-5 pr-2 text-xs outline-none transition-all focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a]" />
+                                                    </div>
+                                                </td>
+                                                <!-- Stock -->
+                                                <td class="p-4">
+                                                    <input type="number" [(ngModel)]="variant.stock"
+                                                        class="h-8 w-full rounded border border-[#dbe0e6] bg-white px-2 text-xs outline-none transition-all focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a]" />
+                                                </td>
+                                                <!-- Delete -->
+                                                <td class="p-4 text-center">
+                                                    <button (click)="removeVariant(vi)"
+                                                        class="text-[#94a3b8] transition-colors hover:text-red-500">
+                                                        <span
+                                                            class="material-symbols-outlined text-[18px]">delete</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div><!-- /generated variants -->
+
+                        </ng-container><!-- /hasVariants -->
+                    </ng-container>
+
+                    @if(currentStep !== 3 ){
+                    <div
+                        class="flex items-center justify-between border-t border-[#f0f2f4] bg-[#f8fafc] px-6 py-4 md:px-8">
+                        <!-- Back -->
+                        <button (click)="prevStep()" [disabled]="isFirstStep"
+                            class="flex h-10 items-center gap-2 rounded-lg border border-transparent px-6 font-bold text-[#617289] transition-colors hover:bg-[#e2e8f0] disabled:cursor-not-allowed disabled:opacity-40">
+                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            Back
+                        </button>
+
+                        <!-- Step indicator pills (mobile) -->
+                        <div class="flex items-center gap-1.5 sm:hidden">
+                            <div *ngFor="let s of steps; let i = index" class="h-2 rounded-full transition-all"
+                                [ngClass]="i === currentStep ? 'w-5 bg-[#1e3b8a]' : 'w-2 bg-[#dbe0e6]'"></div>
+                        </div>
+
+                        <!-- Step counter (desktop) -->
+                        <span class="hidden text-sm text-[#617289] sm:block">
+                            Step <span class="font-bold text-[#111418]">{{ currentStep + 1 }}</span> of {{ steps.length
+                            }}
+                        </span>
+
+                        <!-- Next / Submit -->
+                        <button (click)="nextStep()"
+                            class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-8 font-bold text-white shadow-sm shadow-blue-200 transition-colors hover:bg-blue-800">
+                            {{ isLastStep ? 'Submit' : 'Next' }}
+                            <span class="material-symbols-outlined text-[18px]">{{ isLastStep ? 'check' :
+                                'arrow_forward'
+                                }}</span>
+                        </button>
+                    </div>
+                    }
+
+
+                </div>
+
+
+
+            </div><!-- /form card -->
+        </div><!-- /page body -->
+
+        <!-- ── Step 3: Specifications ──────────────────────── -->
+        <ng-container *ngIf="currentStep === 3">
+
+            <!-- Key-value row builder -->
+            <div class="flex flex-col gap-4">
+
+                <div class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4">
+                    <div class="flex flex-col gap-4">
+
+                        <!-- Column headers -->
+                        <div
+                            class="grid grid-cols-12 gap-4 px-2 text-xs font-semibold uppercase tracking-wider text-[#617289]">
+                            <div class="col-span-5">Specification Name</div>
+                            <div class="col-span-6">Value</div>
+                            <div class="col-span-1 text-center">Del</div>
+                        </div>
+
+                        <!-- Spec rows -->
+                        <div *ngFor="let spec of specifications; let si = index"
+                            class="grid grid-cols-12 gap-4 items-center">
+                            <div class="col-span-5">
+                                <input type="text" [(ngModel)]="spec.name" placeholder="e.g. Material"
+                                    class="h-10 w-full rounded-lg border border-[#dbe0e6] bg-white px-3 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                            </div>
+                            <div class="col-span-6">
+                                <input type="text" [(ngModel)]="spec.value" placeholder="e.g. 100% Cotton"
+                                    class="h-10 w-full rounded-lg border border-[#dbe0e6] bg-white px-3 text-sm text-[#111418] placeholder-[#94a3b8] outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                            </div>
+                            <div class="col-span-1 flex justify-center">
+                                <button type="button" (click)="removeSpec(si)" [disabled]="specifications.length === 1"
+                                    class="rounded-full p-2 text-red-500 transition-colors hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-40"
+                                    title="Remove">
+                                    <span class="material-symbols-outlined text-xl">delete</span>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Add row -->
+                    <div class="mt-4 border-t border-dashed border-gray-300 pt-4">
+                        <button type="button" (click)="addSpec()"
+                            class="flex items-center gap-2 text-sm font-bold text-[#1e3b8a] hover:underline">
+                            <span class="material-symbols-outlined text-lg">add_circle</span>
+                            Add Another Row
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Info tip -->
+                <div class="flex gap-3 rounded-lg border border-blue-100 bg-blue-50 p-4">
+                    <span class="material-symbols-outlined mt-0.5 text-xl text-[#1e3b8a]">info</span>
+                    <div class="flex flex-col gap-1">
+                        <h4 class="text-sm font-bold text-[#111418]">Tip: Standardize Your Data</h4>
+                        <p class="text-sm text-[#617289]">
+                            Using consistent attribute names (e.g., always "Weight", never "Wt.") helps
+                            customers filter products effectively on your storefront.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="flex items-center justify-between border-t border-[#f0f2f4] bg-[#f8fafc] px-6 py-4 md:px-8">
+                <!-- Back -->
+                <button (click)="prevStep()" [disabled]="isFirstStep"
+                    class="flex h-10 items-center gap-2 rounded-lg border border-transparent px-6 font-bold text-[#617289] transition-colors hover:bg-[#e2e8f0] disabled:cursor-not-allowed disabled:opacity-40">
+                    <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back
+                </button>
+
+                <!-- Step indicator pills (mobile) -->
+                <div class="flex items-center gap-1.5 sm:hidden">
+                    <div *ngFor="let s of steps; let i = index" class="h-2 rounded-full transition-all"
+                        [ngClass]="i === currentStep ? 'w-5 bg-[#1e3b8a]' : 'w-2 bg-[#dbe0e6]'"></div>
+                </div>
+
+                <!-- Step counter (desktop) -->
+                <span class="hidden text-sm text-[#617289] sm:block">
+                    Step <span class="font-bold text-[#111418]">{{ currentStep + 1 }}</span> of {{ steps.length }}
+                </span>
+
+                <!-- Next / Submit -->
+                <button (click)="nextStep()"
+                    class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-8 font-bold text-white shadow-sm shadow-blue-200 transition-colors hover:bg-blue-800">
+                    {{ isLastStep ? 'Complete Product Entry' : 'Next' }}
+                    <span class="material-symbols-outlined text-[18px]">{{ isLastStep ? 'check' : 'arrow_forward'
+                        }}</span>
+                </button>
+            </div>
+        </ng-container>
+    </main>
+</div>

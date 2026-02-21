@@ -1,0 +1,502 @@
+<div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f8fafc] font-sans text-[#0f172a]">
+
+    <!-- ═══════════════════════════════════════════════════════════ SIDEBAR -->
+    <aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
+        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
+            <div class="flex items-center gap-2">
+                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
+                    <span class="material-symbols-outlined text-xl">analytics</span>
+                </div>
+                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
+            </div>
+        </div>
+
+        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
+            <nav class="flex flex-col gap-1">
+                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
+                <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
+            ? 'bg-[#1e3b8a]/10 text-[#1e3b8a] hover:bg-[#1e3b8a]/20'
+            : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
+                    class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
+                    {{ item.label }}
+                </a>
+            </nav>
+
+            <div class="flex flex-col gap-4">
+                <div class="rounded-xl bg-[#eff6ff] p-4">
+                    <div class="flex items-start gap-3">
+                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
+                            <span class="material-symbols-outlined text-sm">support_agent</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
+                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
+                        alt="User Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold text-[#0f172a]">Jane Doe</span>
+                        <span class="text-xs text-[#64748b]">Enterprise Admin</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════════════════════ MAIN -->
+    <main class="flex flex-1 flex-col overflow-hidden">
+
+        <!-- Top Header -->
+        <header class="flex h-16 items-center justify-between border-b border-[#e2e8f0] bg-white px-6">
+            <div class="flex items-center gap-2 text-sm text-[#64748b]">
+                <a href="#" class="hover:text-[#1e3b8a]">Home</a>
+                <span class="material-symbols-outlined text-base">chevron_right</span>
+                <a href="#" class="hover:text-[#1e3b8a]">Inventory</a>
+                <span class="material-symbols-outlined text-base">chevron_right</span>
+                <span class="font-medium text-[#0f172a]">Categories</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <button
+                    class="flex size-9 items-center justify-center rounded-lg bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">notifications</span>
+                </button>
+                <button
+                    class="flex size-9 items-center justify-center rounded-lg bg-[#f1f5f9] text-[#64748b] hover:bg-[#e2e8f0] transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">settings</span>
+                </button>
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxa5yL8DVEJ7Ju4iK2yzY1lq20YYE5Q-qYVn4MfKSHZl3-MdiHhy4Hsc-KOBYUjKEHL_rr4nzGy-piD3lGxqGcmDZuFhv8ICVa1z-omZxRTijWmF6CdkdzHq-6aDBg9-z4Tlon9W5ukLYBtWmchTkcs963RDEOwGOfCfGWpKxh108BFL5xu1D-OYZ-KC21f05OErG1b45AxE_AllFgqtWXXdzc1KB4gcp_L9aKguxp7BEmP3CnlhQUzt5c7EdpndGLTPXTkM0xM81p"
+                    alt="User" class="size-9 rounded-full object-cover ring-2 ring-white" />
+            </div>
+        </header>
+
+        <!-- Page content -->
+        <div class="flex flex-1 flex-col overflow-hidden p-6">
+
+            <!-- Page title row -->
+            <div class="mb-6 flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-[#0f172a]">Category Management</h1>
+                    <p class="mt-0.5 text-sm text-[#64748b]">Manage your product taxonomy and hierarchy.</p>
+                </div>
+                <button (click)="openModal()"
+                    class="flex items-center gap-2 rounded-lg bg-[#1e3b8a] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1e3b8a]/90">
+                    <span class="material-symbols-outlined text-[20px]">add</span>
+                    Create Category
+                </button>
+            </div>
+
+            <!-- Split view: Tree + Table -->
+            <div class="flex flex-1 gap-5 overflow-hidden" style="min-height: 0;">
+
+                <!-- ════════════════════════════════════ LEFT: Tree panel -->
+
+
+                <!-- Tree nodes recursive template -->
+                <ng-template #treeNodes let-nodes let-depth="depth">
+                    <div *ngFor="let node of nodes" class="mb-0.5">
+                        <!-- Node row -->
+                        <div (click)="toggleNode(node); selectNode(node, tree)" [ngClass]="node.active
+                ? (depth === 0 ? 'bg-[#1e3b8a]/10 text-[#1e3b8a]' : 'bg-[#1e3b8a] text-white shadow-sm')
+                : 'text-[#4b5563] hover:bg-[#f3f4f6]'" [style.padding-left.px]="12 + depth * 12"
+                            class="group flex cursor-pointer items-center gap-2 rounded-lg py-2 pr-3 text-sm transition-colors">
+                            <!-- Expand / leaf indicator -->
+                            <span class="material-symbols-outlined text-[18px]"
+                                [ngClass]="{'opacity-0': !node.children?.length}">
+                                {{ node.children?.length ? (node.expanded ? 'expand_more' : 'chevron_right') :
+                                'chevron_right' }}
+                            </span>
+                            <span class="material-symbols-outlined text-[18px]">{{ node.icon }}</span>
+                            <span class="flex-1 font-medium" [ngClass]="{'font-bold': node.active}">{{ node.label
+                                }}</span>
+                            <span *ngIf="node.count !== undefined" class="rounded px-1.5 py-0.5 text-[10px] font-bold"
+                                [ngClass]="node.active ? 'bg-white text-[#1e3b8a]' : 'bg-[#e2e8f0] text-[#64748b]'">{{
+                                node.count }}</span>
+                        </div>
+                        <!-- Children -->
+                        <div *ngIf="node.expanded && node.children?.length"
+                            class="ml-3 mt-0.5 border-l border-[#e2e8f0] pl-1">
+                            <ng-container
+                                *ngTemplateOutlet="treeNodes; context: { $implicit: node.children, depth: depth + 1 }"></ng-container>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <!-- ════════════════════════════════════ RIGHT: Table panel -->
+                <section
+                    class="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm"
+                    style="min-height: 0;">
+
+                    <!-- Toolbar -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#e2e8f0] px-5 py-3">
+
+                        <!-- Search -->
+                        <div class="relative w-64">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#94a3b8]">search</span>
+                            <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+                                placeholder="Search categories…"
+                                class="h-9 w-full rounded-lg border border-[#e2e8f0] bg-white pl-10 pr-3 text-sm text-[#0f172a] placeholder-[#94a3b8] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                        </div>
+
+                        <!-- Right actions -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-[#64748b]">
+                                Selected: <span class="font-semibold text-[#0f172a]">{{ selectedCount }}</span>
+                            </span>
+                            <button (click)="deleteSelected()" [disabled]="selectedCount === 0"
+                                class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
+                                title="Delete selected">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="flex-1 overflow-auto" style="scrollbar-width: thin;">
+                        <table class="w-full min-w-[720px] table-auto border-collapse text-left text-sm">
+                            <thead class="sticky top-0 z-10 bg-[#f8fafc]">
+                                <tr>
+                                    <th class="border-b border-[#e2e8f0] px-5 py-3">
+                                        <input type="checkbox" [checked]="allOnPageSelected"
+                                            (change)="toggleSelectAll($event)"
+                                            class="h-4 w-4 rounded border-gray-300 text-[#1e3b8a] focus:ring-[#1e3b8a]" />
+                                    </th>
+                                    <!-- Sortable: Code -->
+                                    <th (click)="sort('code')"
+                                        class="cursor-pointer border-b border-[#e2e8f0] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#64748b] hover:text-[#0f172a]">
+                                        <div class="flex items-center gap-1">
+                                            Code
+                                            <span class="material-symbols-outlined text-[15px]">{{ getSortIcon('code')
+                                                }}</span>
+                                        </div>
+                                    </th>
+                                    <!-- Sortable: Name -->
+                                    <th (click)="sort('name')"
+                                        class="cursor-pointer border-b border-[#e2e8f0] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#64748b] hover:text-[#0f172a]">
+                                        <div class="flex items-center gap-1">
+                                            Name
+                                            <span class="material-symbols-outlined text-[15px]">{{ getSortIcon('name')
+                                                }}</span>
+                                        </div>
+                                    </th>
+                                    <!-- Description -->
+                                    <th
+                                        class="border-b border-[#e2e8f0] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#64748b]">
+                                        Description
+                                    </th>
+                                    <!-- Sortable: Parent -->
+                                    <th (click)="sort('parent')"
+                                        class="cursor-pointer border-b border-[#e2e8f0] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#64748b] hover:text-[#0f172a]">
+                                        <div class="flex items-center gap-1">
+                                            Parent
+                                            <span class="material-symbols-outlined text-[15px]">{{ getSortIcon('parent')
+                                                }}</span>
+                                        </div>
+                                    </th>
+                                    <!-- Status -->
+                                    <th
+                                        class="border-b border-[#e2e8f0] px-5 py-3 text-xs font-bold uppercase tracking-wider text-[#64748b]">
+                                        Status
+                                    </th>
+                                    <!-- Actions -->
+                                    <th
+                                        class="border-b border-[#e2e8f0] px-5 py-3 text-right text-xs font-bold uppercase tracking-wider text-[#64748b]">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-[#e2e8f0] bg-white">
+                                <!-- Data rows -->
+                                <tr *ngFor="let cat of pagedCategories"
+                                    class="group transition-colors hover:bg-[#eff6ff]"
+                                    [ngClass]="{'bg-[#eff6ff]/40': cat.selected}">
+                                    <td class="px-5 py-4">
+                                        <input type="checkbox" [(ngModel)]="cat.selected"
+                                            class="h-4 w-4 rounded border-gray-300 text-[#1e3b8a] focus:ring-[#1e3b8a]" />
+                                    </td>
+                                    <td class="whitespace-nowrap px-5 py-4 font-mono text-xs text-[#64748b]">{{ cat.code
+                                        }}</td>
+                                    <td class="whitespace-nowrap px-5 py-4 font-semibold text-[#0f172a]">{{ cat.name }}
+                                    </td>
+                                    <td class="px-5 py-4 text-[#64748b]">{{ cat.description }}</td>
+                                    <td class="px-5 py-4">
+                                        <span class="font-medium text-[#1e3b8a]">{{ cat.parent }}</span>
+                                    </td>
+                                    <td class="px-5 py-4">
+                                        <span
+                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold"
+                                            [ngClass]="getStatusClass(cat.status)">{{ cat.status }}</span>
+                                    </td>
+                                    <td class="px-5 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <button (click)="openModal(cat)"
+                                                class="flex size-8 items-center justify-center rounded-lg text-[#64748b] transition-colors hover:bg-[#e2e8f0] hover:text-[#1e3b8a]"
+                                                title="Edit">
+                                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                            <button
+                                                class="flex size-8 items-center justify-center rounded-lg text-[#64748b] transition-colors hover:bg-red-50 hover:text-red-600"
+                                                title="Delete">
+                                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty state -->
+                                <tr *ngIf="pagedCategories.length === 0">
+                                    <td colspan="7" class="px-6 py-16 text-center">
+                                        <div class="flex flex-col items-center gap-3">
+                                            <span
+                                                class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
+                                            <p class="font-semibold text-[#64748b]">No categories match your search</p>
+                                            <button (click)="searchQuery = ''; onSearchChange()"
+                                                class="text-sm font-medium text-[#1e3b8a] hover:underline">
+                                                Clear search
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div
+                        class="flex flex-col items-center justify-between gap-3 border-t border-[#e2e8f0] px-5 py-4 sm:flex-row">
+                        <p class="text-xs text-[#64748b]">
+                            Showing
+                            <span class="font-semibold text-[#0f172a]">{{ showingFrom }}–{{ showingTo }}</span>
+                            of
+                            <span class="font-semibold text-[#0f172a]">{{ totalItems }}</span>
+                            results
+                        </p>
+
+                        <div class="flex items-center gap-1">
+                            <!-- Prev -->
+                            <button (click)="previousPage()" [disabled]="currentPage === 1"
+                                class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40">
+                                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                            </button>
+
+                            <!-- Page numbers -->
+                            <ng-container *ngFor="let page of pageNumbers">
+                                <span *ngIf="page === '...'"
+                                    class="flex size-9 items-center justify-center text-xs text-[#64748b]">…</span>
+                                <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
+                    ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
+                    : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                                    class="flex size-9 items-center justify-center rounded-lg border text-xs transition-colors">{{
+                                    page }}</button>
+                            </ng-container>
+
+                            <!-- Next -->
+                            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                                class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40">
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </section><!-- /Table panel -->
+            </div><!-- /Split view -->
+        </div><!-- /Page content -->
+    </main> <!-- ═══════════════════════════════════════════════════════════ MODAL -->
+    <div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" role="dialog"
+        aria-modal="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-[#0f172a]/40 backdrop-blur-sm transition-opacity" (click)="closeModal()"></div>
+
+        <!-- Panel -->
+        <div
+            class="relative w-full max-w-[640px] transform overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col max-h-[90vh]">
+
+            <!-- Modal Header -->
+            <div
+                class="flex items-center justify-between border-b border-[#f1f1f4] bg-white px-6 py-4 sticky top-0 z-10">
+                <div>
+                    <h3 class="text-xl font-bold text-[#0f172a] leading-tight">
+                        {{ editingCategory ? 'Edit Category' : 'Create New Category' }}
+                    </h3>
+                    <p class="mt-1 text-sm text-[#64748b]">
+                        {{ editingCategory ? 'Update the details of this category.' : 'Add a new product category to
+                        organize your inventory.' }}
+                    </p>
+                </div>
+                <button (click)="closeModal()" type="button"
+                    class="rounded-md p-1 text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-[#0f172a]">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="flex-1 overflow-y-auto px-6 py-6">
+                <div class="space-y-6">
+
+                    <!-- Row 1: Name & Code -->
+                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                        <!-- Name -->
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-[#374151]" for="cat-name">
+                                Category Name <span class="text-red-500">*</span>
+                            </label>
+                            <input id="cat-name" type="text" [(ngModel)]="form.name" (ngModelChange)="onNameInput()"
+                                placeholder="e.g. Smart Watches"
+                                [ngClass]="formErrors.name ? 'ring-red-400 focus:ring-red-500' : 'ring-[#dcdfe4] focus:ring-[#1e3b8a]'"
+                                class="block w-full rounded-lg bg-white px-3.5 py-2.5 text-sm text-[#0f172a] shadow-sm ring-1 ring-inset placeholder:text-[#9ca3af] focus:ring-2 focus:ring-inset focus:outline-none" />
+                            <p *ngIf="formErrors.name" class="text-xs text-red-500">{{ formErrors.name }}</p>
+                        </div>
+
+                        <!-- Code -->
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-[#374151]" for="cat-code">
+                                Category Code <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative">
+                                <input id="cat-code" type="text" [(ngModel)]="form.code" placeholder="e.g. ELEC-SW-01"
+                                    [ngClass]="formErrors.code ? 'ring-red-400 focus:ring-red-500' : 'ring-[#dcdfe4] focus:ring-[#1e3b8a]'"
+                                    class="block w-full rounded-lg bg-[#f8fafc] px-3.5 py-2.5 pr-14 text-sm uppercase text-[#0f172a] shadow-sm ring-1 ring-inset placeholder:text-[#9ca3af] focus:ring-2 focus:ring-inset focus:outline-none" />
+                                <span
+                                    class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs font-semibold text-[#64748b]">AUTO</span>
+                            </div>
+                            <p *ngIf="formErrors.code" class="text-xs text-red-500">{{ formErrors.code }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Parent Category dropdown -->
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-medium text-[#374151]">Parent Category</label>
+                        <div class="relative">
+
+                            <!-- Trigger button -->
+                            <button type="button" (click)="toggleParentDropdown()"
+                                class="relative w-full cursor-pointer rounded-lg bg-white py-2.5 pl-3 pr-10 text-left text-sm shadow-sm ring-1 ring-inset ring-[#dcdfe4] transition-all hover:ring-[#94a3b8] focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]">
+                                <span *ngIf="!form.parent" class="text-[#9ca3af]">Select parent category…</span>
+                                <span *ngIf="form.parent" class="flex items-center gap-2 text-[#0f172a]">
+                                    <span class="material-symbols-outlined text-[16px] text-[#1e3b8a]">folder</span>
+                                    {{ form.parent }}
+                                </span>
+                                <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center">
+                                    <span class="material-symbols-outlined text-[20px] text-[#64748b]">{{
+                                        isParentDropdownOpen ? 'expand_less' : 'expand_more' }}</span>
+                                </span>
+                            </button>
+
+                            <!-- Dropdown panel -->
+                            <div *ngIf="isParentDropdownOpen"
+                                class="absolute z-20 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white py-1 text-sm shadow-lg ring-1 ring-[#e2e8f0] focus:outline-none">
+                                <!-- Search inside dropdown -->
+                                <div class="sticky top-0 z-10 border-b border-[#f1f1f4] bg-white px-3 py-2">
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 text-[18px] text-[#9ca3af]">search</span>
+                                        <input type="text" [(ngModel)]="parentSearchQuery"
+                                            placeholder="Filter categories…"
+                                            class="block w-full rounded-md border-0 bg-[#f8fafc] py-1.5 pl-8 pr-3 text-xs text-[#0f172a] ring-1 ring-inset ring-[#e2e8f0] placeholder:text-[#9ca3af] focus:ring-2 focus:ring-[#1e3b8a] focus:outline-none" />
+                                    </div>
+                                </div>
+
+                                <!-- None option -->
+                                <ul role="listbox" class="py-1">
+                                    <li (click)="clearParent()" role="option"
+                                        class="relative cursor-pointer select-none px-3 py-2 text-[#0f172a] hover:bg-[#f1f5f9]"
+                                        [ngClass]="form.parent === '' ? 'bg-[#eff6ff]' : ''">
+                                        <span class="flex items-center gap-2">
+                                            <span
+                                                class="material-symbols-outlined text-[16px] text-[#94a3b8]">block</span>
+                                            None (Top Level)
+                                        </span>
+                                        <span *ngIf="form.parent === ''"
+                                            class="absolute inset-y-0 right-3 flex items-center text-[#1e3b8a]">
+                                            <span class="material-symbols-outlined text-[18px]">check</span>
+                                        </span>
+                                    </li>
+
+                                    <!-- Tree options -->
+                                    <li *ngFor="let opt of filteredParentOptions" (click)="selectParent(opt.value)"
+                                        role="option"
+                                        class="relative cursor-pointer select-none py-2 pr-9 text-[#0f172a] hover:bg-[#f1f5f9]"
+                                        [style.padding-left.px]="12 + opt.depth * 16"
+                                        [ngClass]="form.parent === opt.value ? 'bg-[#eff6ff]' : ''">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[16px]"
+                                                [ngClass]="form.parent === opt.value ? 'text-[#1e3b8a]' : 'text-[#9ca3af]'">
+                                                {{ opt.depth === 0 ? 'folder' : 'subdirectory_arrow_right' }}
+                                            </span>
+                                            <span
+                                                [ngClass]="form.parent === opt.value ? 'font-semibold text-[#1e3b8a]' : 'font-normal'">
+                                                {{ opt.label }}
+                                            </span>
+                                            <span *ngIf="form.parent === opt.value"
+                                                class="inline-flex items-center rounded-md bg-blue-100 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700">Selected</span>
+                                        </div>
+                                        <span *ngIf="form.parent === opt.value"
+                                            class="absolute inset-y-0 right-3 flex items-center text-[#1e3b8a]">
+                                            <span class="material-symbols-outlined text-[18px]">check</span>
+                                        </span>
+                                    </li>
+
+                                    <!-- Empty state -->
+                                    <li *ngIf="filteredParentOptions.length === 0"
+                                        class="px-3 py-4 text-center text-xs text-[#94a3b8]">
+                                        No categories match "{{ parentSearchQuery }}"
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <p class="text-xs text-[#64748b]">Select a parent category to nest this item, or leave blank for
+                            top level.</p>
+                    </div>
+
+                    <!-- Row 3: Description -->
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-medium text-[#374151]" for="cat-desc">Description</label>
+                        <textarea id="cat-desc" [(ngModel)]="form.description" rows="4"
+                            placeholder="Add a brief description about this category…"
+                            class="block w-full resize-y rounded-lg bg-white px-3.5 py-2.5 text-sm text-[#0f172a] shadow-sm ring-1 ring-inset ring-[#dcdfe4] placeholder:text-[#9ca3af] focus:ring-2 focus:ring-inset focus:ring-[#1e3b8a] focus:outline-none min-h-[100px]"></textarea>
+                    </div>
+
+                    <!-- Row 4: Status toggle -->
+                    <div class="flex items-center justify-between rounded-lg border border-[#dcdfe4] bg-[#f8fafc] p-4">
+                        <div class="flex flex-col">
+                            <span class="text-sm font-semibold text-[#0f172a]">Category Status</span>
+                            <span class="mt-0.5 text-xs text-[#64748b]">
+                                {{ form.isActive ? 'Active — visible in the store.' : 'Inactive — hidden from the
+                                store.' }}
+                            </span>
+                        </div>
+                        <!-- Toggle switch -->
+                        <button type="button" (click)="form.isActive = !form.isActive" role="switch"
+                            [attr.aria-checked]="form.isActive"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#1e3b8a] focus:ring-offset-2"
+                            [ngClass]="form.isActive ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
+                            <span
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                [ngClass]="form.isActive ? 'translate-x-5' : 'translate-x-0'"></span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-3 border-t border-[#f1f1f4] bg-[#f8fafc] px-6 py-4">
+                <button type="button" (click)="closeModal()"
+                    class="rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-[#0f172a] shadow-sm ring-1 ring-inset ring-[#dcdfe4] transition-colors hover:bg-gray-50">Cancel</button>
+                <button type="button" (click)="saveCategory()"
+                    class="flex items-center gap-2 rounded-lg bg-[#1e3b8a] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#152e6e] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1e3b8a]">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    {{ editingCategory ? 'Update Category' : 'Save Category' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+</div>

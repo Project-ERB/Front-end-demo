@@ -1,0 +1,43 @@
+/* system-logs.component.css */
+
+:host {
+    display: block;
+    height: 100%;
+}
+
+/* Modal entrance animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.97) translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Hide scrollbar on filter row mobile overflow */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
