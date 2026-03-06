@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 interface Product {
   id: number;
@@ -21,6 +22,9 @@ interface Product {
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent {
+
+  private readonly _router = inject(Router);
+
   user = {
     name: 'Alex Doe',
     role: 'Sales Manager',
@@ -132,6 +136,7 @@ export class ProductsComponent {
   addNewProduct(): void {
     console.log('Add new product');
     // Add new product logic here
+    this._router.navigate(['/add-product']);
   }
 
   getPageNumbers(): (number | string)[] {
@@ -175,7 +180,7 @@ export class ProductsComponent {
   }
 
   onPageClick(page: number | string): void {
-    if(typeof page === 'number'){
+    if (typeof page === 'number') {
       this.goToPage(page);
     }
   }

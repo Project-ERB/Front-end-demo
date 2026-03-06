@@ -1,6 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { CategoriesService } from '../../../../core/services/categories/categories.service';
+import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
 
 export interface SubCategory {
   label: string;
@@ -31,6 +34,27 @@ export interface Product {
   styleUrl: './category-detail.component.scss',
 })
 export class CategoryDetailComponent {
+
+  private readonly _formBuilder = inject(FormBuilder)
+
+  categoryform: FormGroup = this._formBuilder.group({
+    name: [null],
+    code: [null],
+    description: [null]
+  })
+
+  categoreis: any;
+
+  private _CategoriesService = inject(CategoriesService);
+
+
+
+  userId!: string;
+  private route = inject(ActivatedRoute);
+
+  private readonly _categoriesService = inject(CategoriesService);
+
+  constructor() { }
 
   // ── Sidebar (same as previous components) ─────────────────────────
   navItems = [
@@ -261,6 +285,23 @@ export class CategoryDetailComponent {
     return price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    // route param
+    const routeParams = this.route.snapshot.paramMap;
+    const categoryId = routeParams.get('id');
+
+    this.loadCategory(categoryId);
+  }
+
+  loadCategory(id: any) {
+    this._CategoriesService.viewCateDetails(id).subscribe({
+      next: (res: any) => {
+        console.log(res);
+      },
+      error: (err: any) => {
+        console.error(err);
+      }
+    });
+  }
 
 }

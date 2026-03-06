@@ -1,0 +1,83 @@
+<aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
+    <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
+        <div class="flex items-center gap-2">
+            <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
+                <span class="material-symbols-outlined text-xl">analytics</span>
+            </div>
+            <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
+        </div>
+    </div>
+
+    <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
+        <nav class="flex flex-col gap-1">
+            <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">
+                Main Menu
+            </p>
+
+            <!-- Dashboard -->
+            <a
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">grid_view</span>
+                Sales-Dashboard
+            </a>
+
+            <!-- Sales Analysis -->
+            <a routerLink="/sales-analysis" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">trending_up</span>
+                Sales Analysis
+            </a>
+
+            <!-- Categories -->
+            <a routerLink="/category-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">category</span>
+                Categories
+            </a>
+
+            <!-- Products -->
+            <a routerLink="/product-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                Products
+            </a>
+
+            <!-- Discounts -->
+            <a routerLink="/discount-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">percent</span>
+                Discounts
+            </a>
+
+            <!-- Oreders -->
+            <a routerLink="/orders" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                Orders
+            </a>
+        </nav>
+
+        <div class="flex flex-col gap-4">
+            <div class="rounded-xl bg-[#eff6ff] p-4">
+                <div class="flex items-start gap-3">
+                    <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
+                        <span class="material-symbols-outlined text-sm">support_agent</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
+                        <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
+                    alt="User Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold text-[#0f172a]">Jane Doe</span>
+                    <span class="text-xs text-[#64748b]">Enterprise Admin</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

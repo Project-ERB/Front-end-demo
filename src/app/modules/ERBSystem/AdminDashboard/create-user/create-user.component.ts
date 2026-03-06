@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
+import { AdminService } from '../../../../core/services/Admin-service/admin.service';
+import { ToastrService } from 'ngx-toastr';
 
 
 export type PermKey = 'view' | 'create' | 'update' | 'delete';
@@ -36,11 +38,14 @@ const PERM_LABELS: Record<PermKey, string> = {
 @Component({
   selector: 'app-create-user',
   standalone: true,
-  imports: [CommonModule, FormsModule, SiedeAdminComponent],
+  imports: [CommonModule, FormsModule, SiedeAdminComponent, ReactiveFormsModule],
   templateUrl: './create-user.component.html',
   styleUrl: './create-user.component.scss'
 })
-export class CreateUserComponent {
+export class CreateUserComponent implements OnInit {
+  private readonly _ToastrService = inject(ToastrService)
+  private readonly _AdminService = inject(AdminService);
+  private readonly _FormBuilder = inject(FormBuilder)
 
   // ── Form state ─────────────────────────────────────────────────────────
   roleName = '';
@@ -176,6 +181,57 @@ export class CreateUserComponent {
 
   getActiveCount(mod: any): number {
     return mod.available.filter((k: string) => mod.perms[k]).length;
+  }
+
+  RoleForm: FormGroup = this._FormBuilder.group({
+    name: [null, Validators.required],
+    description: [null, Validators.required],
+    setPermissions: this._FormBuilder.array([]) // مهم جداً
+  });
+
+  get setPermissions(): FormArray {
+    return this.RoleForm.get('setPermissions') as FormArray;
+  }
+
+  addDefaultPermission() {
+    const permissionGroup = this._FormBuilder.group({
+      permissionId: ['9351473e-a12a-438f-8744-1c1237322e7d'],
+      allowCreate: [true],
+      allowDelete: [true],
+      allowUpdated: [true],
+      allowView: [true]
+    });
+
+    this.setPermissions.push(permissionGroup);
+  }
+
+  ngOnInit() {
+    this.addDefaultPermission();
+  }
+
+  atLeastOnePermissionValidator(control: AbstractControl) {
+    const hasPermission =
+      control.get('allowCreate')?.value ||
+      control.get('allowDelete')?.value ||
+      control.get('allowUpdated')?.value ||
+      control.get('allowView')?.value;
+
+    return hasPermission ? null : { noPermissionSelected: true };
+  }
+
+  createRole(): void {
+    console.log(this.RoleForm.value); // مهم للتأكد
+
+    this._AdminService.creatCustomRole(this.RoleForm.value).subscribe({
+      next: (res) => {
+        this._ToastrService.success('Role created successfully!');
+        console.log('Role created successfully:', res);
+      },
+      error: (err) => {
+        this._ToastrService.error('Failed to create role.');
+        console.error('Error creating role:', err);
+      }
+    });
   }
 
 }

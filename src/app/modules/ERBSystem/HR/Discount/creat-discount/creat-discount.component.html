@@ -1,79 +1,39 @@
 <div class="flex min-h-screen w-full bg-[#f6f6f8] font-sans text-[#111318]">
+    <app-sideba-sales></app-sideba-sales>
 
-    <!-- ═══ SIDEBAR ════════════════════════════════════════════════════ -->
-    <aside class="hidden w-64 shrink-0 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
-        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
-            <div class="flex items-center gap-2">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
-                    <span class="material-symbols-outlined text-xl">analytics</span>
-                </div>
-                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
-            </div>
-        </div>
-        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
-            <nav class="flex flex-col gap-1">
-                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
-                <a *ngFor="let item of navItems" href="#"
-                    [ngClass]="item.active ? 'bg-[#1e3b8a]/10 text-[#1e3b8a]' : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
-                    class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
-                    {{ item.label }}
-                </a>
-            </nav>
-            <div class="flex flex-col gap-4">
-                <div class="rounded-xl bg-[#eff6ff] p-4">
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
-                            <span class="material-symbols-outlined text-sm">support_agent</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
-                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
-                        alt="Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
-                    <div>
-                        <p class="text-sm font-semibold text-[#0f172a]">Jane Doe</p>
-                        <p class="text-xs text-[#64748b]">Enterprise Admin</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <!-- ═══ MAIN ════════════════════════════════════════════════════════ -->
     <div class="flex flex-1 flex-col overflow-hidden">
 
-        <!-- Top header -->
+        <!-- View toggle -->
+        <div class="border-b border-[#dbdee6] bg-white px-8 py-3">
+            <div class="flex items-center gap-2">
+                <span class="mr-2 text-sm font-semibold text-[#616c89]">View:</span>
+                <button (click)="isEditMode = false" class="rounded-lg px-4 py-1.5 text-sm font-bold transition-all"
+                    [ngClass]="!isEditMode ? 'bg-[#1e3b8a] text-white shadow-sm' : 'border border-[#dbdee6] text-[#616c89] hover:bg-[#f6f6f8]'">
+                    Create Discount
+                </button>
+                <button (click)="isEditMode = true" class="rounded-lg px-4 py-1.5 text-sm font-bold transition-all"
+                    [ngClass]="isEditMode ? 'bg-[#1e3b8a] text-white shadow-sm' : 'border border-[#dbdee6] text-[#616c89] hover:bg-[#f6f6f8]'">
+                    Edit Discount
+                </button>
+            </div>
+        </div>
 
-
-        <!-- Scrollable content -->
         <div class="flex-1 overflow-y-auto">
 
-            <!-- ── View toggle bar ──────────────────────────────────────── -->
-            <div class="border-b border-[#dbdee6] bg-white px-8 py-3">
-                <div class="flex items-center gap-2">
-                    <span class="mr-2 text-sm font-semibold text-[#616c89]">View:</span>
-                    <button (click)="isEditMode = false" class="rounded-lg px-4 py-1.5 text-sm font-bold transition-all"
-                        [ngClass]="!isEditMode ? 'bg-[#1e3b8a] text-white shadow-sm' : 'border border-[#dbdee6] text-[#616c89] hover:bg-[#f6f6f8]'">
-                        Create Discount
-                    </button>
-                    <button (click)="isEditMode = true" class="rounded-lg px-4 py-1.5 text-sm font-bold transition-all"
-                        [ngClass]="isEditMode ? 'bg-[#1e3b8a] text-white shadow-sm' : 'border border-[#dbdee6] text-[#616c89] hover:bg-[#f6f6f8]'">
-                        Edit Discount
-                    </button>
+            <!-- ═══════════════ CREATE VIEW ═══════════════ -->
+            <div *ngIf="!isEditMode" class="mx-auto max-w-6xl px-6 py-8 pb-28">
+
+                <!-- Banners -->
+                <div *ngIf="successMessage"
+                    class="mb-6 flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
+                    <span class="material-symbols-outlined text-green-500">check_circle</span>{{ successMessage }}
                 </div>
-            </div>
+                <div *ngIf="errorMessage"
+                    class="mb-6 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
+                    <span class="material-symbols-outlined text-red-500">error</span>{{ errorMessage }}
+                </div>
 
-            <!-- ════════════════════════════════════════════════════════════
-           CREATE VIEW
-      ═════════════════════════════════════════════════════════════ -->
-            <div *ngIf="!isEditMode" class="mx-auto max-w-6xl px-6 py-8">
-
-                <!-- Title -->
+                <!-- Page header -->
                 <div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                         <div class="mb-1 flex items-center gap-2 text-sm font-medium text-[#616c89]">
@@ -81,40 +41,20 @@
                             <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                             <span class="text-[#111318]">Create New</span>
                         </div>
-                        <h1 class="text-3xl font-black tracking-tight text-[#111318]">
-                            {{ currentStep === 3 ? 'Review Discount' : 'Create Discount' }}
-                        </h1>
+                        <h1 class="text-3xl font-black tracking-tight">{{ currentStep === 4 ? 'Review & Publish' :
+                            'Create Discount' }}</h1>
                     </div>
-                    <div class="flex w-full gap-3 sm:w-auto items-center">
-                        <!-- Draft badge shown on step 3 -->
-                        <span *ngIf="currentStep === 3"
-                            class="flex items-center gap-2 px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold uppercase tracking-wider border border-gray-200 mr-2">
-                            <span class="size-2 bg-gray-400 rounded-full"></span>
-                            Draft
-                        </span>
+                    <div class="flex items-center gap-3">
                         <button (click)="cancel()"
-                            class="h-10 flex-1 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8] sm:flex-none">Cancel</button>
-                        <button *ngIf="currentStep < 3" (click)="saveDraft()"
-                            class="h-10 flex-1 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8] sm:flex-none">Save
+                            class="h-10 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8]">Cancel</button>
+                        <button *ngIf="currentStep < 4" (click)="saveDraft()"
+                            class="h-10 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8]">Save
                             Draft</button>
-                        <!-- On step 3, show Back + Publish instead of the normal Next/Create -->
-                        <button *ngIf="currentStep === 3" (click)="prevStep()"
-                            class="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8] sm:flex-none">
-                            <span class="material-symbols-outlined text-[18px]">arrow_back</span> Back
-                        </button>
-                        <button *ngIf="currentStep < 3" (click)="nextStep()"
-                            class="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white shadow-md hover:bg-blue-900 sm:flex-none">
-                            Next Step <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </button>
-                        <button *ngIf="currentStep === 3" (click)="submitForm()"
-                            class="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white shadow-md hover:bg-blue-900 sm:flex-none">
-                            <span class="material-symbols-outlined text-[18px]">rocket_launch</span> Publish Discount
-                        </button>
                     </div>
                 </div>
 
                 <!-- Stepper -->
-                <div class="mb-10 max-w-2xl">
+                <div class="mb-10">
                     <div class="relative flex w-full items-center justify-between">
                         <div class="absolute top-4 left-0 h-0.5 w-full bg-[#dbdee6]"></div>
                         <div class="absolute top-4 left-0 h-0.5 bg-[#1e3b8a] transition-all duration-500"
@@ -123,103 +63,177 @@
                             class="relative z-10 flex cursor-pointer flex-col items-center gap-2 bg-[#f6f6f8] px-2"
                             (click)="goToStep(step.number)">
                             <div class="flex size-8 items-center justify-center rounded-full text-sm font-bold ring-4 ring-[#f6f6f8] transition-all"
-                                [ngClass]="step.number < currentStep ? 'bg-green-500 text-white' : step.number === currentStep ? 'bg-[#1e3b8a] text-white' : 'border-2 border-[#dbdee6] bg-white text-[#616c89] opacity-50'">
+                                [ngClass]="step.number < currentStep  ? 'bg-green-500 text-white' :
+                           step.number === currentStep ? 'bg-[#1e3b8a] text-white' :
+                           'border-2 border-[#dbdee6] bg-white text-[#616c89] opacity-50'">
                                 <span *ngIf="step.number < currentStep"
                                     class="material-symbols-outlined text-[16px]">check</span>
                                 <span *ngIf="step.number >= currentStep">{{ step.number }}</span>
                             </div>
-                            <span class="whitespace-nowrap text-xs font-bold uppercase tracking-wide"
-                                [ngClass]="step.number === currentStep ? 'text-[#1e3b8a]' : step.number < currentStep ? 'text-green-600' : 'text-[#616c89] opacity-50'">{{
-                                step.label }}</span>
+                            <div class="flex flex-col items-center gap-0.5">
+                                <span class="whitespace-nowrap text-xs font-bold uppercase tracking-wide"
+                                    [ngClass]="step.number === currentStep ? 'text-[#1e3b8a]' : step.number < currentStep ? 'text-green-600' : 'text-[#616c89] opacity-50'">
+                                    {{ step.label }}
+                                </span>
+                                <span class="text-[10px] text-[#94a3b8]">{{ step.fieldHint }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Two-column layout -->
                 <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-
-                    <!-- Left: form panels -->
                     <div class="flex flex-col gap-6 lg:col-span-2">
 
-                        <!-- Step 1: Configuration -->
+                        <!-- ══════════════════════════════════════════════════
+                 STEP 1 — Discount Identity & Type
+                 Fields: code · name · description · discountType · discountValueAmount
+                 (+ buyQuantity · getQuantity · getDiscountPercentage when BxGy)
+            ══════════════════════════════════════════════════ -->
                         <ng-container *ngIf="currentStep === 1">
 
-                            <!-- Identity -->
+                            <!-- Identity card -->
                             <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/40 p-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
-                                                class="material-symbols-outlined">label</span></div>
-                                        <div>
-                                            <h3 class="text-base font-bold text-[#111318]">Discount Identity</h3>
-                                            <p class="text-sm text-[#616c89]">Define the core details of your promotion.
-                                            </p>
+                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 p-5">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
+                                                    class="material-symbols-outlined">label</span></div>
+                                            <div>
+                                                <h3 class="text-base font-bold text-[#111318]">Discount Identity</h3>
+                                                <p class="text-xs text-[#616c89]">3 fields: <code
+                                                        class="text-[#1e3b8a]">code</code> · <code
+                                                        class="text-[#1e3b8a]">name</code> · <code
+                                                        class="text-[#1e3b8a]">description</code></p>
+                                            </div>
                                         </div>
+                                        <span
+                                            class="rounded-full bg-[#1e3b8a]/8 px-2.5 py-1 text-xs font-bold text-[#1e3b8a]">3
+                                            / 16</span>
                                     </div>
                                 </div>
                                 <div class="space-y-5 p-6">
-                                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                        <label class="flex flex-col gap-2">
-                                            <span class="text-sm font-semibold text-[#111318]">Discount Name</span>
+
+                                    <!-- code + name -->
+                                    <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                                        <!-- code -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Discount Code <span
+                                                        class="text-red-500">*</span></span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">code</span>
+                                            </div>
+                                            <div class="relative flex items-center">
+                                                <input type="text" [(ngModel)]="discountCode" placeholder="SUMMER20"
+                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 pr-24 font-mono text-sm uppercase tracking-wider outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                <button type="button" (click)="generateCode()"
+                                                    class="absolute right-2 rounded border border-[#dbdee6] bg-white px-3 py-1 text-xs font-bold text-[#1e3b8a] hover:bg-[#f6f6f8]"
+                                                    style="top:6px;bottom:6px">Generate</button>
+                                            </div>
+                                            <span class="text-xs text-[#616c89]">Customers enter this at
+                                                checkout.</span>
+                                        </label>
+
+                                        <!-- name -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Discount Name <span
+                                                        class="text-red-500">*</span></span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">name</span>
+                                            </div>
                                             <input type="text" [(ngModel)]="discountName"
                                                 placeholder="e.g., Summer Sale 2024"
                                                 class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                             <span class="text-xs text-[#616c89]">Internal name for tracking.</span>
                                         </label>
-                                        <label class="flex flex-col gap-2">
-                                            <span class="text-sm font-semibold text-[#111318]">Discount Code</span>
-                                            <div class="relative flex items-center">
-                                                <input type="text" [(ngModel)]="discountCode" placeholder="SUMMER20"
-                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 pr-24 font-mono text-sm uppercase tracking-wider outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
-                                                <button type="button" (click)="generateCode()"
-                                                    class="absolute right-2 rounded border border-[#dbdee6] bg-white px-3 py-1 text-xs font-bold text-[#1e3b8a] transition-all hover:bg-[#f6f6f8]"
-                                                    style="top:6px;bottom:6px">Generate</button>
-                                            </div>
-                                            <span class="text-xs text-[#616c89]">Customers will enter this at
-                                                checkout.</span>
-                                        </label>
                                     </div>
+
+                                    <!-- description -->
+                                    <label class="flex flex-col gap-1.5">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm font-semibold text-[#111318]">Description</span>
+                                            <span
+                                                class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">description</span>
+                                        </div>
+                                        <textarea [(ngModel)]="discountDescription" rows="2"
+                                            placeholder="Brief description of this promotion…"
+                                            class="w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 py-3 text-sm outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20 resize-none"></textarea>
+                                    </label>
+
                                 </div>
                             </section>
 
-                            <!-- Discount Type -->
+                            <!-- Discount Type & Value card -->
                             <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/40 p-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
-                                                class="material-symbols-outlined">percent</span></div>
-                                        <div>
-                                            <h3 class="text-base font-bold text-[#111318]">Discount Type</h3>
-                                            <p class="text-sm text-[#616c89]">Select how the discount is calculated.</p>
+                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 p-5">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
+                                                    class="material-symbols-outlined">percent</span></div>
+                                            <div>
+                                                <h3 class="text-base font-bold text-[#111318]">Discount Type &amp; Value
+                                                </h3>
+                                                <p class="text-xs text-[#616c89]">2 fields: <code
+                                                        class="text-[#1e3b8a]">discountType</code> · <code
+                                                        class="text-[#1e3b8a]">discountValueAmount</code></p>
+                                            </div>
                                         </div>
+                                        <span
+                                            class="rounded-full bg-[#1e3b8a]/8 px-2.5 py-1 text-xs font-bold text-[#1e3b8a]">2
+                                            / 16</span>
                                     </div>
                                 </div>
-                                <div class="p-6">
-                                    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-                                        <button *ngFor="let opt of typeOptions" type="button"
-                                            (click)="selectedType = opt.value"
-                                            class="relative flex flex-col gap-3 rounded-xl border-2 p-4 text-left transition-all"
-                                            [ngClass]="selectedType === opt.value ? 'border-[#1e3b8a] bg-[#1e3b8a]/5' : 'border-[#dbdee6] bg-white hover:border-[#1e3b8a]/30'">
-                                            <div class="absolute right-3 top-3 text-[#1e3b8a] transition-opacity"
-                                                [ngClass]="selectedType === opt.value ? 'opacity-100' : 'opacity-0'">
-                                                <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                                            </div>
-                                            <div class="flex size-10 items-center justify-center rounded-full transition-colors"
-                                                [ngClass]="selectedType === opt.value ? 'bg-[#1e3b8a] text-white' : 'bg-[#f6f6f8] text-[#616c89]'">
-                                                <span class="material-symbols-outlined">{{ opt.icon }}</span>
-                                            </div>
-                                            <div>
-                                                <span class="block font-bold"
-                                                    [ngClass]="selectedType === opt.value ? 'text-[#1e3b8a]' : 'text-[#111318]'">{{
-                                                    opt.label }}</span>
-                                                <span class="mt-1 block text-xs leading-tight text-[#616c89]">{{
-                                                    opt.description }}</span>
-                                            </div>
-                                        </button>
+                                <div class="p-6 space-y-5">
+
+                                    <!-- discountType selector -->
+                                    <div>
+                                        <div class="mb-3 flex items-center justify-between">
+                                            <span class="text-sm font-semibold text-[#111318]">Type <span
+                                                    class="text-red-500">*</span></span>
+                                            <span
+                                                class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">discountType</span>
+                                        </div>
+                                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                            <button *ngFor="let opt of typeOptions" type="button"
+                                                (click)="selectedType = opt.value"
+                                                class="relative flex flex-col gap-2 rounded-xl border-2 p-4 text-left transition-all"
+                                                [ngClass]="selectedType === opt.value ? 'border-[#1e3b8a] bg-[#1e3b8a]/5' : 'border-[#dbdee6] bg-white hover:border-[#1e3b8a]/30'">
+                                                <div class="absolute right-3 top-3 text-[#1e3b8a]"
+                                                    [ngClass]="selectedType === opt.value ? 'opacity-100' : 'opacity-0'">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px]">check_circle</span>
+                                                </div>
+                                                <div class="flex size-9 items-center justify-center rounded-full transition-colors"
+                                                    [ngClass]="selectedType === opt.value ? 'bg-[#1e3b8a] text-white' : 'bg-[#f6f6f8] text-[#616c89]'">
+                                                    <span class="material-symbols-outlined text-[20px]">{{ opt.icon
+                                                        }}</span>
+                                                </div>
+                                                <div>
+                                                    <span class="block text-sm font-bold"
+                                                        [ngClass]="selectedType === opt.value ? 'text-[#1e3b8a]' : 'text-[#111318]'">{{
+                                                        opt.label }}</span>
+                                                    <span class="block text-xs text-[#616c89]">{{ opt.description
+                                                        }}</span>
+                                                    <span class="mt-1 block font-mono text-[10px] text-[#94a3b8]">= {{
+                                                        opt.apiValue }}</span>
+                                                </div>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="rounded-lg border border-[#dbdee6]/50 bg-[#f6f6f8]/50 p-5">
-                                        <label class="flex max-w-xs flex-col gap-2">
-                                            <span class="text-sm font-semibold text-[#111318]">{{ valueLabel }}</span>
+
+                                    <!-- discountValueAmount (percentage / fixed) -->
+                                    <div *ngIf="selectedType !== 'bxgy'"
+                                        class="rounded-lg border border-[#dbdee6]/60 bg-[#f6f6f8]/50 p-5">
+                                        <label class="flex max-w-xs flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">{{ valueLabel
+                                                    }}</span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">discountValueAmount</span>
+                                            </div>
                                             <div class="relative">
                                                 <input type="number" [(ngModel)]="discountValue"
                                                     [placeholder]="valuePlaceholder"
@@ -231,46 +245,303 @@
                                             </div>
                                         </label>
                                     </div>
+
+                                    <!-- BxGy sub-fields: buyQuantity · getQuantity · getDiscountPercentage -->
+                                    <div *ngIf="selectedType === 'bxgy'"
+                                        class="rounded-lg border border-[#dbdee6]/60 bg-[#f6f6f8]/50 p-5 space-y-4">
+                                        <p class="text-xs font-semibold uppercase tracking-wider text-[#616c89]">Buy X
+                                            Get Y — 3 extra fields</p>
+                                        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                                            <label class="flex flex-col gap-1.5">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm font-semibold text-[#111318]">Buy Qty</span>
+                                                    <span
+                                                        class="rounded bg-[#eff6ff] px-1 py-0.5 font-mono text-[9px] font-bold text-[#1e3b8a] border border-blue-100">buyQuantity</span>
+                                                </div>
+                                                <input type="number" [(ngModel)]="buyQuantity" placeholder="2"
+                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            </label>
+                                            <label class="flex flex-col gap-1.5">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm font-semibold text-[#111318]">Get Qty</span>
+                                                    <span
+                                                        class="rounded bg-[#eff6ff] px-1 py-0.5 font-mono text-[9px] font-bold text-[#1e3b8a] border border-blue-100">getQuantity</span>
+                                                </div>
+                                                <input type="number" [(ngModel)]="getQuantity" placeholder="1"
+                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            </label>
+                                            <label class="flex flex-col gap-1.5">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-sm font-semibold text-[#111318]">Discount %</span>
+                                                    <span
+                                                        class="rounded bg-[#eff6ff] px-1 py-0.5 font-mono text-[9px] font-bold text-[#1e3b8a] border border-blue-100">getDiscountPercentage</span>
+                                                </div>
+                                                <div class="relative">
+                                                    <input type="number" [(ngModel)]="getDiscountPercentage"
+                                                        placeholder="100"
+                                                        class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pr-10 pl-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                    <div
+                                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#616c89]">
+                                                        <span class="font-bold">%</span></div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </section>
 
-                            <!-- Rules & Limits -->
+                        </ng-container><!-- /step 1 -->
+
+                        <!-- ══════════════════════════════════════════════════
+                 STEP 2 — Schedule, Targeting & Currency
+                 Fields: startDate · endDate · tagetType · targetId · currency · minimumPurchaseAmount
+            ══════════════════════════════════════════════════ -->
+                        <ng-container *ngIf="currentStep === 2">
+
+                            <!-- Schedule card -->
                             <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div class="group flex cursor-pointer items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/40 p-5"
-                                    (click)="rulesExpanded = !rulesExpanded">
-                                    <div class="flex items-center gap-3">
-                                        <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
-                                                class="material-symbols-outlined">tune</span></div>
-                                        <div>
-                                            <h3
-                                                class="text-base font-bold text-[#111318] transition-colors group-hover:text-[#1e3b8a]">
-                                                Usage Limits &amp; Rules</h3>
-                                            <p class="text-sm text-[#616c89]">Set constraints for how this discount can
-                                                be applied.</p>
+                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 p-5">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
+                                                    class="material-symbols-outlined">calendar_month</span></div>
+                                            <div>
+                                                <h3 class="text-base font-bold text-[#111318]">Schedule &amp; Currency
+                                                </h3>
+                                                <p class="text-xs text-[#616c89]">3 fields: <code
+                                                        class="text-[#1e3b8a]">startDate</code> · <code
+                                                        class="text-[#1e3b8a]">endDate</code> · <code
+                                                        class="text-[#1e3b8a]">currency</code></p>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="rounded-full bg-[#1e3b8a]/8 px-2.5 py-1 text-xs font-bold text-[#1e3b8a]">3
+                                            / 16</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-5 p-6">
+                                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                                        <!-- startDate -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Start Date <span
+                                                        class="text-red-500">*</span></span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">startDate</span>
+                                            </div>
+                                            <input type="datetime-local" [(ngModel)]="startDate"
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                        </label>
+
+                                        <!-- endDate -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">End Date <span
+                                                        class="text-red-500">*</span></span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">endDate</span>
+                                            </div>
+                                            <input type="datetime-local" [(ngModel)]="endDate"
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                        </label>
+                                    </div>
+
+                                    <!-- currency -->
+                                    <label class="flex flex-col gap-1.5 max-w-xs">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm font-semibold text-[#111318]">Currency</span>
+                                            <span
+                                                class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">currency</span>
+                                        </div>
+                                        <select [(ngModel)]="currency"
+                                            class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20">
+                                            <option value="USD">USD – US Dollar</option>
+                                            <option value="EUR">EUR – Euro</option>
+                                            <option value="GBP">GBP – British Pound</option>
+                                            <option value="EGP">EGP – Egyptian Pound</option>
+                                            <option value="SAR">SAR – Saudi Riyal</option>
+                                            <option value="AED">AED – UAE Dirham</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </section>
+
+                            <!-- Targeting card -->
+                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 p-5">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
+                                                    class="material-symbols-outlined">target</span></div>
+                                            <div>
+                                                <h3 class="text-base font-bold text-[#111318]">Targeting &amp; Min.
+                                                    Purchase</h3>
+                                                <p class="text-xs text-[#616c89]">3 fields: <code
+                                                        class="text-[#1e3b8a]">tagetType</code> · <code
+                                                        class="text-[#1e3b8a]">targetId</code> · <code
+                                                        class="text-[#1e3b8a]">minimumPurchaseAmount</code></p>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="rounded-full bg-[#1e3b8a]/8 px-2.5 py-1 text-xs font-bold text-[#1e3b8a]">3
+                                            / 16</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-5 p-6">
+
+                                    <!-- tagetType -->
+                                    <div>
+                                        <div class="mb-3 flex items-center justify-between">
+                                            <span class="text-sm font-semibold text-[#111318]">Target Type</span>
+                                            <span
+                                                class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">targets[].tagetType</span>
+                                        </div>
+                                        <div class="flex flex-col gap-2">
+                                            <label *ngFor="let opt of targetingOptions"
+                                                class="flex cursor-pointer items-center rounded-lg border p-3.5 transition-colors"
+                                                [ngClass]="targeting === opt.value ? 'border-[#1e3b8a] bg-[#eff6ff]' : 'border-[#dbdee6] bg-white hover:border-[#1e3b8a]/40'">
+                                                <input type="radio" name="targeting" [value]="opt.value"
+                                                    [(ngModel)]="targeting" class="size-4 shrink-0 accent-[#1e3b8a]" />
+                                                <div class="ml-3 flex-1">
+                                                    <span class="block text-sm font-bold"
+                                                        [ngClass]="targeting === opt.value ? 'text-[#1e3b8a]' : 'text-[#111318]'">{{
+                                                        opt.label }}</span>
+                                                    <span class="block text-xs text-[#616c89]">{{ opt.description
+                                                        }}</span>
+                                                </div>
+                                                <span class="font-mono text-[10px] text-[#94a3b8]">= {{ opt.apiValue
+                                                    }}</span>
+                                            </label>
                                         </div>
                                     </div>
-                                    <span
-                                        class="material-symbols-outlined text-[#616c89] transition-all group-hover:text-[#1e3b8a]">{{
-                                        rulesExpanded ? 'expand_less' : 'expand_more' }}</span>
-                                </div>
-                                <div *ngIf="rulesExpanded" class="space-y-6 p-6">
-                                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                        <label class="flex flex-col gap-2">
+
+                                    <!-- targetId -->
+                                    <div *ngIf="targeting !== 'store'">
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">
+                                                    {{ targeting === 'collections' ? 'Collection ID' : 'Customer Segment
+                                                    ID' }}
+                                                    <span class="text-red-500">*</span>
+                                                </span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">targets[].targetId</span>
+                                            </div>
+                                            <input type="text" [(ngModel)]="targetId"
+                                                placeholder="3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 font-mono text-sm outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            <span class="text-xs text-[#616c89]">UUID of the target entity.</span>
+                                        </label>
+                                    </div>
+
+                                    <!-- minimumPurchaseAmount -->
+                                    <label class="flex flex-col gap-1.5">
+                                        <div class="flex items-center justify-between">
                                             <span class="text-sm font-semibold text-[#111318]">Minimum Purchase
                                                 Amount</span>
+                                            <span
+                                                class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">minimumPurchaseAmount</span>
+                                        </div>
+                                        <div class="relative max-w-xs">
+                                            <div
+                                                class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
+                                                <span class="material-symbols-outlined text-[18px]">attach_money</span>
+                                            </div>
+                                            <input type="number" [(ngModel)]="minPurchase" placeholder="0.00"
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                        </div>
+                                        <span class="text-xs text-[#616c89]">Leave empty for no minimum.</span>
+                                    </label>
+
+                                </div>
+                            </section>
+
+                        </ng-container><!-- /step 2 -->
+
+                        <!-- ══════════════════════════════════════════════════
+                 STEP 3 — Usage Limits & Rules
+                 Fields: minimumQuantity · maximumDiscountAmount · canCombineWithOtherDiscounts
+                         · usageLimitPerCustomer · totalUsageLimit
+            ══════════════════════════════════════════════════ -->
+                        <ng-container *ngIf="currentStep === 3">
+
+                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 p-5">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
+                                                    class="material-symbols-outlined">tune</span></div>
+                                            <div>
+                                                <h3 class="text-base font-bold text-[#111318]">Usage Limits &amp; Rules
+                                                </h3>
+                                                <p class="text-xs text-[#616c89]">
+                                                    5 fields: <code class="text-[#1e3b8a]">minimumQuantity</code> ·
+                                                    <code class="text-[#1e3b8a]">maximumDiscountAmount</code> · <code
+                                                        class="text-[#1e3b8a]">totalUsageLimit</code> · <code
+                                                        class="text-[#1e3b8a]">usageLimitPerCustomer</code> · <code
+                                                        class="text-[#1e3b8a]">canCombineWithOtherDiscounts</code>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span
+                                            class="rounded-full bg-[#1e3b8a]/8 px-2.5 py-1 text-xs font-bold text-[#1e3b8a]">5
+                                            / 16</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-6 p-6">
+
+                                    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                                        <!-- minimumQuantity -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Minimum
+                                                    Quantity</span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">minimumQuantity</span>
+                                            </div>
                                             <div class="relative">
                                                 <div
                                                     class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
                                                     <span
-                                                        class="material-symbols-outlined text-[18px]">attach_money</span>
+                                                        class="material-symbols-outlined text-[18px]">shopping_bag</span>
                                                 </div>
-                                                <input type="number" [(ngModel)]="minPurchase" placeholder="0.00"
+                                                <input type="number" [(ngModel)]="minimumQuantity" placeholder="0"
                                                     class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                             </div>
-                                            <span class="text-xs text-[#616c89]">Leave empty for no minimum.</span>
+                                            <span class="text-xs text-[#616c89]">Min. items required in cart.</span>
                                         </label>
-                                        <label class="flex flex-col gap-2">
-                                            <span class="text-sm font-semibold text-[#111318]">Total Usage Limit</span>
+
+                                        <!-- maximumDiscountAmount -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Maximum Discount
+                                                    Amount</span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">maximumDiscountAmount</span>
+                                            </div>
+                                            <div class="relative">
+                                                <div
+                                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
+                                                    <span class="material-symbols-outlined text-[18px]">money_off</span>
+                                                </div>
+                                                <input type="number" [(ngModel)]="maximumDiscountAmount"
+                                                    placeholder="0.00"
+                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            </div>
+                                            <span class="text-xs text-[#616c89]">Leave empty for no cap.</span>
+                                        </label>
+
+                                        <!-- totalUsageLimit -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Total Usage
+                                                    Limit</span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">totalUsageLimit</span>
+                                            </div>
                                             <div class="relative">
                                                 <div
                                                     class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
@@ -279,379 +550,374 @@
                                                 <input type="number" [(ngModel)]="usageLimit" placeholder="e.g. 100"
                                                     class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                             </div>
-                                            <span class="text-xs text-[#616c89]">Max times this code can be used
-                                                globally.</span>
+                                            <span class="text-xs text-[#616c89]">Max global uses. Leave empty for
+                                                unlimited.</span>
                                         </label>
+
+                                        <!-- usageLimitPerCustomer -->
+                                        <label class="flex flex-col gap-1.5">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-semibold text-[#111318]">Usage Limit Per
+                                                    Customer</span>
+                                                <span
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">usageLimitPerCustomer</span>
+                                            </div>
+                                            <div class="relative">
+                                                <div
+                                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
+                                                    <span class="material-symbols-outlined text-[18px]">person</span>
+                                                </div>
+                                                <input type="number" [(ngModel)]="usageLimitPerCustomer"
+                                                    placeholder="e.g. 1"
+                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            </div>
+                                            <span class="text-xs text-[#616c89]">Max uses per individual
+                                                customer.</span>
+                                        </label>
+
                                     </div>
+
                                     <hr class="border-[#dbdee6]" />
-                                    <div class="flex flex-col gap-5">
-                                        <div class="flex items-center justify-between">
-                                            <div>
+
+                                    <!-- canCombineWithOtherDiscounts -->
+                                    <div
+                                        class="flex items-center justify-between rounded-xl border border-[#dbdee6] bg-[#f6f6f8]/50 p-4">
+                                        <div>
+                                            <div class="flex items-center gap-2">
                                                 <p class="text-sm font-semibold text-[#111318]">Combine with other
                                                     discounts</p>
-                                                <p class="text-xs text-[#616c89]">Allow customers to use this code with
-                                                    other active promotions.</p>
-                                            </div>
-                                            <button type="button" (click)="allowCombine = !allowCombine"
-                                                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none"
-                                                [ngClass]="allowCombine ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
                                                 <span
-                                                    class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
-                                                    [ngClass]="allowCombine ? 'translate-x-5' : 'translate-x-0.5'"></span>
-                                            </button>
-                                        </div>
-                                        <div class="flex items-center justify-between">
-                                            <div>
-                                                <p class="text-sm font-semibold text-[#111318]">Limit to one use per
-                                                    customer</p>
-                                                <p class="text-xs text-[#616c89]">Tracked by customer email address.</p>
+                                                    class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">canCombineWithOtherDiscounts</span>
                                             </div>
-                                            <button type="button" (click)="onePerCustomer = !onePerCustomer"
-                                                class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none"
-                                                [ngClass]="onePerCustomer ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
-                                                <span
-                                                    class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
-                                                    [ngClass]="onePerCustomer ? 'translate-x-5' : 'translate-x-0.5'"></span>
-                                            </button>
+                                            <p class="mt-0.5 text-xs text-[#616c89]">Allow this code to stack with other
+                                                active promotions.</p>
                                         </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                        </ng-container><!-- /step 1 -->
-
-                        <!-- Step 2: Eligibility -->
-                        <ng-container *ngIf="currentStep === 2">
-                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/40 p-5">
-                                    <div class="flex items-center gap-3">
-                                        <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
-                                                class="material-symbols-outlined">group</span></div>
-                                        <div>
-                                            <h3 class="text-base font-bold text-[#111318]">Eligibility Rules</h3>
-                                            <p class="text-sm text-[#616c89]">Define who can use this discount and on
-                                                which products.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col items-center gap-4 p-12 text-center text-[#616c89]">
-                                    <span class="material-symbols-outlined text-5xl text-[#cbd5e1]">tune</span>
-                                    <p class="text-sm">Configure customer segments, product restrictions, and channel
-                                        eligibility here.</p>
-                                    <div class="flex gap-3">
-                                        <button (click)="prevStep()"
-                                            class="h-10 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] hover:bg-[#f6f6f8]">←
-                                            Back</button>
-                                        <button (click)="nextStep()"
-                                            class="h-10 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white hover:bg-blue-900">Continue
-                                            →</button>
-                                    </div>
-                                </div>
-                            </section>
-                        </ng-container>
-
-                        <!-- ── Step 3: Review ─────────────────────────────────── -->
-                        <ng-container *ngIf="currentStep === 3">
-
-                            <!-- Discount Identity -->
-                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div
-                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/40 px-6 py-4">
-                                    <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
-                                        <span class="material-symbols-outlined text-[20px] text-[#1e3b8a]">label</span>
-                                        Discount Identity
-                                    </h3>
-                                    <button (click)="goToStep(1)"
-                                        class="text-sm font-semibold text-[#1e3b8a] hover:text-blue-900 transition-colors">Edit</button>
-                                </div>
-                                <div class="grid grid-cols-1 gap-x-8 gap-y-4 p-6 sm:grid-cols-2">
-                                    <div>
-                                        <span
-                                            class="mb-1 block text-xs font-semibold uppercase tracking-wider text-[#616c89]">Discount
-                                            Name</span>
-                                        <p class="font-medium text-[#111318]">{{ summaryTitle }}</p>
-                                    </div>
-                                    <div>
-                                        <span
-                                            class="mb-1 block text-xs font-semibold uppercase tracking-wider text-[#616c89]">Discount
-                                            Code</span>
-                                        <div class="flex items-center gap-2">
-                                            <code
-                                                class="rounded border border-[#dbdee6] bg-[#f6f6f8] px-2 py-1 font-mono text-sm font-bold text-[#1e3b8a]">{{
-                                                summaryCode }}</code>
+                                        <button type="button" (click)="allowCombine = !allowCombine"
+                                            class="relative ml-6 inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors"
+                                            [ngClass]="allowCombine ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
                                             <span
-                                                class="material-symbols-outlined cursor-pointer text-[16px] text-[#616c89] hover:text-[#1e3b8a]"
-                                                title="Copy">content_copy</span>
-                                        </div>
+                                                class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
+                                                [ngClass]="allowCombine ? 'translate-x-5' : 'translate-x-0.5'"></span>
+                                        </button>
                                     </div>
-                                </div>
-                            </section>
 
-                            <!-- Calculated Value -->
-                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div
-                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/40 px-6 py-4">
-                                    <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
-                                        <span
-                                            class="material-symbols-outlined text-[20px] text-[#1e3b8a]">percent</span>
-                                        Calculated Value
-                                    </h3>
-                                    <button (click)="goToStep(1)"
-                                        class="text-sm font-semibold text-[#1e3b8a] hover:text-blue-900 transition-colors">Edit</button>
-                                </div>
-                                <div class="grid grid-cols-1 gap-x-8 gap-y-4 p-6 sm:grid-cols-2">
-                                    <div>
-                                        <span
-                                            class="mb-1 block text-xs font-semibold uppercase tracking-wider text-[#616c89]">Type</span>
-                                        <p class="flex items-center gap-2 font-medium text-[#111318]">
-                                            <span
-                                                class="material-symbols-outlined text-[18px] text-[#616c89]">percent</span>
-                                            {{ summaryTypeLabel }}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <span
-                                            class="mb-1 block text-xs font-semibold uppercase tracking-wider text-[#616c89]">Value</span>
-                                        <p class="text-lg font-bold text-[#1e3b8a]">{{ summaryValueLine || '—' }}</p>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <!-- Eligibility Rules -->
-                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div
-                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/40 px-6 py-4">
-                                    <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
-                                        <span class="material-symbols-outlined text-[20px] text-[#1e3b8a]">tune</span>
-                                        Eligibility Rules
-                                    </h3>
-                                    <button (click)="goToStep(1)"
-                                        class="text-sm font-semibold text-[#1e3b8a] hover:text-blue-900 transition-colors">Edit</button>
-                                </div>
-                                <div class="space-y-4 p-6">
-                                    <!-- Min purchase -->
-                                    <div
-                                        class="flex items-start gap-4 border-b border-dashed border-[#dbdee6] pb-4 last:border-0 last:pb-0">
-                                        <div class="rounded-lg bg-[#1e3b8a]/5 p-2 text-[#1e3b8a]">
-                                            <span class="material-symbols-outlined text-[20px]">payments</span>
-                                        </div>
-                                        <div>
-                                            <span class="block text-sm font-bold text-[#111318]">Minimum Purchase
-                                                Requirement</span>
-                                            <p class="text-sm text-[#616c89]">
-                                                <ng-container *ngIf="minPurchase; else noMin">
-                                                    Customer must spend at least
-                                                    <span class="font-bold text-[#111318]">${{ minPurchase.toFixed(2)
-                                                        }}</span> to qualify.
-                                                </ng-container>
-                                                <ng-template #noMin>No minimum purchase required.</ng-template>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <!-- Usage limits -->
-                                    <div
-                                        class="flex items-start gap-4 border-b border-dashed border-[#dbdee6] pb-4 last:border-0 last:pb-0">
-                                        <div class="rounded-lg bg-[#1e3b8a]/5 p-2 text-[#1e3b8a]">
-                                            <span class="material-symbols-outlined text-[20px]">group</span>
-                                        </div>
-                                        <div>
-                                            <span class="block text-sm font-bold text-[#111318]">Usage Limits</span>
-                                            <p *ngIf="onePerCustomer" class="text-sm text-[#616c89]">Limited to <span
-                                                    class="font-bold text-[#111318]">1 use per customer</span>.</p>
-                                            <p class="text-sm text-[#616c89]">Total usage limit: <span
-                                                    class="font-bold text-[#111318]">{{ usageLimit ? (usageLimit +
-                                                    ' uses') : 'Unlimited' }}</span> global.</p>
-                                        </div>
-                                    </div>
-                                    <!-- Combinability -->
-                                    <div class="flex items-start gap-4">
-                                        <div class="rounded-lg bg-[#1e3b8a]/5 p-2 text-[#1e3b8a]">
-                                            <span class="material-symbols-outlined text-[20px]">merge_type</span>
-                                        </div>
-                                        <div>
-                                            <span class="block text-sm font-bold text-[#111318]">Combinability</span>
-                                            <p class="text-sm text-[#616c89]">
-                                                {{ allowCombine ? 'Can be combined with other discounts.' : 'Cannot be
-                                                combined with other discounts.' }}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <!-- Target & Schedule -->
-                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                                <div
-                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/40 px-6 py-4">
-                                    <h3 class="flex items-center gap-2 text-base font-bold text-[#111318]">
-                                        <span class="material-symbols-outlined text-[20px] text-[#1e3b8a]">target</span>
-                                        Target &amp; Schedule
-                                    </h3>
-                                    <button (click)="goToStep(2)"
-                                        class="text-sm font-semibold text-[#1e3b8a] hover:text-blue-900 transition-colors">Edit</button>
-                                </div>
-                                <div class="grid grid-cols-1 gap-8 p-6 md:grid-cols-2">
-                                    <div>
-                                        <h4 class="mb-3 text-sm font-bold text-[#111318]">Applies To</h4>
-                                        <ul class="space-y-2">
-                                            <li class="flex items-center gap-2 text-sm text-[#616c89]">
-                                                <span
-                                                    class="material-symbols-outlined text-[16px] text-[#1e3b8a]">check_circle</span>
-                                                Specific Collections
-                                            </li>
-                                            <li class="pl-6 text-sm font-medium text-[#111318]">Summer Collection, New
-                                                Arrivals</li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <h4 class="mb-3 text-sm font-bold text-[#111318]">Active Dates</h4>
-                                        <div class="flex flex-col gap-2">
-                                            <div class="flex justify-between text-sm">
-                                                <span class="text-[#616c89]">Start Date</span>
-                                                <span class="font-medium text-[#111318]">June 1, 2024 00:00 AM</span>
-                                            </div>
-                                            <div class="flex justify-between text-sm">
-                                                <span class="text-[#616c89]">End Date</span>
-                                                <span class="font-medium text-[#111318]">August 31, 2024 11:59 PM</span>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                             </section>
 
                         </ng-container><!-- /step 3 -->
 
+                        <!-- ══════════════════════════════════════════════════
+                 STEP 4 — Review & Publish
+            ══════════════════════════════════════════════════ -->
+                        <ng-container *ngIf="currentStep === 4">
+
+                            <!-- Step 1 review -->
+                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                                <div
+                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/60 px-6 py-4">
+                                    <h3 class="flex items-center gap-2 text-sm font-bold text-[#111318]">
+                                        <span class="material-symbols-outlined text-[18px] text-[#1e3b8a]">label</span>
+                                        Identity &amp; Type
+                                    </h3>
+                                    <button (click)="goToStep(1)"
+                                        class="text-xs font-bold text-[#1e3b8a] hover:underline">Edit</button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3">
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            code</p>
+                                        <code
+                                            class="rounded border border-[#dbdee6] bg-[#f6f6f8] px-2 py-0.5 font-mono text-sm font-bold text-[#1e3b8a]">{{ summaryCode }}</code>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            name</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ summaryTitle }}</p>
+                                    </div>
+                                    <div *ngIf="discountDescription" class="sm:col-span-3">
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            description</p>
+                                        <p class="text-sm text-[#111318]">{{ discountDescription }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            discountType</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ summaryTypeLabel }} <span
+                                                class="text-xs text-[#94a3b8]">({{ discountTypeMap[selectedType]
+                                                }})</span></p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            discountValueAmount</p>
+                                        <p class="text-base font-bold text-[#1e3b8a]">{{ summaryValueLine || '—' }}</p>
+                                    </div>
+                                    <ng-container *ngIf="selectedType === 'bxgy'">
+                                        <div>
+                                            <p
+                                                class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                                buyQuantity</p>
+                                            <p class="text-sm font-medium text-[#111318]">{{ buyQuantity }}</p>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                                getQuantity</p>
+                                            <p class="text-sm font-medium text-[#111318]">{{ getQuantity }}</p>
+                                        </div>
+                                        <div>
+                                            <p
+                                                class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                                getDiscountPercentage</p>
+                                            <p class="text-sm font-medium text-[#111318]">{{ getDiscountPercentage }}%
+                                            </p>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </section>
+
+                            <!-- Step 2 review -->
+                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                                <div
+                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/60 px-6 py-4">
+                                    <h3 class="flex items-center gap-2 text-sm font-bold text-[#111318]">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-[#1e3b8a]">calendar_month</span>
+                                        Schedule, Targeting &amp; Currency
+                                    </h3>
+                                    <button (click)="goToStep(2)"
+                                        class="text-xs font-bold text-[#1e3b8a] hover:underline">Edit</button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3">
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            startDate</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ startDate || '—' }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            endDate</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ endDate || '—' }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            currency</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ currency }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            targets[].tagetType</p>
+                                        <p class="text-sm font-semibold text-[#1e3b8a]">
+                                            {{ targeting === 'store' ? 'Entire Store (0)' : targeting === 'collections'
+                                            ? 'Collections (1)' : 'Customers (2)' }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            targets[].targetId</p>
+                                        <p class="font-mono text-xs text-[#616c89] break-all">{{ targeting === 'store' ?
+                                            '—' : targetId }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            minimumPurchaseAmount</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ minPurchase ? ('$' +
+                                            minPurchase) : '—' }}</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- Step 3 review -->
+                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                                <div
+                                    class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/60 px-6 py-4">
+                                    <h3 class="flex items-center gap-2 text-sm font-bold text-[#111318]">
+                                        <span class="material-symbols-outlined text-[18px] text-[#1e3b8a]">tune</span>
+                                        Limits &amp; Rules
+                                    </h3>
+                                    <button (click)="goToStep(3)"
+                                        class="text-xs font-bold text-[#1e3b8a] hover:underline">Edit</button>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 p-6 sm:grid-cols-3">
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            minimumQuantity</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ minimumQuantity || '—' }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            maximumDiscountAmount</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ maximumDiscountAmount ? ('$' +
+                                            maximumDiscountAmount) : '—' }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            totalUsageLimit</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ usageLimit ? (usageLimit + '
+                                            uses') : 'Unlimited' }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            usageLimitPerCustomer</p>
+                                        <p class="text-sm font-medium text-[#111318]">{{ usageLimitPerCustomer ?
+                                            (usageLimitPerCustomer + ' uses') : 'Unlimited' }}</p>
+                                    </div>
+                                    <div>
+                                        <p
+                                            class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
+                                            canCombineWithOtherDiscounts</p>
+                                        <p class="text-sm font-medium"
+                                            [ngClass]="allowCombine ? 'text-green-600' : 'text-[#616c89]'">{{
+                                            allowCombine ? 'true' : 'false' }}</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <!-- JSON payload preview -->
+                            <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
+                                <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 px-6 py-4">
+                                    <h3 class="flex items-center gap-2 text-sm font-bold text-[#111318]">
+                                        <span class="material-symbols-outlined text-[18px] text-[#616c89]">code</span>
+                                        API Payload Preview
+                                    </h3>
+                                </div>
+                                <div class="p-6">
+                                    <pre
+                                        class="overflow-x-auto rounded-lg bg-[#0f172a] p-4 text-xs leading-relaxed text-green-400">{{ payloadPreview }}</pre>
+                                </div>
+                            </section>
+
+                        </ng-container><!-- /step 4 -->
+
                     </div><!-- /left col -->
 
-                    <!-- Right: Live Summary (steps 1–2) / Publish card (step 3) -->
-                    <div class="lg:col-span-1 lg:sticky lg:top-24">
+                    <!-- ── Right sidebar ── -->
+                    <div class="lg:col-span-1 lg:sticky lg:top-6">
 
-                        <!-- Steps 1 & 2: Summary sidebar -->
-                        <div *ngIf="currentStep < 3"
+                        <!-- Steps 1–3: live summary -->
+                        <div *ngIf="currentStep < 4"
                             class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                            <div class="bg-gradient-to-br from-[#1e3b8a] to-blue-900 p-6 text-white">
-                                <div class="mb-2 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]">visibility</span>
-                                    <h3 class="text-xs font-bold uppercase tracking-wide opacity-90">Summary</h3>
+                            <div class="bg-gradient-to-br from-[#1e3b8a] to-blue-900 p-5 text-white">
+                                <div class="mb-1 flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span class="text-xs font-bold uppercase tracking-wide opacity-80">Live
+                                        Summary</span>
                                 </div>
-                                <p class="text-2xl font-bold">{{ summaryTitle }}</p>
+                                <p class="text-xl font-bold leading-tight">{{ summaryTitle }}</p>
                             </div>
-                            <div class="space-y-4 p-6">
-                                <div
-                                    class="flex items-start justify-between border-b border-dashed border-[#dbdee6] pb-4">
-                                    <span class="text-sm font-medium text-[#616c89]">Code</span>
-                                    <span
-                                        class="rounded bg-[#f6f6f8] px-2 py-0.5 font-mono text-sm font-bold text-[#111318]">{{
-                                        summaryCode }}</span>
+                            <div class="divide-y divide-dashed divide-[#dbdee6]">
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">code</span>
+                                    <code
+                                        class="rounded bg-[#f6f6f8] px-2 py-0.5 font-mono text-xs font-bold text-[#111318]">{{ summaryCode }}</code>
                                 </div>
-                                <div
-                                    class="flex items-start justify-between border-b border-dashed border-[#dbdee6] pb-4">
-                                    <span class="text-sm font-medium text-[#616c89]">Type</span>
-                                    <div class="text-right">
-                                        <span class="block text-sm font-medium text-[#111318]">{{ summaryTypeLabel
-                                            }}</span>
-                                        <span *ngIf="summaryValueLine" class="text-xs text-[#616c89]">{{
-                                            summaryValueLine }}</span>
-                                    </div>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">discountType</span>
+                                    <span class="text-xs font-medium text-[#111318]">{{ summaryTypeLabel }}</span>
                                 </div>
-                                <div
-                                    class="flex items-start justify-between border-b border-dashed border-[#dbdee6] pb-4">
-                                    <span class="text-sm font-medium text-[#616c89]">Min. Purchase</span>
-                                    <span class="text-sm font-medium text-[#111318]">{{ minPurchase ? ('$' +
-                                        minPurchase.toFixed(2)) : '—' }}</span>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">discountValueAmount</span>
+                                    <span class="text-xs font-bold text-[#1e3b8a]">{{ summaryValueLine || '—' }}</span>
                                 </div>
-                                <div
-                                    class="flex items-start justify-between border-b border-dashed border-[#dbdee6] pb-4">
-                                    <span class="text-sm font-medium text-[#616c89]">Usage Limit</span>
-                                    <span class="text-sm font-medium text-[#111318]">{{ usageLimit ? (usageLimit |
-                                        number) : 'Unlimited' }}</span>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">startDate</span>
+                                    <span class="text-xs text-[#111318]">{{ startDate ? startDate.slice(0,10) : '—'
+                                        }}</span>
                                 </div>
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-medium text-[#616c89]">Rules</span>
-                                    <div class="flex flex-col items-end gap-1 text-xs">
-                                        <span *ngIf="allowCombine" class="flex items-center gap-1 text-green-600"><span
-                                                class="material-symbols-outlined text-[14px]">check</span>
-                                            Combinable</span>
-                                        <span *ngIf="onePerCustomer" class="flex items-center gap-1 text-blue-600"><span
-                                                class="material-symbols-outlined text-[14px]">person</span> 1 per
-                                            customer</span>
-                                        <span *ngIf="!allowCombine && !onePerCustomer" class="text-[#616c89]">No rules
-                                            set</span>
-                                    </div>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">endDate</span>
+                                    <span class="text-xs text-[#111318]">{{ endDate ? endDate.slice(0,10) : '—'
+                                        }}</span>
+                                </div>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">currency</span>
+                                    <span class="text-xs font-medium text-[#111318]">{{ currency }}</span>
+                                </div>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">totalUsageLimit</span>
+                                    <span class="text-xs font-medium text-[#111318]">{{ usageLimit ?? 'Unlimited'
+                                        }}</span>
+                                </div>
+                                <div class="flex items-center justify-between px-5 py-3">
+                                    <span class="font-mono text-xs text-[#616c89]">canCombine</span>
+                                    <span class="text-xs font-medium"
+                                        [ngClass]="allowCombine ? 'text-green-600' : 'text-[#616c89]'">{{ allowCombine ?
+                                        'true' : 'false' }}</span>
                                 </div>
                             </div>
-                            <div class="bg-[#f6f6f8] p-4 text-center text-xs text-[#616c89]">
-                                <ng-container *ngIf="currentStep === 1">Proceed to Step 2 to configure
-                                    eligibility.</ng-container>
-                                <ng-container *ngIf="currentStep === 2">Proceed to Step 3 to review your
-                                    discount.</ng-container>
+                            <!-- Field progress per step -->
+                            <div class="bg-[#f6f6f8] px-5 py-3">
+                                <div class="mb-1.5 flex items-center justify-between text-xs text-[#616c89]">
+                                    <span>Fields completed</span>
+                                    <span class="font-bold text-[#1e3b8a]">{{ completedFields }} / 16</span>
+                                </div>
+                                <div class="h-1.5 w-full overflow-hidden rounded-full bg-[#dbdee6]">
+                                    <div class="h-full rounded-full bg-[#1e3b8a] transition-all duration-500"
+                                        [style.width]="(completedFields / 16 * 100) + '%'"></div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Step 3: Publish card -->
-                        <div *ngIf="currentStep === 3"
-                            class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-lg shadow-[#1e3b8a]/5">
+                        <!-- Step 4: Publish card -->
+                        <div *ngIf="currentStep === 4"
+                            class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
                             <div
                                 class="flex flex-col items-center bg-gradient-to-br from-[#1e3b8a] to-blue-900 p-6 text-center text-white">
-                                <div class="mb-3 inline-flex rounded-full bg-white/10 p-3 backdrop-blur-sm">
-                                    <span class="material-symbols-outlined text-[32px]">verified</span>
+                                <div class="mb-3 inline-flex rounded-full bg-white/10 p-3">
+                                    <span class="material-symbols-outlined text-[28px]">verified</span>
                                 </div>
-                                <h3 class="text-xl font-bold">Ready to Publish?</h3>
-                                <p class="mt-1 text-sm text-white/80">Double check your settings before going live.</p>
+                                <h3 class="text-lg font-bold">Ready to Publish?</h3>
+                                <p class="mt-1 text-xs text-white/70">All 16 API fields configured.</p>
                             </div>
-                            <div class="space-y-6 p-6">
-                                <!-- Estimated reach -->
-                                <div class="rounded-lg border border-[#dbdee6] bg-[#f6f6f8] p-4">
-                                    <div class="mb-2 flex items-center justify-between">
-                                        <span class="text-xs font-bold uppercase tracking-wide text-[#616c89]">Estimated
-                                            Reach</span>
-                                        <span class="material-symbols-outlined text-[16px] text-[#616c89]">info</span>
-                                    </div>
-                                    <div class="text-2xl font-black text-[#111318]">~4,500</div>
-                                    <p class="text-xs text-[#616c89]">Customers eligible based on rules.</p>
-                                </div>
-                                <!-- Options -->
+                            <div class="space-y-5 p-6">
                                 <div class="space-y-3">
-                                    <div class="flex items-start gap-3">
-                                        <input type="checkbox" id="notify" [(ngModel)]="publishNotify"
-                                            class="mt-1 size-4 rounded border-gray-300 accent-[#1e3b8a]" />
-                                        <label for="notify" class="text-sm leading-snug text-[#616c89]">
-                                            Notify eligible customers via email immediately after publishing.
-                                        </label>
-                                    </div>
-                                    <div class="flex items-start gap-3">
-                                        <input type="checkbox" id="analytics" [(ngModel)]="publishAnalytics"
-                                            class="mt-1 size-4 rounded border-gray-300 accent-[#1e3b8a]" />
-                                        <label for="analytics" class="text-sm leading-snug text-[#616c89]">
-                                            Generate weekly performance report for this discount.
-                                        </label>
-                                    </div>
+                                    <label class="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" [(ngModel)]="publishNotify"
+                                            class="mt-0.5 size-4 accent-[#1e3b8a]" />
+                                        <span class="text-sm text-[#616c89]">Notify eligible customers via email after
+                                            publishing.</span>
+                                    </label>
+                                    <label class="flex items-start gap-3 cursor-pointer">
+                                        <input type="checkbox" [(ngModel)]="publishAnalytics"
+                                            class="mt-0.5 size-4 accent-[#1e3b8a]" />
+                                        <span class="text-sm text-[#616c89]">Generate weekly performance report.</span>
+                                    </label>
                                 </div>
                                 <hr class="border-[#dbdee6]" />
-                                <button (click)="submitForm()"
-                                    class="group flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] text-sm font-bold text-white shadow-lg shadow-[#1e3b8a]/20 transition-all hover:bg-blue-900">
-                                    Publish Discount
-                                    <span
-                                        class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+                                <button (click)="submitForm()" [disabled]="isLoading"
+                                    class="group flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] text-sm font-bold text-white shadow-md transition-all hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60">
+                                    <span *ngIf="isLoading"
+                                        class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+                                    <span *ngIf="!isLoading"
+                                        class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                                    {{ isLoading ? 'Publishing…' : 'Publish Discount' }}
                                 </button>
                                 <button (click)="saveDraft()"
-                                    class="h-11 w-full rounded-lg bg-transparent text-sm font-bold text-[#616c89] transition-colors hover:bg-[#f6f6f8] hover:text-[#111318]">
-                                    Save as Draft
-                                </button>
+                                    class="h-10 w-full rounded-lg text-sm font-bold text-[#616c89] hover:bg-[#f6f6f8]">Save
+                                    as Draft</button>
                             </div>
                         </div>
 
-                    </div><!-- /right col -->
-
+                    </div><!-- /sidebar -->
                 </div><!-- /grid -->
             </div><!-- /create view -->
 
-            <!-- ════════════════════════════════════════════════════════════
-           EDIT VIEW
-      ═════════════════════════════════════════════════════════════ -->
+            <!-- ═══════════════ EDIT VIEW (unchanged) ═══════════════ -->
             <div *ngIf="isEditMode" class="mx-auto max-w-6xl px-6 py-8">
-
-                <!-- Title -->
                 <div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
                     <div>
                         <div class="mb-1 flex items-center gap-2 text-sm font-medium text-[#616c89]">
@@ -669,36 +935,30 @@
                             </span>
                         </div>
                     </div>
-                    <div class="flex w-full gap-3 sm:w-auto">
+                    <div class="flex gap-3">
                         <button (click)="toggleDisable()"
-                            class="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg border bg-white px-4 text-sm font-bold shadow-sm transition-colors sm:flex-none"
+                            class="flex h-10 items-center gap-2 rounded-lg border bg-white px-4 text-sm font-bold shadow-sm transition-colors"
                             [ngClass]="edit.status === 'Active' ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-green-200 text-green-600 hover:bg-green-50'">
                             <span class="material-symbols-outlined text-[18px]">{{ edit.status === 'Active' ? 'block' :
                                 'check_circle' }}</span>
-                            {{ edit.status === 'Active' ? 'Disable Discount' : 'Enable Discount' }}
+                            {{ edit.status === 'Active' ? 'Disable' : 'Enable' }}
                         </button>
                         <button (click)="saveChanges()"
-                            class="flex h-10 flex-1 items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white shadow-md hover:bg-blue-900 sm:flex-none">
-                            <span class="material-symbols-outlined text-[18px]">save</span>
-                            Save Changes
+                            class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-5 text-sm font-bold text-white shadow-md hover:bg-blue-900">
+                            <span class="material-symbols-outlined text-[18px]">save</span>Save Changes
                         </button>
                     </div>
                 </div>
 
-                <!-- Two-column grid -->
                 <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
-
-                    <!-- Left: Edit form panels -->
                     <div class="flex flex-col gap-6 lg:col-span-2">
-
-                        <!-- General Information -->
                         <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
                             <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/40 p-5">
                                 <div class="flex items-center gap-3">
                                     <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
                                             class="material-symbols-outlined">label</span></div>
                                     <div>
-                                        <h3 class="text-base font-bold text-[#111318]">General Information</h3>
+                                        <h3 class="text-base font-bold">General Information</h3>
                                         <p class="text-sm text-[#616c89]">Core details of the promotion.</p>
                                     </div>
                                 </div>
@@ -706,62 +966,56 @@
                             <div class="space-y-5 p-6">
                                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <label class="flex flex-col gap-2">
-                                        <span class="text-sm font-semibold text-[#111318]">Discount Name</span>
-                                        <input type="text" [(ngModel)]="edit.name" placeholder="e.g., Summer Sale 2024"
-                                            class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
-                                        <span class="text-xs text-[#616c89]">Internal name for tracking.</span>
+                                        <span class="text-sm font-semibold">Discount Name</span>
+                                        <input type="text" [(ngModel)]="edit.name"
+                                            class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white px-4 text-sm outline-none focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                     </label>
                                     <label class="flex flex-col gap-2">
-                                        <span class="text-sm font-semibold text-[#111318]">Discount Code</span>
-                                        <div class="relative flex items-center">
+                                        <span class="text-sm font-semibold">Discount Code</span>
+                                        <div class="relative">
                                             <input type="text" [value]="edit.code" readonly
                                                 class="h-11 w-full cursor-not-allowed rounded-lg border border-[#dbdee6] bg-[#f6f6f8] px-4 pr-28 font-mono text-sm uppercase tracking-wider text-[#616c89] outline-none" />
-                                            <div class="absolute right-3">
+                                            <div class="absolute right-3 top-1/2 -translate-y-1/2">
                                                 <span
                                                     class="rounded border border-[#dbdee6] bg-white px-2 py-0.5 text-xs font-bold text-[#616c89]">Immutable</span>
                                             </div>
                                         </div>
-                                        <span class="text-xs text-[#616c89]">Discount code cannot be changed once
-                                            created.</span>
                                     </label>
                                 </div>
                                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <div
                                         class="flex items-center gap-4 rounded-lg border border-[#dbdee6] bg-[#f6f6f8] p-4">
                                         <div
-                                            class="flex size-10 items-center justify-center rounded-full border border-[#dbdee6] bg-white text-[#1e3b8a] shadow-sm">
+                                            class="flex size-10 items-center justify-center rounded-full border border-[#dbdee6] bg-white text-[#1e3b8a]">
                                             <span class="material-symbols-outlined">percent</span>
                                         </div>
                                         <div>
-                                            <span class="block text-sm font-bold text-[#111318]">Percentage
-                                                Discount</span>
+                                            <span class="block text-sm font-bold">Percentage Discount</span>
                                             <span class="text-xs text-[#616c89]">{{ edit.discountValue }}% Off entire
                                                 order</span>
                                         </div>
                                     </div>
                                     <label class="flex flex-col gap-2">
-                                        <span class="text-sm font-semibold text-[#111318]">Discount Value (%)</span>
+                                        <span class="text-sm font-semibold">Discount Value (%)</span>
                                         <div class="relative">
                                             <input type="number" [(ngModel)]="edit.discountValue"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pr-10 pl-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pr-10 pl-4 text-sm outline-none focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                             <div
                                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#616c89]">
-                                                <span class="font-bold">%</span>
-                                            </div>
+                                                <span class="font-bold">%</span></div>
                                         </div>
                                     </label>
                                 </div>
                             </div>
                         </section>
 
-                        <!-- Usage Limits & Rules -->
                         <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
                             <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/40 p-5">
                                 <div class="flex items-center gap-3">
                                     <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
                                             class="material-symbols-outlined">tune</span></div>
                                     <div>
-                                        <h3 class="text-base font-bold text-[#111318]">Usage Limits &amp; Rules</h3>
+                                        <h3 class="text-base font-bold">Usage Limits &amp; Rules</h3>
                                         <p class="text-sm text-[#616c89]">Modify constraints for this discount.</p>
                                     </div>
                                 </div>
@@ -769,37 +1023,34 @@
                             <div class="space-y-6 p-6">
                                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                     <label class="flex flex-col gap-2">
-                                        <span class="text-sm font-semibold text-[#111318]">Minimum Purchase
-                                            Amount</span>
+                                        <span class="text-sm font-semibold">Minimum Purchase Amount</span>
                                         <div class="relative">
                                             <div
                                                 class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
                                                 <span class="material-symbols-outlined text-[18px]">attach_money</span>
                                             </div>
-                                            <input type="number" [(ngModel)]="edit.minPurchase" placeholder="0.00"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            <input type="number" [(ngModel)]="edit.minPurchase"
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pl-10 pr-4 text-sm outline-none focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                         </div>
                                     </label>
                                     <label class="flex flex-col gap-2">
-                                        <span class="text-sm font-semibold text-[#111318]">Total Usage Limit</span>
+                                        <span class="text-sm font-semibold">Total Usage Limit</span>
                                         <div class="relative">
                                             <div
                                                 class="pointer-events-none absolute inset-y-0 left-0 flex items-center px-3 text-[#616c89]">
-                                                <span class="material-symbols-outlined text-[18px]">tag</span>
-                                            </div>
-                                            <input type="number" [(ngModel)]="edit.usageLimit" placeholder="Unlimited"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                <span class="material-symbols-outlined text-[18px]">tag</span></div>
+                                            <input type="number" [(ngModel)]="edit.usageLimit"
+                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pl-10 pr-4 text-sm outline-none focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
                                         </div>
-                                        <div class="flex flex-col gap-1.5">
+                                        <div class="flex flex-col gap-1">
                                             <div class="flex justify-between text-xs text-[#616c89]">
-                                                <span>Current usage: {{ edit.currentUsage }} / {{ edit.usageLimit ?? '∞'
-                                                    }}</span>
+                                                <span>{{ edit.currentUsage }} / {{ edit.usageLimit ?? '∞' }}</span>
                                                 <span *ngIf="edit.usageLimit">{{ editUsagePercent | number:'1.0-0'
                                                     }}%</span>
                                             </div>
                                             <div *ngIf="edit.usageLimit"
                                                 class="h-1.5 w-full overflow-hidden rounded-full bg-[#f0f4f8]">
-                                                <div class="h-full rounded-full transition-all duration-500"
+                                                <div class="h-full rounded-full transition-all"
                                                     [ngClass]="editUsagePercent > 80 ? 'bg-orange-500' : 'bg-[#1e3b8a]'"
                                                     [style.width]="editUsagePercent + '%'"></div>
                                             </div>
@@ -807,135 +1058,65 @@
                                     </label>
                                 </div>
                                 <hr class="border-[#dbdee6]" />
-                                <div class="flex flex-col gap-5">
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <p class="text-sm font-semibold text-[#111318]">Combine with other discounts
-                                            </p>
-                                            <p class="text-xs text-[#616c89]">Allow customers to use this code with
-                                                other active promotions.</p>
-                                        </div>
-                                        <button type="button" (click)="edit.allowCombine = !edit.allowCombine"
-                                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none"
-                                            [ngClass]="edit.allowCombine ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
-                                            <span
-                                                class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
-                                                [ngClass]="edit.allowCombine ? 'translate-x-5' : 'translate-x-0.5'"></span>
-                                        </button>
-                                    </div>
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <p class="text-sm font-semibold text-[#111318]">Limit to one use per
-                                                customer</p>
-                                            <p class="text-xs text-[#616c89]">Tracked by customer email address.</p>
-                                        </div>
-                                        <button type="button" (click)="edit.onePerCustomer = !edit.onePerCustomer"
-                                            class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none"
-                                            [ngClass]="edit.onePerCustomer ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
-                                            <span
-                                                class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
-                                                [ngClass]="edit.onePerCustomer ? 'translate-x-5' : 'translate-x-0.5'"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- Targeting & Eligibility -->
-                        <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                            <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/30 p-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]">
-                                        <span class="material-symbols-outlined">target</span>
-                                    </div>
+                                <div class="flex items-center justify-between">
                                     <div>
-                                        <h3 class="text-lg font-bold text-[#111318]">Targeting &amp; Eligibility</h3>
-                                        <p class="text-sm text-[#616c89]">Define which customers or products this
-                                            applies to.</p>
+                                        <p class="text-sm font-semibold">Combine with other discounts</p>
+                                        <p class="text-xs text-[#616c89]">Allow customers to use this code with other
+                                            active promotions.</p>
                                     </div>
+                                    <button type="button" (click)="edit.allowCombine = !edit.allowCombine"
+                                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors"
+                                        [ngClass]="edit.allowCombine ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
+                                        <span
+                                            class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
+                                            [ngClass]="edit.allowCombine ? 'translate-x-5' : 'translate-x-0.5'"></span>
+                                    </button>
                                 </div>
-                            </div>
-                            <div class="space-y-4 p-6">
-                                <div class="flex flex-col gap-4">
-                                    <label
-                                        class="flex items-center rounded-lg border p-4 cursor-pointer transition-colors bg-white"
-                                        [ngClass]="edit.targeting === 'store' ? 'border-[#1e3b8a] bg-[#eff6ff]' : 'border-[#dbdee6] hover:border-[#1e3b8a]/50'">
-                                        <input type="radio" name="edit_targeting" value="store"
-                                            [(ngModel)]="edit.targeting"
-                                            class="size-4 shrink-0 accent-[#1e3b8a] cursor-pointer" />
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-bold"
-                                                [ngClass]="edit.targeting === 'store' ? 'text-[#1e3b8a]' : 'text-[#111318]'">Entire
-                                                Store</span>
-                                            <span class="block text-xs text-[#616c89]">Valid for all products currently
-                                                in catalog.</span>
-                                        </div>
-                                    </label>
-                                    <label
-                                        class="flex items-center rounded-lg border p-4 cursor-pointer transition-colors bg-white"
-                                        [ngClass]="edit.targeting === 'collections' ? 'border-[#1e3b8a] bg-[#eff6ff]' : 'border-[#dbdee6] hover:border-[#1e3b8a]/50'">
-                                        <input type="radio" name="edit_targeting" value="collections"
-                                            [(ngModel)]="edit.targeting"
-                                            class="size-4 shrink-0 accent-[#1e3b8a] cursor-pointer" />
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-bold"
-                                                [ngClass]="edit.targeting === 'collections' ? 'text-[#1e3b8a]' : 'text-[#111318]'">Specific
-                                                Collections</span>
-                                            <span class="block text-xs text-[#616c89]">Limit to selected product
-                                                categories.</span>
-                                        </div>
-                                    </label>
-                                    <label
-                                        class="flex items-center rounded-lg border p-4 cursor-pointer transition-colors bg-white"
-                                        [ngClass]="edit.targeting === 'customers' ? 'border-[#1e3b8a] bg-[#eff6ff]' : 'border-[#dbdee6] hover:border-[#1e3b8a]/50'">
-                                        <input type="radio" name="edit_targeting" value="customers"
-                                            [(ngModel)]="edit.targeting"
-                                            class="size-4 shrink-0 accent-[#1e3b8a] cursor-pointer" />
-                                        <div class="ml-3">
-                                            <span class="block text-sm font-bold"
-                                                [ngClass]="edit.targeting === 'customers' ? 'text-[#1e3b8a]' : 'text-[#111318]'">Specific
-                                                Customers</span>
-                                            <span class="block text-xs text-[#616c89]">Limit to specific customer
-                                                segments (e.g. VIP).</span>
-                                        </div>
-                                    </label>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-semibold">Limit to one use per customer</p>
+                                        <p class="text-xs text-[#616c89]">Tracked by customer email address.</p>
+                                    </div>
+                                    <button type="button" (click)="edit.onePerCustomer = !edit.onePerCustomer"
+                                        class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors"
+                                        [ngClass]="edit.onePerCustomer ? 'bg-[#1e3b8a]' : 'bg-[#cbd5e1]'">
+                                        <span
+                                            class="inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform"
+                                            [ngClass]="edit.onePerCustomer ? 'translate-x-5' : 'translate-x-0.5'"></span>
+                                    </button>
                                 </div>
                             </div>
                         </section>
+                    </div>
 
-                    </div><!-- /left col -->
-
-                    <!-- Right: Stats + History -->
-                    <div class="flex flex-col gap-6 lg:col-span-1 lg:sticky lg:top-24">
-
-                        <!-- Live Stats -->
+                    <div class="flex flex-col gap-6 lg:col-span-1 lg:sticky lg:top-6">
                         <div class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
                             <div class="bg-gradient-to-br from-[#1e3b8a] to-blue-900 p-6 text-white">
                                 <div class="mb-2 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[20px]">analytics</span>
-                                    <h3 class="text-xs font-bold uppercase tracking-wide opacity-90">Live Stats</h3>
+                                    <span class="material-symbols-outlined text-[18px]">analytics</span>
+                                    <span class="text-xs font-bold uppercase tracking-wide opacity-80">Live Stats</span>
                                 </div>
                                 <div class="flex items-baseline gap-2">
                                     <p class="text-3xl font-black">{{ liveStats.uses }}</p>
-                                    <span class="text-sm font-medium opacity-80">Uses</span>
+                                    <span class="text-sm opacity-80">Uses</span>
                                 </div>
-                                <p class="mt-1 text-xs opacity-70">Last used {{ liveStats.lastUsed }}</p>
+                                <p class="mt-1 text-xs opacity-60">Last used {{ liveStats.lastUsed }}</p>
                             </div>
-                            <div class="space-y-6 p-6">
+                            <div class="space-y-5 p-6">
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div class="flex flex-col gap-1">
+                                    <div>
                                         <span
                                             class="text-xs font-medium uppercase tracking-wide text-[#616c89]">Revenue</span>
-                                        <span class="text-lg font-bold text-[#111318]">{{ liveStats.revenue }}</span>
-                                        <span class="flex items-center gap-0.5 text-xs font-medium text-green-600">
+                                        <p class="text-lg font-bold">{{ liveStats.revenue }}</p>
+                                        <span class="flex items-center gap-0.5 text-xs text-green-600">
                                             <span class="material-symbols-outlined text-[14px]">trending_up</span>{{
                                             liveStats.revTrend }}
                                         </span>
                                     </div>
-                                    <div class="flex flex-col gap-1">
+                                    <div>
                                         <span
                                             class="text-xs font-medium uppercase tracking-wide text-[#616c89]">Discounted</span>
-                                        <span class="text-lg font-bold text-[#111318]">{{ liveStats.discounted }}</span>
+                                        <p class="text-lg font-bold">{{ liveStats.discounted }}</p>
                                     </div>
                                 </div>
                                 <hr class="border-dashed border-[#dbdee6]" />
@@ -949,7 +1130,7 @@
                                             <div class="flex items-center gap-2">
                                                 <div class="flex size-6 items-center justify-center rounded-full text-[10px] font-bold"
                                                     [ngClass]="[user.bg, user.color]">{{ user.initials }}</div>
-                                                <span class="font-medium text-[#111318]">{{ user.name }}</span>
+                                                <span class="font-medium">{{ user.name }}</span>
                                             </div>
                                             <span class="text-xs text-[#616c89]">{{ user.time }}</span>
                                         </div>
@@ -958,31 +1139,65 @@
                             </div>
                         </div>
 
-                        <!-- Edit History -->
                         <div class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
                             <div
                                 class="flex items-center justify-between border-b border-[#dbdee6] bg-[#f6f6f8]/50 px-5 py-3">
-                                <h3 class="text-sm font-bold text-[#111318]">Edit History</h3>
+                                <h3 class="text-sm font-bold">Edit History</h3>
                                 <button class="text-xs font-bold text-[#1e3b8a] hover:underline">View All</button>
                             </div>
                             <div class="p-5">
-                                <ol class="relative ml-2 space-y-6 border-l border-[#dbdee6]">
+                                <ol class="relative ml-2 space-y-5 border-l border-[#dbdee6]">
                                     <li *ngFor="let entry of editHistory" class="ml-4">
                                         <div class="absolute -left-1.5 mt-1.5 size-3 rounded-full border border-white"
                                             [ngClass]="entry.current ? 'bg-[#1e3b8a]' : 'bg-[#dbdee6]'"></div>
                                         <time class="mb-1 block text-xs text-[#616c89]">{{ entry.date }}</time>
-                                        <h4 class="text-sm font-semibold text-[#111318]">{{ entry.title }}</h4>
+                                        <h4 class="text-sm font-semibold">{{ entry.title }}</h4>
                                         <p class="text-xs text-[#616c89]">{{ entry.detail }}</p>
                                     </li>
                                 </ol>
                             </div>
                         </div>
-
-                    </div><!-- /right col -->
-
-                </div><!-- /grid -->
+                    </div>
+                </div>
             </div><!-- /edit view -->
 
-        </div><!-- /scrollable content -->
-    </div><!-- /main -->
+        </div><!-- /scroll area -->
+
+        <!-- ═══ STICKY BOTTOM ACTION BAR ═══ -->
+        <div *ngIf="!isEditMode"
+            class="sticky bottom-0 z-50 border-t border-[#dbdee6] bg-white/95 px-8 py-4 shadow-[0_-4px_20px_rgba(0,0,0,0.06)] backdrop-blur-sm">
+            <div class="mx-auto flex max-w-6xl items-center gap-4">
+                <!-- Step info -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <p class="text-sm text-[#616c89]">
+                        <span class="font-bold text-[#111318]">Step {{ currentStep }} of {{ steps.length }}</span>
+                        &nbsp;—&nbsp;{{ steps[currentStep - 1].label }}
+                    </p>
+                    <span
+                        class="rounded-full border border-[#dbdee6] bg-[#f6f6f8] px-2.5 py-1 text-xs font-bold text-[#616c89]">
+                        {{ steps[currentStep - 1].fieldHint }}
+                    </span>
+                </div>
+                <!-- Buttons -->
+                <div class="flex items-center gap-3 ml-auto">
+                    <button *ngIf="currentStep > 1" (click)="prevStep()"
+                        class="flex h-10 items-center gap-2 rounded-lg border border-[#dbdee6] bg-white px-5 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8]">
+                        <span class="material-symbols-outlined text-[18px]">arrow_back</span>Back
+                    </button>
+                    <button *ngIf="currentStep < 4" (click)="nextStep()"
+                        class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white shadow-md hover:bg-blue-900">
+                        Next Step <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                    <button *ngIf="currentStep === 4" (click)="submitForm()" [disabled]="isLoading"
+                        class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-6 text-sm font-bold text-white shadow-md hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60">
+                        <span *ngIf="isLoading"
+                            class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+                        <span *ngIf="!isLoading" class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                        {{ isLoading ? 'Publishing…' : 'Publish Discount' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
 </div>

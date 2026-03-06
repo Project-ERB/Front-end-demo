@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { SidebaSalesComponent } from "../../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
+import { Router, RouterLink } from '@angular/router';
 
 export type DiscountStatus = 'Active' | 'Scheduled' | 'Expired';
 export type DiscountType = 'percent' | 'fixed';
@@ -20,11 +22,13 @@ export interface Discount {
 
 @Component({
   selector: 'app-discount-mangement',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SidebaSalesComponent, RouterLink],
   templateUrl: './discount-mangement.component.html',
   styleUrl: './discount-mangement.component.scss',
 })
 export class DiscountMangementComponent implements OnInit {
+
+  constructor(private router: Router) { }
 
   // ── Sidebar ────────────────────────────────────────────────────────
   navItems = [
@@ -149,7 +153,10 @@ export class DiscountMangementComponent implements OnInit {
   }
 
   // ── Actions ────────────────────────────────────────────────────────
-  createDiscount(): void { alert('Open Create Discount form'); }
+  createDiscount(): void {
+    this.router.navigate(['/create-discount']);
+  }
+
   exportData(): void { alert('Exporting data…'); }
   moreActions(d: Discount): void { alert(`Actions for: ${d.code}`); }
 

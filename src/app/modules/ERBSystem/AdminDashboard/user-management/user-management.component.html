@@ -167,7 +167,6 @@
         <div class="w-full max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden border border-[#dbdee6]
                 animate-[fadeIn_0.15s_ease-out]">
 
-            <!-- Modal Header -->
             <div class="flex items-center justify-between px-6 py-4 border-b border-[#dbdee6] bg-[#f6f6f8]">
                 <div>
                     <h3 class="text-lg font-bold text-[#111318]">Add New User</h3>
@@ -185,40 +184,47 @@
                 <!-- Left: Form -->
                 <div class="flex-1 p-6 flex flex-col gap-5 border-r border-[#dbdee6]">
 
-                    <!-- Full Name -->
-                    <div class="space-y-1">
-                        <label class="text-sm font-semibold text-[#111318]" for="fullName">Full Name</label>
-                        <input [(ngModel)]="newFullName" id="fullName" type="text" placeholder="e.g. Jane Doe" class="w-full px-3 py-2.5 bg-white border border-[#dbdee6] rounded-lg text-sm
-                     focus:ring-2 focus:ring-[#2463eb] focus:border-[#2463eb] outline-none
-                     transition-all shadow-sm placeholder:text-gray-400" />
-                    </div>
-
-                    <!-- Email -->
-                    <div class="space-y-1">
-                        <label class="text-sm font-semibold text-[#111318]" for="email">Email Address</label>
-                        <div class="relative">
-                            <span
-                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">mail</span>
-                            <input [(ngModel)]="newEmail" id="email" type="email" placeholder="name@company.com" class="w-full pl-10 pr-3 py-2.5 bg-white border border-[#dbdee6] rounded-lg text-sm
-                       focus:ring-2 focus:ring-[#2463eb] focus:border-[#2463eb] outline-none
-                       transition-all shadow-sm placeholder:text-gray-400" />
+                    <form [formGroup]="newUserForm" (ngSubmit)="createUser()">
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#111318]" for="username">Full Name</label>
+                            <input formControlName="username" id="username" type="text" placeholder="e.g. Jane Doe"
+                                class="w-full px-3 py-2.5 bg-white border border-[#dbdee6] rounded-lg text-sm
+                         focus:ring-2 focus:ring-[#2463eb] focus:border-[#2463eb] outline-none
+                         transition-all shadow-sm placeholder:text-gray-400" />
                         </div>
-                    </div>
 
-                    <!-- Role -->
-                    <div class="space-y-1">
-                        <label class="text-sm font-semibold text-[#111318]" for="role">Assign Role</label>
-                        <div class="relative">
-                            <select [(ngModel)]="newRole" (ngModelChange)="onRoleChange()" id="role" class="w-full px-3 py-2.5 bg-white border border-[#dbdee6] rounded-lg text-sm
-                       focus:ring-2 focus:ring-[#2463eb] focus:border-[#2463eb] outline-none
-                       transition-all shadow-sm appearance-none cursor-pointer">
-                                <option *ngFor="let r of roleOptions" [value]="r">{{ r }}</option>
-                            </select>
-                            <span
-                                class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#111318]" for="email">Email Address</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">mail</span>
+                                <input formControlName="email" id="email" type="email" placeholder="name@company.com"
+                                    class="w-full pl-10 pr-3 py-2.5 bg-white border border-[#dbdee6] rounded-lg text-sm
+                           focus:ring-2 focus:ring-[#2463eb] focus:border-[#2463eb] outline-none
+                           transition-all shadow-sm placeholder:text-gray-400" />
+                            </div>
                         </div>
-                        <p class="text-xs text-[#616e89] mt-1">This role defines the user's initial permissions.</p>
-                    </div>
+
+                        <div class="space-y-1">
+                            <label class="text-sm font-semibold text-[#111318]" for="roleid">Assign Role</label>
+                            <div class="relative">
+                                <select formControlName="roleid" id="roleid" class="w-full px-3 py-2.5 bg-white border border-[#dbdee6] rounded-lg text-sm
+         focus:ring-2 focus:ring-[#2463eb] focus:border-[#2463eb] outline-none
+         transition-all shadow-sm appearance-none cursor-pointer">
+
+                                    <option value="" disabled>Select role</option>
+
+                                    <option *ngFor="let r of roleOptions" [ngValue]="r.id">
+                                        {{ r.name }}
+                                    </option>
+
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                            </div>
+                            <p class="text-xs text-[#616e89] mt-1">This role defines the user's initial permissions.</p>
+                        </div>
+                    </form>
 
 
 

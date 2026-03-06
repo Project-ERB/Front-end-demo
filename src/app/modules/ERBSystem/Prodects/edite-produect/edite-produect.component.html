@@ -1,1 +1,282 @@
-<p>edite-produect works!</p>
+<div class="min-h-screen bg-slate-50 p-6 flex justify-center">
+    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b px-6 py-4">
+            <h2 class="text-xl font-bold text-slate-800">Edit Product</h2>
+            <button (click)="cancel()" class="rounded-lg border px-4 py-2 text-sm font-semibold hover:bg-slate-100">
+                Back
+            </button>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="editError"
+            class="mx-6 mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            {{ editError }}
+        </div>
+
+        <!-- Form -->
+        <div class="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
+
+            <!-- Name -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Name</label>
+                <input [(ngModel)]="editForm.Name" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Short Description -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Short Description</label>
+                <input [(ngModel)]="editForm.ShortDescription" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Category -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Category</label>
+                <select [(ngModel)]="editForm.CategoryId"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none">
+                    <option value="">Select category</option>
+                    <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                </select>
+            </div>
+
+            <!-- Product Type -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Product Type</label>
+                <select [(ngModel)]="editForm.ProductType"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none">
+                    <option value="0">Goods</option>
+                    <option value="1">Service</option>
+                </select>
+            </div>
+
+            <!-- UOM Code -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">UOM Code</label>
+                <input [(ngModel)]="editForm.UomCode" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- UOM Name -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">UOM Name</label>
+                <input [(ngModel)]="editForm.UomName" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Cost -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Cost</label>
+                <input [(ngModel)]="editForm.CostAmount" type="number"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Selling -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Selling</label>
+                <input [(ngModel)]="editForm.SellingAmount" type="number"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Currency -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Currency</label>
+                <input [(ngModel)]="editForm.Currency" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Tax Rate Value -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Tax Rate Value</label>
+                <input [(ngModel)]="editForm.TaxRateValue" type="number" step="0.01"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Tax Rate Name -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Tax Rate Name</label>
+                <input [(ngModel)]="editForm.TaxRateName" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Tax Rate Code -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Tax Rate Code</label>
+                <input [(ngModel)]="editForm.TaxRateCode" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Base Barcode -->
+            <div class="flex flex-col gap-1">
+                <label class="text-xs font-semibold uppercase text-slate-500">Base Barcode</label>
+                <input [(ngModel)]="editForm.BaseBarcode" type="text"
+                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            </div>
+
+            <!-- Track Inventory -->
+            <div class="flex flex-col gap-1 justify-center">
+                <label class="text-xs font-semibold uppercase text-slate-500">Track Inventory</label>
+                <div class="flex items-center gap-2 mt-1">
+                    <input [(ngModel)]="editForm.IsTrackInventory" type="checkbox" id="trackInv"
+                        class="h-4 w-4 rounded border-slate-300" />
+                    <label for="trackInv" class="text-sm text-slate-700">Enable inventory tracking</label>
+                </div>
+            </div>
+
+            <!-- Notes -->
+            <div class="flex flex-col gap-1 sm:col-span-2">
+                <label class="text-xs font-semibold uppercase text-slate-500">Notes</label>
+                <textarea [(ngModel)]="editForm.Notes" rows="3"
+                    class="rounded-lg border px-3 py-2 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none"></textarea>
+            </div>
+
+            <!-- ── Specifications ──────────────────────────────────────────── -->
+            <div class="flex flex-col gap-3 sm:col-span-2">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold uppercase text-slate-500">Specifications</label>
+                    <button type="button" (click)="addSpecification()"
+                        class="flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors">
+                        + Add Row
+                    </button>
+                </div>
+
+                <!-- Header -->
+                <div *ngIf="editSpecifications.length > 0" class="grid grid-cols-[1fr_1fr_80px_36px] gap-2 px-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Key</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Value</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Order</span>
+                    <span></span>
+                </div>
+
+                <!-- Rows -->
+                <div *ngFor="let spec of editSpecifications; let i = index"
+                    class="grid grid-cols-[1fr_1fr_80px_36px] gap-2 items-center">
+                    <input [(ngModel)]="spec.key" type="text" placeholder="e.g. Brand"
+                        class="h-9 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                    <input [(ngModel)]="spec.value" type="text" placeholder="e.g. HP"
+                        class="h-9 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                    <input [(ngModel)]="spec.displayOrder" type="number" min="1"
+                        class="h-9 rounded-lg border px-3 text-sm text-center focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                    <button type="button" (click)="removeSpecification(i)"
+                        class="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+                        ✕
+                    </button>
+                </div>
+
+                <div *ngIf="editSpecifications.length === 0"
+                    class="rounded-lg border border-dashed border-slate-200 py-6 text-center text-sm text-slate-400">
+                    No specifications. Click "Add Row" to add one.
+                </div>
+            </div>
+
+            <!-- ── Variants ────────────────────────────────────────────────── -->
+            <div class="flex flex-col gap-3 sm:col-span-2">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold uppercase text-slate-500">Variants</label>
+                    <button type="button" (click)="addVariant()"
+                        class="flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors">
+                        + Add Variant
+                    </button>
+                </div>
+
+                <!-- Variant cards -->
+                <div *ngFor="let variant of editVariants; let vi = index"
+                    class="rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col gap-3">
+
+                    <!-- Variant header -->
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-500 uppercase">Variant {{ vi + 1 }}</span>
+                        <button type="button" (click)="removeVariant(vi)"
+                            class="rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-500 hover:bg-red-100 transition-colors">
+                            Remove
+                        </button>
+                    </div>
+
+                    <!-- SKU / Barcode / Price -->
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-semibold text-slate-400 uppercase">SKU</label>
+                            <input [(ngModel)]="variant.sku" type="text" placeholder="e.g. HP-LAP-BLK"
+                                class="h-9 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-semibold text-slate-400 uppercase">Barcode</label>
+                            <input [(ngModel)]="variant.barcode" type="text" placeholder="Barcode"
+                                class="h-9 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <label class="text-xs font-semibold text-slate-400 uppercase">Price Override</label>
+                            <input [(ngModel)]="variant.priceOverrideAmount" type="number" placeholder="0.00"
+                                class="h-9 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                        </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="flex flex-col gap-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-400 uppercase">Options</span>
+                            <button type="button" (click)="addVariantOption(vi)"
+                                class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 transition-colors">
+                                + Add Option
+                            </button>
+                        </div>
+
+                        <!-- Option header -->
+                        <div *ngIf="variant.options.length > 0" class="grid grid-cols-[1fr_1fr_32px] gap-2 px-1">
+                            <span class="text-xs font-semibold text-slate-400 uppercase">Attribute Name</span>
+                            <span class="text-xs font-semibold text-slate-400 uppercase">Value</span>
+                            <span></span>
+                        </div>
+
+                        <!-- Option rows -->
+                        <div *ngFor="let opt of variant.options; let oi = index"
+                            class="grid grid-cols-[1fr_1fr_32px] gap-2 items-center">
+                            <input [(ngModel)]="opt.attributeName" type="text" placeholder="e.g. Color"
+                                class="h-8 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                            <input [(ngModel)]="opt.value" type="text" placeholder="e.g. Black"
+                                class="h-8 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+                            <button type="button" (click)="removeVariantOption(vi, oi)"
+                                class="flex h-8 w-8 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-400 hover:bg-red-100 transition-colors">
+                                ✕
+                            </button>
+                        </div>
+
+                        <!-- Warning if no options -->
+                        <div *ngIf="variant.options.length === 0"
+                            class="rounded-lg border border-dashed border-orange-200 bg-orange-50 py-3 text-center text-xs text-orange-500">
+                            ⚠ At least one option is required per variant
+                        </div>
+                    </div>
+                </div>
+
+                <div *ngIf="editVariants.length === 0"
+                    class="rounded-lg border border-dashed border-slate-200 py-6 text-center text-sm text-slate-400">
+                    No variants. Click "Add Variant" to add one.
+                </div>
+            </div>
+
+            <!-- Image -->
+            <div class="flex flex-col gap-1 sm:col-span-2">
+                <label class="text-xs font-semibold uppercase text-slate-500">Product Image</label>
+                <input type="file" accept="image/*" (change)="onImageSelected($event)"
+                    class="rounded-lg border px-3 py-2 text-sm" />
+            </div>
+
+
+        </div><!-- /form grid -->
+
+        <!-- Footer -->
+        <div class="flex justify-end gap-3 border-t px-6 py-4">
+            <button (click)="cancel()" class="rounded-lg border px-5 py-2 text-sm font-semibold hover:bg-slate-100">
+                Cancel
+            </button>
+            <button (click)="submitEdit()" [disabled]="editLoading"
+                class="rounded-lg bg-blue-800 px-5 py-2 text-sm font-bold text-white hover:bg-blue-900 disabled:opacity-50">
+                {{ editLoading ? 'Saving...' : 'Save Changes' }}
+            </button>
+        </div>
+
+    </div>
+</div>

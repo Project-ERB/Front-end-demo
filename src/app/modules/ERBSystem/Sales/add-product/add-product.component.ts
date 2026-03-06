@@ -1,29 +1,207 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
+import { ProductService } from '../../../../core/services/products/product.service';
+import { CategoriesService } from '../../../../core/services/categories/categories.service';
+import { ToastrService } from 'ngx-toastr';
+import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
+import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 
 export interface Step {
   label: string;
   icon: string;
 }
 
-export interface GeneralInfoForm {
-  productName: string;
-  productCode: string;
-  sku: string;
-  shortDescription: string;
-  fullDescription: string;
-}
-
 @Component({
   selector: 'app-add-product',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, CommonModule, SidebaSalesComponent],
   templateUrl: './add-product.component.html',
   styleUrl: './add-product.component.scss',
 })
-export class AddProductComponent {
+export class AddProductComponent implements OnInit {
+  private readonly _productService = inject(ProductService);
+  private readonly _categoryService = inject(CategoriesService);
+  private readonly _ApollocatoriesService = inject(ApollocatoriesService)
+  private readonly _ToastrService = inject(ToastrService);
+  private readonly _formBuilder = inject(FormBuilder);
 
-  // ── Sidebar (same as all previous components) ─────────────────────
+
+  // FIX: Renamed to categoryOptions to reflect actual usage (CategoryId select)
+  categoryOptions: any[] = [];
+  selectedFile: File | null = null;
+
+  // ================= FORM =================
+  addproductform: FormGroup = this._formBuilder.group({
+    Name: [null, Validators.required],
+    Code: [null, Validators.required],
+    ShortDescription: [null, Validators.required],
+    CategoryId: [null, Validators.required],
+    ProductType: [null, Validators.required],
+    UomCode: [null, Validators.required],
+    UomName: [null, Validators.required],
+    CostAmount: [null, Validators.required],
+    SellingAmount: [null, Validators.required],
+    Currency: [null, Validators.required],
+    TaxRateValue: [null, Validators.required],
+    TaxRateName: [null, Validators.required],
+    TaxRateCode: [null, Validators.required],
+    IsTrackInventory: [null, Validators.required],
+    BaseBarcode: [null, Validators.required],
+    Notes: [null],
+  });
+
+  // ================= STEP FIELD MAP =================
+  // FIX: Added per-step validation so Next is blocked until current step fields are valid
+  private readonly stepFields: string[][] = [
+    ['Code', 'Name', 'ShortDescription', 'CategoryId', 'ProductType'],           // Step 0 — Basic Info
+    ['UomCode', 'UomName', 'CostAmount', 'SellingAmount', 'Currency'],            // Step 1 — Unit & Pricing
+    ['TaxRateValue', 'TaxRateName', 'TaxRateCode', 'IsTrackInventory', 'BaseBarcode'], // Step 2 — Tax & Inventory
+    [],                                                                            // Step 3 — Specs, Variants & Image
+  ];
+
+  private isCurrentStepValid(): boolean {
+    const fields = this.stepFields[this.currentStep];
+    if (!fields.length) return true;
+    return fields.every(f => this.addproductform.get(f)?.valid);
+  }
+
+  private touchCurrentStepFields(): void {
+    this.stepFields[this.currentStep].forEach(f =>
+      this.addproductform.get(f)?.markAsTouched()
+    );
+  }
+
+  // ================= FILE =================
+  onFileSelected(event: any): void {
+    const file = event.target.files?.[0];
+    if (file) {
+      this.selectedFile = file;
+    }
+  }
+
+  getcategorues(): void {
+    this._ApollocatoriesService.getApollocategories().subscribe({
+      next: (res: any) => {
+        this.categoryOptions = res?.data?.parentCategories?.nodes ?? [];
+        console.log('Raw response:', res.data);
+        console.log(this.categoryOptions);
+      },
+      error: (err: any) => {
+        console.error('Error loading categories:', err);
+      },
+    });
+  }
+
+  // ================= SUBMIT =================
+  AddproductSubmit(): void {
+    if (this.addproductform.invalid) {
+      this.addproductform.markAllAsTouched();
+      this._ToastrService.error('Please fill all required fields.', 'Validation Error');
+      return;
+    }
+
+    const formValue = this.addproductform.value;
+    const formData = new FormData();
+
+    formData.append('Code', formValue.Code);
+    formData.append('Name', formValue.Name);
+    formData.append('ShortDescription', formValue.ShortDescription);
+    formData.append('CategoryId', formValue.CategoryId);
+    formData.append('ProductType', String(formValue.ProductType));
+    formData.append('UomCode', formValue.UomCode);
+    formData.append('UomName', formValue.UomName);
+    formData.append('CostAmount', String(formValue.CostAmount));
+    formData.append('SellingAmount', String(formValue.SellingAmount));
+    formData.append('Currency', formValue.Currency);
+    formData.append('TaxRateValue', String(formValue.TaxRateValue));
+    formData.append('TaxRateName', formValue.TaxRateName);
+    formData.append('TaxRateCode', formValue.TaxRateCode);
+    formData.append('IsTrackInventory', formValue.IsTrackInventory ? 'true' : 'false');
+    formData.append('BaseBarcode', formValue.BaseBarcode);
+    formData.append('Notes', formValue.Notes ?? '');
+
+    const specs = this.specifications
+      .filter(s => s.name && s.value)
+      .map((s, index) => ({
+        key: s.name,
+        value: s.value,
+        displayOrder: index + 1
+      }));
+    formData.append('SpecificationsJson', JSON.stringify(specs));
+
+    const variants = this.variants
+      .filter(v => v.sku)
+      .map(v => ({
+        sku: v.sku,
+        barcode: v.barcode,
+        priceOverrideAmount: v.priceOverrideAmount ?? formValue.SellingAmount,
+        options: v.options.filter(o => o.attributeName && o.value),
+      }));
+    formData.append('VariantsJson', JSON.stringify(variants));
+
+    if (this.selectedFile) {
+      formData.append('Image', this.selectedFile);
+    }
+
+    this._productService.addProduct(formData).subscribe({
+      next: (res) => {
+        console.log('Product created:', res);
+        this._ToastrService.success('Add Product Success', 'Success');
+        this.addproductform.reset();
+        this.specifications = [{ name: '', value: '' }];
+        this.variants = [{
+          sku: '', barcode: '', priceOverrideAmount: null,
+          options: [{ attributeName: 'Color', value: '' }, { attributeName: 'RAM', value: '' }]
+        }];
+        this.selectedFile = null;
+        this.currentStep = 0;
+      },
+      // Extract the actual backend message from the interceptor response shape:
+      // { isSuccess: false, data: null, errors: string[], message: string, timestamp: string }
+      error: (err) => {
+        console.error('Error:', err);
+        const backendError = err?.error;
+        if (backendError && !backendError.isSuccess) {
+          const errorMessages: string[] = backendError.errors ?? [];
+          const title = backendError.message ?? 'Error';
+          // Show each error code as a separate toast so nothing is hidden
+          if (errorMessages.length > 0) {
+            errorMessages.forEach(msg =>
+              this._ToastrService.error(msg, title)
+            );
+          } else {
+            this._ToastrService.error(title, 'Error');
+          }
+        } else {
+          this._ToastrService.error('Failed to create product. Please try again.', 'Error');
+        }
+      }
+    });
+  }
+
+  cancel(): void {
+    this.addproductform.reset();
+    this.currentStep = 0;
+  }
+
+  // FIX: Removed localStorage usage; added toastr feedback for draft save
+  saveDraft(): void {
+    const draftData = this.addproductform.value;
+    // Store in a component-level variable so no browser storage API is needed
+    this._draftData = draftData;
+    this._ToastrService.info('Draft saved successfully.', 'Draft Saved');
+    console.log('Draft saved:', draftData);
+  }
+
+  private _draftData: any = null;
+
+  // ── Stepper ─────────────────────────────
   navItems = [
     { icon: 'grid_view', label: 'Dashboard', active: false },
     { icon: 'trending_up', label: 'Sales Analysis', active: false },
@@ -32,12 +210,11 @@ export class AddProductComponent {
     { icon: 'percent', label: 'Discounts', active: false },
   ];
 
-  // ── Stepper ───────────────────────────────────────────────────────
   steps: Step[] = [
-    { label: 'General Info', icon: 'info' },
-    { label: 'Pricing & Tax', icon: 'attach_money' },
-    { label: 'Styles & Variants', icon: 'style' },
-    { label: 'Specifications', icon: 'tune' },
+    { label: 'Basic Info', icon: 'info' },
+    { label: 'Unit & Pricing', icon: 'attach_money' },
+    { label: 'Tax & Inventory', icon: 'inventory' },
+    { label: 'Specs, Variants & Image', icon: 'tune' },
   ];
 
   currentStep = 0;
@@ -52,180 +229,110 @@ export class AddProductComponent {
   }
 
   nextStep(): void {
-    if (this.currentStep < this.steps.length - 1) this.currentStep++;
-    else this.submitForm();
+    // FIX: Validate current step fields before advancing
+    if (!this.isCurrentStepValid()) {
+      this.touchCurrentStepFields();
+      this._ToastrService.warning('Please complete all required fields before continuing.', 'Incomplete');
+      return;
+    }
+    if (this.currentStep < this.steps.length - 1) {
+      this.currentStep++;
+    } else {
+      this.AddproductSubmit();
+    }
   }
 
   prevStep(): void {
     if (this.currentStep > 0) this.currentStep--;
   }
 
-  get isLastStep(): boolean { return this.currentStep === this.steps.length - 1; }
-  get isFirstStep(): boolean { return this.currentStep === 0; }
-
-  // ── Step 0: General Info form ─────────────────────────────────────
-  form: GeneralInfoForm = {
-    productName: '', productCode: '', sku: '',
-    shortDescription: '', fullDescription: '',
-  };
-
-  get shortDescLength(): number { return this.form.shortDescription.length; }
-
-  toolbarButtons = [
-    { icon: 'format_bold', title: 'Bold', sep: false },
-    { icon: 'format_italic', title: 'Italic', sep: false },
-    { icon: 'format_underlined', title: 'Underline', sep: true },
-    { icon: 'format_list_bulleted', title: 'Bullet List', sep: false },
-    { icon: 'format_list_numbered', title: 'Numbered List', sep: true },
-    { icon: 'link', title: 'Insert Link', sep: false },
-    { icon: 'image', title: 'Insert Image', sep: false },
-  ];
-
-  // ── Step 1: Pricing & Tax form ────────────────────────────────────
-  pricing = {
-    basePrice: null as number | null,
-    costPerItem: null as number | null,
-    priceIncludesTax: false,
-    taxCategory: 'standard' as 'standard' | 'reduced' | 'zero' | 'exempt',
-  };
-
-  taxRates: Record<string, number> = {
-    standard: 0.20,
-    reduced: 0.05,
-    zero: 0.00,
-    exempt: 0.00,
-  };
-
-  taxOptions = [
-    { value: 'standard', label: 'Standard Rate (20%)' },
-    { value: 'reduced', label: 'Reduced Rate (5%)' },
-    { value: 'zero', label: 'Zero Rate (0%)' },
-    { value: 'exempt', label: 'Tax Exempt' },
-  ];
-
-  get taxRate(): number { return this.taxRates[this.pricing.taxCategory] ?? 0; }
-
-  get profitPerItem(): number {
-    const base = this.pricing.basePrice ?? 0;
-    const cost = this.pricing.costPerItem ?? 0;
-    return base - cost;
+  get isLastStep(): boolean {
+    return this.currentStep === this.steps.length - 1;
+  }
+  get isFirstStep(): boolean {
+    return this.currentStep === 0;
   }
 
-  get marginPercent(): number {
-    const base = this.pricing.basePrice ?? 0;
-    if (base === 0) return 0;
-    return (this.profitPerItem / base) * 100;
+  // ── Variants ───────────────────────────
+  // Each variant matches the API structure: { sku, barcode, priceOverrideAmount, options[] }
+  // Each option matches: { attributeName, value }
+
+  variants: Array<{
+    sku: string;
+    barcode: string;
+    priceOverrideAmount: number | null;
+    options: Array<{ attributeName: string; value: string }>;
+  }> = [
+      {
+        sku: '',
+        barcode: '',
+        priceOverrideAmount: null,
+        options: [
+          { attributeName: 'Color', value: '' },
+          { attributeName: 'RAM', value: '' },
+        ],
+      },
+    ];
+
+  addVariant(): void {
+    this.variants.push({
+      sku: '',
+      barcode: '',
+      priceOverrideAmount: null,
+      options: this.variants[0]?.options.map(o => ({ attributeName: o.attributeName, value: '' })) ?? [
+        { attributeName: 'Color', value: '' },
+        { attributeName: 'RAM', value: '' },
+      ],
+    });
   }
 
-  get finalPriceIncTax(): number {
-    const base = this.pricing.basePrice ?? 0;
-    if (this.pricing.priceIncludesTax) return base;
-    return base * (1 + this.taxRate);
-  }
-
-  formatCurrency(val: number): string {
-    return val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 });
-  }
-
-  // ── Step 2: Styles & Variants ────────────────────────────────────
-  hasVariants = true;
-
-  attributeOptions = ['Color', 'Size', 'Material', 'Style', 'Finish'];
-
-  attributes: Array<{ name: string; values: string[]; inputVal: string }> = [
-    { name: 'Color', values: ['Red', 'Blue'], inputVal: '' },
-    { name: 'Size', values: ['S', 'M', 'L'], inputVal: '' },
-  ];
-
-  generatedVariants: Array<{ combo: string; sku: string; price: number | null; stock: number | null; selected: boolean }> = [];
-
-  get allVariantsSelected(): boolean {
-    return this.generatedVariants.length > 0 && this.generatedVariants.every(v => v.selected);
-  }
-
-  toggleAllVariants(checked: boolean): void {
-    this.generatedVariants.forEach(v => v.selected = checked);
-  }
-
-  addAttribute(): void {
-    this.attributes.push({ name: 'Color', values: [], inputVal: '' });
-  }
-
-  removeAttribute(i: number): void {
-    this.attributes.splice(i, 1);
-  }
-
-  addValueOnEnter(event: KeyboardEvent, attr: { values: string[]; inputVal: string }): void {
-    if (event.key === 'Enter' || event.key === ',') {
-      event.preventDefault();
-      const val = attr.inputVal.trim().replace(/,$/, '');
-      if (val && !attr.values.includes(val)) attr.values.push(val);
-      attr.inputVal = '';
+  removeVariant(index: number): void {
+    if (this.variants.length > 1) {
+      this.variants.splice(index, 1);
     }
   }
 
-  removeValue(attr: { values: string[] }, value: string): void {
-    attr.values = attr.values.filter(v => v !== value);
+  addOption(variantIndex: number): void {
+    this.variants[variantIndex].options.push({ attributeName: '', value: '' });
   }
 
-  generateVariants(): void {
-    // cartesian product of all attribute value arrays
-    const filled = this.attributes.filter(a => a.values.length > 0);
-    if (!filled.length) return;
-    let combos: string[][] = [[]];
-    for (const attr of filled) {
-      combos = combos.flatMap(c => attr.values.map(v => [...c, v]));
+  removeOption(variantIndex: number, optionIndex: number): void {
+    if (this.variants[variantIndex].options.length > 1) {
+      this.variants[variantIndex].options.splice(optionIndex, 1);
     }
-    this.generatedVariants = combos.map(c => ({
-      combo: c.join(' / '),
-      sku: 'PROD-' + c.map(v => v.toUpperCase().slice(0, 3)).join('-'),
-      price: this.pricing.basePrice,
-      stock: 0,
-      selected: false,
-    }));
   }
 
-  removeVariant(i: number): void { this.generatedVariants.splice(i, 1); }
-
-  bulkEditPrice(): void {
-    const p = prompt('Set price for all selected variants:');
-    if (p === null) return;
-    const num = parseFloat(p);
-    if (!isNaN(num)) this.generatedVariants.filter(v => v.selected).forEach(v => v.price = num);
-  }
-
-  bulkEditStock(): void {
-    const s = prompt('Set stock for all selected variants:');
-    if (s === null) return;
-    const num = parseInt(s, 10);
-    if (!isNaN(num)) this.generatedVariants.filter(v => v.selected).forEach(v => v.stock = num);
-  }
-
-  // ── Actions ───────────────────────────────────────────────────────
-  saveDraft(): void { alert('Draft saved!'); }
-  cancel(): void { if (confirm('Discard changes?')) alert('Cancelled'); }
-  submitForm(): void { alert('Product submitted!'); }
-
-  ngOnInit(): void {
-    // seed some generated variants to match the HTML design
-    this.generateVariants();
-  }
-
-  // ── Step 3: Specifications ────────────────────────────────────────
+  // ── Specifications ──────────────────────
   specifications: Array<{ name: string; value: string }> = [
-    { name: 'Material', value: '100% Cotton' },
-    { name: 'Weight', value: '250g' },
-    { name: 'Dimensions', value: '40 x 30 cm' },
+    { name: '', value: '' }
   ];
 
   addSpec(): void {
     this.specifications.push({ name: '', value: '' });
   }
 
-  removeSpec(i: number): void {
+  removeSpec(index: number): void {
     if (this.specifications.length > 1) {
-      this.specifications.splice(i, 1);
+      this.specifications.splice(index, 1);
     }
+  }
+
+  // ── Init ───────────────────────────────
+  ngOnInit(): void {
+    // this._categoryService.getCategories().subscribe({
+    //   next: (res) => {
+    //     this.categoryOptions = res.map((c: any) => ({
+    //       id: c.id,
+    //       name: c.name
+    //     }));
+    //   },
+    //   error: () => {
+    //     this.categoryOptions = [];
+    //     this._ToastrService.error('Failed to load categories.', 'Error');
+    //   }
+    // });
+
+    this.getcategorues();
   }
 
 }

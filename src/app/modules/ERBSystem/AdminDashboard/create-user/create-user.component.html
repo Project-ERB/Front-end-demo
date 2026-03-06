@@ -60,29 +60,88 @@
 
                     <!-- Role details -->
                     <div class="mb-10 grid gap-6 lg:grid-cols-2">
-                        <div>
-                            <label class="mb-2 block text-sm font-semibold text-[#131118]" for="roleName">
-                                Role Name <span class="text-red-500">*</span>
-                            </label>
-                            <input [(ngModel)]="roleName" (ngModelChange)="markDirty()" id="roleName" type="text"
-                                placeholder="e.g. Senior Inventory Manager" class="w-full rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm
-                       text-[#131118] placeholder:text-[#6e6189]/60 focus:outline-none
-                       focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all" />
-                            <!-- Inline error -->
-                            <p *ngIf="formError" class="mt-1.5 text-xs text-red-500 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">error</span>
-                                {{ formError }}
-                            </p>
-                        </div>
-                        <div>
-                            <label class="mb-2 block text-sm font-semibold text-[#131118]"
-                                for="desc">Description</label>
-                            <textarea [(ngModel)]="description" (ngModelChange)="markDirty()" id="desc" rows="3"
-                                placeholder="Briefly describe the responsibilities..." class="w-full rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm
-                       text-[#131118] placeholder:text-[#6e6189]/60 resize-none focus:outline-none
-                       focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all">
-              </textarea>
-                        </div>
+                        <form [formGroup]="RoleForm" (ngSubmit)="createRole()">
+
+                            <!-- Role Name -->
+                            <div>
+                                <label class="mb-2 block text-sm font-semibold text-[#131118]" for="roleName">
+                                    Role Name <span class="text-red-500">*</span>
+                                </label>
+
+                                <input formControlName="name" id="roleName" type="text"
+                                    placeholder="e.g. Senior Inventory Manager" class="w-full rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm
+      text-[#131118] placeholder:text-[#6e6189]/60 focus:outline-none
+      focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all" />
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mt-4">
+                                <label class="mb-2 block text-sm font-semibold text-[#131118]" for="desc">
+                                    Description
+                                </label>
+
+                                <textarea formControlName="description" id="desc" rows="3"
+                                    placeholder="Briefly describe the responsibilities..." class="w-full rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm
+      text-[#131118] placeholder:text-[#6e6189]/60 resize-none focus:outline-none
+      focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all">
+    </textarea>
+                            </div>
+
+                            <!-- 🔥 Permissions (مهم جداً) -->
+                            <div formArrayName="setPermissions" class="mt-6">
+
+                                <div *ngFor="let perm of setPermissions.controls; let i = index" [formGroupName]="i"
+                                    class="rounded-lg border p-4 mb-3 bg-gray-50">
+
+                                    <!-- Permission Id -->
+                                    <input type="hidden" formControlName="permissionId" />
+
+                                    <p class="font-semibold mb-2">Permissions</p>
+
+                                    <div class="flex flex-wrap gap-4">
+
+                                        <label class="flex items-center gap-2">
+                                            <input type="checkbox" formControlName="allowCreate">
+                                            Create
+                                        </label>
+
+                                        <label class="flex items-center gap-2">
+                                            <input type="checkbox" formControlName="allowDelete">
+                                            Delete
+                                        </label>
+
+                                        <label class="flex items-center gap-2">
+                                            <input type="checkbox" formControlName="allowUpdated">
+                                            Update
+                                        </label>
+
+                                        <label class="flex items-center gap-2">
+                                            <input type="checkbox" formControlName="allowView">
+                                            View
+                                        </label>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="mt-6 flex items-center gap-4">
+                                <button type="submit" class="flex items-center gap-2 rounded-lg bg-[#6324eb] px-8 py-2.5 text-sm font-bold
+      text-white shadow-lg shadow-[#6324eb]/25 hover:bg-[#501ac2] focus:outline-none
+      focus:ring-2 focus:ring-[#6324eb] focus:ring-offset-2 transition-all">
+                                    Save Role
+                                </button>
+
+                                <button type="button" (click)="cancel()" class="rounded-lg border border-[#dedbe6] bg-white px-6 py-2.5 text-sm font-bold
+      text-[#131118] hover:bg-gray-50 focus:outline-none focus:ring-2
+      focus:ring-gray-200 transition-colors">
+                                    Cancel
+                                </button>
+                            </div>
+
+                        </form>
+
                     </div>
 
                     <hr class="border-[#dedbe6] mb-8" />
@@ -215,11 +274,7 @@
             <div class="mx-auto flex max-w-5xl items-center justify-between">
 
                 <!-- Cancel -->
-                <button (click)="cancel()" class="rounded-lg border border-[#dedbe6] bg-white px-6 py-2.5 text-sm font-bold
-                       text-[#131118] hover:bg-gray-50 focus:outline-none focus:ring-2
-                       focus:ring-gray-200 transition-colors">
-                    Cancel
-                </button>
+                >
 
                 <!-- Right: status + save -->
                 <div class="flex items-center gap-4">
@@ -234,12 +289,7 @@
                     </span>
 
                     <!-- Save button -->
-                    <button (click)="save()" class="flex items-center gap-2 rounded-lg bg-[#6324eb] px-8 py-2.5 text-sm font-bold
-                         text-white shadow-lg shadow-[#6324eb]/25 hover:bg-[#501ac2] focus:outline-none
-                         focus:ring-2 focus:ring-[#6324eb] focus:ring-offset-2 transition-all">
-                        <span class="material-symbols-outlined text-[18px]">check</span>
-                        Save Role
-                    </button>
+
                 </div>
 
             </div>

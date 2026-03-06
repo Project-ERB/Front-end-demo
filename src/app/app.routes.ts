@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   // Redirect root to login
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'admin-login', pathMatch: 'full' },
 
   //ai agent
   {
@@ -65,14 +65,14 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/Prodects/add-produect/add-produect.component').then((a) => a.AddProduectComponent),
         title: 'AddProduect',
       },
-      // {
-      //   path: 'EditeProduect',
-      //   loadComponent: () =>
-      //     import(
-      //       './modules/ERBSystem/Prodects/edite-produect/edite-produect.component'
-      //     ).then((E) => E.EditeProduectComponent ),
-      //   title: 'EditeProduect',
-      // },
+      {
+        path: 'Edite-Produect/:id',
+        loadComponent: () =>
+          import(
+            './modules/ERBSystem/Prodects/edite-produect/edite-produect.component'
+          ).then((E) => E.EditeProduectComponent),
+        title: 'EditeProduect',
+      },
       {
         path: 'categories',
         loadComponent: () => import('./modules/ERBSystem/categories/categories.component').then((m) => m.CategoriesComponent),
@@ -309,6 +309,10 @@ export const routes: Routes = [
         path: 'discount-details/:id',
         loadComponent: () => import('./modules/ERBSystem/HR/Discount/discount-details/discount-details.component').then((D) => D.DiscountDetailsComponent),
         title: 'discount-details'
+      },
+      {
+        path: 'orders',
+        loadComponent: () => import('./modules/ERBSystem/Sales/orders/orders.component').then((O) => O.OrdersComponent)
       }
     ]
   }

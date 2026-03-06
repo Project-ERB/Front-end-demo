@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CategoriesService } from '../../../../core/services/categories/categories.service';
+import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
+import { RouterLink } from '@angular/router';
+import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 
 export interface Category {
   id: string;
@@ -31,22 +35,105 @@ export interface CategoryForm {
 
 @Component({
   selector: 'app-category-mangement',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, ReactiveFormsModule, SidebaSalesComponent],
   templateUrl: './category-mangement.component.html',
   styleUrl: './category-mangement.component.scss',
 })
 export class CategoryMangementComponent implements OnInit {
 
-  // ── Sidebar nav (same as Sales Analysis) ─────────────────────────────────
-  navItems = [
-    { icon: 'grid_view', label: 'Dashboard', active: false },
-    { icon: 'trending_up', label: 'Sales Analysis', active: false },
-    { icon: 'category', label: 'Categories', active: true },
-    { icon: 'inventory_2', label: 'Products', active: false },
-    { icon: 'percent', label: 'Discounts', active: false },
-  ];
+  isEditMode: boolean = false;
 
-  // ── Tree data ─────────────────────────────────────────────────────────────
+  private readonly _FormBuilder = inject(FormBuilder);
+
+  CategoryForm: FormGroup = this._FormBuilder.group({
+    name: [null, Validators.required],
+    code: [null, Validators.required],
+    description: [null, Validators.required],
+    parentCategoryId: [null]
+  });
+
+  editingCategory: any | null = null;
+
+  submitCategory() {
+    if (this.CategoryForm.invalid) return;
+
+    const formValue = this.CategoryForm.value;
+
+    if (this.isEditMode && this.editingCategory) {
+      this._CategoriesService
+        .updataecategore(formValue, this.editingCategory.id)
+        .subscribe({
+          next: (res) => {
+            console.log('Updated ✅', res);
+            this.afterSuccess();
+          },
+          error: (err) => console.error(err)
+        });
+    } else {
+      this._CategoriesService.addCategory(formValue).subscribe({
+        next: (res) => {
+          console.log('Created ✅', res);
+          this.afterSuccess();
+        },
+        error: (err) => console.error(err)
+      });
+    }
+  }
+
+  private afterSuccess() {
+    this.CategoryForm.reset();
+    this.loadCategories();
+    this.closeModal();
+  }
+
+  deleteCategory(id: string): void {
+    console.log('Delete clicked, ID:', id); // 👈 add this
+    if (!confirm('Are you sure you want to delete this category?')) return;
+
+    this._CategoriesService.deleteCategory(id).subscribe({
+      next: () => {
+        console.log('Deleted ✅');
+        this.loadCategories();
+      },
+      error: (err) => console.error('Delete failed:', err)
+    });
+  }
+
+  private readonly _CategoriesService = inject(CategoriesService);
+
+  // ✅ Single source of truth — API data only
+  categories: any[] = [];
+
+  private readonly _categoriesService = inject(ApollocatoriesService);
+
+  loadCategories() {
+    this._categoriesService.getApollocategories().subscribe({
+      next: (res: any) => {
+        this.categories = (res?.data?.parentCategories?.nodes ?? []).map((c: any) => ({
+          ...c,
+          selected: false
+        }));
+        this.currentPage = 1;
+        console.log('Raw response:', res.data);
+      },
+      error: (err: any) => {
+        console.error('Error loading categories:', err);
+      },
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadCategories();
+  }
+
+  viewDetails(id: string): void {
+    this._CategoriesService.viewCateDetails(id).subscribe({
+      next: (res: any) => console.log(res),
+      error: (err: any) => console.error(err)
+    });
+  }
+
+  // ── Tree ──────────────────────────────────────────────────────────────────
   treeFilter = '';
 
   tree: TreeNode[] = [
@@ -96,29 +183,12 @@ export class CategoryMangementComponent implements OnInit {
     this.treeCollapsedAll = false;
   }
 
-  // ── Table data ────────────────────────────────────────────────────────────
-  allCategories: Category[] = [
-    { id: '1', code: 'CAT-0042', name: 'Gaming Laptops', description: 'High-performance portable computers for gaming.', parent: 'Computers', status: 'Active', selected: false },
-    { id: '2', code: 'CAT-0043', name: 'Business Ultrabooks', description: 'Thin and light laptops for enterprise use.', parent: 'Computers', status: 'Active', selected: false },
-    { id: '3', code: 'CAT-0089', name: 'Desktops – All-in-One', description: 'Integrated monitor and computer units.', parent: 'Computers', status: 'Draft', selected: false },
-    { id: '4', code: 'CAT-0091', name: 'Workstations', description: 'Professional grade desktop towers.', parent: 'Computers', status: 'Active', selected: false },
-    { id: '5', code: 'CAT-0102', name: 'Accessories', description: 'Mice, keyboards, and stands.', parent: 'Computers', status: 'Archived', selected: false },
-    { id: '6', code: 'CAT-0110', name: 'Flagship Smartphones', description: 'Top-tier phones from major manufacturers.', parent: 'Smartphones', status: 'Active', selected: false },
-    { id: '7', code: 'CAT-0111', name: 'Budget Phones', description: 'Affordable smartphones for everyday use.', parent: 'Smartphones', status: 'Active', selected: false },
-    { id: '8', code: 'CAT-0115', name: 'DSLR Cameras', description: 'Professional digital single-lens reflex cameras.', parent: 'Cameras', status: 'Active', selected: false },
-    { id: '9', code: 'CAT-0116', name: 'Mirrorless Cameras', description: 'Compact interchangeable-lens cameras.', parent: 'Cameras', status: 'Draft', selected: false },
-    { id: '10', code: 'CAT-0120', name: 'Men\'s Outerwear', description: 'Jackets, coats and rainwear for men.', parent: 'Apparel', status: 'Active', selected: false },
-    { id: '11', code: 'CAT-0121', name: 'Women\'s Dresses', description: 'Casual and formal dresses for women.', parent: 'Apparel', status: 'Active', selected: false },
-    { id: '12', code: 'CAT-0130', name: 'Indoor Plants', description: 'Live plants and planters for home décor.', parent: 'Home & Garden', status: 'Active', selected: false },
-    { id: '13', code: 'CAT-0131', name: 'Garden Tools', description: 'Shovels, rakes and pruning equipment.', parent: 'Home & Garden', status: 'Archived', selected: false },
-  ];
-
   // ── Search & sort ─────────────────────────────────────────────────────────
   searchQuery = '';
-  sortCol: keyof Category = 'name';
+  sortCol: string = 'name';
   sortDir: 'asc' | 'desc' = 'asc';
 
-  sort(col: keyof Category): void {
+  sort(col: string): void {
     if (this.sortCol === col) {
       this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
     } else {
@@ -128,18 +198,18 @@ export class CategoryMangementComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  get filteredCategories(): Category[] {
+  // ✅ Now operates on API `categories` array
+  get filteredCategories(): any[] {
     const q = this.searchQuery.toLowerCase().trim();
-    let list = this.allCategories.filter(c =>
+    let list = this.categories.filter((c: any) =>
       !q ||
-      c.name.toLowerCase().includes(q) ||
-      c.code.toLowerCase().includes(q) ||
-      c.description.toLowerCase().includes(q) ||
-      c.parent.toLowerCase().includes(q)
+      c.name?.toLowerCase().includes(q) ||
+      c.code?.toLowerCase().includes(q) ||
+      c.description?.toLowerCase().includes(q)
     );
-    list = [...list].sort((a, b) => {
-      const av = String(a[this.sortCol]).toLowerCase();
-      const bv = String(b[this.sortCol]).toLowerCase();
+    list = [...list].sort((a: any, b: any) => {
+      const av = String(a[this.sortCol] ?? '').toLowerCase();
+      const bv = String(b[this.sortCol] ?? '').toLowerCase();
       return this.sortDir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
     });
     return list;
@@ -147,36 +217,56 @@ export class CategoryMangementComponent implements OnInit {
 
   // ── Bulk selection ────────────────────────────────────────────────────────
   get selectedCount(): number {
-    return this.allCategories.filter(c => c.selected).length;
+    return this.categories.filter((c: any) => c.selected).length;
   }
 
   get allOnPageSelected(): boolean {
-    return this.pagedCategories.length > 0 && this.pagedCategories.every(c => c.selected);
+    return this.pagedCategories.length > 0 && this.pagedCategories.every((c: any) => c.selected);
   }
 
   toggleSelectAll(event: Event): void {
     const checked = (event.target as HTMLInputElement).checked;
-    this.pagedCategories.forEach(c => c.selected = checked);
+    this.pagedCategories.forEach((c: any) => c.selected = checked);
   }
 
   deleteSelected(): void {
     if (this.selectedCount === 0) return;
-    if (confirm(`Delete ${this.selectedCount} selected categories?`)) {
-      this.allCategories = this.allCategories.filter(c => !c.selected);
-      this.currentPage = 1;
-    }
+    if (!confirm(`Delete ${this.selectedCount} selected categories?`)) return;
+
+    // ✅ Get all selected IDs
+    const selectedIds = this.categories
+      .filter((c: any) => c.selected)
+      .map((c: any) => c.id);
+
+    // ✅ Call delete API for each selected item
+    let completedCount = 0;
+
+    selectedIds.forEach((id: string) => {
+      this._CategoriesService.deleteCategory(id).subscribe({
+        next: () => {
+          completedCount++;
+          console.log(`Deleted ✅ (${completedCount}/${selectedIds.length})`);
+          // ✅ Only reload after ALL deletes are done
+          if (completedCount === selectedIds.length) {
+            this.loadCategories();
+          }
+        },
+        error: (err) => console.error(`Delete failed for ID ${id}:`, err)
+      });
+    });
   }
 
   // ── Pagination ────────────────────────────────────────────────────────────
   currentPage = 1;
-  pageSize = 5;
+  pageSize = 7;
 
   get totalItems(): number { return this.filteredCategories.length; }
   get totalPages(): number { return Math.ceil(this.totalItems / this.pageSize); }
   get showingFrom(): number { return this.totalItems === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1; }
   get showingTo(): number { return Math.min(this.currentPage * this.pageSize, this.totalItems); }
 
-  get pagedCategories(): Category[] {
+  // ✅ Now slices from filteredCategories (API data)
+  get pagedCategories(): any[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredCategories.slice(start, start + this.pageSize);
   }
@@ -204,10 +294,9 @@ export class CategoryMangementComponent implements OnInit {
 
   previousPage(): void { if (this.currentPage > 1) this.currentPage--; }
   nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
-
   onSearchChange(): void { this.currentPage = 1; }
 
-  // ── Status badge helper ───────────────────────────────────────────────────
+  // ── Helpers ───────────────────────────────────────────────────────────────
   getStatusClass(status: string): string {
     switch (status) {
       case 'Active': return 'bg-green-100 text-green-800';
@@ -237,7 +326,6 @@ export class CategoryMangementComponent implements OnInit {
 
   formErrors: Partial<CategoryForm> = {};
 
-  /** Flat list of parent options built from the tree for the dropdown */
   get parentOptions(): { label: string; value: string; depth: number }[] {
     const result: { label: string; value: string; depth: number }[] = [];
     const flatten = (nodes: TreeNode[], depth: number) => {
@@ -246,7 +334,6 @@ export class CategoryMangementComponent implements OnInit {
         if (n.children) flatten(n.children, depth + 1);
       });
     };
-    // Skip root "All Categories"
     if (this.tree[0]?.children) flatten(this.tree[0].children, 0);
     return result;
   }
@@ -256,23 +343,22 @@ export class CategoryMangementComponent implements OnInit {
     return this.parentOptions.filter(o => !q || o.label.toLowerCase().includes(q));
   }
 
-  openModal(category?: Category): void {
+  openModal(category?: any): void {
+    this.isModalOpen = true;
     if (category) {
-      this.form = {
+      this.isEditMode = true;
+      this.editingCategory = category;
+      this.CategoryForm.patchValue({
         name: category.name,
         code: category.code,
-        parent: category.parent,
         description: category.description,
-        isActive: category.status === 'Active',
-      };
+        parentCategoryId: category.parentCategoryId
+      });
     } else {
-      this.form = { name: '', code: '', parent: '', description: '', isActive: true };
+      this.isEditMode = false;
+      this.editingCategory = null;
+      this.CategoryForm.reset();
     }
-    this.formErrors = {};
-    this.isModalOpen = true;
-    this.isParentDropdownOpen = false;
-    this.parentSearchQuery = '';
-    this.editingCategory = category ?? null;
   }
 
   closeModal(): void {
@@ -280,8 +366,6 @@ export class CategoryMangementComponent implements OnInit {
     this.isParentDropdownOpen = false;
     this.editingCategory = null;
   }
-
-  editingCategory: Category | null = null;
 
   toggleParentDropdown(): void {
     this.isParentDropdownOpen = !this.isParentDropdownOpen;
@@ -299,7 +383,6 @@ export class CategoryMangementComponent implements OnInit {
   }
 
   onNameInput(): void {
-    // Auto-generate code from name if code is empty
     if (!this.form.code || this.form.code === this.autoCode) {
       this.form.code = this.autoCode;
     }
@@ -321,38 +404,4 @@ export class CategoryMangementComponent implements OnInit {
     if (!this.form.code.trim()) this.formErrors.code = 'Category code is required.';
     return Object.keys(this.formErrors).length === 0;
   }
-
-  saveCategory(): void {
-    if (!this.validateForm()) return;
-
-    if (this.editingCategory) {
-      // Update existing
-      const idx = this.allCategories.findIndex(c => c.id === this.editingCategory!.id);
-      if (idx > -1) {
-        this.allCategories[idx] = {
-          ...this.allCategories[idx],
-          name: this.form.name.trim(),
-          code: this.form.code.trim(),
-          parent: this.form.parent,
-          description: this.form.description.trim(),
-          status: this.form.isActive ? 'Active' : 'Draft',
-        };
-      }
-    } else {
-      // Create new
-      const newId = String(Date.now());
-      this.allCategories = [...this.allCategories, {
-        id: newId,
-        code: this.form.code.trim(),
-        name: this.form.name.trim(),
-        description: this.form.description.trim(),
-        parent: this.form.parent || '—',
-        status: this.form.isActive ? 'Active' : 'Draft',
-        selected: false,
-      }];
-    }
-    this.closeModal();
-  }
-
-  ngOnInit(): void { }
 }

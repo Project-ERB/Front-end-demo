@@ -1,52 +1,7 @@
 <div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f8fafc] font-sans text-[#0f172a]">
 
     <!-- Sidebar -->
-    <aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
-        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
-            <div class="flex items-center gap-2">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
-                    <span class="material-symbols-outlined text-xl">analytics</span>
-                </div>
-                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
-            </div>
-        </div>
-
-        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
-            <nav class="flex flex-col gap-1">
-                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
-                <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
-            ? 'bg-[#1e3b8a]/10 text-[#1e3b8a] hover:bg-[#1e3b8a]/20'
-            : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
-                    class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
-                    {{ item.label }}
-                </a>
-            </nav>
-
-            <div class="flex flex-col gap-4">
-                <div class="rounded-xl bg-[#eff6ff] p-4">
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
-                            <span class="material-symbols-outlined text-sm">support_agent</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
-                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
-                        alt="User Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
-                    <div class="flex flex-col">
-                        <span class="text-sm font-semibold text-[#0f172a]">Jane Doe</span>
-                        <span class="text-xs text-[#64748b]">Enterprise Admin</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </aside>
+    <app-sideba-sales></app-sideba-sales>
 
     <!-- Main Content -->
     <main class="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
@@ -65,7 +20,7 @@
                 <div class="relative">
                     <span
                         class="material-symbols-outlined absolute left-2.5 top-2.5 text-[#64748b]">calendar_today</span>
-                    <select [(ngModel)]="selectedPeriod"
+                    <select [(ngModel)]="selectedPeriod" (ngModelChange)="onPeriodChange()"
                         class="h-10 cursor-pointer rounded-lg border border-[#e2e8f0] bg-[#f8fafc] pl-10 pr-8 text-sm font-medium text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
                         <option *ngFor="let period of periods" [value]="period">{{ period }}</option>
                     </select>
@@ -78,13 +33,36 @@
             </div>
         </header>
 
-        <!-- Content Body -->
-        <div class="flex flex-col gap-6 p-6 lg:p-8">
+        <!-- ── Loading State ───────────────────────────────────────────────── -->
+        <div *ngIf="isLoading" class="flex flex-1 items-center justify-center py-32">
+            <div class="flex flex-col items-center gap-4 text-[#64748b]">
+                <span class="material-symbols-outlined animate-spin text-5xl text-[#1e3b8a]">
+                    progress_activity
+                </span>
+                <p class="text-sm font-medium">Loading dashboard…</p>
+            </div>
+        </div>
+
+        <!-- ── Error State ─────────────────────────────────────────────────── -->
+        <div *ngIf="errorMessage && !isLoading" class="flex flex-1 items-center justify-center py-32">
+            <div class="flex flex-col items-center gap-4">
+                <span class="material-symbols-outlined text-5xl text-red-400">error_outline</span>
+                <p class="text-sm font-medium text-red-600">{{ errorMessage }}</p>
+                <button (click)="loadDashboard()"
+                    class="mt-1 flex items-center gap-1.5 rounded-lg border border-[#1e3b8a] px-4 py-2 text-sm font-medium text-[#1e3b8a] transition-colors hover:bg-[#1e3b8a] hover:text-white">
+                    <span class="material-symbols-outlined text-[18px]">refresh</span>
+                    Retry
+                </button>
+            </div>
+        </div>
+
+        <!-- ── Content Body ────────────────────────────────────────────────── -->
+        <div *ngIf="!isLoading && !errorMessage" class="flex flex-col gap-6 p-6 lg:p-8">
 
             <div class="flex flex-col gap-2">
                 <h1 class="text-2xl font-bold text-[#0f172a]">Sales Analysis</h1>
-                <p class="text-sm text-[#64748b]">Overview of revenue, orders, and category performance for the selected
-                    period.</p>
+                <p class="text-sm text-[#64748b]">Overview of revenue, orders, and category performance for the
+                    selected period.</p>
             </div>
 
             <!-- KPI Cards -->
@@ -145,19 +123,24 @@
                     <div class="relative h-[300px] w-full">
                         <!-- Grid Lines -->
                         <div class="absolute inset-0 flex flex-col justify-between text-xs text-[#64748b]">
-                            <div class="flex w-full items-center"><span class="w-8 pr-2 text-right">$100k</span>
+                            <div class="flex w-full items-center">
+                                <span class="w-8 pr-2 text-right">$100k</span>
                                 <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
                             </div>
-                            <div class="flex w-full items-center"><span class="w-8 pr-2 text-right">$75k</span>
+                            <div class="flex w-full items-center">
+                                <span class="w-8 pr-2 text-right">$75k</span>
                                 <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
                             </div>
-                            <div class="flex w-full items-center"><span class="w-8 pr-2 text-right">$50k</span>
+                            <div class="flex w-full items-center">
+                                <span class="w-8 pr-2 text-right">$50k</span>
                                 <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
                             </div>
-                            <div class="flex w-full items-center"><span class="w-8 pr-2 text-right">$25k</span>
+                            <div class="flex w-full items-center">
+                                <span class="w-8 pr-2 text-right">$25k</span>
                                 <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
                             </div>
-                            <div class="flex w-full items-center"><span class="w-8 pr-2 text-right">$0</span>
+                            <div class="flex w-full items-center">
+                                <span class="w-8 pr-2 text-right">$0</span>
                                 <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
                             </div>
                         </div>
@@ -213,7 +196,14 @@
                         <p class="text-sm text-[#64748b]">Sales by Product Category</p>
                     </div>
 
-                    <div class="flex h-full flex-col justify-end gap-3 pb-2 pt-4">
+                    <!-- Empty state for categories -->
+                    <div *ngIf="categories.length === 0"
+                        class="flex flex-1 flex-col items-center justify-center gap-2 py-8 text-[#64748b]">
+                        <span class="material-symbols-outlined text-3xl text-[#cbd5e1]">bar_chart</span>
+                        <p class="text-xs">No category data available</p>
+                    </div>
+
+                    <div *ngIf="categories.length > 0" class="flex h-full flex-col justify-end gap-3 pb-2 pt-4">
                         <div *ngFor="let cat of categories" class="group flex items-center gap-3">
                             <span class="w-20 text-xs font-medium text-[#64748b]">{{ cat.name }}</span>
                             <div class="relative h-2 w-full flex-1 rounded-full bg-slate-100">
@@ -234,8 +224,9 @@
                     <div class="flex items-center gap-2">
                         <h3 class="font-semibold text-[#0f172a]">Top Selling Products</h3>
                         <span *ngIf="activeFilterCount > 0"
-                            class="flex items-center justify-center rounded-full bg-[#1e3b8a] px-2 py-0.5 text-xs font-semibold text-white">{{
-                            activeFilterCount }}</span>
+                            class="flex items-center justify-center rounded-full bg-[#1e3b8a] px-2 py-0.5 text-xs font-semibold text-white">
+                            {{ activeFilterCount }}
+                        </span>
                     </div>
                     <button class="text-sm font-medium text-[#1e3b8a] hover:text-[#1e3b8a]/80">View All</button>
                 </div>
@@ -286,7 +277,6 @@
                         <span class="material-symbols-outlined text-[16px]">close</span>
                         Clear filters
                     </button>
-
                 </div>
 
                 <div class="overflow-x-auto">
@@ -335,8 +325,9 @@
                                             class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
                                         <p class="font-medium text-[#64748b]">No products match your filters</p>
                                         <button (click)="clearFilters()"
-                                            class="mt-1 text-sm font-medium text-[#1e3b8a] hover:underline">Clear all
-                                            filters</button>
+                                            class="mt-1 text-sm font-medium text-[#1e3b8a] hover:underline">
+                                            Clear all filters
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -375,10 +366,11 @@
 
                             <!-- Number button -->
                             <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
-                  ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
-                  : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
-                                class="flex size-8 items-center justify-center rounded-lg border text-xs transition-colors">{{
-                                page }}</button>
+                                    ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
+                                    : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                                class="flex size-8 items-center justify-center rounded-lg border text-xs transition-colors">
+                                {{ page }}
+                            </button>
                         </ng-container>
 
                         <!-- Next -->
@@ -387,11 +379,12 @@
                             aria-label="Next page">
                             <span class="material-symbols-outlined text-sm">chevron_right</span>
                         </button>
-
                     </div>
                 </div>
             </div>
 
         </div>
+        <!-- ── /Content Body ───────────────────────────────────────────────── -->
+
     </main>
 </div>

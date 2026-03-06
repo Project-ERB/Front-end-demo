@@ -1,7 +1,12 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
+import { AuthService } from '../../../../core/services/Auth/auth.service';
+import { Apollo, gql } from 'apollo-angular';
+import { AdminService } from '../../../../core/services/Admin-service/admin.service';
+import { ApolloservicesService } from '../../../../core/services/apollo/apolloservices.service';
 
 export type UserRole = 'Super Admin' | 'Editor' | 'Manager' | 'Viewer';
 export type UserStatus = 'Active' | 'Inactive' | 'Suspended';
@@ -15,10 +20,11 @@ export interface Permission {
   label: string;
   description: string;
   enabled: boolean;
-  locked: boolean;    // locked = forced by role, non-editable
+  locked: boolean;
 }
 
 export interface User {
+  id?: number | string;       // ← API ID
   initials: string;
   avatarUrl?: string;
   avatarBg: string;
@@ -38,17 +44,61 @@ const ROLE_PERMISSIONS: Record<UserRole, boolean[]> = {
   'Viewer': [true, false, false, false],
 };
 
+// ── Avatar helpers (used when API doesn't return avatar data) ────────────────
+const AVATAR_COLOURS = [
+  { bg: 'bg-indigo-100', text: 'text-indigo-700' },
+  { bg: 'bg-teal-100', text: 'text-teal-700' },
+  { bg: 'bg-rose-100', text: 'text-rose-700' },
+  { bg: 'bg-cyan-100', text: 'text-cyan-700' },
+  { bg: 'bg-blue-100', text: 'text-blue-600' },
+  { bg: 'bg-orange-100', text: 'text-orange-600' },
+  { bg: 'bg-pink-100', text: 'text-pink-600' },
+];
+
+function buildInitials(name: string): string {
+  return name.trim().split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+}
+
+function buildAvatarStyle(index: number): { bg: string; text: string } {
+  return AVATAR_COLOURS[index % AVATAR_COLOURS.length];
+}
+
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [CommonModule, FormsModule, SiedeAdminComponent],
+  imports: [CommonModule, FormsModule, SiedeAdminComponent, ReactiveFormsModule,],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss'
 })
-export class UserManagementComponent {
+
+export class UserManagementComponent implements OnInit {
+
+  private readonly _apolloService = inject(ApolloservicesService)
+  private readonly _adminService = inject(AdminService)
+
+  private readonly _formBuilder = inject(FormBuilder);
+
+  roleOptions: { id: string; name: string }[] = [];
+
+  getroles(): void {
+    this._apolloService.getroles().subscribe({
+      next: (res) => {
+        console.log(res.data.roles.nodes); // 👈 مهم للتأكد
+        this.roleOptions = res?.data?.roles?.nodes ?? [];
+      },
+      error: (err) => {
+        console.error('roles error:', err);
+        this.roleOptions = [];
+      }
+    });
+  }
 
   // ── Search ────────────────────────────────────────────────────────────────
   searchQuery = '';
+
+  // ── Loading / Error ───────────────────────────────────────────────────────
+  isLoading = false;
+  apiError = '';
 
   // ── Modal state ───────────────────────────────────────────────────────────
   showModal = false;
@@ -56,10 +106,9 @@ export class UserManagementComponent {
   // ── Form fields ───────────────────────────────────────────────────────────
   newFullName = '';
   newEmail = '';
-  newRole: UserRole = 'Manager';
+  newRole: string = ''; // ← تأكد أن النوع string عشان بتاخد من select
   formError = '';
-
-  roleOptions: UserRole[] = ['Viewer', 'Editor', 'Manager', 'Super Admin'];
+  isSubmitting = false;
 
   departments: Department[] = [
     { name: 'Engineering', selected: false },
@@ -80,35 +129,21 @@ export class UserManagementComponent {
   openActionMenuIndex: number | null = null;
 
   // ── User data ─────────────────────────────────────────────────────────────
-  users: User[] = [
-    {
-      initials: 'AJ', avatarBg: 'bg-blue-100', avatarText: 'text-blue-600',
-      name: 'Alice Johnson', email: 'alice@company.com',
-      role: 'Super Admin', status: 'Active', lastLogin: '2 mins ago'
-    },
-    {
-      initials: 'BS',
-      avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDGuAGuS1goMJgwZkI_X6dKNcjm1z7R9pILN5Pt-n2rCFul6yGckRSeTQ4q9DwEhlCghGl-tjHQS9hAzdg7fubXhB1NBG1DA5IuYJEViXLpqe-bsfSDXHiiEdhyifVmZE50QzGL9TtxnItr-L5BPoPCnpDTV4ILFWbLpVmBH5tKG_27ywJkl4IjPvQ62XLqS5p03VZBn0e9EZ-sWsU9Fslo1etT-mnAp1ShBj2GETd_ksOuyn16YAOn1yR3F8FXRHqIcozh80bp25iY',
-      avatarBg: 'bg-gray-200', avatarText: '',
-      name: 'Bob Smith', email: 'bob@company.com',
-      role: 'Editor', status: 'Active', lastLogin: '1 hour ago'
-    },
-    {
-      initials: 'CB', avatarBg: 'bg-orange-100', avatarText: 'text-orange-600',
-      name: 'Charlie Brown', email: 'charlie@company.com',
-      role: 'Viewer', status: 'Inactive', lastLogin: '2 days ago'
-    },
-    {
-      initials: 'DL', avatarBg: 'bg-teal-100', avatarText: 'text-teal-600',
-      name: 'Diana Lee', email: 'diana@company.com',
-      role: 'Manager', status: 'Active', lastLogin: '30 mins ago'
-    },
-    {
-      initials: 'EW', avatarBg: 'bg-pink-100', avatarText: 'text-pink-600',
-      name: 'Ethan Ward', email: 'ethan@company.com',
-      role: 'Editor', status: 'Suspended', lastLogin: '5 days ago'
-    },
-  ];
+  users: User[] = [];
+
+  // ── Constructor ───────────────────────────────────────────────────────────
+  constructor(private http: HttpClient) { }
+
+  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  ngOnInit(): void {
+    this.getroles();
+  }
+
+  // ── API: Load users ───────────────────────────────────────────────────────
+  loadUsers(): void {
+  }
+
+
 
   // ── Computed ──────────────────────────────────────────────────────────────
   get filteredUsers(): User[] {
@@ -161,83 +196,62 @@ export class UserManagementComponent {
     this.showModal = false;
   }
 
-  // Close modal on backdrop click
   onBackdropClick(event: MouseEvent): void {
     if ((event.target as HTMLElement).classList.contains('modal-backdrop')) {
       this.closeModal();
     }
   }
 
-  // Close modal on Escape key
   @HostListener('document:keydown.escape')
   onEscape(): void {
     if (this.showModal) this.closeModal();
   }
 
-  // ── Role change → update permissions ─────────────────────────────────────
-  onRoleChange(): void {
-    const perms = ROLE_PERMISSIONS[this.newRole];
-    this.permissions = this.permissions.map((p, i) => ({
-      ...p,
-      enabled: perms[i],
-      locked: this.newRole === 'Super Admin' ? true
-        : (i === 0) ? true   // View always locked on
-          : (i === 3) ? true   // Delete locked off for non-SA
-            : false
-    }));
-  }
 
   // ── Role info text ────────────────────────────────────────────────────────
   get roleInfoText(): string {
     switch (this.newRole) {
       case 'Super Admin': return 'Super Admin has full unrestricted access to all system functions.';
-      case 'Manager': return 'Manager role has restricted delete permissions by default. Override in role settings.';
+      case 'Manager': return 'Manager role has restricted delete permissions by default.';
       case 'Editor': return 'Editor can view and update records but cannot create or delete entries.';
       case 'Viewer': return 'Viewer has read-only access. No modifications allowed.';
       default: return '';
     }
   }
 
-  // ── Create user ───────────────────────────────────────────────────────────
+  newUserForm: FormGroup = this._formBuilder.group({
+    username: [null, Validators.required],
+    email: [null, [Validators.required, Validators.email]],
+    roleid: [null, Validators.required] // ✅ الاسم الصحيح
+  });
+
+  // ── API: Create user ──────────────────────────────────────────────────────
   createUser(): void {
     this.formError = '';
-
-    if (!this.newFullName.trim()) { this.formError = 'Full name is required.'; return; }
-    if (!this.newEmail.trim() || !this.newEmail.includes('@')) { this.formError = 'A valid email is required.'; return; }
-
-    const initials = this.newFullName.trim().split(' ')
-      .map(w => w[0]).slice(0, 2).join('').toUpperCase();
-
-    const colours = [
-      { bg: 'bg-indigo-100', text: 'text-indigo-700' },
-      { bg: 'bg-teal-100', text: 'text-teal-700' },
-      { bg: 'bg-rose-100', text: 'text-rose-700' },
-      { bg: 'bg-cyan-100', text: 'text-cyan-700' },
-    ];
-    const c = colours[this.users.length % colours.length];
-
-    this.users.unshift({
-      initials,
-      avatarBg: c.bg,
-      avatarText: c.text,
-      name: this.newFullName.trim(),
-      email: this.newEmail.trim(),
-      role: this.newRole,
-      status: 'Active',
-      lastLogin: 'Just now'
-    });
-
-    this.closeModal();
+    this.isSubmitting = true;
+    if (this.newUserForm.valid) {
+      this._adminService.createAdminNewUser(this.newUserForm.value).subscribe({
+        next: (response) => {
+          console.log('User created successfully:', response);
+          this.isSubmitting = false;
+          this.closeModal();
+          this.loadUsers(); // ← reload الجدول بعد الإضافة
+        },
+        error: (error) => {
+          console.error('Failed to create user:', error);
+          this.formError = error?.error?.message ?? 'Failed to create user. Please try again.';
+          this.isSubmitting = false;
+        }
+      });
+    }
   }
 
   // ── Reset form ────────────────────────────────────────────────────────────
   resetForm(): void {
-    this.newFullName = '';
-    this.newEmail = '';
-    this.newRole = 'Manager';
+    this.newUserForm.reset();
     this.formError = '';
+    this.isSubmitting = false;
     this.departments = this.departments.map(d => ({ ...d, selected: d.name === 'Product' }));
-    this.onRoleChange();
   }
 
   // ── Action menu ───────────────────────────────────────────────────────────
@@ -251,20 +265,18 @@ export class UserManagementComponent {
     this.openActionMenuIndex = null;
   }
 
+  // ── API: Edit user ────────────────────────────────────────────────────────
   editUser(user: User): void {
+    // افتح modal للتعديل أو روح لصفحة تانية — حسب الـ UX المطلوب
     console.log('Edit user:', user.name);
     this.openActionMenuIndex = null;
   }
 
+  // ── API: Suspend / Reactivate user ────────────────────────────────────────
   suspendUser(user: User): void {
-    user.status = user.status === 'Suspended' ? 'Active' : 'Suspended';
-    this.openActionMenuIndex = null;
   }
 
+  // ── API: Delete user ──────────────────────────────────────────────────────
   deleteUser(user: User): void {
-    this.users = this.users.filter(u => u !== user);
-    this.openActionMenuIndex = null;
   }
-
-
 }
