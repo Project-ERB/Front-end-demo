@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoriesService } from '../../../../core/services/categories/categories.service';
 import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
+import { ProductService } from '../../../../core/services/products/product.service';
 import { RouterLink } from '@angular/router';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
+import { forkJoin, of } from 'rxjs';
 
 export interface Category {
   id: string;
@@ -44,6 +46,9 @@ export class CategoryMangementComponent implements OnInit {
   isEditMode: boolean = false;
 
   private readonly _FormBuilder = inject(FormBuilder);
+  private readonly _CategoriesService = inject(CategoriesService);
+  private readonly _categoriesService = inject(ApollocatoriesService);
+  private readonly _ProductService = inject(ProductService);
 
   CategoryForm: FormGroup = this._FormBuilder.group({
     name: [null, Validators.required],
@@ -53,7 +58,168 @@ export class CategoryMangementComponent implements OnInit {
   });
 
   editingCategory: any | null = null;
+  categories: any[] = [];
+  allProducts: any[] = [];
 
+  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadAllProducts();
+  }
+
+  // ── Data Loading ──────────────────────────────────────────────────────────
+  loadCategories() {
+    this._categoriesService.getApollocategories().subscribe({
+      next: (res: any) => {
+        this.categories = (res?.data?.parentCategories?.nodes ?? []).map((c: any) => ({
+          ...c,
+          selected: false
+        }));
+        this.currentPage = 1;
+      },
+      error: (err: any) => console.error('Error loading categories:', err),
+    });
+  }
+
+  loadAllProducts() {
+    this._ProductService.getProducts().subscribe({
+      next: (res: any) => {
+        this.allProducts = res?.data?.products?.nodes ?? [];
+      },
+      error: (err: any) => console.error('Error loading products:', err),
+    });
+  }
+
+  // ── Delete Single Category (cascade) ──────────────────────────────────────
+  deleteCategory(id: string): void {
+    const linkedProducts = this.allProducts.filter((p: any) => p.categoryId === id);
+
+    const confirmMessage = linkedProducts.length > 0
+      ? `This category has ${linkedProducts.length} linked product(s). They will be deleted first. Continue?`
+      : 'Are you sure you want to delete this category?';
+
+    if (!confirm(confirmMessage)) return;
+
+    if (linkedProducts.length === 0) {
+      this.executeCategoryDelete(id);
+      return;
+    }
+
+    forkJoin(linkedProducts.map((p: any) => this._ProductService.deleteProduct(p.id))).subscribe({
+      next: () => {
+        console.log(`Deleted ${linkedProducts.length} linked product(s) ✅`);
+        this.executeCategoryDelete(id);
+      },
+      error: (err) => {
+        console.error('Failed to delete linked products:', err);
+        alert('Failed to delete linked products. Please try again.');
+      }
+    });
+  }
+
+  private executeCategoryDelete(id: string): void {
+    this._CategoriesService.deleteCategory(id).subscribe({
+      next: () => {
+        console.log('Category deleted ✅');
+        this.loadCategories();
+        this.loadAllProducts();
+      },
+      error: (err) => {
+        console.error('Delete category failed:', err);
+        if (err.status === 500) {
+          alert('Cannot delete this category. Please check if it still has linked data.');
+        } else {
+          alert('An unexpected error occurred. Please try again.');
+        }
+      }
+    });
+  }
+
+  // ── Delete Selected Categories (cascade) ──────────────────────────────────
+  deleteSelected(): void {
+    if (this.selectedCount === 0) return;
+
+    const selectedCategories = this.categories.filter((c: any) => c.selected);
+    const totalLinked = selectedCategories.reduce((acc, cat) =>
+      acc + this.allProducts.filter((p: any) => p.categoryId === cat.id).length, 0
+    );
+
+    const confirmMessage = totalLinked > 0
+      ? `Delete ${selectedCategories.length} categories and their ${totalLinked} linked product(s)?`
+      : `Delete ${selectedCategories.length} selected categories?`;
+
+    if (!confirm(confirmMessage)) return;
+
+    const linkedProductIds = this.allProducts
+      .filter((p: any) => selectedCategories.some((c: any) => c.id === p.categoryId))
+      .map((p: any) => p.id);
+
+    const categoryIds = selectedCategories.map((c: any) => c.id);
+
+    const productDeletes = linkedProductIds.length > 0
+      ? linkedProductIds.map((id: string) => this._ProductService.deleteProduct(id))
+      : [of(null)];
+
+    forkJoin(productDeletes).subscribe({
+      next: () => {
+        let completed = 0;
+        let failed = 0;
+        const total = categoryIds.length;
+
+        const checkDone = () => {
+          if (completed + failed === total) {
+            if (failed > 0) console.warn(`${failed} category deletion(s) failed.`);
+            this.loadCategories();
+            this.loadAllProducts();
+          }
+        };
+
+        categoryIds.forEach((id: string) => {
+          this._CategoriesService.deleteCategory(id).subscribe({
+            next: () => { completed++; checkDone(); },
+            error: (err) => { failed++; console.error(`Failed to delete category ${id}:`, err); checkDone(); }
+          });
+        });
+      },
+      error: (err) => {
+        console.error('Failed to delete linked products:', err);
+        alert('Failed to delete linked products. Please try again.');
+      }
+    });
+  }
+
+  // ── Delete ALL (cascade: all products first, then all categories) ──────────
+  // deleteAll(): void {
+  //   if (!confirm(`This will permanently delete ALL products and ALL categories. Are you sure?`)) return;
+
+  //   // ✅ Step 1: delete all products first
+  //   this._ProductService.deleteAllProducts().subscribe({
+  //     next: () => {
+  //       console.log('All products deleted ✅');
+
+  //       // ✅ Step 2: then delete all categories
+  //       this._CategoriesService.deleteAllCategories().subscribe({
+  //         next: () => {
+  //           console.log('All categories deleted ✅');
+  //           // ✅ Clear arrays directly — no reload needed
+  //           this.categories = [];
+  //           this.allProducts = [];
+  //           this.currentPage = 1;
+  //         },
+  //         error: (err) => {
+  //           console.error('Failed to delete all categories:', err);
+  //           alert('Products deleted but failed to delete categories. Please try again.');
+  //         }
+  //       });
+  //     },
+  //     error: (err) => {
+  //       console.error('Failed to delete all products:', err);
+  //       alert('Failed to delete all products. Please try again.');
+  //     }
+  //   });
+  // }
+
+  // ── Form ──────────────────────────────────────────────────────────────────
   submitCategory() {
     if (this.CategoryForm.invalid) return;
 
@@ -63,18 +229,12 @@ export class CategoryMangementComponent implements OnInit {
       this._CategoriesService
         .updataecategore(formValue, this.editingCategory.id)
         .subscribe({
-          next: (res) => {
-            console.log('Updated ✅', res);
-            this.afterSuccess();
-          },
+          next: (res) => { console.log('Updated ✅', res); this.afterSuccess(); },
           error: (err) => console.error(err)
         });
     } else {
       this._CategoriesService.addCategory(formValue).subscribe({
-        next: (res) => {
-          console.log('Created ✅', res);
-          this.afterSuccess();
-        },
+        next: (res) => { console.log('Created ✅', res); this.afterSuccess(); },
         error: (err) => console.error(err)
       });
     }
@@ -84,46 +244,6 @@ export class CategoryMangementComponent implements OnInit {
     this.CategoryForm.reset();
     this.loadCategories();
     this.closeModal();
-  }
-
-  deleteCategory(id: string): void {
-    console.log('Delete clicked, ID:', id); // 👈 add this
-    if (!confirm('Are you sure you want to delete this category?')) return;
-
-    this._CategoriesService.deleteCategory(id).subscribe({
-      next: () => {
-        console.log('Deleted ✅');
-        this.loadCategories();
-      },
-      error: (err) => console.error('Delete failed:', err)
-    });
-  }
-
-  private readonly _CategoriesService = inject(CategoriesService);
-
-  // ✅ Single source of truth — API data only
-  categories: any[] = [];
-
-  private readonly _categoriesService = inject(ApollocatoriesService);
-
-  loadCategories() {
-    this._categoriesService.getApollocategories().subscribe({
-      next: (res: any) => {
-        this.categories = (res?.data?.parentCategories?.nodes ?? []).map((c: any) => ({
-          ...c,
-          selected: false
-        }));
-        this.currentPage = 1;
-        console.log('Raw response:', res.data);
-      },
-      error: (err: any) => {
-        console.error('Error loading categories:', err);
-      },
-    });
-  }
-
-  ngOnInit(): void {
-    this.loadCategories();
   }
 
   viewDetails(id: string): void {
@@ -198,7 +318,6 @@ export class CategoryMangementComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  // ✅ Now operates on API `categories` array
   get filteredCategories(): any[] {
     const q = this.searchQuery.toLowerCase().trim();
     let list = this.categories.filter((c: any) =>
@@ -229,33 +348,6 @@ export class CategoryMangementComponent implements OnInit {
     this.pagedCategories.forEach((c: any) => c.selected = checked);
   }
 
-  deleteSelected(): void {
-    if (this.selectedCount === 0) return;
-    if (!confirm(`Delete ${this.selectedCount} selected categories?`)) return;
-
-    // ✅ Get all selected IDs
-    const selectedIds = this.categories
-      .filter((c: any) => c.selected)
-      .map((c: any) => c.id);
-
-    // ✅ Call delete API for each selected item
-    let completedCount = 0;
-
-    selectedIds.forEach((id: string) => {
-      this._CategoriesService.deleteCategory(id).subscribe({
-        next: () => {
-          completedCount++;
-          console.log(`Deleted ✅ (${completedCount}/${selectedIds.length})`);
-          // ✅ Only reload after ALL deletes are done
-          if (completedCount === selectedIds.length) {
-            this.loadCategories();
-          }
-        },
-        error: (err) => console.error(`Delete failed for ID ${id}:`, err)
-      });
-    });
-  }
-
   // ── Pagination ────────────────────────────────────────────────────────────
   currentPage = 1;
   pageSize = 7;
@@ -265,7 +357,6 @@ export class CategoryMangementComponent implements OnInit {
   get showingFrom(): number { return this.totalItems === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1; }
   get showingTo(): number { return Math.min(this.currentPage * this.pageSize, this.totalItems); }
 
-  // ✅ Now slices from filteredCategories (API data)
   get pagedCategories(): any[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredCategories.slice(start, start + this.pageSize);

@@ -22,13 +22,11 @@ export class CategoriesService {
   // ✅ Get Categories (GraphQL)
   getCategories(): Observable<any[]> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Accept: 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-
     const body = {
       query: `
       query {
@@ -43,67 +41,58 @@ export class CategoriesService {
       }
     `,
     };
-
     return this._httpClient
       .post<any>(`${Environment.baseUrl}/graphql`, body, { headers })
-      .pipe(
-        map(res => res?.data?.categories?.nodes ?? [])
-      );
+      .pipe(map(res => res?.data?.categories?.nodes ?? []));
   }
 
   // ✅ View Category Details (REST)
   viewCateDetails(id: string): Observable<any> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-
-    return this._httpClient.get(
-      `${Environment.baseUrl}/api/categories/${id}`,
-      { headers }
-    );
+    return this._httpClient.get(`${Environment.baseUrl}/api/categories/${id}`, { headers });
   }
 
   // ✅ Add Category (REST)
   addCategory(body: any): Observable<any> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-
-    return this._httpClient.post(
-      `${Environment.baseUrl}/api/categories`,
-      body,
-      { headers }
-    );
+    return this._httpClient.post(`${Environment.baseUrl}/api/categories`, body, { headers });
   }
 
+  // ✅ Update Category (REST)
   updataecategore(data: any, id: string): Observable<any> {
-
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-
-    return this._httpClient.put(`${Environment.baseUrl}/api/categories/${id}`, data)
+    return this._httpClient.put(`${Environment.baseUrl}/api/categories/${id}`, data, { headers });
   }
 
+  // ✅ Delete single category
   deleteCategory(categoryId: string): Observable<any> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-
     return this._httpClient.delete(
       `${Environment.baseUrl}/api/categories/${categoryId}`,
       { headers }
     );
   }
 
+  // ✅ Delete ALL categories (bulk)
+  deleteAllCategories(): Observable<any> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    });
+    return this._httpClient.delete(`${Environment.baseUrl}/api/categories/bulk`, { headers });
+  }
 }

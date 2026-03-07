@@ -8,8 +8,7 @@ import { isPlatformBrowser } from '@angular/common';
   providedIn: 'root',
 })
 export class SalesDashService {
-
-  private readonly _HttpClient = inject(HttpClient)
+  private readonly _HttpClient = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
 
   private getToken(): string | null {
@@ -20,9 +19,7 @@ export class SalesDashService {
   }
 
   getSalesDashboard(startDate: string, endDate: string): Observable<any> {
-
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -73,5 +70,4 @@ export class SalesDashService {
       { headers }
     );
   }
-
 }

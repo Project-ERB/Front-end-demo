@@ -12,6 +12,7 @@ import { CategoriesService } from '../../../../core/services/categories/categori
 import { ToastrService } from 'ngx-toastr';
 import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
+import { Router } from '@angular/router';
 
 export interface Step {
   label: string;
@@ -30,7 +31,7 @@ export class AddProductComponent implements OnInit {
   private readonly _ApollocatoriesService = inject(ApollocatoriesService)
   private readonly _ToastrService = inject(ToastrService);
   private readonly _formBuilder = inject(FormBuilder);
-
+  private readonly _Router = inject(Router)
 
   // FIX: Renamed to categoryOptions to reflect actual usage (CategoryId select)
   categoryOptions: any[] = [];
@@ -161,6 +162,10 @@ export class AddProductComponent implements OnInit {
         }];
         this.selectedFile = null;
         this.currentStep = 0;
+
+        setTimeout(() => {
+          this._Router.navigate(['/product-management']);
+        }, 1500);
       },
       // Extract the actual backend message from the interceptor response shape:
       // { isSuccess: false, data: null, errors: string[], message: string, timestamp: string }

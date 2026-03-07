@@ -4,8 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../../core/services/products/product.service';
 import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
 import { forkJoin } from 'rxjs';
-import { Router, RouterLink, RouterLinkActive } from "@angular/router";
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
+import { filter } from 'rxjs/operators';
 
 interface Category {
   id: string;
@@ -25,7 +26,7 @@ interface Product {
   styleUrl: './product-mangement.component.scss',
 })
 export class ProductMangementComponent implements OnInit {
-  private readonly _Router = inject(Router)
+  private readonly _Router = inject(Router);
   private readonly _ProductService = inject(ProductService);
   private readonly _ApollocatoriesService = inject(ApollocatoriesService);
 
@@ -33,8 +34,6 @@ export class ProductMangementComponent implements OnInit {
   products: any[] = [];
   productpage: any[] = [];
   categories: any[] = [];
-
-
 
   // ── Filters ───────────────────────────────────────────────────────
   searchQuery = '';
@@ -48,7 +47,6 @@ export class ProductMangementComponent implements OnInit {
   get activeFilterCount(): number {
     return [this.searchQuery, this.selectedCategory, this.selectedType].filter(Boolean).length;
   }
-
 
   get filteredProducts(): any[] {
     const q = this.searchQuery.toLowerCase().trim();
@@ -144,6 +142,16 @@ export class ProductMangementComponent implements OnInit {
 
   // ── Data Loading ──────────────────────────────────────────────────
   ngOnInit(): void {
+    // ✅ Reload products every time this page is navigated to
+    this._Router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.loadProducts());
+
+    // ✅ Also load on first init
+    this.loadProducts();
+  }
+
+  loadProducts(): void {
     forkJoin({
       productsRes: this._ProductService.getProducts(),
       categoriesRes: this._ApollocatoriesService.getApollocategories(),
@@ -155,7 +163,6 @@ export class ProductMangementComponent implements OnInit {
         const categoryLookup: Record<string, string> = {};
         categories.forEach((c: any) => (categoryLookup[c.id] = c.name));
 
-        // Store for edit modal dropdown
         this.categories = [...categories];
 
         const missingIds = [...new Set(

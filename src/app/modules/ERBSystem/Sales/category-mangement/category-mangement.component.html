@@ -73,6 +73,7 @@
                     class="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm"
                     style="min-height: 0;">
 
+                    <!-- ✅ Search bar + Delete All trash icon opposite each other -->
                     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[#e2e8f0] px-5 py-3">
                         <div class="relative w-64">
                             <span
@@ -81,23 +82,19 @@
                                 placeholder="Search categories…"
                                 class="h-9 w-full rounded-lg border border-[#e2e8f0] bg-white pl-10 pr-3 text-sm text-[#0f172a] placeholder-[#94a3b8] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
                         </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm text-[#64748b]">
-                                Selected: <span class="font-semibold text-[#0f172a]">{{ selectedCount }}</span>
-                            </span>
-                            <button (click)="deleteSelected()" [disabled]="selectedCount === 0"
-                                class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
-                                title="Delete selected">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                        </div>
+                        <!-- ✅ Trash icon calls deleteAll() -->
+                        <button
+                            class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+                            title="Delete All">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
                     </div>
 
                     <div class="flex-1 overflow-auto" style="scrollbar-width: thin;">
                         <table class="w-full min-w-[720px] table-auto border-collapse text-left text-sm">
                             <thead class="sticky top-0 z-10 bg-[#f8fafc]">
                                 <tr>
-                                    <th class="border-b border-[#e2e8f0] px-5 py-3">
+                                    <th class="border-b border-[#e2e8f0] px-5 py-3 w-10">
                                         <input type="checkbox" [checked]="allOnPageSelected"
                                             (change)="toggleSelectAll($event)"
                                             class="h-4 w-4 rounded border-gray-300 text-[#1e3b8a] focus:ring-[#1e3b8a]" />
@@ -129,23 +126,22 @@
 
                             <tbody class="divide-y divide-[#e2e8f0] bg-white">
 
-                                <!-- ✅ FIXED: pagedCategories instead of categories -->
-                                @for (cate of categories; track cate.id) {
+                                @for (cate of pagedCategories; track cate.id) {
                                 <tr class="group transition-colors hover:bg-[#eff6ff]"
                                     [ngClass]="{'bg-[#eff6ff]/40': cate.selected}">
                                     <td class="px-5 py-4">
                                         <input type="checkbox" [(ngModel)]="cate.selected"
                                             class="h-4 w-4 rounded border-gray-300 text-[#1e3b8a] focus:ring-[#1e3b8a]" />
                                     </td>
-                                    <td class="whitespace-nowrap px-5 py-4 font-mono text-xs text-[#64748b]">{{
-                                        cate.code }}</td>
+                                    <td class="whitespace-nowrap px-5 py-4 font-mono text-xs text-[#64748b]">
+                                        {{ cate.code }}
+                                    </td>
                                     <td class="whitespace-nowrap px-5 py-4 font-semibold text-[#0f172a]">
                                         <a [routerLink]="['/category-details', cate.id]"
                                             class="cursor-pointer hover:text-blue-600 hover:underline">
                                             {{ cate.name }}
                                         </a>
                                     </td>
-                                    <td>{{ cate.parentName }}</td>
                                     <td class="px-5 py-4 text-[#64748b]">{{ cate.description }}</td>
                                     <td class="px-5 py-4 text-right">
                                         <div class="flex items-center justify-end gap-1">

@@ -40,7 +40,7 @@ export interface Product {
 })
 export class SalesAnalysisComponent implements OnInit {
 
-  private readonly _SalesDashService = inject(SalesDashService)
+  private readonly _SalesDashService = inject(SalesDashService);
 
   // ─── State ────────────────────────────────────────────────────────────────
   isLoading = false;
@@ -107,13 +107,24 @@ export class SalesAnalysisComponent implements OnInit {
   // ─── Date Range Helper ────────────────────────────────────────────────────
   private getDateRange(): { startDate: string; endDate: string } {
     const end = new Date();
+    end.setHours(23, 59, 59, 999); // ← include the full current day
+
     const start = new Date();
+    start.setHours(0, 0, 0, 0); // ← start from beginning of the day
 
     switch (this.selectedPeriod) {
-      case 'Last 7 Days': start.setDate(end.getDate() - 7); break;
-      case 'Last Quarter': start.setMonth(end.getMonth() - 3); break;
-      case 'Year to Date': start.setMonth(0, 1); break;
-      default: start.setDate(end.getDate() - 30); break; // Last 30 Days
+      case 'Last 7 Days':
+        start.setDate(end.getDate() - 7);
+        break;
+      case 'Last Quarter':
+        start.setMonth(end.getMonth() - 3);
+        break;
+      case 'Year to Date':
+        start.setMonth(0, 1);
+        break;
+      default: // Last 30 Days
+        start.setDate(end.getDate() - 30);
+        break;
     }
 
     return {
