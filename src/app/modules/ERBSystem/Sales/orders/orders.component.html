@@ -133,9 +133,9 @@
                                     <th
                                         class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                                         Order ID</th>
-                                    <th
+                                    <!-- <th
                                         class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
-                                        Customer</th>
+                                        Customer</th> -->
                                     <th
                                         class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
                                         Date</th>
@@ -168,12 +168,12 @@
                                     </td>
 
                                     <!-- Customer -->
-                                    <td class="p-4">
+                                    <!-- <td class="p-4">
                                         <div class="flex items-center gap-3">
-                                            <!-- Avatar with image -->
+                                            
                                             <img *ngIf="order.customer.avatarUrl" [src]="order.customer.avatarUrl"
                                                 [alt]="order.customer.name" class="h-8 w-8 rounded-full object-cover" />
-                                            <!-- Avatar with initials -->
+                                            
                                             <div *ngIf="!order.customer.avatarUrl"
                                                 class="h-8 w-8 rounded-full flex items-center justify-center text-xs font-bold"
                                                 [class]="order.customer.avatarColor">
@@ -185,7 +185,7 @@
                                                 <span class="text-xs text-slate-500">{{ order.customer.email }}</span>
                                             </div>
                                         </div>
-                                    </td>
+                                    </td> -->
 
                                     <!-- Date -->
                                     <td class="p-4 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">{{
