@@ -243,8 +243,7 @@ export const routes: Routes = [
       {
         path: 'log-detail/:id',
         loadComponent: () => import('./modules/ERBSystem/AdminDashboard/log-detail/log-detail.component').then((L) => L.LogDetailComponent),
-        title: 'log-detail',
-        data: { renderMode: 'server' }
+        title: 'log-detail'
       },
       {
         path: 'system-logs',
@@ -274,8 +273,7 @@ export const routes: Routes = [
       {
         path: 'category-details/:id',
         loadComponent: () => import('./modules/ERBSystem/Sales/category-detail/category-detail.component').then((C) => C.CategoryDetailComponent),
-        title: 'category-details',
-        data: { renderMode: 'server' }
+        title: 'category-details'
       },
       {
         path: 'product-management',
@@ -290,8 +288,7 @@ export const routes: Routes = [
       {
         path: 'view-product/:id',
         loadComponent: () => import('./modules/ERBSystem/Sales/veiw-product/veiw-product.component').then((V) => V.VeiwProductComponent),
-        title: 'view-product',
-        data: { renderMode: 'server' }
+        title: 'view-product'
       },
       {
         path: 'discount-management',
@@ -311,8 +308,7 @@ export const routes: Routes = [
       {
         path: 'discount-details/:id',
         loadComponent: () => import('./modules/ERBSystem/HR/Discount/discount-details/discount-details.component').then((D) => D.DiscountDetailsComponent),
-        title: 'discount-details',
-        data: { renderMode: 'server' }
+        title: 'discount-details'
       },
       {
         path: 'orders',
