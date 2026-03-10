@@ -1,16 +1,12 @@
 <div class="flex h-screen w-full overflow-hidden bg-[#f6f6f8] font-sans text-[#0f172a]">
 
-    <!-- ═══════════════════════════════════════════
-       SIDEBAR — same as all previous components
-  ════════════════════════════════════════════ -->
+    <!-- SIDEBAR -->
     <app-sideba-sales></app-sideba-sales>
 
-    <!-- ═══════════════════════════════════════════
-       MAIN
-  ════════════════════════════════════════════ -->
+    <!-- MAIN -->
     <div class="flex flex-1 flex-col overflow-hidden">
 
-        <!-- ── Top header ──────────────────────────────────────────────── -->
+        <!-- Top header -->
         <header class="flex h-16 shrink-0 items-center justify-between border-b border-[#e2e8f0] bg-white px-8">
             <nav class="flex items-center gap-2 text-sm text-[#64748b]">
                 <a href="#" class="transition-colors hover:text-[#1e3b8a]">Home</a>
@@ -31,7 +27,7 @@
             </div>
         </header>
 
-        <!-- ── Scrollable content ───────────────────────────────────────── -->
+        <!-- Scrollable content -->
         <div class="flex-1 overflow-y-auto p-8" style="scrollbar-width:thin;scrollbar-color:#cbd5e1 #f1f5f9;">
 
             <!-- Page title + actions -->
@@ -55,7 +51,16 @@
                 </div>
             </div>
 
-            <!-- ── Stats cards ──────────────────────────────────────────── -->
+            <!-- Error Message -->
+            <div *ngIf="errorMessage"
+                class="mb-6 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <span class="material-symbols-outlined text-[20px]">error</span>
+                {{ errorMessage }}
+                <button (click)="loadDiscounts()"
+                    class="ml-auto font-semibold underline hover:no-underline">Retry</button>
+            </div>
+
+            <!-- Stats cards -->
             <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div *ngFor="let stat of stats" class="rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
                     <div class="flex items-center gap-4">
@@ -78,13 +83,11 @@
                 </div>
             </div>
 
-            <!-- ── Table card ───────────────────────────────────────────── -->
+            <!-- Table card -->
             <div class="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
 
                 <!-- Filters bar -->
                 <div class="flex flex-wrap items-center justify-between gap-4 border-b border-[#e2e8f0] px-6 py-4">
-
-                    <!-- Search -->
                     <div class="relative w-full max-w-md">
                         <span
                             class="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-[#94a3b8]">search</span>
@@ -92,10 +95,7 @@
                             placeholder="Search by code, name, or type…"
                             class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] py-2.5 pl-10 pr-4 text-sm text-[#0f172a] placeholder-[#94a3b8] transition-all focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
                     </div>
-
-                    <!-- Status + Target selects -->
                     <div class="flex flex-wrap items-center gap-3">
-
                         <div class="relative">
                             <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()"
                                 class="cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white py-2.5 pl-4 pr-9 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f8fafc] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
@@ -108,7 +108,6 @@
                             <span
                                 class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">expand_more</span>
                         </div>
-
                         <div class="relative">
                             <select [(ngModel)]="selectedTarget" (ngModelChange)="onFilterChange()"
                                 class="cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white py-2.5 pl-4 pr-9 text-sm font-medium text-[#374151] transition-colors hover:bg-[#f8fafc] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
@@ -121,14 +120,11 @@
                             <span
                                 class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">expand_more</span>
                         </div>
-
-                        <!-- Clear filters -->
                         <button *ngIf="activeFilterCount > 0" (click)="clearFilters()"
                             class="flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100">
                             <span class="material-symbols-outlined text-[16px]">close</span>
                             Clear
                         </button>
-
                         <button
                             class="rounded-lg border border-[#e2e8f0] bg-white p-2.5 text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#374151]">
                             <span class="material-symbols-outlined">filter_list</span>
@@ -149,104 +145,147 @@
                                 <th class="px-6 py-4">Discount Code</th>
                                 <th class="px-6 py-4">Campaign Name</th>
                                 <th class="px-6 py-4">Type</th>
+                                <th class="px-6 py-4">Value</th>
                                 <th class="px-6 py-4">Validity</th>
                                 <th class="px-6 py-4 text-center">Usage</th>
                                 <th class="px-6 py-4">Status</th>
                                 <th class="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
-
                         <tbody class="divide-y divide-[#f1f5f9] bg-white">
 
-                            <tr *ngFor="let d of pagedDiscounts" class="group transition-colors hover:bg-[#f8fafc]"
-                                [ngClass]="d.selected ? 'bg-[#eff6ff]' : ''">
-                                <!-- Checkbox -->
-                                <td class="px-6 py-4">
-                                    <input type="checkbox" [(ngModel)]="d.selected"
-                                        class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
-                                </td>
+                            <!-- Loading skeleton -->
+                            <ng-container *ngIf="isLoading">
+                                <tr *ngFor="let i of [1,2,3,4,5]" class="animate-pulse">
+                                    <td class="px-6 py-4">
+                                        <div class="h-4 w-4 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="h-4 w-28 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="h-4 w-40 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="h-4 w-20 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="h-4 w-16 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="h-4 w-32 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <div class="mx-auto h-4 w-10 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="h-5 w-20 rounded-full bg-[#e2e8f0]"></div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="ml-auto h-4 w-16 rounded bg-[#e2e8f0]"></div>
+                                    </td>
+                                </tr>
+                            </ng-container>
 
-                                <!-- Code + copy -->
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-2">
-                                        <span class="font-mono font-semibold"
-                                            [ngClass]="d.expired ? 'text-[#94a3b8] line-through' : 'text-[#0f172a]'">{{
-                                            d.code }}</span>
-                                        <button *ngIf="!d.expired" (click)="copyCode(d.code)"
-                                            class="text-[#94a3b8] opacity-0 transition-all hover:text-[#64748b] group-hover:opacity-100"
-                                            [title]="copiedCode === d.code ? 'Copied!' : 'Copy code'">
-                                            <span class="material-symbols-outlined text-[16px]">
-                                                {{ copiedCode === d.code ? 'check' : 'content_copy' }}
+                            <!-- Actual rows -->
+                            <ng-container *ngIf="!isLoading">
+                                <tr *ngFor="let d of pagedDiscounts" class="group transition-colors hover:bg-[#f8fafc]"
+                                    [ngClass]="d.selected ? 'bg-[#eff6ff]' : ''">
+
+                                    <td class="px-6 py-4">
+                                        <input type="checkbox" [(ngModel)]="d.selected"
+                                            class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-mono font-semibold"
+                                                [ngClass]="d.expired ? 'text-[#94a3b8] line-through' : 'text-[#0f172a]'">
+                                                {{ d.code }}
                                             </span>
-                                        </button>
-                                    </div>
-                                </td>
+                                            <button *ngIf="!d.expired" (click)="copyCode(d.code)"
+                                                class="text-[#94a3b8] opacity-0 transition-all hover:text-[#64748b] group-hover:opacity-100"
+                                                [title]="copiedCode === d.code ? 'Copied!' : 'Copy code'">
+                                                <span class="material-symbols-outlined text-[16px]">
+                                                    {{ copiedCode === d.code ? 'check' : 'content_copy' }}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    </td>
 
-                                <!-- Campaign -->
-                                <td class="px-6 py-4 font-medium"
-                                    [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#0f172a]'">
-                                    {{ d.campaign }}
-                                </td>
+                                    <td class="px-6 py-4 font-medium"
+                                        [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#0f172a]'">
+                                        {{ d.campaign }}
+                                    </td>
 
-                                <!-- Type badge -->
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center gap-1.5 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2.5 py-0.5 text-xs font-medium"
-                                        [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#374151]'">
-                                        <span class="material-symbols-outlined text-[14px]">{{ d.typeIcon }}</span>
-                                        {{ d.typeLabel }}
-                                    </span>
-                                </td>
-
-                                <!-- Validity -->
-                                <td class="px-6 py-4" [ngClass]="d.expired ? 'text-[#94a3b8]' : ''">{{ d.validity }}
-                                </td>
-
-                                <!-- Usage -->
-                                <td class="px-6 py-4 text-center" [ngClass]="d.expired ? 'text-[#94a3b8]' : ''">
-                                    {{ d.usage | number }}
-                                </td>
-
-                                <!-- Status badge -->
-                                <td class="px-6 py-4">
-                                    <span
-                                        class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset"
-                                        [ngClass]="statusClass(d.status)">
-                                        <span class="h-1.5 w-1.5 rounded-full"
-                                            [ngClass]="statusDotClass(d.status)"></span>
-                                        {{ d.status }}
-                                    </span>
-                                </td>
-
-                                <!-- Actions -->
-                                <td class="px-6 py-4 text-right">
-                                    <button (click)="moreActions(d)"
-                                        class="text-[#94a3b8] transition-colors hover:text-[#1e3b8a]">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <!-- Empty state -->
-                            <tr *ngIf="pagedDiscounts.length === 0">
-                                <td colspan="8" class="px-6 py-16 text-center">
-                                    <div class="flex flex-col items-center gap-3">
+                                    <td class="px-6 py-4">
                                         <span
-                                            class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
-                                        <p class="font-medium text-[#64748b]">No discounts match your filters.</p>
-                                        <button (click)="clearFilters()"
-                                            class="text-sm font-medium text-[#1e3b8a] hover:underline">
-                                            Clear all filters
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+                                            class="inline-flex items-center gap-1.5 rounded-md border border-[#e2e8f0] bg-[#f8fafc] px-2.5 py-0.5 text-xs font-medium"
+                                            [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#374151]'">
+                                            <span class="material-symbols-outlined text-[14px]">{{ d.typeIcon }}</span>
+                                            {{ d.typeLabel }}
+                                        </span>
+                                    </td>
+
+                                    <td class="px-6 py-4 font-medium"
+                                        [ngClass]="d.expired ? 'text-[#94a3b8]' : 'text-[#0f172a]'">
+                                        {{ d.value }}
+                                    </td>
+
+                                    <td class="px-6 py-4" [ngClass]="d.expired ? 'text-[#94a3b8]' : ''">
+                                        {{ d.validity }}
+                                    </td>
+
+                                    <td class="px-6 py-4 text-center" [ngClass]="d.expired ? 'text-[#94a3b8]' : ''">
+                                        {{ d.usage | number }}
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset"
+                                            [ngClass]="statusClass(d.status)">
+                                            <span class="h-1.5 w-1.5 rounded-full"
+                                                [ngClass]="statusDotClass(d.status)"></span>
+                                            {{ d.status }}
+                                        </span>
+                                    </td>
+
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-1">
+                                            <button (click)="editDiscount(d)"
+                                                class="flex items-center justify-center rounded-lg p-1.5 text-[#64748b] transition-colors hover:bg-blue-50 hover:text-[#1e3b8a]"
+                                                title="Edit">
+                                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                                            </button>
+                                            <button (click)="deleteDiscount(d)"
+                                                class="flex items-center justify-center rounded-lg p-1.5 text-[#64748b] transition-colors hover:bg-red-50 hover:text-red-600"
+                                                title="Delete">
+                                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty state -->
+                                <tr *ngIf="pagedDiscounts.length === 0">
+                                    <td colspan="9" class="px-6 py-16 text-center">
+                                        <div class="flex flex-col items-center gap-3">
+                                            <span
+                                                class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
+                                            <p class="font-medium text-[#64748b]">No discounts match your filters.</p>
+                                            <button (click)="clearFilters()"
+                                                class="text-sm font-medium text-[#1e3b8a] hover:underline">Clear all
+                                                filters</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
 
                         </tbody>
                     </table>
                 </div>
 
-                <!-- ── Pagination ────────────────────────────────────────── -->
+                <!-- Pagination -->
                 <div class="flex items-center justify-between border-t border-[#e2e8f0] bg-white px-6 py-4">
                     <p class="hidden text-sm text-[#64748b] sm:block">
                         Showing
@@ -255,26 +294,21 @@
                         <span class="font-semibold text-[#0f172a]">{{ totalItems }}</span>
                         results
                     </p>
-
                     <nav class="inline-flex -space-x-px rounded-lg shadow-sm">
-                        <!-- Prev -->
                         <button (click)="prevPage()" [disabled]="currentPage === 1"
                             class="flex h-9 w-9 items-center justify-center rounded-l-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#1e3b8a] disabled:cursor-not-allowed disabled:opacity-40">
                             <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                         </button>
-
-                        <!-- Page numbers -->
                         <ng-container *ngFor="let page of pageNumbers">
                             <span *ngIf="page === '...'"
                                 class="flex h-9 w-9 items-center justify-center border border-[#e2e8f0] text-xs text-[#64748b]">…</span>
                             <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
-                  ? 'z-10 bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
-                  : 'bg-white text-[#374151] border-[#e2e8f0] hover:bg-[#f8fafc]'"
-                                class="flex h-9 w-9 items-center justify-center border text-sm transition-colors">{{
-                                page }}</button>
+                                    ? 'z-10 bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
+                                    : 'bg-white text-[#374151] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                                class="flex h-9 w-9 items-center justify-center border text-sm transition-colors">
+                                {{ page }}
+                            </button>
                         </ng-container>
-
-                        <!-- Next -->
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages"
                             class="flex h-9 w-9 items-center justify-center rounded-r-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#1e3b8a] disabled:cursor-not-allowed disabled:opacity-40">
                             <span class="material-symbols-outlined text-[20px]">chevron_right</span>
@@ -284,11 +318,227 @@
 
             </div><!-- /table card -->
 
-            <!-- Footer -->
             <footer class="mt-8 pb-8 text-center text-sm text-[#94a3b8]">
                 © 2024 Acme ERP Solutions. All rights reserved.
             </footer>
 
         </div><!-- /scrollable content -->
     </div><!-- /main -->
+
+
+    <!-- ══════════════════════════════════════════
+         EDIT MODAL
+    ══════════════════════════════════════════ -->
+    <div *ngIf="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style="background:rgba(15,23,42,0.45);backdrop-filter:blur(3px);">
+        <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white shadow-2xl"
+            style="scrollbar-width:thin;scrollbar-color:#cbd5e1 #f1f5f9;">
+
+            <div
+                class="sticky top-0 z-10 flex items-center justify-between border-b border-[#e2e8f0] bg-white px-6 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50">
+                        <span class="material-symbols-outlined text-[20px] text-[#1e3b8a]">edit</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-[#0f172a]">Edit Discount</h2>
+                        <p class="text-xs text-[#64748b]">ID: {{ editingId }}</p>
+                    </div>
+                </div>
+                <button (click)="closeEditModal()"
+                    class="rounded-lg p-1.5 text-[#64748b] transition-colors hover:bg-[#f1f5f9] hover:text-[#374151]">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div *ngIf="saveError"
+                class="mx-6 mt-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                {{ saveError }}
+            </div>
+
+            <div class="px-6 py-5 space-y-5">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Discount Code <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" [(ngModel)]="editForm.code"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm font-mono text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Campaign Name <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" [(ngModel)]="editForm.name"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                </div>
+                <div>
+                    <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Description</label>
+                    <textarea [(ngModel)]="editForm.description" rows="2"
+                        class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a] resize-none"
+                        placeholder="Optional description…"></textarea>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Discount Type</label>
+                        <div class="relative">
+                            <select [(ngModel)]="editForm.discountType"
+                                class="w-full cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 pr-9 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
+                                <option [ngValue]="0">Percentage</option>
+                                <option [ngValue]="1">Fixed Amount</option>
+                                <option [ngValue]="2">Buy X Get Y</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">expand_more</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Discount Value Amount</label>
+                        <input type="number" [(ngModel)]="editForm.discountValueAmount" min="0"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                </div>
+                <div *ngIf="editForm.discountType === 2"
+                    class="rounded-xl border border-blue-100 bg-blue-50/50 p-4 space-y-4">
+                    <p class="text-xs font-semibold text-[#1e3b8a]">Buy X Get Y Settings</p>
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                        <div>
+                            <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Buy Quantity</label>
+                            <input type="number" [(ngModel)]="editForm.buyQuantity" min="0"
+                                class="w-full rounded-lg border border-[#e2e8f0] bg-white px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Get Quantity</label>
+                            <input type="number" [(ngModel)]="editForm.getQuantity" min="0"
+                                class="w-full rounded-lg border border-[#e2e8f0] bg-white px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Get Discount %</label>
+                            <input type="number" [(ngModel)]="editForm.getDiscountPercentage" min="0" max="100"
+                                class="w-full rounded-lg border border-[#e2e8f0] bg-white px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Start Date</label>
+                        <input type="date" [(ngModel)]="editForm.startDate"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">End Date</label>
+                        <input type="date" [(ngModel)]="editForm.endDate"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Currency</label>
+                        <input type="text" [(ngModel)]="editForm.currency"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Maximum Discount Amount</label>
+                        <input type="number" [(ngModel)]="editForm.maximumDiscountAmount" min="0"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Minimum Purchase Amount</label>
+                        <input type="number" [(ngModel)]="editForm.minimumPurchaseAmount" min="0"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Minimum Quantity</label>
+                        <input type="number" [(ngModel)]="editForm.minimumQuantity" min="0"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Usage Limit Per
+                            Customer</label>
+                        <input type="number" [(ngModel)]="editForm.usageLimitPerCustomer" min="0"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                    <div>
+                        <label class="mb-1.5 block text-xs font-semibold text-[#374151]">Total Usage Limit</label>
+                        <input type="number" [(ngModel)]="editForm.totalUsageLimit" min="0"
+                            class="w-full rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-3 py-2.5 text-sm text-[#0f172a] focus:border-[#1e3b8a] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 rounded-lg border border-[#e2e8f0] bg-[#f8fafc] px-4 py-3">
+                    <input type="checkbox" [(ngModel)]="editForm.canCombineWithOtherDiscounts" id="canCombine"
+                        class="h-4 w-4 cursor-pointer rounded border-[#cbd5e1] text-[#1e3b8a] focus:ring-[#1e3b8a]/50" />
+                    <label for="canCombine" class="cursor-pointer text-sm font-medium text-[#374151]">
+                        Can combine with other discounts
+                    </label>
+                </div>
+            </div>
+
+            <div
+                class="sticky bottom-0 flex items-center justify-end gap-3 border-t border-[#e2e8f0] bg-white px-6 py-4">
+                <button (click)="closeEditModal()"
+                    class="rounded-lg border border-[#e2e8f0] bg-white px-5 py-2.5 text-sm font-semibold text-[#374151] transition-colors hover:bg-[#f8fafc]">
+                    Cancel
+                </button>
+                <button (click)="saveEdit()" [disabled]="isSaving"
+                    class="inline-flex items-center gap-2 rounded-lg bg-[#1e3b8a] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60">
+                    <span *ngIf="isSaving"
+                        class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+                    <span *ngIf="!isSaving" class="material-symbols-outlined text-[18px]">save</span>
+                    {{ isSaving ? 'Saving…' : 'Save Changes' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         DELETE CONFIRMATION MODAL
+    ══════════════════════════════════════════ -->
+    <div *ngIf="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style="background:rgba(15,23,42,0.45);backdrop-filter:blur(3px);">
+        <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl">
+
+            <!-- Header -->
+            <div class="flex items-start gap-4 p-6">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-50">
+                    <span class="material-symbols-outlined text-[24px] text-red-600">delete_forever</span>
+                </div>
+                <div>
+                    <h2 class="text-base font-bold text-[#0f172a]">Delete Discount</h2>
+                    <p class="mt-1 text-sm text-[#64748b]">
+                        Are you sure you want to delete
+                        <span class="font-semibold text-[#0f172a]">{{ deletingDiscount?.code }}</span>?
+                        This action cannot be undone.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="deleteError"
+                class="mx-6 mb-4 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                {{ deleteError }}
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-end gap-3 border-t border-[#e2e8f0] px-6 py-4">
+                <button (click)="closeDeleteModal()"
+                    class="rounded-lg border border-[#e2e8f0] bg-white px-5 py-2.5 text-sm font-semibold text-[#374151] transition-colors hover:bg-[#f8fafc]">
+                    Cancel
+                </button>
+                <button (click)="confirmDelete()" [disabled]="isDeleting"
+                    class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60">
+                    <span *ngIf="isDeleting"
+                        class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
+                    <span *ngIf="!isDeleting" class="material-symbols-outlined text-[18px]">delete</span>
+                    {{ isDeleting ? 'Deleting…' : 'Delete' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
 </div>

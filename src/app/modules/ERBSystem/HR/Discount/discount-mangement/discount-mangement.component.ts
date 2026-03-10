@@ -1,3 +1,4 @@
+import { DiscountService } from './../../../../../core/services/Discount/discount.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -5,7 +6,6 @@ import { SidebaSalesComponent } from "../../../../../shared/UI/sidebar-sales/sid
 import { Router, RouterLink } from '@angular/router';
 
 export type DiscountStatus = 'Active' | 'Scheduled' | 'Expired';
-export type DiscountType = 'percent' | 'fixed';
 
 export interface Discount {
   id: string;
@@ -13,11 +13,35 @@ export interface Discount {
   campaign: string;
   typeIcon: string;
   typeLabel: string;
+  value: string;
   validity: string;
   usage: number;
   status: DiscountStatus;
   selected: boolean;
   expired: boolean;
+  rawDiscountType: number;
+  rawStartDate: string | null;
+  rawEndDate: string | null;
+}
+
+export interface EditDiscountForm {
+  code: string;
+  name: string;
+  description: string;
+  discountType: number;
+  discountValueAmount: number;
+  startDate: string;
+  endDate: string;
+  buyQuantity: number;
+  getQuantity: number;
+  getDiscountPercentage: number;
+  currency: string;
+  minimumPurchaseAmount: number;
+  minimumQuantity: number;
+  maximumDiscountAmount: number;
+  canCombineWithOtherDiscounts: boolean;
+  usageLimitPerCustomer: number;
+  totalUsageLimit: number;
 }
 
 @Component({
@@ -28,9 +52,11 @@ export interface Discount {
 })
 export class DiscountMangementComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private discountService: DiscountService) { }
 
-  // ── Sidebar ────────────────────────────────────────────────────────
+  isLoading = false;
+  errorMessage = '';
+
   navItems = [
     { icon: 'grid_view', label: 'Dashboard', active: false },
     { icon: 'trending_up', label: 'Sales Analysis', active: false },
@@ -39,34 +65,214 @@ export class DiscountMangementComponent implements OnInit {
     { icon: 'percent', label: 'Discounts', active: true },
   ];
 
-  // ── Stats ──────────────────────────────────────────────────────────
   stats = [
-    { label: 'Active Discounts', value: '24', icon: 'check_circle', iconBg: 'bg-green-50', iconColor: 'text-green-600', trend: '+2%', trendUp: true, trendNote: 'vs last month' },
-    { label: 'Scheduled', value: '8', icon: 'schedule', iconBg: 'bg-blue-50', iconColor: 'text-blue-600', trend: '0', trendUp: false, trendNote: 'New scheduled' },
-    { label: 'Total Redeemed', value: '12,450', icon: 'redeem', iconBg: 'bg-orange-50', iconColor: 'text-orange-600', trend: '+12%', trendUp: true, trendNote: 'vs last month' },
-    { label: 'Total Savings', value: '$45.2k', icon: 'attach_money', iconBg: 'bg-purple-50', iconColor: 'text-purple-600', trend: '+8%', trendUp: true, trendNote: 'vs last month' },
+    { label: 'Active Discounts', value: '0', icon: 'check_circle', iconBg: 'bg-green-50', iconColor: 'text-green-600', trend: '+2%', trendUp: true, trendNote: 'vs last month' },
+    { label: 'Scheduled', value: '0', icon: 'schedule', iconBg: 'bg-blue-50', iconColor: 'text-blue-600', trend: '0', trendUp: false, trendNote: 'New scheduled' },
+    { label: 'Total Redeemed', value: '0', icon: 'redeem', iconBg: 'bg-orange-50', iconColor: 'text-orange-600', trend: '+12%', trendUp: true, trendNote: 'vs last month' },
+    { label: 'Total Savings', value: '$0', icon: 'attach_money', iconBg: 'bg-purple-50', iconColor: 'text-purple-600', trend: '+8%', trendUp: true, trendNote: 'vs last month' },
   ];
 
-  // ── Discount data ──────────────────────────────────────────────────
-  allDiscounts: Discount[] = [
-    { id: '1', code: 'SUMMER2024', campaign: 'Summer Sale Main', typeIcon: 'percent', typeLabel: '20% Off', validity: 'Jun 1 – Aug 31, 2024', usage: 4231, status: 'Active', selected: false, expired: false },
-    { id: '2', code: 'WELCOME10', campaign: 'New User Acquisition', typeIcon: 'attach_money', typeLabel: '$10.00 Fixed', validity: 'Ongoing', usage: 856, status: 'Active', selected: false, expired: false },
-    { id: '3', code: 'FLASH50', campaign: '24hr Flash Sale', typeIcon: 'percent', typeLabel: '50% Off', validity: 'Sep 15, 2024 (24h)', usage: 0, status: 'Scheduled', selected: false, expired: false },
-    { id: '4', code: 'WINTER23', campaign: 'End of Season Clearance', typeIcon: 'percent', typeLabel: '40% Off', validity: 'Jan 1 – Feb 28, 2024', usage: 12105, status: 'Expired', selected: false, expired: true },
-    { id: '5', code: 'VIPONLY', campaign: 'Loyalty Rewards Tier 1', typeIcon: 'attach_money', typeLabel: '$25.00 Fixed', validity: 'Ongoing', usage: 342, status: 'Active', selected: false, expired: false },
-    { id: '6', code: 'BFRIDAY', campaign: 'Black Friday Mega Sale', typeIcon: 'percent', typeLabel: '30% Off', validity: 'Nov 24 – Nov 27, 2024', usage: 890, status: 'Scheduled', selected: false, expired: false },
-    { id: '7', code: 'REFER20', campaign: 'Referral Program', typeIcon: 'attach_money', typeLabel: '$20.00 Fixed', validity: 'Ongoing', usage: 231, status: 'Active', selected: false, expired: false },
-    { id: '8', code: 'SPRING15', campaign: 'Spring Collection Launch', typeIcon: 'percent', typeLabel: '15% Off', validity: 'Mar 1 – May 31, 2024', usage: 3420, status: 'Expired', selected: false, expired: true },
-    { id: '9', code: 'LOYALTY5', campaign: 'Loyalty Rewards Tier 2', typeIcon: 'percent', typeLabel: '5% Off', validity: 'Ongoing', usage: 1120, status: 'Active', selected: false, expired: false },
-    { id: '10', code: 'CLEAROUT', campaign: 'Warehouse Clearance', typeIcon: 'attach_money', typeLabel: '$15.00 Fixed', validity: 'Oct 1 – Oct 14, 2024', usage: 0, status: 'Scheduled', selected: false, expired: false },
-  ];
-
+  allDiscounts: Discount[] = [];
   copiedCode: string | null = null;
 
   copyCode(code: string): void {
     navigator.clipboard?.writeText(code).catch(() => { });
     this.copiedCode = code;
     setTimeout(() => this.copiedCode = null, 1500);
+  }
+
+  mapTypeIcon(discountType: string): string {
+    const map: Record<string, string> = {
+      PERCENTAGE: 'percent',
+      FIXED_AMOUNT: 'attach_money',
+      BUY_X_GET_Y: 'redeem',
+    };
+    return map[discountType] ?? 'local_offer';
+  }
+
+  mapTypeLabel(discountType: string): string {
+    const map: Record<string, string> = {
+      PERCENTAGE: 'Percentage',
+      FIXED_AMOUNT: 'Fixed Amount',
+      BUY_X_GET_Y: 'Buy X Get Y',
+    };
+    return map[discountType] ?? discountType;
+  }
+
+  mapTypeToNumber(discountType: string): number {
+    const map: Record<string, number> = {
+      PERCENTAGE: 0,
+      FIXED_AMOUNT: 1,
+      BUY_X_GET_Y: 2,
+    };
+    return map[discountType] ?? 0;
+  }
+
+  loadDiscounts(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    this.discountService.GetDiscounts().subscribe({
+      next: (res) => {
+        const nodes = res?.data?.discounts?.nodes ?? [];
+        this.allDiscounts = nodes.map((d: any) => ({
+          id: d.id,
+          code: d.code,
+          campaign: d.name,
+          typeIcon: this.mapTypeIcon(d.discountType),
+          typeLabel: this.mapTypeLabel(d.discountType),
+          value: d.value ?? '—',
+          validity: d.startDate && d.endDate
+            ? `${new Date(d.startDate).toLocaleDateString()} – ${new Date(d.endDate).toLocaleDateString()}`
+            : 'Ongoing',
+          usage: d.currentUsageCount ?? 0,
+          status: this.mapStatus(d.status),
+          selected: false,
+          expired: d.status === 'EXPIRED',
+          rawDiscountType: this.mapTypeToNumber(d.discountType),
+          rawStartDate: d.startDate,
+          rawEndDate: d.endDate,
+        }));
+        this.updateStats();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Failed to load discounts', err);
+        this.errorMessage = 'Failed to load discounts. Please try again.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  mapStatus(status: string): DiscountStatus {
+    const map: Record<string, DiscountStatus> = {
+      ACTIVE: 'Active',
+      SCHEDULED: 'Scheduled',
+      EXPIRED: 'Expired',
+    };
+    return map[status] ?? 'Scheduled';
+  }
+
+  updateStats(): void {
+    const active = this.allDiscounts.filter(d => d.status === 'Active').length;
+    const scheduled = this.allDiscounts.filter(d => d.status === 'Scheduled').length;
+    const totalRedeemed = this.allDiscounts.reduce((sum, d) => sum + d.usage, 0);
+    this.stats[0].value = active.toString();
+    this.stats[1].value = scheduled.toString();
+    this.stats[2].value = totalRedeemed.toLocaleString();
+  }
+
+  // ── Edit Modal ─────────────────────────────────────────────────────
+  showEditModal = false;
+  editingId = '';
+  isSaving = false;
+  saveError = '';
+  editForm: EditDiscountForm = this.emptyForm();
+
+  emptyForm(): EditDiscountForm {
+    return {
+      code: '', name: '', description: '',
+      discountType: 0, discountValueAmount: 0,
+      startDate: '', endDate: '',
+      buyQuantity: 0, getQuantity: 0, getDiscountPercentage: 0,
+      currency: 'USD',
+      minimumPurchaseAmount: 0, minimumQuantity: 0,
+      maximumDiscountAmount: 0,
+      canCombineWithOtherDiscounts: false,
+      usageLimitPerCustomer: 0, totalUsageLimit: 0,
+    };
+  }
+
+  toInputDate(dateStr: string | null): string {
+    if (!dateStr) return '';
+    return dateStr.substring(0, 10);
+  }
+
+  openEditModal(d: Discount): void {
+    this.editingId = d.id;
+    this.saveError = '';
+    this.editForm = {
+      code: d.code,
+      name: d.campaign,
+      description: '',
+      discountType: d.rawDiscountType,
+      discountValueAmount: 0,
+      startDate: this.toInputDate(d.rawStartDate),
+      endDate: this.toInputDate(d.rawEndDate),
+      buyQuantity: 0, getQuantity: 0, getDiscountPercentage: 0,
+      currency: 'USD',
+      minimumPurchaseAmount: 0, minimumQuantity: 0,
+      maximumDiscountAmount: 0,
+      canCombineWithOtherDiscounts: false,
+      usageLimitPerCustomer: 0, totalUsageLimit: 0,
+    };
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.editingId = '';
+    this.saveError = '';
+  }
+
+  saveEdit(): void {
+    this.isSaving = true;
+    this.saveError = '';
+    const payload = {
+      ...this.editForm,
+      startDate: this.editForm.startDate ? new Date(this.editForm.startDate).toISOString() : new Date().toISOString(),
+      endDate: this.editForm.endDate ? new Date(this.editForm.endDate).toISOString() : new Date().toISOString(),
+      targets: [],
+    };
+    this.discountService.UpdateDiscount(this.editingId, payload).subscribe({
+      next: () => {
+        this.isSaving = false;
+        this.closeEditModal();
+        this.loadDiscounts();
+      },
+      error: (err) => {
+        console.error('Update failed', err);
+        this.saveError = 'Failed to update discount. Please try again.';
+        this.isSaving = false;
+      },
+    });
+  }
+
+  // ── Delete Modal ───────────────────────────────────────────────────
+  showDeleteModal = false;
+  deletingDiscount: Discount | null = null;
+  isDeleting = false;
+  deleteError = '';
+
+  openDeleteModal(d: Discount): void {
+    this.deletingDiscount = d;
+    this.deleteError = '';
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.deletingDiscount = null;
+    this.deleteError = '';
+  }
+
+  confirmDelete(): void {
+    if (!this.deletingDiscount) return;
+    this.isDeleting = true;
+    this.deleteError = '';
+
+    this.discountService.DeleteDiscount(this.deletingDiscount.id).subscribe({
+      next: () => {
+        this.isDeleting = false;
+        this.closeDeleteModal();
+        this.loadDiscounts();
+      },
+      error: (err) => {
+        console.error('Delete failed', err);
+        this.deleteError = 'Failed to delete discount. Please try again.';
+        this.isDeleting = false;
+      },
+    });
   }
 
   // ── Filters ────────────────────────────────────────────────────────
@@ -96,7 +302,6 @@ export class DiscountMangementComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  // ── Selection ──────────────────────────────────────────────────────
   get allPageSelected(): boolean {
     return this.pagedDiscounts.length > 0 && this.pagedDiscounts.every(d => d.selected);
   }
@@ -109,7 +314,6 @@ export class DiscountMangementComponent implements OnInit {
     return this.allDiscounts.filter(d => d.selected).length;
   }
 
-  // ── Pagination ──────────────────────────────────────────────────────
   currentPage = 1;
   pageSize = 5;
 
@@ -139,7 +343,6 @@ export class DiscountMangementComponent implements OnInit {
   prevPage(): void { if (this.currentPage > 1) this.currentPage--; }
   nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
 
-  // ── Status helpers ─────────────────────────────────────────────────
   statusClass(status: DiscountStatus): string {
     return {
       Active: 'bg-green-50 text-green-700 ring-green-600/20',
@@ -152,14 +355,10 @@ export class DiscountMangementComponent implements OnInit {
     return { Active: 'bg-green-600', Scheduled: 'bg-blue-600', Expired: 'bg-slate-500' }[status];
   }
 
-  // ── Actions ────────────────────────────────────────────────────────
-  createDiscount(): void {
-    this.router.navigate(['/create-discount']);
-  }
-
+  createDiscount(): void { this.router.navigate(['/create-discount']); }
   exportData(): void { alert('Exporting data…'); }
-  moreActions(d: Discount): void { alert(`Actions for: ${d.code}`); }
+  editDiscount(d: Discount): void { this.openEditModal(d); }
+  deleteDiscount(d: Discount): void { this.openDeleteModal(d); }
 
-  ngOnInit(): void { }
-
+  ngOnInit(): void { this.loadDiscounts(); }
 }

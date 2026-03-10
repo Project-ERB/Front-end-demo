@@ -7,6 +7,7 @@ import { ProductService } from '../../../../core/services/products/product.servi
 import { RouterLink } from '@angular/router';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 export interface Category {
   id: string;
@@ -135,7 +136,7 @@ export class CategoryMangementComponent implements OnInit {
     });
   }
 
-  // ── Delete Selected Categories (cascade) ──────────────────────────────────
+  // ── Delete Selected Categories (cascade) — ✅ now uses bulk API ────────────
   deleteSelected(): void {
     if (this.selectedCount === 0) return;
 
@@ -160,64 +161,44 @@ export class CategoryMangementComponent implements OnInit {
       ? linkedProductIds.map((id: string) => this._ProductService.deleteProduct(id))
       : [of(null)];
 
-    forkJoin(productDeletes).subscribe({
+    // ✅ Fixed: use bulk API instead of looping individual deletes
+    forkJoin(productDeletes).pipe(
+      switchMap(() => this._CategoriesService.deleteAllCategories(categoryIds))
+    ).subscribe({
       next: () => {
-        let completed = 0;
-        let failed = 0;
-        const total = categoryIds.length;
-
-        const checkDone = () => {
-          if (completed + failed === total) {
-            if (failed > 0) console.warn(`${failed} category deletion(s) failed.`);
-            this.loadCategories();
-            this.loadAllProducts();
-          }
-        };
-
-        categoryIds.forEach((id: string) => {
-          this._CategoriesService.deleteCategory(id).subscribe({
-            next: () => { completed++; checkDone(); },
-            error: (err) => { failed++; console.error(`Failed to delete category ${id}:`, err); checkDone(); }
-          });
-        });
+        console.log('Selected categories deleted ✅');
+        this.loadCategories();
+        this.loadAllProducts();
       },
       error: (err) => {
-        console.error('Failed to delete linked products:', err);
-        alert('Failed to delete linked products. Please try again.');
+        console.error('Failed to delete selected categories:', err);
+        alert('Failed to delete selected categories. Please try again.');
       }
     });
   }
 
-  // ── Delete ALL (cascade: all products first, then all categories) ──────────
-  // deleteAll(): void {
-  //   if (!confirm(`This will permanently delete ALL products and ALL categories. Are you sure?`)) return;
+  // ── Delete ALL — ✅ uses switchMap (no nested subscribes) + passes ids ─────
+  deleteAll(): void {
+    if (this.categories.length === 0) return;
+    if (!confirm(`This will permanently delete ALL products and ALL categories. Are you sure?`)) return;
 
-  //   // ✅ Step 1: delete all products first
-  //   this._ProductService.deleteAllProducts().subscribe({
-  //     next: () => {
-  //       console.log('All products deleted ✅');
+    const ids = this.categories.map((c: any) => c.id);
 
-  //       // ✅ Step 2: then delete all categories
-  //       this._CategoriesService.deleteAllCategories().subscribe({
-  //         next: () => {
-  //           console.log('All categories deleted ✅');
-  //           // ✅ Clear arrays directly — no reload needed
-  //           this.categories = [];
-  //           this.allProducts = [];
-  //           this.currentPage = 1;
-  //         },
-  //         error: (err) => {
-  //           console.error('Failed to delete all categories:', err);
-  //           alert('Products deleted but failed to delete categories. Please try again.');
-  //         }
-  //       });
-  //     },
-  //     error: (err) => {
-  //       console.error('Failed to delete all products:', err);
-  //       alert('Failed to delete all products. Please try again.');
-  //     }
-  //   });
-  // }
+    this._ProductService.deleteAllProducts().pipe(
+      switchMap(() => this._CategoriesService.deleteAllCategories(ids))
+    ).subscribe({
+      next: () => {
+        console.log('All products and categories deleted ✅');
+        this.categories = [];
+        this.allProducts = [];
+        this.currentPage = 1;
+      },
+      error: (err) => {
+        console.error('Delete all failed:', err);
+        alert('An error occurred during deletion. Please try again.');
+      }
+    });
+  }
 
   // ── Form ──────────────────────────────────────────────────────────────────
   submitCategory() {

@@ -15,8 +15,8 @@ export interface CreateDiscountPayload {
   description: string;
   discountType: number; // 0 = percentage, 1 = fixed, 2 = bxgy
   discountValueAmount: number;
-  startDate: string; // ISO string
-  endDate: string;   // ISO string
+  startDate: string;
+  endDate: string;
   targets: DiscountTarget[];
   buyQuantity: number;
   getQuantity: number;
@@ -29,6 +29,8 @@ export interface CreateDiscountPayload {
   usageLimitPerCustomer: number;
   totalUsageLimit: number;
 }
+
+export type UpdateDiscountPayload = CreateDiscountPayload;
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +58,47 @@ export class DiscountService {
     return this._HttpClient.post(
       `${Environment.baseUrl}/api/Discount/DraftDiscount`,
       data,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  UpdateDiscount(discountId: string, data: UpdateDiscountPayload): Observable<any> {
+    return this._HttpClient.put(
+      `${Environment.baseUrl}/api/discounts/${discountId}`,
+      data,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  // DELETE /api/discounts/{discountId}
+  DeleteDiscount(discountId: string): Observable<any> {
+    return this._HttpClient.delete(
+      `${Environment.baseUrl}/api/discounts/${discountId}`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  GetDiscounts(): Observable<any> {
+    const query = `
+      query {
+        discounts {
+          nodes {
+            id
+            code
+            name
+            discountType
+            value
+            status
+            startDate
+            endDate
+            currentUsageCount
+          }
+        }
+      }
+    `;
+    return this._HttpClient.post(
+      `${Environment.baseUrl}/graphql`,
+      { query },
       { headers: this.getHeaders() }
     );
   }
