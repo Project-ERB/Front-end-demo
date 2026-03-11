@@ -228,7 +228,7 @@ export class CategoryMangementComponent implements OnInit {
   }
 
   viewDetails(id: string): void {
-    this._CategoriesService.viewCateDetails(id).subscribe({
+    this._CategoriesService.getCategoryById(id).subscribe({
       next: (res: any) => console.log(res),
       error: (err: any) => console.error(err)
     });

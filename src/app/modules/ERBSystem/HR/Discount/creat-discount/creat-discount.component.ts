@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebaSalesComponent } from "../../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { map } from 'rxjs';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 export type DiscountType = 'percentage' | 'fixed' | 'bxgy';
 export type TargetingOption = 'store' | 'category' | 'product' | 'customer';
@@ -34,10 +35,10 @@ export class CreatDiscountComponent implements OnInit {
   private readonly _DiscountService = inject(DiscountService);
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _ProductService = inject(ProductService);
-  private readonly _Router = inject(Router)
+  private readonly _Router = inject(Router);
+  private readonly _Toastr = inject(ToastrService); // ✅
+
   isLoading = false;
-  errorMessage = '';
-  successMessage = '';
   isEditMode = false;
 
   // ─── Stepper ────────────────────────────────────────────────────────────────
@@ -49,7 +50,7 @@ export class CreatDiscountComponent implements OnInit {
   ];
   currentStep = 1;
 
-  // ─── Step 1: Identity & Type ─────────────────────────────────────────────────
+  // ─── Step 1 ──────────────────────────────────────────────────────────────────
   discountCode = '';
   discountName = '';
   discountDescription = '';
@@ -62,7 +63,6 @@ export class CreatDiscountComponent implements OnInit {
   selectedType: DiscountType = 'percentage';
   discountValue: number | null = null;
 
-  // BxGy
   buyQuantity = 0;
   getQuantity = 0;
   getDiscountPercentage = 0;
@@ -81,11 +81,10 @@ export class CreatDiscountComponent implements OnInit {
     ).join('');
   }
 
-  // ─── Step 2: Schedule & Targeting ────────────────────────────────────────────
+  // ─── Step 2 ──────────────────────────────────────────────────────────────────
   startDate = '';
   endDate = '';
   currency = 'USD';
-
   targeting: TargetingOption = 'store';
   targetId = '00000000-0000-0000-0000-000000000000';
   minPurchase: number | null = null;
@@ -97,7 +96,6 @@ export class CreatDiscountComponent implements OnInit {
     { value: 'customer', label: 'Customer', description: 'Limit discount to a specific customer.', apiValue: 3 },
   ];
 
-  // ─── Dynamic targetId list ───────────────────────────────────────────────────
   targetIdOptions: TargetIdOption[] = [];
   isLoadingTargetIds = false;
   targetIdError = '';
@@ -150,14 +148,14 @@ export class CreatDiscountComponent implements OnInit {
     }
   }
 
-  // ─── Step 3: Limits & Rules ──────────────────────────────────────────────────
+  // ─── Step 3 ──────────────────────────────────────────────────────────────────
   minimumQuantity: number | null = null;
   maximumDiscountAmount: number | null = null;
   usageLimit: number | null = null;
   usageLimitPerCustomer: number | null = null;
   allowCombine = false;
 
-  // ─── Step 4: Publish options ─────────────────────────────────────────────────
+  // ─── Step 4 ──────────────────────────────────────────────────────────────────
   publishNotify = true;
   publishAnalytics = false;
 
@@ -189,19 +187,19 @@ export class CreatDiscountComponent implements OnInit {
     if (this.discountCode) count++;
     if (this.discountName) count++;
     if (this.discountDescription) count++;
-    count++; // discountType always selected
+    count++;
     if (this.discountValue !== null || this.selectedType === 'bxgy') count++;
     if (this.startDate) count++;
     if (this.endDate) count++;
-    count++; // currency always selected
-    count++; // targeting always selected
+    count++;
+    count++;
     if (this.targeting === 'store' || this.targetId !== '00000000-0000-0000-0000-000000000000') count++;
     if (this.minPurchase !== null) count++;
     if (this.minimumQuantity !== null) count++;
     if (this.maximumDiscountAmount !== null) count++;
     if (this.usageLimit !== null) count++;
     if (this.usageLimitPerCustomer !== null) count++;
-    count++; // canCombine always has a value
+    count++;
     return Math.min(count, 16);
   }
   get payloadPreview(): string { return JSON.stringify(this.buildPayload(), null, 2); }
@@ -210,7 +208,7 @@ export class CreatDiscountComponent implements OnInit {
   nextStep(): void { if (this.currentStep < 4) this.currentStep++; }
   prevStep(): void { if (this.currentStep > 1) this.currentStep--; }
   goToStep(n: number): void { if (n <= this.currentStep) this.currentStep = n; }
-  saveDraft(): void { alert('Draft saved!'); }
+  saveDraft(): void { this._Toastr.info('Draft saved!', 'Draft'); }
   cancel(): void { if (confirm('Discard changes?')) this.resetForm(); }
 
   // ─── Build payload ────────────────────────────────────────────────────────────
@@ -279,17 +277,31 @@ export class CreatDiscountComponent implements OnInit {
   submitForm(): void {
     const validationError = this.validateForm();
     if (validationError) {
-      this.errorMessage = validationError;
+      // ✅ toastr بدل الـ errorMessage
+      this._Toastr.warning(validationError, 'Validation Error', {
+        timeOut: 4000,
+        positionClass: 'toast-top-right',
+      });
       return;
     }
 
-    this.errorMessage = this.successMessage = '';
     this.isLoading = true;
 
     this._DiscountService.AddDiscount(this.buildPayload()).subscribe({
       next: () => {
         this.isLoading = false;
-        this.successMessage = `Discount "${this.discountName}" published successfully!`;
+
+        // ✅ success toastr
+        this._Toastr.success(
+          `Discount "${this.discountName}" published successfully!`,
+          'Published 🎉',
+          {
+            timeOut: 3000,
+            positionClass: 'toast-top-right',
+            progressBar: true,
+          }
+        );
+
         this.resetForm();
 
         setTimeout(() => {
@@ -298,10 +310,18 @@ export class CreatDiscountComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage =
+
+        const message =
           err?.error?.errors?.[0] ??
           err?.error?.message ??
           'Something went wrong. Please try again.';
+
+        // ✅ error toastr
+        this._Toastr.error(message, 'Error', {
+          timeOut: 5000,
+          positionClass: 'toast-top-right',
+          progressBar: true,
+        });
       },
     });
   }
@@ -344,12 +364,21 @@ export class CreatDiscountComponent implements OnInit {
     { date: 'Yesterday, 4:00 PM', title: 'Targeting Updated', detail: "Changed from 'VIP' to 'Entire Store'.", current: false },
     { date: 'June 1, 2024', title: 'Discount Created', detail: 'Initial setup completed.', current: false },
   ];
+
   get editUsagePercent(): number {
     if (!this.edit.usageLimit) return 0;
     return Math.min(100, (this.edit.currentUsage / this.edit.usageLimit) * 100);
   }
+
   toggleDisable(): void { this.edit.status = this.edit.status === 'Active' ? 'Disabled' : 'Active'; }
-  saveChanges(): void { alert('Saved changes for "' + this.edit.name + '"'); }
+
+  saveChanges(): void {
+    this._Toastr.success(`Changes saved for "${this.edit.name}"`, 'Saved ✅', {
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      progressBar: true,
+    });
+  }
 
   ngOnInit(): void { }
 }

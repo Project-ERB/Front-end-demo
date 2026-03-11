@@ -118,9 +118,9 @@
                             <select formControlName="ProductType" class="h-11 rounded-lg border px-4 text-sm w-full"
                                 [ngClass]="addproductform.get('ProductType')?.invalid && addproductform.get('ProductType')?.touched ? 'border-red-500' : ''">
                                 <option value="" disabled>Select type</option>
-                                <option value="1">Type 1</option>
-                                <option value="2">Type 2</option>
-                                <option value="3">Type 3</option>
+                                <option value="1">Good</option>
+                                <option value="2">Service</option>
+                                <option value="3">Bundle</option>
                             </select>
                             <span
                                 *ngIf="addproductform.get('ProductType')?.invalid && addproductform.get('ProductType')?.touched"

@@ -1,58 +1,9 @@
 <div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f8fafc] font-sans text-[#0f172a]">
 
-    <!-- ═══════════════════════════════════════════
-       SIDEBAR — same as previous components
-  ════════════════════════════════════════════ -->
-    <aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
-        <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
-            <div class="flex items-center gap-2">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
-                    <span class="material-symbols-outlined text-xl">analytics</span>
-                </div>
-                <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
-            </div>
-        </div>
+    <!-- SIDEBAR -->
+    <app-sideba-sales></app-sideba-sales>
 
-        <div class="flex flex-1 flex-col justify-between overflow-y-auto p-4">
-            <nav class="flex flex-col gap-1">
-                <p class="px-3 pb-2 pt-4 text-xs font-semibold uppercase text-[#64748b]">Main Menu</p>
-                <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
-            ? 'bg-[#1e3b8a]/10 text-[#1e3b8a] hover:bg-[#1e3b8a]/20'
-            : 'text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]'"
-                    class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">{{ item.icon }}</span>
-                    {{ item.label }}
-                </a>
-            </nav>
-
-            <div class="flex flex-col gap-4">
-                <div class="rounded-xl bg-[#eff6ff] p-4">
-                    <div class="flex items-start gap-3">
-                        <div class="rounded-full bg-white p-2 text-[#1e3b8a] shadow-sm">
-                            <span class="material-symbols-outlined text-sm">support_agent</span>
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-[#0f172a]">Need help?</p>
-                            <p class="mt-1 text-xs text-[#64748b]">Check our docs or contact support.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-3 border-t border-[#e2e8f0] pt-4">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBs1bOwXkeFcGS_eQbTuoh7GMIb0TVrN4fZE_8V-IqPoMmBYzKUzGTEOVa_UcBHWL2NBXvvq4lKIiaNy8Cu2Hf8omuB1nYKF34ep5V1-A9_dZ54finM4-rwdNMT4jA13fj_i22EhsMyU5_Yv170VgToxZB49ElmS6VpU2YZ9FSSM3LY-2ulXImzyHEXBgjiTagihmG9Yci1d3br18iridTEwc14-BFaVLuvL3MDob1FhsPQ_cBgG2FXY0tssinnIAnzLsJPJsAc4cvZ"
-                        alt="User Avatar" class="size-9 rounded-full object-cover ring-2 ring-white" />
-                    <div class="flex flex-col">
-                        <span class="text-sm font-semibold text-[#0f172a]">Jane Doe</span>
-                        <span class="text-xs text-[#64748b]">Enterprise Admin</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </aside>
-
-    <!-- ═══════════════════════════════════════════
-       MAIN
-  ════════════════════════════════════════════ -->
+    <!-- MAIN -->
     <main class="flex flex-1 flex-col overflow-y-auto">
 
         <!-- ── Sticky Header ──────────────────────────────────────────── -->
@@ -70,89 +21,71 @@
 
                 <!-- Title row -->
                 <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                    <!-- Icon + name + badges -->
                     <div class="flex items-start gap-4">
+
+                        <!-- Icon -->
                         <div
                             class="hidden items-center justify-center rounded-xl bg-[#1e3b8a]/10 p-3 text-[#1e3b8a] sm:flex">
                             <span class="material-symbols-outlined text-3xl">{{ category.icon }}</span>
                         </div>
+
                         <div>
-                            <h1 class="text-2xl font-bold tracking-tight text-[#0f172a] sm:text-3xl">
-                                {{ category.name }}
-                            </h1>
-                            <div class="mt-1.5 flex flex-wrap items-center gap-2">
-                                <!-- Code badge -->
-                                <span
-                                    class="rounded border border-[#e2e8f0] bg-[#f8fafc] px-2 py-0.5 font-mono text-xs font-medium text-[#64748b]">
-                                    Code: {{ category.code }}
-                                </span>
-                                <!-- Status badge -->
-                                <span
-                                    class="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium"
-                                    [ngClass]="getCategoryStatusClass(category.status)">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                                    {{ category.status }}
-                                </span>
+                            <!-- Loading skeleton -->
+                            <div *ngIf="isLoadingCategory" class="space-y-2">
+                                <div class="h-8 w-48 animate-pulse rounded-lg bg-[#e2e8f0]"></div>
+                                <div class="h-4 w-64 animate-pulse rounded bg-[#e2e8f0]"></div>
                             </div>
+
+                            <!-- Actual content -->
+                            <ng-container *ngIf="!isLoadingCategory">
+                                <!-- Name -->
+                                <h1 class="text-2xl font-bold tracking-tight text-[#0f172a] sm:text-3xl">
+                                    {{ categoreis?.name || '—' }}
+                                </h1>
+
+                                <!-- Code + Status -->
+                                <div class="mt-1.5 flex flex-wrap items-center gap-2">
+                                    <span class="rounded border border-[#e2e8f0] bg-[#f8fafc] px-2 py-0.5
+                               font-mono text-xs font-medium text-[#64748b]">
+                                        Code: {{ categoreis?.code || '—' }}
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium"
+                                        [ngClass]="getCategoryStatusClass(category.status)">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                        {{ category.status }}
+                                    </span>
+                                </div>
+
+                                <!-- Description -->
+                                <p *ngIf="categoreis?.description"
+                                    class="mt-2 max-w-xl text-sm text-[#64748b] leading-relaxed">
+                                    {{ categoreis.description }}
+                                </p>
+                            </ng-container>
                         </div>
                     </div>
 
                     <!-- Action buttons -->
                     <div class="flex items-center gap-2 self-end sm:self-center">
-                        <button (click)="editCategory()"
-                            class="flex items-center gap-2 rounded-lg border border-[#e2e8f0] bg-white px-4 py-2.5 text-sm font-semibold text-[#374151] transition-colors hover:bg-[#f8fafc]">
+                        <button (click)="editCategory()" class="flex items-center gap-2 rounded-lg border border-[#e2e8f0] bg-white px-4 py-2.5
+                     text-sm font-semibold text-[#374151] transition-colors hover:bg-[#f8fafc]">
                             <span class="material-symbols-outlined text-[20px]">edit</span>
                             Edit Category
                         </button>
-                        <button (click)="deleteCategory()"
-                            class="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100">
+                        <button (click)="deleteCategory()" class="flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2.5
+                     text-sm font-semibold text-red-600 transition-colors hover:bg-red-100">
                             <span class="material-symbols-outlined text-[20px]">delete</span>
                             Delete
                         </button>
                     </div>
                 </div>
+
             </div>
         </header>
 
         <!-- ── Page body ──────────────────────────────────────────────── -->
         <div class="mx-auto w-full max-w-7xl space-y-8 p-6 lg:p-10">
-
-            <!-- ── Description card ──────────────────────────────────── -->
-            <section class="rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
-                @if (categoreis) {
-                <h2 class="mb-3 text-xs font-bold uppercase tracking-wider text-[#64748b]">{{ categoreis.name }}</h2>
-
-                <p class="max-w-4xl leading-relaxed text-[#374151]"><strong>Code:</strong> {{ categoreis.code }}</p>
-
-                <p class="max-w-4xl leading-relaxed text-[#374151]"><strong>Description:</strong> {{
-                    categoreis.description }}</p>
-
-                }
-
-
-                <!-- Meta row -->
-                <div class="mt-6 flex flex-wrap gap-8 border-t border-[#f1f5f9] pt-6">
-                    <!-- Created By -->
-                    <div>
-                        <span class="mb-1 block text-xs font-medium text-[#64748b]">Created By</span>
-                        <div class="flex items-center gap-2">
-                            <img [src]="category.createdBy.avatarUrl" alt="Creator"
-                                class="h-6 w-6 rounded-full object-cover" />
-                            <span class="text-sm font-medium text-[#0f172a]">{{ category.createdBy.name }}</span>
-                        </div>
-                    </div>
-                    <!-- Last Updated -->
-                    <div>
-                        <span class="mb-1 block text-xs font-medium text-[#64748b]">Last Updated</span>
-                        <span class="text-sm font-medium text-[#0f172a]">{{ category.lastUpdated }}</span>
-                    </div>
-                    <!-- Total SKUs -->
-                    <div>
-                        <span class="mb-1 block text-xs font-medium text-[#64748b]">Total SKU Count</span>
-                        <span class="text-sm font-medium text-[#0f172a]">{{ category.totalSkus }}</span>
-                    </div>
-                </div>
-            </section>
 
             <!-- ── Sub-categories ─────────────────────────────────────── -->
             <section>
@@ -164,131 +97,190 @@
                     <button class="text-sm font-semibold text-[#1e3b8a] hover:underline">View All</button>
                 </div>
 
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <!-- Sub-category cards -->
-                    <a *ngFor="let sub of subCategories" href="#"
-                        class="group relative rounded-xl border border-[#e2e8f0] bg-white p-5 transition-all duration-200 hover:border-[#1e3b8a]/30 hover:shadow-md">
+                <!-- Loading -->
+                <div *ngIf="isLoadingChildren" class="flex items-center justify-center py-12">
+                    <span class="material-symbols-outlined animate-spin text-3xl text-[#1e3b8a]">
+                        progress_activity
+                    </span>
+                </div>
+
+                <!-- Grid -->
+                <div *ngIf="!isLoadingChildren" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+                    <!-- Child category cards -->
+                    <a *ngFor="let child of childCategories" [routerLink]="['/category-details', child.id]" class="group relative rounded-xl border border-[#e2e8f0] bg-white p-5 cursor-pointer
+                   transition-all duration-200 hover:border-[#1e3b8a]/30 hover:shadow-md">
                         <div class="mb-4 flex items-start justify-between">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-lg transition-colors group-hover:bg-[#1e3b8a] group-hover:text-white"
-                                [ngClass]="[sub.iconBg, sub.iconColor]">
-                                <span class="material-symbols-outlined">{{ sub.icon }}</span>
+                            <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-50 text-blue-600
+                          transition-colors group-hover:bg-[#1e3b8a] group-hover:text-white">
+                                <span class="material-symbols-outlined">folder</span>
                             </div>
-                            <span class="rounded-md bg-[#f1f5f9] px-2 py-1 text-xs font-bold text-[#64748b]">
-                                {{ sub.count }} items
+                            <span class="rounded-md px-2 py-1 text-xs font-bold" [ngClass]="child.isActive
+                  ? 'bg-emerald-50 text-emerald-700'
+                  : 'bg-slate-100 text-slate-500'">
+                                {{ child.isActive ? 'Active' : 'Inactive' }}
                             </span>
                         </div>
-                        <h3 class="mb-1 text-base font-bold text-[#0f172a]">{{ sub.label }}</h3>
-                        <p class="line-clamp-1 text-xs text-[#64748b]">{{ sub.description }}</p>
+                        <h3 class="mb-1 text-base font-bold text-[#0f172a]">{{ child.name }}</h3>
+                        <span class="mb-2 inline-block rounded border border-[#e2e8f0] bg-[#f8fafc]
+                         px-2 py-0.5 font-mono text-xs text-[#64748b]">
+                            {{ child.code }}
+                        </span>
+                        <p class="line-clamp-2 text-xs text-[#64748b]">
+                            {{ child.description || 'No description available' }}
+                        </p>
                     </a>
 
-                    <!-- Add sub-category button -->
-                    <button (click)="addSubCategory()"
-                        class="flex min-h-[140px] h-full flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-5 transition-all duration-200 hover:border-[#1e3b8a]/50 hover:bg-[#f1f5f9]">
+                    <!-- Empty state -->
+                    <div *ngIf="childCategories.length === 0" class="col-span-full flex flex-col items-center justify-center gap-3 rounded-xl
+                   border border-dashed border-[#cbd5e1] bg-[#f8fafc] py-12">
+                        <span class="material-symbols-outlined text-4xl text-[#cbd5e1]">folder_off</span>
+                        <p class="text-sm font-medium text-[#64748b]">No sub-categories found</p>
+                    </div>
+
+                    <!-- Add sub-category -->
+                    <button (click)="addSubCategory()" class="flex min-h-[140px] h-full flex-col items-center justify-center gap-3 rounded-xl
+                   border border-dashed border-[#cbd5e1] bg-[#f8fafc] p-5
+                   transition-all duration-200 hover:border-[#1e3b8a]/50 hover:bg-[#f1f5f9]">
                         <div
                             class="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm text-[#94a3b8]">
                             <span class="material-symbols-outlined">add</span>
                         </div>
                         <span class="text-sm font-semibold text-[#64748b]">Add Sub-Category</span>
                     </button>
+
                 </div>
             </section>
 
-            <!-- ── Related Products ───────────────────────────────────── -->
+            <!-- ── Related Products ───────────────────────────────────────── -->
             <section class="flex flex-col gap-4">
-                <!-- Section header -->
                 <div class="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
                     <h2 class="flex items-center gap-2 text-lg font-bold text-[#0f172a]">
                         <span class="material-symbols-outlined text-[#1e3b8a]">inventory_2</span>
                         Related Products
                     </h2>
-                    <!-- Search + filter -->
-                    <div class="flex items-center gap-2">
-                        <div class="relative">
-                            <span
-                                class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-[20px] text-[#94a3b8]">search</span>
-                            <input type="text" [(ngModel)]="productSearch" (ngModelChange)="onProductSearchChange()"
-                                placeholder="Search products…"
-                                class="h-9 w-56 rounded-lg border border-[#e2e8f0] bg-white pl-9 pr-3 text-sm text-[#0f172a] placeholder-[#94a3b8] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
-                        </div>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2
+                         text-[20px] text-[#94a3b8]">search</span>
+                        <input type="text" [(ngModel)]="productSearch" (ngModelChange)="onProductSearchChange()"
+                            placeholder="Search products…" class="h-9 w-56 rounded-lg border border-[#e2e8f0] bg-white pl-9 pr-3 text-sm
+                     text-[#0f172a] placeholder-[#94a3b8] focus:border-[#1e3b8a]
+                     focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
                     </div>
                 </div>
 
                 <!-- Table card -->
                 <div class="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
-                    <div class="overflow-x-auto">
+
+                    <!-- Loading -->
+                    <div *ngIf="isLoadingProducts" class="flex items-center justify-center py-16">
+                        <span class="material-symbols-outlined animate-spin text-3xl text-[#1e3b8a]">
+                            progress_activity
+                        </span>
+                    </div>
+
+                    <div *ngIf="!isLoadingProducts" class="overflow-x-auto">
                         <table class="w-full border-collapse text-left text-sm">
                             <thead>
                                 <tr class="border-b border-[#e2e8f0] bg-[#f8fafc]">
                                     <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
-                                        Product Name</th>
-                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">SKU
+                                        Product</th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">Code
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">UOM
                                     </th>
                                     <th
                                         class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
-                                        Price</th>
-                                    <th
-                                        class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
-                                        Stock</th>
-                                    <th
-                                        class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
-                                        Status</th>
+                                        Cost Price</th>
                                     <th
                                         class="px-6 py-4 text-right text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
-                                        Action</th>
+                                        Selling Price</th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
+                                        Tax</th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-[#1e3b8a]">
+                                        Track Inv.</th>
                                 </tr>
                             </thead>
 
                             <tbody class="divide-y divide-[#f1f5f9]">
-                                <!-- Product rows -->
                                 <tr *ngFor="let product of pagedProducts"
                                     class="group transition-colors hover:bg-[#f8fafc]">
+
                                     <!-- Name + image -->
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
-                                            <div class="h-10 w-10 flex-shrink-0 rounded border border-[#e2e8f0] bg-cover bg-center bg-[#f1f5f9]"
-                                                [style.backgroundImage]="'url(' + product.imageUrl + ')'"
-                                                [attr.aria-label]="product.imageAlt"></div>
+                                            <div
+                                                class="h-10 w-10 flex-shrink-0 overflow-hidden rounded border border-[#e2e8f0] bg-[#f1f5f9]">
+                                                <img *ngIf="product.imageUrl" [src]="product.imageUrl"
+                                                    [alt]="product.name" class="h-full w-full object-cover"
+                                                    (error)="product.imageUrl = null" />
+                                                <div *ngIf="!product.imageUrl"
+                                                    class="flex h-full w-full items-center justify-center">
+                                                    <span
+                                                        class="material-symbols-outlined text-[18px] text-[#cbd5e1]">image</span>
+                                                </div>
+                                            </div>
                                             <div>
                                                 <p class="font-semibold text-[#0f172a]">{{ product.name }}</p>
-                                                <p class="text-xs text-[#64748b]">{{ product.subCategory }}</p>
+                                                <p class="text-xs text-[#64748b]">{{ product.shortDescription }}</p>
                                             </div>
                                         </div>
                                     </td>
 
-                                    <!-- SKU -->
-                                    <td class="px-6 py-4 font-mono text-sm text-[#64748b]">{{ product.sku }}</td>
+                                    <!-- Code -->
+                                    <td class="px-6 py-4 font-mono text-sm text-[#64748b]">{{ product.code }}</td>
 
-                                    <!-- Price -->
-                                    <td class="px-6 py-4 text-right font-medium text-[#0f172a]">{{
-                                        formatPrice(product.price) }}</td>
-
-                                    <!-- Stock -->
-                                    <td class="px-6 py-4 text-center text-[#64748b]">{{ product.stock }}</td>
-
-                                    <!-- Status -->
-                                    <td class="px-6 py-4 text-center">
-                                        <span
-                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                                            [ngClass]="getStatusClass(product.status)">{{ product.status }}</span>
+                                    <!-- UOM -->
+                                    <td class="px-6 py-4 text-sm text-[#64748b]">
+                                        <span class="font-medium text-[#0f172a]">{{ product.uomName }}</span>
+                                        <span class="ml-1 text-xs">({{ product.uomCode }})</span>
                                     </td>
 
-                                    <!-- Action -->
-                                    <td class="px-6 py-4 text-right">
-                                        <button (click)="productMenu(product)"
-                                            class="rounded-md p-1 text-[#94a3b8] transition-colors hover:bg-[#f1f5f9] hover:text-[#1e3b8a]">
-                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
-                                        </button>
+                                    <!-- Cost Price -->
+                                    <td class="px-6 py-4 text-right text-sm font-medium text-[#0f172a]">
+                                        {{ product.costPrice | number:'1.2-2' }}
+                                        <span class="ml-1 text-xs text-[#64748b]">{{ product.currency }}</span>
+                                    </td>
+
+                                    <!-- Selling Price -->
+                                    <td class="px-6 py-4 text-right text-sm font-medium text-emerald-600">
+                                        {{ product.sellingPrice | number:'1.2-2' }}
+                                        <span class="ml-1 text-xs text-[#64748b]">{{ product.currency }}</span>
+                                    </td>
+
+                                    <!-- Tax -->
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
+                                            {{ product.taxRateName }} ({{ product.taxRateValue * 100 }}%)
+                                        </span>
+                                    </td>
+
+                                    <!-- Track Inventory -->
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium"
+                                            [ngClass]="product.isTrackInventory
+                        ? 'bg-emerald-50 text-emerald-700'
+                        : 'bg-slate-100 text-slate-500'">
+                                            <span class="material-symbols-outlined text-[14px]">
+                                                {{ product.isTrackInventory ? 'check_circle' : 'cancel' }}
+                                            </span>
+                                            {{ product.isTrackInventory ? 'Yes' : 'No' }}
+                                        </span>
                                     </td>
                                 </tr>
 
                                 <!-- Empty state -->
                                 <tr *ngIf="pagedProducts.length === 0">
-                                    <td colspan="6" class="px-6 py-16 text-center">
+                                    <td colspan="7" class="px-6 py-16 text-center">
                                         <div class="flex flex-col items-center gap-3">
                                             <span
                                                 class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
-                                            <p class="font-medium text-[#64748b]">No products match your search</p>
-                                            <button (click)="productSearch = ''"
+                                            <p class="font-medium text-[#64748b]">No products found</p>
+                                            <button *ngIf="productSearch" (click)="productSearch = ''"
                                                 class="text-sm font-medium text-[#1e3b8a] hover:underline">
                                                 Clear search
                                             </button>
@@ -300,7 +292,7 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div
+                    <div *ngIf="!isLoadingProducts"
                         class="flex flex-col items-center justify-between gap-3 border-t border-[#e2e8f0] px-6 py-4 sm:flex-row">
                         <span class="text-sm text-[#64748b]">
                             Showing
@@ -309,32 +301,32 @@
                             <span class="font-semibold text-[#0f172a]">{{ totalItems }}</span>
                             results
                         </span>
-
                         <div class="flex items-center gap-1">
-                            <!-- Prev -->
-                            <button (click)="previousPage()" [disabled]="currentPage === 1"
-                                class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40">
+                            <button (click)="previousPage()" [disabled]="currentPage === 1" class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0]
+                       text-[#64748b] transition-colors hover:bg-[#f8fafc]
+                       disabled:cursor-not-allowed disabled:opacity-40">
                                 <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                             </button>
 
-                            <!-- Page numbers -->
                             <ng-container *ngFor="let page of pageNumbers">
                                 <span *ngIf="page === '...'"
                                     class="flex size-9 items-center justify-center text-xs text-[#64748b]">…</span>
                                 <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
                     ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-bold shadow-sm'
                     : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
-                                    class="flex size-9 items-center justify-center rounded-lg border text-xs transition-colors">{{
-                                    page }}</button>
+                                    class="flex size-9 items-center justify-center rounded-lg border text-xs transition-colors">
+                                    {{ page }}
+                                </button>
                             </ng-container>
 
-                            <!-- Next -->
-                            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                                class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40">
+                            <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0]
+                       text-[#64748b] transition-colors hover:bg-[#f8fafc]
+                       disabled:cursor-not-allowed disabled:opacity-40">
                                 <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                             </button>
                         </div>
                     </div>
+
                 </div>
             </section>
 

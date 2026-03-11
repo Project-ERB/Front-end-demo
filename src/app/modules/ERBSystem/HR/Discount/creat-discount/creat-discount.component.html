@@ -17,17 +17,6 @@
 
     <!-- ═══════════════ CREATE VIEW ═══════════════ -->
     <div *ngIf="!isEditMode" class="mx-auto max-w-6xl px-6 py-8 pb-28">
-
-        <!-- Banners -->
-        <div *ngIf="successMessage"
-            class="mb-6 flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-5 py-4 text-sm font-medium text-green-700">
-            <span class="material-symbols-outlined text-green-500">check_circle</span>{{ successMessage }}
-        </div>
-        <div *ngIf="errorMessage"
-            class="mb-6 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-700">
-            <span class="material-symbols-outlined text-red-500">error</span>{{ errorMessage }}
-        </div>
-
         <!-- Page header -->
         <div class="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
             <div>
@@ -793,21 +782,6 @@
                                 </div>
                             </div>
                         </section>
-
-                        <!-- JSON payload preview -->
-                        <section class="overflow-hidden rounded-xl border border-[#dbdee6] bg-white shadow-sm">
-                            <div class="border-b border-[#dbdee6] bg-[#f6f6f8]/60 px-6 py-4">
-                                <h3 class="flex items-center gap-2 text-sm font-bold text-[#111318]">
-                                    <span class="material-symbols-outlined text-[18px] text-[#616c89]">code</span>
-                                    API Payload Preview
-                                </h3>
-                            </div>
-                            <div class="p-6">
-                                <pre
-                                    class="overflow-x-auto rounded-lg bg-[#0f172a] p-4 text-xs leading-relaxed text-green-400">{{ payloadPreview }}</pre>
-                            </div>
-                        </section>
-
                     </ng-container><!-- /step 4 -->
 
                 </div><!-- /left col -->

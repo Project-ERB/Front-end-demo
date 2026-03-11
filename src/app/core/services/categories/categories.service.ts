@@ -12,7 +12,6 @@ export class CategoriesService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly _httpClient = inject(HttpClient);
 
-  // ✅ Centralized token retrieval (SSR-safe)
   private getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {
       return localStorage.getItem('accessToken');
@@ -20,7 +19,6 @@ export class CategoriesService {
     return null;
   }
 
-  // ✅ Centralized headers builder
   private getHeaders(includeContentType = false): HttpHeaders {
     const token = this.getToken();
     return new HttpHeaders({
@@ -30,7 +28,7 @@ export class CategoriesService {
     });
   }
 
-  // ✅ FIXED: استخدم parentCategories بدل categories
+  // ✅ Get Parent Categories (GraphQL)
   getCategories(): Observable<any[]> {
     const body = {
       query: `
@@ -51,12 +49,95 @@ export class CategoriesService {
       .pipe(map(res => res?.data?.parentCategories?.nodes ?? []));
   }
 
-  // ✅ View Category Details (REST)
-  viewCateDetails(id: string): Observable<any> {
-    return this._httpClient.get(
-      `${Environment.baseUrl}/api/categories/${id}`,
-      { headers: this.getHeaders() }
-    );
+  // ✅ Get Category Details by ID (GraphQL)
+  // ✅ Get Category Details by ID (GraphQL)
+  getCategoryById(id: string): Observable<any> {
+    const body = {
+      query: `
+      query {
+        category(id: "${id}") {
+          id
+          code
+          name
+          description
+          isActive
+        }
+      }
+    `,
+    };
+    return this._httpClient
+      .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders(true) })
+      .pipe(map(res => res?.data?.category ?? null));
+  }
+
+  // ✅ Get Child Categories by parentId (GraphQL)
+  getChildCategories(parentId: string): Observable<any[]> {
+    const body = {
+      query: `
+        query {
+          childCategories(parentId: "${parentId}") {
+            nodes {
+              id
+              code
+              name
+              description
+              parentCategoryId
+              isActive
+            }
+          }
+        }
+      `,
+    };
+    return this._httpClient
+      .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders(true) })
+      .pipe(map(res => res?.data?.childCategories?.nodes ?? []));
+  }
+
+  // ✅ Get Products by categoryId (GraphQL)
+  getProductsByCategory(categoryId: string): Observable<any[]> {
+    const body = {
+      query: `
+        query {
+          products(where: {
+            categoryId: {
+              eq: "${categoryId}"
+            }
+          }) {
+            nodes {
+              id
+              code
+              name
+              shortDescription
+              categoryId
+              uomCode
+              uomName
+              costPrice
+              sellingPrice
+              currency
+              taxRateValue
+              taxRateName
+              isTrackInventory
+              baseBarcode
+              notes
+              imageUrl
+              specifications {
+                key
+                value
+                displayOrder
+              }
+              variants {
+                sku
+                barcode
+                priceOverrideAmount
+              }
+            }
+          }
+        }
+      `,
+    };
+    return this._httpClient
+      .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders(true) })
+      .pipe(map(res => res?.data?.products?.nodes ?? []));
   }
 
   // ✅ Add Category (REST)
