@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edite-produect',
@@ -18,7 +19,7 @@ export class EditeProduectComponent implements OnInit {
   private readonly _ApollocatoriesService = inject(ApollocatoriesService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-
+  private readonly _ToastrService = inject(ToastrService)
   productId!: string;
   editLoading = false;
   editError = '';
@@ -213,6 +214,7 @@ export class EditeProduectComponent implements OnInit {
     this._ProductService.ubdateProduct(this.productId, formData).subscribe({
       next: () => {
         this.editLoading = false;
+        this._ToastrService.success('Product updated successfully', 'Updated ✅')
         this.router.navigate(['/product-management']);
       },
       error: (err) => {
@@ -223,6 +225,7 @@ export class EditeProduectComponent implements OnInit {
         } else {
           this.editError = err?.error?.message ?? 'Failed to update product.';
         }
+        this._ToastrService.error(this.editError, 'Error ❌');
       },
     });
   }

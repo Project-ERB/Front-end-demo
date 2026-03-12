@@ -7,6 +7,7 @@ import { forkJoin } from 'rxjs';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { filter } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 interface Category {
   id: string;
@@ -29,7 +30,7 @@ export class ProductMangementComponent implements OnInit {
   private readonly _Router = inject(Router);
   private readonly _ProductService = inject(ProductService);
   private readonly _ApollocatoriesService = inject(ApollocatoriesService);
-
+  private readonly _ToastrService = inject(ToastrService)
   // ── Products & Categories ─────────────────────────────────────────
   products: any[] = [];
   productpage: any[] = [];
@@ -69,6 +70,20 @@ export class ProductMangementComponent implements OnInit {
     this.selectedCategory = '';
     this.selectedType = '';
     this.currentPage = 1;
+  }
+
+  deleteProduct(id: string): void {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+
+    this._ProductService.deleteProduct(id).subscribe({
+      next: () => {
+        this.products = this.products.filter(p => p.id !== id);
+        this._ToastrService.success('Product deleted successfully', 'Deleted ✅');
+      },
+      error: () => {
+        this._ToastrService.error('Failed to delete product', 'Error ❌');
+      }
+    });
   }
 
   // ── Row selection ─────────────────────────────────────────────────

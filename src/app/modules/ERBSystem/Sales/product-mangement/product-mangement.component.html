@@ -178,9 +178,16 @@
 
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button class="text-[#1e3b8a] hover:underline text-sm"
-                                            (click)="EditProduct(product.id)">Edit</button>
-                                        <button class="text-red-500 hover:underline text-sm">Delete</button>
+                                        <button
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-[#1e3b8a] transition-colors hover:bg-blue-50"
+                                            (click)="EditProduct(product.id)" title="Edit">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+                                        <button
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 transition-colors hover:bg-red-50"
+                                            (click)="deleteProduct(product.id)" k title="Delete">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
                                     </div>
                                 </td>
 

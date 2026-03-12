@@ -8,6 +8,7 @@ import { RouterLink } from '@angular/router';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { ToastrService } from 'ngx-toastr';
 
 export interface Category {
   id: string;
@@ -45,7 +46,7 @@ export interface CategoryForm {
 export class CategoryMangementComponent implements OnInit {
 
   isEditMode: boolean = false;
-
+  private readonly _ToastrService = inject(ToastrService)
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _categoriesService = inject(ApollocatoriesService);
@@ -113,7 +114,6 @@ export class CategoryMangementComponent implements OnInit {
       },
       error: (err) => {
         console.error('Failed to delete linked products:', err);
-        alert('Failed to delete linked products. Please try again.');
       }
     });
   }
@@ -122,6 +122,7 @@ export class CategoryMangementComponent implements OnInit {
     this._CategoriesService.deleteCategory(id).subscribe({
       next: () => {
         console.log('Category deleted ✅');
+        this._ToastrService.success('Category deleted successfully', 'Deleted ✅');
         this.loadCategories();
         this.loadAllProducts();
       },
@@ -130,7 +131,7 @@ export class CategoryMangementComponent implements OnInit {
         if (err.status === 500) {
           alert('Cannot delete this category. Please check if it still has linked data.');
         } else {
-          alert('An unexpected error occurred. Please try again.');
+          this._ToastrService.error('Failed to delete Category', 'Error ❌');
         }
       }
     });
