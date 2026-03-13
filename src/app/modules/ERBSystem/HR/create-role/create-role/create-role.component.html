@@ -1,0 +1,246 @@
+<div class="flex h-screen w-full overflow-hidden font-[Manrope,sans-serif] antialiased bg-[#f6f6f8] text-[#131118]">
+
+    <app-siede-admin></app-siede-admin>
+
+    <main class="flex h-full flex-1 flex-col overflow-hidden relative">
+
+        <!-- Header -->
+        <header class="flex h-20 w-full shrink-0 items-center justify-between border-b border-[#dedbe6] bg-white px-8">
+            <div class="flex items-center gap-4">
+                <button class="block lg:hidden text-[#6e6189] hover:text-[#6324eb]">
+                    <span class="material-symbols-outlined">menu</span>
+                </button>
+                <div class="relative hidden w-96 md:block">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-[#6e6189] material-symbols-outlined text-[20px]">search</span>
+                    <input type="text" placeholder="Search roles, permissions..."
+                        class="h-10 w-full rounded-lg border-none bg-[#f6f6f8] py-2 pl-10 pr-4 text-sm text-[#131118] placeholder-[#6e6189]/60 focus:outline-none focus:ring-2 focus:ring-[#6324eb]/20 transition-all" />
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button
+                    class="relative flex h-10 w-10 items-center justify-center rounded-full text-[#6e6189] hover:bg-[#f6f6f8] transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500 border-2 border-white"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Body -->
+        <div class="flex-1 overflow-y-auto p-8 pb-32">
+            <div class="mx-auto max-w-5xl">
+
+                <!-- Breadcrumbs -->
+                <nav class="mb-6 flex items-center gap-2 text-sm font-medium text-[#6e6189]">
+                    <a href="#" class="hover:text-[#6324eb] hover:underline transition-colors">Settings</a>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <a href="#" class="hover:text-[#6324eb] hover:underline transition-colors">Roles</a>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span class="text-[#131118]">Create New</span>
+                </nav>
+
+                <!-- Title -->
+                <div class="mb-8">
+                    <h2 class="text-3xl font-extrabold text-[#131118] tracking-tight">Create Custom Role</h2>
+                    <p class="text-[#6e6189] mt-1">Define a new role and configure access permissions granularly.</p>
+                </div>
+
+                <form [formGroup]="RoleForm" (ngSubmit)="createRole()">
+
+                    <!-- Role Details Card -->
+                    <div class="rounded-2xl border border-[#dedbe6] bg-white p-8 shadow-sm mb-6">
+                        <h3 class="text-base font-bold text-[#131118] mb-6">Role Details</h3>
+
+                        <div class="grid gap-6 lg:grid-cols-2">
+                            <!-- Name -->
+                            <div>
+                                <label class="mb-2 block text-sm font-semibold text-[#131118]" for="roleName">
+                                    Role Name <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <select formControlName="name" id="roleName"
+                                        class="w-full appearance-none rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 pr-10 text-sm text-[#131118] focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all cursor-pointer">
+                                        <option [ngValue]="null" disabled selected>Select a role name...</option>
+                                        <option *ngFor="let opt of roleNameOptions" [ngValue]="opt.value">
+                                            {{ opt.label }}
+                                        </option>
+                                    </select>
+                                    <span
+                                        class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6e6189] material-symbols-outlined text-[20px]">expand_more</span>
+                                </div>
+                                <p *ngIf="formError" class="mt-1.5 text-xs text-red-500 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">error</span>
+                                    {{ formError }}
+                                </p>
+                            </div>
+
+                            <!-- Description -->
+                            <div>
+                                <label class="mb-2 block text-sm font-semibold text-[#131118]" for="desc">
+                                    Description
+                                </label>
+                                <textarea formControlName="description" id="desc" rows="3"
+                                    placeholder="Briefly describe the responsibilities..."
+                                    class="w-full rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm text-[#131118] placeholder:text-[#6e6189]/60 resize-none focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all">
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions Card -->
+                    <div class="rounded-2xl border border-[#dedbe6] bg-white p-8 shadow-sm">
+
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h3 class="text-base font-bold text-[#131118]">Assign Permissions</h3>
+                                <p class="text-sm text-[#6e6189] mt-0.5">
+                                    Select which permissions and access levels to assign to this role.
+                                </p>
+                            </div>
+                            <!-- Loading indicator -->
+                            <div *ngIf="isLoadingPermissions" class="flex items-center gap-2 text-[#6e6189] text-sm">
+                                <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                                </svg>
+                                Loading permissions...
+                            </div>
+                        </div>
+
+                        <!-- Empty state -->
+                        <div *ngIf="!isLoadingPermissions && allPermissions.length === 0"
+                            class="text-center py-12 text-[#6e6189] text-sm">
+                            <span class="material-symbols-outlined text-4xl block mb-2 opacity-40">lock</span>
+                            No permissions available.
+                        </div>
+
+                        <!-- Permissions List -->
+                        <div formArrayName="setPermissions" class="flex flex-col gap-4">
+
+                            <div *ngFor="let perm of allPermissions; let i = index" [formGroupName]="i"
+                                class="rounded-xl border border-[#dedbe6] bg-[#f6f6f8]/50 p-5 hover:border-[#6324eb]/30 hover:shadow-sm transition-all">
+
+                                <!-- Permission header row -->
+                                <div class="flex items-start justify-between gap-4 mb-4">
+                                    <div class="flex-1">
+                                        <!-- Permission name -->
+                                        <h4 class="font-bold text-sm text-[#131118]">{{ perm.name }}</h4>
+
+                                        <!-- Resource badges -->
+                                        <div class="flex flex-wrap gap-1.5 mt-2">
+                                            <span *ngFor="let r of getResourceLabels(perm.resources)"
+                                                class="px-2 py-0.5 bg-[#6324eb]/10 text-[#6324eb] text-[10px] font-semibold rounded-full">
+                                                {{ r }}
+                                            </span>
+                                            <span *ngIf="!perm.resources?.length"
+                                                class="text-xs text-[#6e6189] italic">No resources</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Toggle All -->
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <span class="text-xs font-semibold text-[#6e6189]">All</span>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" [checked]="isAllChecked(i)"
+                                                (change)="toggleAll(i, $any($event.target).checked)" />
+                                            <div class="w-9 h-5 bg-gray-200 rounded-full peer
+                                                peer-checked:after:translate-x-full peer-checked:after:border-white
+                                                after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+                                                after:bg-white after:border-gray-300 after:border after:rounded-full
+                                                after:h-4 after:w-4 after:transition-all
+                                                peer-checked:bg-[#6324eb]">
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Access toggles -->
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+
+                                    <!-- View -->
+                                    <label
+                                        class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-[#dedbe6] cursor-pointer hover:border-[#6324eb]/40 transition-all">
+                                        <input type="checkbox" formControlName="allowView" (change)="markDirty()"
+                                            class="w-4 h-4 text-[#6324eb] border-slate-300 rounded focus:ring-[#6324eb] cursor-pointer" />
+                                        <span class="text-xs font-semibold text-[#131118]">View</span>
+                                    </label>
+
+                                    <!-- Create -->
+                                    <label
+                                        class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-[#dedbe6] cursor-pointer hover:border-[#6324eb]/40 transition-all">
+                                        <input type="checkbox" formControlName="allowCreate" (change)="markDirty()"
+                                            class="w-4 h-4 text-[#6324eb] border-slate-300 rounded focus:ring-[#6324eb] cursor-pointer" />
+                                        <span class="text-xs font-semibold text-[#131118]">Create</span>
+                                    </label>
+
+                                    <!-- Update -->
+                                    <label
+                                        class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-[#dedbe6] cursor-pointer hover:border-[#6324eb]/40 transition-all">
+                                        <input type="checkbox" formControlName="allowUpdated" (change)="markDirty()"
+                                            class="w-4 h-4 text-[#6324eb] border-slate-300 rounded focus:ring-[#6324eb] cursor-pointer" />
+                                        <span class="text-xs font-semibold text-[#131118]">Update</span>
+                                    </label>
+
+                                    <!-- Delete -->
+                                    <label
+                                        class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white border border-[#dedbe6] cursor-pointer hover:border-[#6324eb]/40 transition-all">
+                                        <input type="checkbox" formControlName="allowDelete" (change)="markDirty()"
+                                            class="w-4 h-4 text-[#6324eb] border-slate-300 rounded focus:ring-[#6324eb] cursor-pointer" />
+                                        <span class="text-xs font-semibold text-[#131118]">Delete</span>
+                                    </label>
+
+                                </div>
+
+                                <!-- Progress bar -->
+                                <div class="mt-4 pt-3 border-t border-[#dedbe6]/60 flex items-center gap-3">
+                                    <div class="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-[#6324eb]/50 rounded-full transition-all duration-300"
+                                            [style.width.%]="getCheckedCount(i) * 25">
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-[#6e6189] whitespace-nowrap shrink-0">
+                                        {{ getCheckedCount(i) }}/4 active
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="mt-6 flex items-center gap-4">
+                        <button type="submit" [disabled]="isSaving"
+                            class="flex items-center gap-2 rounded-lg bg-[#6324eb] px-8 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#6324eb]/25 hover:bg-[#501ac2] disabled:opacity-60 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#6324eb] focus:ring-offset-2 transition-all">
+                            <svg *ngIf="isSaving" class="animate-spin h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                            </svg>
+                            <span class="material-symbols-outlined text-[18px]" *ngIf="!isSaving">save</span>
+                            <span>{{ isSaving ? 'Saving...' : 'Save Role' }}</span>
+                        </button>
+
+                        <button type="button" (click)="cancel()"
+                            class="rounded-lg border border-[#dedbe6] bg-white px-6 py-2.5 text-sm font-bold text-[#131118] hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-colors">
+                            Cancel
+                        </button>
+
+                        <span *ngIf="saveSuccess"
+                            class="text-sm text-emerald-600 flex items-center gap-1.5 font-medium">
+                            <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                            Role saved successfully!
+                        </span>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </main>
+</div>

@@ -53,7 +53,7 @@ export class AdminLoginComponent {
           //بكرا لما اصحي هعمل install  ل التوستر و اعمل توست هنا
           setTimeout(() => {
             //navigate to admin dashboard
-            this._router.navigate(['/sales-analysis']);
+            this._router.navigate(['/admin-dashboard']);
           }, 2000);
         },
         error: (err) => {

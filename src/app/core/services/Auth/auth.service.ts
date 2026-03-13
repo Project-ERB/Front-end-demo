@@ -20,4 +20,9 @@ export class AuthService {
       refreshToken: localStorage.getItem('refreshToken')!
     });
   }
+
+  RegisterEmployee(data: object): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/Auth/Register-Employee`, data);
+  }
+
 }
