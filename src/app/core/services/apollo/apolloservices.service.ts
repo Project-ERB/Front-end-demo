@@ -49,4 +49,34 @@ export class ApolloservicesService {
       { headers }
     );
   }
+
+  getUsers(): Observable<any> {
+
+    const token = this.getToken();
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {})
+    });
+
+    const body = {
+      query: `
+      query {
+        users {
+          nodes {
+            username
+            email
+          }
+        }
+      }
+    `
+    };
+
+    return this._httpClient.post<any>(
+      `${Environment.baseUrl}/graphql`,
+      body,
+      { headers }
+    );
+  }
 }

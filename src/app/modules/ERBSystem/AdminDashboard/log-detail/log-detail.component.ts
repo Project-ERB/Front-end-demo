@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
+import { SystemLog, PermissionService } from '../../../../core/services/permission/permission.service';
 
 export type DetailStatus = 'Success' | 'Critical' | 'Warning' | 'Info';
 
@@ -9,33 +11,11 @@ export interface PermissionChange {
   action: 'add' | 'remove';
 }
 
-export interface RawPayload {
-  event_id: string;
-  timestamp: string;
-  actor: {
-    id: string;
-    username: string;
-    ip: string;
-    user_agent: string;
-  };
-  action: {
-    module: string;
-    type: string;
-    target_user: string;
-    changes: PermissionChange[];
-  };
-  status: string;
-  server_node: string;
-}
-
 export interface LogDetail {
-  // Overview
   eventId: string;
   timestamp: string;
   eventType: string;
   status: DetailStatus;
-
-  // Actor
   userInitials: string;
   userBg: string;
   userText: string;
@@ -45,109 +25,179 @@ export interface LogDetail {
   ipLabel: string;
   device: string;
   userAgent: string;
-
-  // Action
   module: string;
   moduleIcon: string;
   moduleBg: string;
   specificAction: string;
-  description: string;            // plain text
-  descChanges: PermissionChange[]; // structured diff rendered separately
-
-  // Raw payload
-  rawPayload: RawPayload;
+  description: string;
+  descChanges: PermissionChange[];
+  oldValues: string | null;
+  newValues: string | null;
+  correlationId: string;
 }
+
 @Component({
   selector: 'app-log-detail',
   standalone: true,
-  imports: [CommonModule, SiedeAdminComponent],
+  imports: [CommonModule, SiedeAdminComponent, RouterLink],
   templateUrl: './log-detail.component.html',
   styleUrl: './log-detail.component.scss'
 })
-export class LogDetailComponent {
+export class LogDetailComponent implements OnInit {
 
-
-  // ── State ──────────────────────────────────────────────────────────────
   copyTooltip = '';
   isCopied = false;
-  formattedJson = '';
+  formattedOld = '';
+  formattedNew = '';
+  log!: LogDetail;
 
-  // ── Data ───────────────────────────────────────────────────────────────
-  log: LogDetail = {
-    // Overview
-    eventId: 'LOG-2023-8849-AK',
-    timestamp: '2023-10-27 14:32:01 UTC',
-    eventType: 'User Permission Update',
-    status: 'Success',
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private logService: PermissionService,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
-    // Actor
-    userInitials: 'JD',
-    userBg: 'bg-blue-100',
-    userText: 'text-blue-600',
-    userName: 'John Doe',
-    userId: 'usr_8923401',
-    ipAddress: '192.168.1.45',
-    ipLabel: 'LAN',
-    device: 'Chrome on macOS 10.15.7',
-    userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-
-    // Action
-    module: 'User Management',
-    moduleIcon: 'group',
-    moduleBg: 'bg-blue-50 text-blue-700 border-blue-100',
-    specificAction: 'update_user_permissions',
-    description: 'Administrator John Doe manually updated the permission set for user @sarah_m.',
-    descChanges: [
-      { permission: 'write_reports', action: 'add' },
-      { permission: 'admin_settings_access', action: 'remove' },
-    ],
-
-    // Raw payload
-    rawPayload: {
-      event_id: 'LOG-2023-8849-AK',
-      timestamp: '2023-10-27T14:32:01.442Z',
-      actor: {
-        id: 'usr_8923401',
-        username: 'jdoe',
-        ip: '192.168.1.45',
-        user_agent: 'Mozilla/5.0...'
-      },
-      action: {
-        module: 'user_management',
-        type: 'update_permissions',
-        target_user: 'usr_7721098',
-        changes: [
-          { permission: 'write_reports', action: 'add' },
-          { permission: 'admin_settings_access', action: 'remove' },
-        ]
-      },
-      status: 'success',
-      server_node: 'app-worker-04'
-    }
-  };
-
-  // ── Lifecycle ──────────────────────────────────────────────────────────
   ngOnInit(): void {
-    this.formattedJson = JSON.stringify(this.log.rawPayload, null, 2);
+    // ── اشترك في تغيير الـ params عشان يتشغل كل مرة ──────────────────
+    this.route.params.subscribe(() => {
+      this.loadLog();
+    });
+  }
+
+  private loadLog(): void {
+    const rawLog = this.logService.get();
+
+    if (rawLog) {
+      this.log = this.mapToDetail(rawLog);
+      this.formattedOld = this.tryFormat(this.log.oldValues);
+      this.formattedNew = this.tryFormat(this.log.newValues);
+      // لا تعمل clear هنا عشان لو refresh الصفحة يفضل موجود
+    } else {
+      this.log = this.getEmptyLog();
+      if (isPlatformBrowser(this.platformId)) {
+        this.router.navigate(['/system-logs']);
+      }
+    }
+  }
+
+  // ── Map API node → LogDetail ───────────────────────────────────────────
+  private mapToDetail(raw: SystemLog): LogDetail {
+    return {
+      eventId: raw.id,
+      timestamp: raw.timestamp,
+      eventType: `${raw.module} — ${raw.action.split(' ')[0]}`,
+      status: raw.status as DetailStatus,
+      userInitials: raw.userInitials,
+      userBg: raw.userBg,
+      userText: raw.userText,
+      userName: raw.userName,
+      userId: raw.userId ?? '—',
+      ipAddress: raw.ip,
+      ipLabel: this.resolveIpLabel(raw.ip),
+      device: '—',
+      userAgent: '—',
+      module: raw.module,
+      moduleIcon: this.resolveModuleIcon(raw.module),
+      moduleBg: this.resolveModuleBg(raw.module),
+      specificAction: raw.action,
+      description: raw.action,
+      descChanges: this.parseChanges(raw.oldValues, raw.newValues),
+      oldValues: raw.oldValues ?? null,
+      newValues: raw.newValues ?? null,
+      correlationId: raw.correlationId ?? '—',
+    };
+  }
+
+  // ── Fallback empty log ─────────────────────────────────────────────────
+  private getEmptyLog(): LogDetail {
+    return {
+      eventId: '—', timestamp: '—', eventType: '—', status: 'Info',
+      userInitials: '—', userBg: 'bg-gray-100', userText: 'text-gray-600',
+      userName: '—', userId: '—', ipAddress: '—', ipLabel: '—',
+      device: '—', userAgent: '—', module: '—', moduleIcon: 'info',
+      moduleBg: 'bg-gray-50 text-gray-700 border-gray-100',
+      specificAction: '—', description: '—',
+      descChanges: [], oldValues: null, newValues: null, correlationId: '—',
+    };
+  }
+
+  // ── Helpers ────────────────────────────────────────────────────────────
+  private resolveIpLabel(ip: string): string {
+    if (ip.startsWith('192.168.') || ip.startsWith('10.') || ip.startsWith('172.')) return 'LAN';
+    if (ip === '127.0.0.1' || ip === '::1') return 'Localhost';
+    return 'External';
+  }
+
+  private resolveModuleIcon(module: string): string {
+    const map: Record<string, string> = {
+      Users: 'group',
+      Roles: 'admin_panel_settings',
+      Permissions: 'lock',
+      RefreshTokens: 'token',
+    };
+    return map[module] ?? 'settings';
+  }
+
+  private resolveModuleBg(module: string): string {
+    const map: Record<string, string> = {
+      Users: 'bg-blue-50 text-blue-700 border-blue-100',
+      Roles: 'bg-purple-50 text-purple-700 border-purple-100',
+      Permissions: 'bg-indigo-50 text-indigo-700 border-indigo-100',
+      RefreshTokens: 'bg-orange-50 text-orange-700 border-orange-100',
+    };
+    return map[module] ?? 'bg-gray-50 text-gray-700 border-gray-100';
+  }
+
+  private parseChanges(
+    oldVal: string | null | undefined,
+    newVal: string | null | undefined
+  ): PermissionChange[] {
+    try {
+      if (!oldVal && !newVal) return [];
+      const oldObj = oldVal ? JSON.parse(oldVal) : {};
+      const newObj = newVal ? JSON.parse(newVal) : {};
+      const changes: PermissionChange[] = [];
+      const allKeys = new Set([...Object.keys(oldObj), ...Object.keys(newObj)]);
+      allKeys.forEach(key => {
+        if (JSON.stringify(oldObj[key]) !== JSON.stringify(newObj[key])) {
+          changes.push({
+            permission: key,
+            action: oldObj[key] !== undefined ? 'remove' : 'add'
+          });
+        }
+      });
+      return changes;
+    } catch {
+      return [];
+    }
+  }
+
+  private tryFormat(val: string | null | undefined): string {
+    if (!val) return '{ }';
+    try { return JSON.stringify(JSON.parse(val), null, 2); }
+    catch { return val; }
   }
 
   // ── Status helpers ─────────────────────────────────────────────────────
   getStatusBadge(status: DetailStatus): string {
-    switch (status) {
-      case 'Success': return 'bg-green-100  text-green-800  border-green-200';
-      case 'Critical': return 'bg-red-100    text-red-800    border-red-200';
-      case 'Warning': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Info': return 'bg-blue-100   text-blue-800   border-blue-200';
-    }
+    const m: Record<DetailStatus, string> = {
+      Success: 'bg-green-100 text-green-800 border-green-200',
+      Critical: 'bg-red-100 text-red-800 border-red-200',
+      Warning: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      Info: 'bg-blue-100 text-blue-800 border-blue-200',
+    };
+    return m[status];
   }
 
   getStatusDot(status: DetailStatus): string {
-    switch (status) {
-      case 'Success': return 'bg-green-500';
-      case 'Critical': return 'bg-red-500';
-      case 'Warning': return 'bg-yellow-500';
-      case 'Info': return 'bg-blue-500';
-    }
+    const m: Record<DetailStatus, string> = {
+      Success: 'bg-green-500',
+      Critical: 'bg-red-500',
+      Warning: 'bg-yellow-500',
+      Info: 'bg-blue-500',
+    };
+    return m[status];
   }
 
   getStatusLabel(status: DetailStatus): string {
@@ -157,27 +207,28 @@ export class LogDetailComponent {
   // ── Copy JSON ──────────────────────────────────────────────────────────
   copyJson(): void {
     if (this.isCopied) return;
-    navigator.clipboard.writeText(this.formattedJson).then(() => {
+    const text = `Old Values:\n${this.formattedOld}\n\nNew Values:\n${this.formattedNew}`;
+    navigator.clipboard.writeText(text).then(() => {
       this.isCopied = true;
       this.copyTooltip = 'Copied!';
-      setTimeout(() => {
-        this.isCopied = false;
-        this.copyTooltip = '';
-      }, 2000);
+      setTimeout(() => { this.isCopied = false; this.copyTooltip = ''; }, 2000);
     }).catch(() => {
       this.copyTooltip = 'Failed to copy';
       setTimeout(() => this.copyTooltip = '', 2000);
     });
   }
 
-  // ── Export PDF stub ────────────────────────────────────────────────────
+  // ── Export PDF ─────────────────────────────────────────────────────────
   exportPdf(): void {
     console.log('Exporting PDF for', this.log.eventId);
   }
 
-  // ── Go back stub ───────────────────────────────────────────────────────
+  // ── Go back ────────────────────────────────────────────────────────────
   goBack(): void {
-    window.history.back();
+    if (isPlatformBrowser(this.platformId)) {
+      window.history.back();
+    } else {
+      this.router.navigate(['/system-logs']);
+    }
   }
-
 }

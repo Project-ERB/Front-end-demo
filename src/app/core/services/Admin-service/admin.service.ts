@@ -5,7 +5,6 @@ import { Environment } from '../../../shared/UI/environment/env';
 import { isPlatformBrowser } from '@angular/common';
 
 // ── Interfaces ───────────────────────────────────────────────────────────────
-
 export interface RoleAllowAccess {
   allowCreate: boolean;
   allowDelete: boolean;
@@ -14,6 +13,7 @@ export interface RoleAllowAccess {
 }
 
 export interface RolePermission {
+  id: string;
   name: string;
   description: string;
   resources: string[];
@@ -27,14 +27,27 @@ export interface Role {
   permissions: RolePermission[];
 }
 
-// ── Service ──────────────────────────────────────────────────────────────────
+export interface UpdateRolePermission {
+  permissionId: string;
+  allowCreate: boolean;
+  allowDelete: boolean;
+  allowUpdated: boolean;
+  allowView: boolean;
+}
 
+export interface UpdateRoleBody {
+  name: number;
+  description: string;
+  setPermissions: UpdateRolePermission[];
+}
+
+// ── Service ──────────────────────────────────────────────────────────────────
 @Injectable({
   providedIn: 'root',
 })
 export class AdminService {
-
   constructor(private _http: HttpClient) { }
+
   private readonly _PLATFORM_ID = inject(PLATFORM_ID);
 
   private getToken(): string | null {
@@ -46,29 +59,37 @@ export class AdminService {
 
   private get headers(): HttpHeaders {
     return new HttpHeaders({
-      'Authorization': `Bearer ${this.getToken()}`,
+      Authorization: `Bearer ${this.getToken()}`,
       'Content-Type': 'application/json',
     });
   }
 
   // ── Create user ──────────────────────────────────────────────────────────
   createAdminNewUser(data: object): Observable<any> {
-    return this._http.post(`${Environment.baseUrl}/Admin/NewUser`, data, { headers: this.headers });
+    return this._http.post(`${Environment.baseUrl}/Admin/NewUser`, data, {
+      headers: this.headers,
+    });
   }
 
   // ── Create role ──────────────────────────────────────────────────────────
   creatCustomRole(data: object): Observable<any> {
-    return this._http.post(`${Environment.baseUrl}/roles`, data, { headers: this.headers });
+    return this._http.post(`${Environment.baseUrl}/roles`, data, {
+      headers: this.headers,
+    });
   }
 
   // ── Update role ──────────────────────────────────────────────────────────
-  updateRole(id: string, name: number): Observable<any> {
-    return this._http.put(`${Environment.baseUrl}/roles`, { id, name }, { headers: this.headers });
+  updateRole(id: string, body: UpdateRoleBody): Observable<any> {
+    return this._http.put(`${Environment.baseUrl}/roles/${id}`, body, {
+      headers: this.headers,
+    });
   }
 
   // ── Delete role ──────────────────────────────────────────────────────────
   deleteRole(id: string): Observable<any> {
-    return this._http.delete(`${Environment.baseUrl}/roles/${id}`, { headers: this.headers });
+    return this._http.delete(`${Environment.baseUrl}/roles/${id}`, {
+      headers: this.headers,
+    });
   }
 
   // ── Get all roles (GraphQL) ──────────────────────────────────────────────
@@ -81,6 +102,7 @@ export class AdminService {
             name
             description
             permissions {
+              id
               name
               description
               resources
@@ -95,13 +117,12 @@ export class AdminService {
         }
       }
     `;
-
     return this._http
       .post<{ data: { roles: { nodes: Role[] } } }>(
         `${Environment.baseUrl}/graphql?t=${Date.now()}`,
         { query },
         { headers: this.headers }
       )
-      .pipe(map(res => res.data.roles.nodes));
+      .pipe(map((res) => res.data.roles.nodes));
   }
 }

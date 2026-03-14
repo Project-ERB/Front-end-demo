@@ -2,31 +2,105 @@ import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
-import { AdminService, Role } from './../../../../core/services/Admin-service/admin.service';
+import { SiedeAdminComponent } from '../../../../shared/UI/siede-admin/siede-admin/siede-admin.component';
+import {
+  AdminService,
+  Role,
+  UpdateRolePermission,
+} from './../../../../core/services/Admin-service/admin.service';
 
 const ROLE_COLORS = [
-  'bg-green-500', 'bg-blue-500', 'bg-amber-500', 'bg-pink-500',
-  'bg-indigo-500', 'bg-purple-500', 'bg-red-500', 'bg-teal-500',
-  'bg-orange-500', 'bg-cyan-500',
+  'bg-green-500',
+  'bg-blue-500',
+  'bg-amber-500',
+  'bg-pink-500',
+  'bg-indigo-500',
+  'bg-purple-500',
+  'bg-red-500',
+  'bg-teal-500',
+  'bg-orange-500',
+  'bg-cyan-500',
 ];
 
 export const ROLE_NAME_OPTIONS = [
-  { label: 'Sales', value: 0 },
-  { label: 'Sales Dashboard', value: 1 },
-  { label: 'Products', value: 2 },
-  { label: 'Categories', value: 3 },
-  { label: 'Discounts', value: 4 },
-  { label: 'Orders', value: 5 },
-  { label: 'Customers', value: 6 },
-  { label: 'HR', value: 7 },
-  { label: 'Employees', value: 8 },
-  { label: 'Departments', value: 9 },
-  { label: 'Recruits', value: 10 },
-  { label: 'Candidates', value: 11 },
-  { label: 'Applications', value: 12 },
-  { label: 'Inventory', value: 13 },
-  { label: 'Administration', value: 14 },
+  // ── الإدارة العليا
+  { label: 'System Admin', value: 0 },
+  { label: 'CEO', value: 1 },
+  { label: 'CFO', value: 2 },
+  { label: 'COO', value: 3 },
+  { label: 'HR Director', value: 4 },
+
+  // ── المحاسبة والمالية
+  { label: 'Accountant', value: 5 },
+  { label: 'Senior Accountant', value: 6 },
+  { label: 'Financial Manager', value: 7 },
+  { label: 'Auditor', value: 8 },
+  { label: 'Cashier', value: 9 },
+  { label: 'Treasury Manager', value: 10 },
+  { label: 'Tax Manager', value: 11 },
+  { label: 'AR Clerk', value: 12 },
+  { label: 'AP Clerk', value: 13 },
+
+  // ── المبيعات
+  { label: 'Sales Representative', value: 14 },
+  { label: 'Sales Manager', value: 15 },
+  { label: 'Sales Support', value: 16 },
+  { label: 'Customer', value: 17 },
+
+  // ── المشتريات
+  { label: 'Procurement Officer', value: 18 },
+  { label: 'Procurement Manager', value: 19 },
+  { label: 'Supplier Manager', value: 20 },
+  { label: 'Supplier', value: 21 },
+
+  // ── المخزون والمستودعات
+  { label: 'Inventory Clerk', value: 22 },
+  { label: 'Inventory Manager', value: 23 },
+  { label: 'Warehouse Keeper', value: 24 },
+  { label: 'Warehouse Manager', value: 25 },
+
+  // ── الموارد البشرية
+  { label: 'HR Clerk', value: 26 },
+  { label: 'Recruiter', value: 27 },
+  { label: 'Payroll Officer', value: 28 },
+  { label: 'Training Manager', value: 29 },
+
+  // ── شؤون الموظفين
+  { label: 'Employee', value: 30 },
+  { label: 'Department Manager', value: 31 },
+  { label: 'Attendance Officer', value: 32 },
+
+  // ── العملاء والموردين
+  { label: 'Customer Service', value: 33 },
+  { label: 'CRM Manager', value: 34 },
+  { label: 'Vendor Relations', value: 35 },
+
+  // ── الإنتاج والتصنيع
+  { label: 'Production Worker', value: 36 },
+  { label: 'Production Manager', value: 37 },
+  { label: 'Quality Controller', value: 38 },
+  { label: 'Maintenance Engineer', value: 39 },
+
+  // ── المشاريع
+  { label: 'Project Manager', value: 40 },
+  { label: 'Project Engineer', value: 41 },
+  { label: 'Task Assignee', value: 42 },
+
+  // ── BI والتقارير
+  { label: 'BI Analyst', value: 43 },
+  { label: 'Data Analyst', value: 44 },
+  { label: 'Report Viewer', value: 45 },
+
+  // ── التقنية والدعم
+  { label: 'IT Support', value: 46 },
+  { label: 'Developer', value: 47 },
+  { label: 'Database Admin', value: 48 },
+  { label: 'Security Officer', value: 49 },
+
+  // ── أخرى
+  { label: 'Guest', value: 50 },
+  { label: 'Supervisor', value: 51 },
+  { label: 'Operator', value: 52 },
 ];
 
 @Component({
@@ -36,7 +110,6 @@ export const ROLE_NAME_OPTIONS = [
   styleUrl: './rolemanagement.component.scss',
 })
 export class RolemanagementComponent implements OnInit {
-
   private readonly adminService = inject(AdminService);
 
   // ── State ────────────────────────────────────────────────────────────────
@@ -53,6 +126,8 @@ export class RolemanagementComponent implements OnInit {
   showEditModal = false;
   editId = '';
   editName: number | null = null;
+  editDescription = '';
+  editPermissions: UpdateRolePermission[] = [];
   isUpdating = false;
   updateSuccess = '';
   updateError = '';
@@ -62,7 +137,9 @@ export class RolemanagementComponent implements OnInit {
   filteredRoles = computed(() => {
     const q = this.filterQuery().toLowerCase();
     return this.allRoles().filter(
-      r => r.name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q)
+      (r) =>
+        r.name.toLowerCase().includes(q) ||
+        r.description.toLowerCase().includes(q)
     );
   });
 
@@ -98,13 +175,16 @@ export class RolemanagementComponent implements OnInit {
     this.errorMessage.set('');
 
     this.adminService.getRoles().subscribe({
-      next: roles => {
+      next: (roles) => {
         this.allRoles.set(
-          roles.map((r, i) => ({ ...r, color: ROLE_COLORS[i % ROLE_COLORS.length] }))
+          roles.map((r, i) => ({
+            ...r,
+            color: ROLE_COLORS[i % ROLE_COLORS.length],
+          }))
         );
         this.isLoading.set(false);
       },
-      error: err => {
+      error: (err) => {
         console.error('Failed to load roles:', err);
         this.errorMessage.set('Failed to load roles. Please try again.');
         this.isLoading.set(false);
@@ -115,11 +195,21 @@ export class RolemanagementComponent implements OnInit {
   // ── Edit Modal ────────────────────────────────────────────────────────────
   openEditModal(role: Role & { color: string }): void {
     this.editId = role.id;
-    // Try to match current name to option value
+
     const match = ROLE_NAME_OPTIONS.find(
-      o => o.label.toLowerCase() === role.name.toLowerCase()
+      (o) => o.label.toLowerCase() === role.name.toLowerCase()
     );
     this.editName = match ? match.value : null;
+    this.editDescription = role.description ?? '';
+
+    this.editPermissions = (role.permissions ?? []).map((p) => ({
+      permissionId: p.id ?? '',
+      allowCreate: p.allowAccess?.[0]?.allowCreate ?? false,
+      allowDelete: p.allowAccess?.[0]?.allowDelete ?? false,
+      allowUpdated: p.allowAccess?.[0]?.allowUpdate ?? false,
+      allowView: p.allowAccess?.[0]?.allowView ?? false,
+    }));
+
     this.updateSuccess = '';
     this.updateError = '';
     this.showEditModal = true;
@@ -129,6 +219,8 @@ export class RolemanagementComponent implements OnInit {
     this.showEditModal = false;
     this.editId = '';
     this.editName = null;
+    this.editDescription = '';
+    this.editPermissions = [];
     this.updateSuccess = '';
     this.updateError = '';
   }
@@ -140,7 +232,13 @@ export class RolemanagementComponent implements OnInit {
     this.updateSuccess = '';
     this.updateError = '';
 
-    this.adminService.updateRole(this.editId, this.editName).subscribe({
+    const body = {
+      name: this.editName,
+      description: this.editDescription,
+      setPermissions: this.editPermissions,
+    };
+
+    this.adminService.updateRole(this.editId, body).subscribe({
       next: () => {
         this.isUpdating = false;
         this.updateSuccess = 'Role updated successfully!';
@@ -149,16 +247,17 @@ export class RolemanagementComponent implements OnInit {
           this.loadRoles();
         }, 1200);
       },
-      error: err => {
+      error: (err) => {
         this.isUpdating = false;
-        this.updateError = err?.error?.message || 'Update failed. Please try again.';
+        this.updateError =
+          err?.error?.message || 'Update failed. Please try again.';
       },
     });
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   getResources(role: Role): string[] {
-    const all = (role.permissions ?? []).flatMap(p => p.resources ?? []);
+    const all = (role.permissions ?? []).flatMap((p) => p.resources ?? []);
     return [...new Set(all)];
   }
 
@@ -185,9 +284,9 @@ export class RolemanagementComponent implements OnInit {
     this.adminService.deleteRole(role.id).subscribe({
       next: () => {
         this.deletingId = '';
-        this.allRoles.update(roles => roles.filter(r => r.id !== role.id));
+        this.allRoles.update((roles) => roles.filter((r) => r.id !== role.id));
       },
-      error: err => {
+      error: (err) => {
         this.deletingId = '';
         alert(err?.error?.message || 'Delete failed. Please try again.');
       },

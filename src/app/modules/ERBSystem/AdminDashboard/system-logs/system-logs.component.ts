@@ -3,32 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SiedeAdminComponent } from '../../../../shared/UI/siede-admin/siede-admin/siede-admin.component';
-import { LogNode, PermissionService } from './../../../../core/services/permission/permission.service'; // ← عدّل المسار
+import { LogNode, PermissionService, SystemLog, LogStatus } from './../../../../core/services/permission/permission.service';
 
-export type LogStatus = 'Success' | 'Critical' | 'Warning' | 'Info';
 export type SortField = 'timestamp' | 'user' | 'module' | 'action' | 'status';
 export type SortDir = 'asc' | 'desc';
 export type DateRange = 'Last 24 Hours' | 'Last 7 Days' | 'Last 30 Days' | 'Custom Range';
-
-export interface SystemLog {
-  id: string;
-  timestamp: string;
-  userInitials: string;
-  userBg: string;
-  userText: string;
-  userName: string;
-  ip: string;
-  module: string;
-  action: string;
-  actionHighlight?: string;
-  status: LogStatus;
-  selected: boolean;
-  // raw fields من الـ API
-  oldValues?: string | null;
-  newValues?: string | null;
-  userId?: string | null;
-  correlationId?: string;
-}
 
 @Component({
   selector: 'app-system-logs',
@@ -38,7 +17,11 @@ export interface SystemLog {
   styleUrl: './system-logs.component.scss',
 })
 export class SystemLogsComponent implements OnInit {
-  constructor(private router: Router, private logService: PermissionService) { }
+
+  constructor(
+    private router: Router,
+    private logService: PermissionService
+  ) { }
 
   isLoading = false;
 
@@ -156,7 +139,9 @@ export class SystemLogsComponent implements OnInit {
   }
 
   // ── Pagination ─────────────────────────────────────────────────────────────
-  get totalPages(): number { return Math.max(1, Math.ceil(this.filteredLogs.length / this.pageSize)); }
+  get totalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredLogs.length / this.pageSize));
+  }
   get pagedLogs(): SystemLog[] {
     const s = (this.currentPage - 1) * this.pageSize;
     return this.filteredLogs.slice(s, s + this.pageSize);
@@ -167,8 +152,12 @@ export class SystemLogsComponent implements OnInit {
     const end = Math.min(this.totalPages, this.currentPage + delta);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
-  get rangeStart(): number { return this.filteredLogs.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1; }
-  get rangeEnd(): number { return Math.min(this.currentPage * this.pageSize, this.filteredLogs.length); }
+  get rangeStart(): number {
+    return this.filteredLogs.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
+  }
+  get rangeEnd(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredLogs.length);
+  }
   goToPage(p: number): void { if (p >= 1 && p <= this.totalPages) this.currentPage = p; }
   prevPage(): void { this.goToPage(this.currentPage - 1); }
   nextPage(): void { this.goToPage(this.currentPage + 1); }
@@ -176,7 +165,9 @@ export class SystemLogsComponent implements OnInit {
 
   // ── Sorting ────────────────────────────────────────────────────────────────
   setSort(field: SortField): void {
-    this.sortDir = this.sortField === field ? (this.sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+    this.sortDir = this.sortField === field
+      ? (this.sortDir === 'asc' ? 'desc' : 'asc')
+      : 'asc';
     this.sortField = field;
     this.currentPage = 1;
   }
@@ -227,7 +218,9 @@ export class SystemLogsComponent implements OnInit {
     return map[module] ?? 'bg-gray-100 text-gray-700';
   }
 
+  // ── Navigate to detail ────────────────────────────────────────────────────
   viewDetails(log: SystemLog): void {
-    this.router.navigate(['log-detail', log.id], { state: { log } });
+    this.logService.set(log);
+    this.router.navigate(['log-detail', log.id]);
   }
 }

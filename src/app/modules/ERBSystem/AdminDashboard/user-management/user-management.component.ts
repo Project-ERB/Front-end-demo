@@ -137,10 +137,47 @@ export class UserManagementComponent implements OnInit {
   // ── Lifecycle ─────────────────────────────────────────────────────────────
   ngOnInit(): void {
     this.getroles();
+    this.loadUsers();
   }
 
   // ── API: Load users ───────────────────────────────────────────────────────
   loadUsers(): void {
+
+    this.isLoading = true;
+
+    this._apolloService.getUsers().subscribe({
+      next: (res) => {
+
+        const nodes = res?.data?.users?.nodes ?? [];
+
+        this.users = nodes.map((u: any, index: number) => {
+
+          const avatar = buildAvatarStyle(index);
+
+          return {
+            id: index,
+            name: u.username,
+            email: u.email,
+
+            initials: buildInitials(u.username),
+            avatarBg: avatar.bg,
+            avatarText: avatar.text,
+
+            role: 'Viewer',      // مؤقت
+            status: 'Active',    // مؤقت
+            lastLogin: '-'
+          } as User;
+
+        });
+
+        this.isLoading = false;
+      },
+
+      error: (err) => {
+        console.error('users error:', err);
+        this.isLoading = false;
+      }
+    });
   }
 
 

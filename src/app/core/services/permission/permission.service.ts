@@ -21,6 +21,28 @@ export enum Resource {
   Admination = 14,
 }
 
+// ── SystemLog interface هنا هي المصدر الوحيد ──────────────────────────────
+export type LogStatus = 'Success' | 'Critical' | 'Warning' | 'Info';
+
+export interface SystemLog {
+  id: string;
+  timestamp: string;
+  userInitials: string;
+  userBg: string;
+  userText: string;
+  userName: string;
+  ip: string;
+  module: string;
+  action: string;
+  actionHighlight?: string;
+  status: LogStatus;
+  selected: boolean;
+  oldValues?: string | null;
+  newValues?: string | null;
+  userId?: string | null;
+  correlationId?: string;
+}
+
 export interface LogNode {
   id: string;
   userAgent: string | null;
@@ -64,14 +86,18 @@ export interface UpdatePermissionRequest {
   resources: number[];
 }
 
-
 export interface CreatePermissionResponse {
   [key: string]: any;
 }
-@Injectable({
-  providedIn: 'root',
-})
+
+@Injectable({ providedIn: 'root' })
 export class PermissionService {
+
+  private _log: SystemLog | null = null;
+
+  set(log: SystemLog): void { this._log = log; }
+  get(): SystemLog | null { return this._log; }
+  clear(): void { this._log = null; }
 
   constructor(private http: HttpClient) { }
 
@@ -96,14 +122,11 @@ export class PermissionService {
         }
       }
     `;
-
-    const headers = { 'Content-Type': 'application/json' };
-
     return this.http
       .post<{ data: { logs: { nodes: LogNode[] } } }>(
         `${Environment.baseUrl}/graphql?t=${Date.now()}`,
         { query },
-        { headers }
+        { headers: { 'Content-Type': 'application/json' } }
       )
       .pipe(map(res => res.data.logs.nodes));
   }
@@ -126,27 +149,24 @@ export class PermissionService {
         }
       }
     `;
-
-    const body = { query };
-    const headers = { 'Content-Type': 'application/json' };
-
     return this.http
       .post<{ data: { permissions: { nodes: PermissionNode[] } } }>(
         `${Environment.baseUrl}/graphql?t=${Date.now()}`,
-        body,
-        { headers }
+        { query },
+        { headers: { 'Content-Type': 'application/json' } }
       )
       .pipe(map(res => res.data.permissions.nodes));
   }
 
   createPermission(payload: CreatePermissionRequest): Observable<CreatePermissionResponse> {
-    return this.http.post<CreatePermissionResponse>(`${Environment.baseUrl}/permissions`, payload);
+    return this.http.post<CreatePermissionResponse>(
+      `${Environment.baseUrl}/permissions`, payload
+    );
   }
 
   updatePermission(payload: UpdatePermissionRequest): Observable<CreatePermissionResponse> {
     return this.http.put<CreatePermissionResponse>(
-      `${Environment.baseUrl}/permissions`,
-      payload
+      `${Environment.baseUrl}/permissions`, payload
     );
   }
 
