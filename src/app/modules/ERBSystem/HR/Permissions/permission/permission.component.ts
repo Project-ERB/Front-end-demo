@@ -2,7 +2,7 @@ import { PermissionService } from './../../../../../core/services/permission/per
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PermissionNode, AllowAccess, Resource, UpdatePermissionRequest } from './../../../../../core/services/permission/permission.service';
 import { SiedeAdminComponent } from "../../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
 
@@ -76,7 +76,10 @@ export class PermissionComponent implements OnInit {
     return Math.min(this.currentPage * this.itemsPerPage, this.totalPermissions);
   }
 
-  constructor(private permissionService: PermissionService) { }
+  constructor(
+    private permissionService: PermissionService,
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     this.loadPermissions();
@@ -246,6 +249,11 @@ export class PermissionComponent implements OnInit {
         this.deletingId = '';
         alert(err?.error?.message || 'Delete failed. Please try again.');
       },
+    });
+  }
+  onView(perm: PermissionNode): void {
+    this.router.navigate(['/permission-details', perm.id], {
+      state: { permission: perm },   // بنبعت الـ object كاملاً في الـ state
     });
   }
 }

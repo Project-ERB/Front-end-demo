@@ -79,8 +79,8 @@
                                     </th>
                                     <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
                                         Resources</th>
-                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
-                                        Allow Access</th>
+                                    <!-- <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                        Allow Access</th> -->
                                     <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
                                         Status</th>
                                     <th
@@ -123,7 +123,7 @@
                                             </ng-template>
                                         </div>
                                     </td>
-
+                                    <!-- 
                                     <td class="px-6 py-4">
                                         <ng-container *ngIf="getAllowAccess(perm) as access; else noAccess">
                                             <div class="flex flex-wrap gap-1">
@@ -140,7 +140,7 @@
                                         <ng-template #noAccess>
                                             <span class="text-xs text-slate-400">No access set</span>
                                         </ng-template>
-                                    </td>
+                                    </td> -->
 
                                     <td class="px-6 py-4">
                                         <div [class]="getStatusClass(perm)" class="flex items-center gap-1.5">
@@ -151,14 +151,24 @@
 
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex justify-end gap-1">
+
+                                            <!-- View button -->
+                                            <button (click)="onView(perm)"
+                                                class="p-2 text-slate-400 hover:text-green-600 transition-colors"
+                                                title="View permission details">
+                                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                            </button>
+
                                             <!-- Edit button -->
                                             <button (click)="openEditModal(perm)"
                                                 class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
                                                 <span class="material-symbols-outlined text-[20px]">edit</span>
                                             </button>
+
                                             <!-- Delete button -->
                                             <button (click)="onDelete(perm)" [disabled]="deletingId === perm.id"
                                                 class="p-2 text-slate-400 hover:text-red-600 transition-colors disabled:opacity-40">
+
                                                 <svg *ngIf="deletingId === perm.id"
                                                     class="animate-spin h-5 w-5 text-red-400"
                                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -167,9 +177,12 @@
                                                     <path class="opacity-75" fill="currentColor"
                                                         d="M4 12a8 8 0 018-8v8H4z"></path>
                                                 </svg>
+
                                                 <span *ngIf="deletingId !== perm.id"
                                                     class="material-symbols-outlined text-[20px]">delete</span>
+
                                             </button>
+
                                         </div>
                                     </td>
                                 </tr>

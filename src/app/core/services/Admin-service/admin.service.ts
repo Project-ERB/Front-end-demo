@@ -29,6 +29,7 @@ export interface Role {
 
 export interface UpdateRolePermission {
   permissionId: string;
+  permissionName?: string;
   allowCreate: boolean;
   allowDelete: boolean;
   allowUpdated: boolean;
@@ -124,5 +125,37 @@ export class AdminService {
         { headers: this.headers }
       )
       .pipe(map((res) => res.data.roles.nodes));
+  }
+
+  getRoleById(id: string): Observable<Role> {
+    const query = `
+    query GetRole($id: UUID!) {
+      role(id: $id) {
+        id
+        name
+        description
+        permissions {
+          id
+          name
+          description
+          resources
+          allowAccess {
+            allowCreate
+            allowDelete
+            allowUpdate
+            allowView
+          }
+        }
+      }
+    }
+  `;
+
+    return this._http
+      .post<{ data: { role: Role } }>(
+        `${Environment.baseUrl}/graphql?t=${Date.now()}`,
+        { query, variables: { id } },   // ← الـ id بيتبعت كـ variable مش hardcoded
+        { headers: this.headers }
+      )
+      .pipe(map((res) => res.data.role));
   }
 }

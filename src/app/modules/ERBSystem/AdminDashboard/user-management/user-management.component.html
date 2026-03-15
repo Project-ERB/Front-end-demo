@@ -49,11 +49,9 @@
                             </th>
                             <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider">Status
                             </th>
-                            <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider">Last
-                                Login</th>
-                            <th
-                                class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider text-right">
-                                Actions</th>
+                            <th class="px-6 py-4 "></th>
+                            <th class="px-6 py-4">
+                            </th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-[#dbdee6]">
@@ -98,16 +96,16 @@
                             </td>
 
                             <!-- Last login -->
-                            <td class="px-6 py-4 text-sm text-[#616e89]">{{ user.lastLogin }}</td>
+                            <!-- <td class="px-6 py-4 text-sm text-[#616e89]">{{ user.lastLogin }}</td> -->
 
                             <!-- Actions -->
-                            <td class="px-6 py-4 text-right relative">
+                            <!-- <td class="px-6 py-4 text-right relative">
                                 <button (click)="toggleActionMenu(i, $event)"
                                     class="text-[#616e89] hover:text-[#2463eb] transition-colors p-1 rounded-md hover:bg-slate-100">
                                     <span class="material-symbols-outlined text-[22px]">more_vert</span>
                                 </button>
 
-                                <!-- Dropdown menu -->
+                                
                                 <div *ngIf="openActionMenuIndex === i" class="absolute right-6 top-full mt-1 w-44 bg-white rounded-lg border border-[#dbdee6]
                             shadow-xl z-20 overflow-hidden text-left">
                                     <button (click)="editUser(user)" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#111318]
@@ -132,7 +130,7 @@
                                         Delete User
                                     </button>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
 
                         <!-- Empty state -->

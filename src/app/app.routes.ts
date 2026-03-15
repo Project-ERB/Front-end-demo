@@ -164,6 +164,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/HR/create-permission/create-permission/create-permission.component').then((R) => R.CreatePermissionComponent)
       },
       {
+        path: 'permission-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/permission-details/permission-details/permission-details.component').then((d) => d.PermissionDetailsComponent)
+      },
+      {
         path: 'super-admin',
         loadComponent: () => import('./modules/ERBSystem/HR/super-admin-overview/super-admin-overview.component').then((m) => m.SuperAdminOverviewComponent),
         title: 'super-admin',
@@ -172,6 +176,10 @@ export const routes: Routes = [
         path: 'rolemanagement',
         loadComponent: () => import('./modules/ERBSystem/HR/rolemanagement/rolemanagement.component').then((R) => R.RolemanagementComponent),
         title: 'rolemanagement',
+      },
+      {
+        path: 'role-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/role-details/role-details/role-details.component').then((L) => L.RoleDetailsComponent)
       },
       {
         path: 'hr-Overview',

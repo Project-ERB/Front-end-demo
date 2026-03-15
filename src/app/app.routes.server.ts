@@ -25,6 +25,15 @@ export const serverRoutes: ServerRoute[] = [
     path: 'product/:id',
     renderMode: RenderMode.Server,
   },
+  {
+    path: 'permission-details/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'role-details/:id',
+    renderMode: RenderMode.Server,
+  },
+
 
   // All other routes use Prerender
   {

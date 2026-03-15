@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SiedeAdminComponent } from '../../../../shared/UI/siede-admin/siede-admin/siede-admin.component';
 import {
   AdminService,
@@ -111,6 +111,7 @@ export const ROLE_NAME_OPTIONS = [
 })
 export class RolemanagementComponent implements OnInit {
   private readonly adminService = inject(AdminService);
+  private readonly router = inject(Router);
 
   // ── State ────────────────────────────────────────────────────────────────
   searchQuery = signal('');
@@ -204,6 +205,7 @@ export class RolemanagementComponent implements OnInit {
 
     this.editPermissions = (role.permissions ?? []).map((p) => ({
       permissionId: p.id ?? '',
+      permissionName: p.name ?? p.id ?? '',  // ← التعديل هنا
       allowCreate: p.allowAccess?.[0]?.allowCreate ?? false,
       allowDelete: p.allowAccess?.[0]?.allowDelete ?? false,
       allowUpdated: p.allowAccess?.[0]?.allowUpdate ?? false,
@@ -292,4 +294,12 @@ export class RolemanagementComponent implements OnInit {
       },
     });
   }
+
+  onView(role: Role & { color: string }): void {
+    this.router.navigate(['/role-details', role.id], {
+      state: { role },   // بنبعت الـ object كاملاً → مفيش API call زيادة
+    });
+  }
+
+
 }
