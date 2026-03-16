@@ -5,8 +5,6 @@ import { RxReactiveFormsModule, RxwebValidators } from '@rxweb/reactive-form-val
 import { AuthService } from '../../../../core/services/Auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
-
 @Component({
   selector: 'app-admin-login',
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RxReactiveFormsModule, RouterLink],
@@ -14,25 +12,18 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './admin-login.component.scss',
 })
 export class AdminLoginComponent {
-
   private readonly _toastrService = inject(ToastrService);
   isLoading: boolean = false;
-
   private readonly _formBuilder = inject(FormBuilder)
-
   private readonly _authService = inject(AuthService);
-
   private readonly _router = inject(Router);
-
   @ViewChild('rememberMeinput') rememberMeinput!: ElementRef<HTMLInputElement>;
-
   loginform: FormGroup = this._formBuilder.group({
     email: [null, [Validators.required, Validators.email]],
-    password: [null, [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/)]],
+    password: [null, [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/)]],
     confirmPassword: [null, RxwebValidators.compare({ fieldName: 'password' })],
     rememberMe: []
   })
-
   LoginSubmit() {
     if (this.loginform.valid) {
       this.isLoading = true;
@@ -40,35 +31,35 @@ export class AdminLoginComponent {
         next: (res) => {
           this._toastrService.success('Login successful', 'Success');
           this.isLoading = false;
-          console.log(res);
-          //store token in local storage
+
+          // store tokens
           this._authService.accessToken.set(res.accessToken);
-          //store token in local storage
           localStorage.setItem('refreshToken', res.refreshToken);
-          //set remember me checkbox value in local storage
-          // if (this.rememberMeinput.nativeElement.checked) {
-          //   localStorage.setItem('accessToken', res.accessToken);
-          // }
           localStorage.setItem('accessToken', res.accessToken);
-          //بكرا لما اصحي هعمل install  ل التوستر و اعمل توست هنا
+
+          // ✅ store role
+          localStorage.setItem('role', res.roles[0]);
+
           setTimeout(() => {
-            //navigate to admin dashboard
-            this._router.navigate(['/admin-dashboard']);
+            const role = res.roles[0];
+
+            if (role === 'SystemAdmin') {
+              this._router.navigate(['/admin-dashboard']);
+            } else if (role === 'SalesManager') {
+              this._router.navigate(['/sales-analysis']);
+            } else {
+              this._toastrService.error('Unauthorized role', 'Error');
+            }
           }, 2000);
         },
         error: (err) => {
-          this._toastrService.error('Login failed', 'Error');
-          console.log(err);
+          this._toastrService.error('Login failed', err);
           this.isLoading = false;
         }
-      })
+      });
     }
-
   }
-
   showPassword = false;
-
-
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }

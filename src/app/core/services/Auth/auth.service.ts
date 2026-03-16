@@ -25,4 +25,16 @@ export class AuthService {
     return this._http.post(`${Environment.baseUrl}/api/Auth/Register-Employee`, data);
   }
 
+  ForgotPassword(email: string): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/User/ForgotPassword/${email}`, {});
+  }
+
+  ResetPassword(data: object): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/User/ResetPassword`, data);
+  }
+
+  VerifyResetOtp(data: object): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/User/VerifyResetOtp`, data);
+  }
+
 }
