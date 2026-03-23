@@ -42,6 +42,7 @@
 
             <div class="flex flex-1 gap-5 overflow-hidden" style="min-height: 0;">
 
+                <!-- ⚠️ ng-template مش ممكن يتحول — بيستخدم recursive ngTemplateOutlet -->
                 <ng-template #treeNodes let-nodes let-depth="depth">
                     <div *ngFor="let node of nodes" class="mb-0.5">
                         <div (click)="toggleNode(node); selectNode(node, tree)" [ngClass]="node.active
@@ -83,15 +84,14 @@
                         </div>
 
                         <div class="flex items-center gap-2">
-                            <!-- ✅ Delete Selected button — only visible when items are selected -->
-                            <button *ngIf="selectedCount > 0" (click)="deleteSelected()"
+                            @if (selectedCount > 0) {
+                            <button (click)="deleteSelected()"
                                 class="flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100"
                                 title="Delete Selected">
                                 <span class="material-symbols-outlined text-[16px]">delete_sweep</span>
                                 Delete Selected ({{ selectedCount }})
                             </button>
-
-                            <!-- ✅ Delete All button — disabled when no categories exist -->
+                            }
                             <button (click)="deleteAll()" [disabled]="categories.length === 0"
                                 class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-40"
                                 title="Delete All">
@@ -135,7 +135,6 @@
                             </thead>
 
                             <tbody class="divide-y divide-[#e2e8f0] bg-white">
-
                                 @for (cate of pagedCategories; track cate.id) {
                                 <tr class="group transition-colors hover:bg-[#eff6ff]"
                                     [ngClass]="{'bg-[#eff6ff]/40': cate.selected}">
@@ -168,9 +167,8 @@
                                         </div>
                                     </td>
                                 </tr>
-                                }
-
-                                <tr *ngIf="pagedCategories.length === 0">
+                                } @empty {
+                                <tr>
                                     <td colspan="5" class="px-6 py-16 text-center">
                                         <div class="flex flex-col items-center gap-3">
                                             <span
@@ -183,6 +181,7 @@
                                         </div>
                                     </td>
                                 </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
@@ -201,16 +200,20 @@
                                 class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40">
                                 <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                             </button>
-                            <ng-container *ngFor="let page of pageNumbers">
-                                <span *ngIf="page === '...'"
-                                    class="flex size-9 items-center justify-center text-xs text-[#64748b]">…</span>
-                                <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
-                                        ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
-                                        : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
-                                    class="flex size-9 items-center justify-center rounded-lg border text-xs transition-colors">
-                                    {{ page }}
-                                </button>
-                            </ng-container>
+
+                            @for (page of pageNumbers; track page) {
+                            @if (page === '...') {
+                            <span class="flex size-9 items-center justify-center text-xs text-[#64748b]">…</span>
+                            } @else {
+                            <button (click)="goToPage(page)" [ngClass]="page === currentPage
+                                            ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
+                                            : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                                class="flex size-9 items-center justify-center rounded-lg border text-xs transition-colors">
+                                {{ page }}
+                            </button>
+                            }
+                            }
+
                             <button (click)="nextPage()" [disabled]="currentPage === totalPages"
                                 class="flex size-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40">
                                 <span class="material-symbols-outlined text-[18px]">chevron_right</span>
@@ -224,8 +227,8 @@
     </main>
 
     <!-- MODAL -->
-    <div *ngIf="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" role="dialog"
-        aria-modal="true">
+    @if (isModalOpen) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" role="dialog" aria-modal="true">
         <div class="absolute inset-0 bg-[#0f172a]/40 backdrop-blur-sm" (click)="closeModal()"></div>
         <div
             class="relative w-full max-w-[640px] overflow-hidden rounded-xl bg-white shadow-2xl flex flex-col max-h-[90vh]">
@@ -269,9 +272,9 @@
                         <select formControlName="parentCategoryId"
                             class="block w-full rounded-lg bg-white px-3.5 py-2.5 text-sm shadow-sm ring-1 ring-inset ring-[#dcdfe4] focus:ring-2 focus:outline-none">
                             <option [ngValue]="null">Select parent category</option>
-                            <option *ngFor="let category of categories" [ngValue]="category.id">
-                                {{ category.name }}
-                            </option>
+                            @for (category of categories; track category.id) {
+                            <option [ngValue]="category.id">{{ category.name }}</option>
+                            }
                         </select>
                     </div>
                     <div class="pt-2 space-y-2">
@@ -288,4 +291,6 @@
             </div>
         </div>
     </div>
+    }
+
 </div>

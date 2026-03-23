@@ -1,0 +1,787 @@
+<div class="flex h-screen w-full overflow-hidden bg-[#f6f6f8] font-sans text-slate-900 antialiased">
+
+    <app-siedbar-warehouse></app-siedbar-warehouse>
+    <!-- Main -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f6f6f8]">
+
+        <!-- Header -->
+        <header
+            class="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0 z-10">
+            <div class="flex items-center gap-4">
+                <h2 class="text-lg font-semibold text-slate-900">Warehouses</h2>
+                <span class="text-slate-300 text-xl font-light">/</span>
+                <nav class="flex">
+                    <ol class="inline-flex items-center space-x-1">
+                        <li>
+                            <a href="#" class="text-sm font-medium text-slate-500 hover:text-[#1e3b8a]">Dashboard</a>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-slate-400"
+                                style="font-size:16px">chevron_right</span>
+                            <span class="ml-1 text-sm font-medium text-slate-900">List View</span>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="flex items-center gap-3">
+                <button
+                    class="p-2 text-slate-500 hover:text-slate-700 transition-colors rounded-full hover:bg-slate-100">
+                    <span class="material-symbols-outlined" style="font-size:24px">notifications</span>
+                </button>
+                <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkgJaABO2vOhw1kV9tjmhRLs7IMWxIp8N4jg_x6QxqwE2YxloN8EPi-DhHG7Oadvn20SWA8q-hq3_5SL0VTQFnN3_4ELMxPoKOePPOL-AuUZziexbZQZXkQLScJg4x0NAm1tnxhUkxDjzV6Qi9JcKQce9YMsjJ5cI4Vq2sFf2HF2N1oMI0z59A03Lih-SkKVsw-giqxv3JrQ-4AdM5ME11PdlAlaoAi8zOfYnugNXqjHDO_QE3VkGIsJZYrxvSH86xoJs-LrinyBtX"
+                        alt="User" class="w-full h-full object-cover" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-6">
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div
+                    class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500">Total Warehouses</p>
+                        <p class="text-2xl font-bold text-slate-900 mt-1">{{ totalResults }}</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 rounded-lg text-[#1e3b8a]">
+                        <span class="material-symbols-outlined">warehouse</span>
+                    </div>
+                </div>
+                <div
+                    class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500">Total Capacity</p>
+                        <p class="text-2xl font-bold text-slate-900 mt-1">85%</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg text-green-600">
+                        <span class="material-symbols-outlined">analytics</span>
+                    </div>
+                </div>
+                <div
+                    class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-slate-500">Active Managers</p>
+                        <p class="text-2xl font-bold text-slate-900 mt-1">10</p>
+                    </div>
+                    <div class="p-3 bg-purple-50 rounded-lg text-purple-600">
+                        <span class="material-symbols-outlined">group</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <!-- Search -->
+                <div class="relative w-full sm:w-96 group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span
+                            class="material-symbols-outlined text-slate-400 group-focus-within:text-[#1e3b8a] transition-colors"
+                            style="font-size:20px">search</span>
+                    </div>
+                    <input [(ngModel)]="searchQuery" name="searchField123" autocomplete="new-password" autocorrect="off"
+                        autocapitalize="off" spellcheck="false" type="text"
+                        placeholder="Search warehouses by name, manager, or address..."
+                        class="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1e3b8a] focus:border-[#1e3b8a] sm:text-sm shadow-sm transition-all" />
+                </div>
+                <!-- Actions -->
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                    <button
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-medium hover:bg-slate-50 transition-all shadow-sm">
+                        <span class="material-symbols-outlined" style="font-size:20px">filter_list</span>
+                        <span>Filter</span>
+                    </button>
+                    <button
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-medium hover:bg-slate-50 transition-all shadow-sm">
+                        <span class="material-symbols-outlined" style="font-size:20px">download</span>
+                        <span class="hidden sm:inline">Export</span>
+                    </button>
+                    <button (click)="openAddWarehouseModal()"
+                        class="flex flex-1 sm:flex-none items-center justify-center gap-2 px-4 py-2.5 bg-[#1e3b8a] hover:bg-[#1a3279] text-white rounded-lg text-sm font-bold shadow-sm transition-all">
+                        <span class="material-symbols-outlined" style="font-size:20px">add</span>
+                        <span>Add Warehouse</span>
+                    </button>
+                    <button (click)="openTransferPage()"
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-[#1e3b8a] rounded-lg text-[#1e3b8a] text-sm font-bold hover:bg-blue-50 transition-all shadow-sm">
+                        <span class="material-symbols-outlined" style="font-size:20px">swap_horiz</span>
+                        <span>Stock Transfer</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider w-12">
+                                    <input type="checkbox" [checked]="selectAll" (change)="toggleSelectAll()"
+                                        class="rounded border-slate-300 text-[#1e3b8a] focus:ring-[#1e3b8a] h-4 w-4" />
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer group">
+                                    <div class="flex items-center gap-1">
+                                        Name
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            style="font-size:16px">arrow_downward</span>
+                                    </div>
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Manager</th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Address</th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Type</th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th scope="col"
+                                    class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-200">
+
+                            <!-- Loading State -->
+                            <tr *ngIf="isLoadingWarehouses">
+                                <td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    <svg class="animate-spin h-6 w-6 mx-auto mb-2 text-[#1e3b8a]"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                    Loading warehouses...
+                                </td>
+                            </tr>
+
+                            <!-- Error State -->
+                            <tr *ngIf="warehousesError && !isLoadingWarehouses">
+                                <td colspan="7" class="px-6 py-12 text-center text-red-500 text-sm">
+                                    <span
+                                        class="material-symbols-outlined text-3xl block mb-1.5 text-red-300">error</span>
+                                    {{ warehousesError }}
+                                </td>
+                            </tr>
+
+                            <!-- Data Rows -->
+                            <ng-container *ngIf="!isLoadingWarehouses && !warehousesError">
+                                <tr *ngFor="let wh of filteredWarehouses"
+                                    class="hover:bg-slate-50 transition-colors group">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox" [(ngModel)]="wh.selected"
+                                            class="rounded border-slate-300 text-[#1e3b8a] focus:ring-[#1e3b8a] h-4 w-4" />
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="h-10 w-10 flex-shrink-0 rounded-lg flex items-center justify-center font-bold text-sm"
+                                                [ngClass]="getInitialsBg(wh.color)">
+                                                {{ wh.initials }}
+                                            </div>
+                                            <div class="ml-4">
+                                                <div
+                                                    class="text-sm font-semibold text-[#1e3b8a] cursor-pointer hover:underline">
+                                                    {{ wh.name }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div
+                                                class="h-8 w-8 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
+                                                <img [src]="wh.managerAvatar" alt=""
+                                                    class="h-full w-full object-cover" />
+                                            </div>
+                                            <div class="ml-3">
+                                                <div class="text-sm font-medium text-slate-900">{{ wh.manager }}</div>
+                                                <div class="text-xs text-slate-500">{{ wh.managerEmail }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-slate-900">{{ wh.address }}</div>
+                                        <div class="text-xs text-slate-500">{{ wh.city }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                                            [ngClass]="getTypeClass(wh.type)">
+                                            {{ wh.type }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
+                                            [ngClass]="getStatusClass(wh.status)">
+                                            <span class="w-1.5 h-1.5 rounded-full"
+                                                [ngClass]="getStatusDotClass(wh.status)"></span>
+                                            {{ wh.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                        <button (click)="openEditWarehouseModal(wh)"
+                                            class="text-slate-400 hover:text-[#1e3b8a] transition-colors"
+                                            title="Edit Warehouse">
+                                            <span class="material-symbols-outlined" style="font-size:20px">edit</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty State -->
+                                <tr *ngIf="filteredWarehouses.length === 0">
+                                    <td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                        No warehouses match your search.
+                                    </td>
+                                </tr>
+                            </ng-container>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="bg-white px-6 py-4 flex items-center justify-between border-t border-slate-200">
+                    <p class="text-sm text-slate-700">
+                        Showing
+                        <span class="font-medium text-slate-900">{{ (currentPage - 1) * pageSize + 1 }}</span>
+                        to
+                        <span class="font-medium text-slate-900">{{ pageEnd }}</span>
+                        of
+                        <span class="font-medium text-slate-900">{{ totalResults }}</span>
+                        results
+                    </p>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                        <button (click)="prevPage()" [disabled]="currentPage === 1"
+                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined" style="font-size:18px">chevron_left</span>
+                        </button>
+                        <button *ngFor="let page of pages" (click)="goToPage(page)"
+                            [class.bg-blue-50]="currentPage === page" [class.border-blue-600]="currentPage === page"
+                            [class.text-blue-700]="currentPage === page" [class.bg-white]="currentPage !== page"
+                            [class.border-slate-300]="currentPage !== page"
+                            [class.text-slate-500]="currentPage !== page"
+                            class="relative inline-flex items-center px-4 py-2 border text-sm font-medium hover:bg-slate-50 transition-colors">
+                            {{ page }}
+                        </button>
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined" style="font-size:18px">chevron_right</span>
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- STOCK TRANSFER MODAL                                            -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<ng-container *ngIf="showTransferPage">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="closeTransferPage()"></div>
+
+    <!-- Modal container -->
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+            class="relative w-full max-w-3xl bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col max-h-[92vh]">
+
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200 flex-shrink-0">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900 leading-tight">Stock Transfer</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Move inventory between your warehouse locations.</p>
+                </div>
+                <button (click)="closeTransferPage()"
+                    class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body (scrollable) -->
+            <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6">
+
+                <!-- ── Section 1: Source & Destination ────────────────────── -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                    <div class="border-b border-slate-200 bg-slate-50/60 px-5 py-3.5">
+                        <h3 class="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                            <span
+                                class="flex items-center justify-center size-5 rounded-full bg-blue-50 text-[#1E3A8A] text-xs font-bold">1</span>
+                            Source &amp; Destination
+                        </h3>
+                    </div>
+                    <div class="p-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start relative">
+                            <!-- From -->
+                            <div class="space-y-1.5">
+                                <label class="block text-sm font-medium text-slate-700">From Warehouse</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="material-symbols-outlined text-slate-400 text-lg">storefront</span>
+                                    </div>
+                                    <select [(ngModel)]="transferForm.fromWarehouse"
+                                        class="block w-full pl-10 pr-8 py-2.5 text-sm border border-slate-300 rounded-lg shadow-sm focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] appearance-none cursor-pointer bg-white">
+                                        <option value="">Select source warehouse...</option>
+                                        <option *ngFor="let wh of warehouseOptions" [value]="wh.value">{{ wh.label }}
+                                        </option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <div
+                                class="hidden sm:flex absolute left-1/2 -translate-x-1/2 top-7 z-10 size-7 bg-white rounded-full border border-slate-200 items-center justify-center text-slate-400 shadow-sm">
+                                <span class="material-symbols-outlined text-base">arrow_forward</span>
+                            </div>
+
+                            <!-- To -->
+                            <div class="space-y-1.5">
+                                <label class="block text-sm font-medium text-slate-700">To Warehouse</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="material-symbols-outlined text-slate-400 text-lg">storefront</span>
+                                    </div>
+                                    <select [(ngModel)]="transferForm.toWarehouse"
+                                        class="block w-full pl-10 pr-8 py-2.5 text-sm border border-slate-300 rounded-lg shadow-sm focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] appearance-none cursor-pointer bg-white">
+                                        <option value="">Select destination warehouse...</option>
+                                        <option *ngFor="let wh of warehouseOptions" [value]="wh.value"
+                                            [disabled]="wh.value === transferForm.fromWarehouse">{{ wh.label }}</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+                                    </div>
+                                </div>
+                                <p *ngIf="transferForm.fromWarehouse && transferForm.toWarehouse && transferForm.fromWarehouse === transferForm.toWarehouse"
+                                    class="text-xs text-red-500 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">warning</span>
+                                    Source and destination cannot be the same.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Section 2: Product Selection ──────────────────────── -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                    <div
+                        class="border-b border-slate-200 bg-slate-50/60 px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <h3 class="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                            <span
+                                class="flex items-center justify-center size-5 rounded-full bg-blue-50 text-[#1E3A8A] text-xs font-bold">2</span>
+                            Product Selection
+                        </h3>
+                        <div class="relative w-full sm:max-w-xs">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="material-symbols-outlined text-slate-400 text-lg">search</span>
+                            </div>
+                            <!-- ✅ productSearch منفصل عن showCatalogDropdown -->
+                            <input [(ngModel)]="transferForm.productSearch" (focus)="showCatalogDropdown = true"
+                                type="text" placeholder="Search product by name or SKU..."
+                                class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md text-sm bg-white placeholder-slate-400 focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] transition-colors" />
+                        </div>
+                    </div>
+
+                    <!-- ✅ Catalog dropdown يظهر بناءً على showCatalogDropdown أو productSearch -->
+                    <div *ngIf="showCatalogDropdown || transferForm.productSearch.length > 0"
+                        class="border-b border-slate-200 divide-y divide-slate-100 max-h-40 overflow-y-auto bg-white">
+
+                        <!-- Loading state -->
+                        <div *ngIf="isLoadingProducts"
+                            class="px-5 py-4 text-sm text-slate-400 text-center flex items-center justify-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+                            Loading products...
+                        </div>
+
+                        <!-- Error state -->
+                        <div *ngIf="productsError && !isLoadingProducts"
+                            class="px-5 py-4 text-sm text-red-500 text-center flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-base">error</span>
+                            {{ productsError }}
+                        </div>
+
+                        <!-- Results -->
+                        <ng-container *ngIf="!isLoadingProducts && !productsError">
+                            <button *ngFor="let item of filteredCatalogItems" type="button"
+                                (click)="addCatalogItem(item)"
+                                class="w-full flex items-center gap-3 px-5 py-2.5 hover:bg-blue-50 transition-colors text-left">
+                                <div class="h-8 w-8 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                                    [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-slate-900 truncate">{{ item.name }}</p>
+                                    <p class="text-xs text-slate-500 font-mono">{{ item.sku }}</p>
+                                </div>
+                                <span class="text-xs text-slate-400 flex-shrink-0">{{ formatStock(item.availableStock)
+                                    }} avail.</span>
+                                <span class="material-symbols-outlined text-[#1E3A8A] flex-shrink-0">add_circle</span>
+                            </button>
+                            <div *ngIf="filteredCatalogItems.length === 0"
+                                class="px-5 py-4 text-sm text-slate-400 text-center">
+                                No more products to add.
+                            </div>
+                        </ng-container>
+                    </div>
+
+                    <!-- Items table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th scope="col"
+                                        class="py-3 pl-5 pr-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                        Product</th>
+                                    <th scope="col"
+                                        class="px-3 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                        Available</th>
+                                    <th scope="col"
+                                        class="px-3 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                        Qty to Transfer</th>
+                                    <th scope="col" class="relative py-3 pl-3 pr-5"><span class="sr-only">Remove</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr *ngFor="let item of transferForm.transferItems"
+                                    class="hover:bg-slate-50 transition-colors">
+                                    <td class="whitespace-nowrap py-3.5 pl-5 pr-3">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-9 w-9 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                                                [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                                            <div>
+                                                <div class="font-medium text-sm text-slate-900">{{ item.name }}</div>
+                                                <div class="text-xs text-slate-500 font-mono">{{ item.sku }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td
+                                        class="whitespace-nowrap px-3 py-3.5 text-sm text-right text-slate-600 font-medium">
+                                        {{ formatStock(item.availableStock) }}
+                                    </td>
+                                    <td class="whitespace-nowrap px-3 py-3.5 text-sm text-center">
+                                        <div class="flex items-center justify-center max-w-[100px] mx-auto">
+                                            <input [(ngModel)]="item.qtyToTransfer" type="number" min="1"
+                                                [max]="item.availableStock"
+                                                class="block w-full text-center border border-slate-300 rounded-md shadow-sm focus:ring-[#1E3A8A] focus:border-[#1E3A8A] text-sm py-1.5 bg-white" />
+                                        </div>
+                                    </td>
+                                    <td class="whitespace-nowrap py-3.5 pl-3 pr-5 text-right">
+                                        <button type="button" (click)="removeTransferItem(item.sku)"
+                                            class="text-slate-400 hover:text-red-500 transition-colors">
+                                            <span class="material-symbols-outlined text-xl">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty state -->
+                                <tr *ngIf="transferForm.transferItems.length === 0">
+                                    <td colspan="4" class="px-5 py-8 text-center text-slate-400 text-sm">
+                                        <span
+                                            class="material-symbols-outlined text-3xl block mb-1.5 text-slate-300">inventory_2</span>
+                                        No products added. Use the search above.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border-t border-slate-200 text-center">
+                        <!-- ✅ استخدام showCatalogDropdown بدل حط space في productSearch -->
+                        <button type="button" (click)="showCatalogDropdown = true"
+                            class="inline-flex items-center gap-1.5 text-sm font-medium text-[#1E3A8A] hover:text-blue-900 transition-colors">
+                            <span class="material-symbols-outlined text-lg">add_circle</span> Browse Catalog to Add More
+                        </button>
+                    </div>
+                </div>
+
+            </div><!-- end scrollable body -->
+
+            <!-- Modal Footer -->
+            <div
+                class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200 rounded-b-xl flex-shrink-0">
+                <button type="button" (click)="closeTransferPage()" [disabled]="isSubmitting"
+                    class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg shadow-sm hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                    Discard
+                </button>
+                <button type="button" (click)="completeTransfer()" [disabled]="!canCompleteTransfer"
+                    class="px-5 py-2.5 text-sm font-medium text-white bg-[#1E3A8A] rounded-lg shadow-sm hover:bg-blue-900 transition-colors flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed min-w-[160px] justify-center">
+                    <ng-container *ngIf="isSubmitting">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                        Submitting…
+                    </ng-container>
+                    <ng-container *ngIf="!isSubmitting">
+                        <span class="material-symbols-outlined text-sm">check</span> Complete Transfer
+                    </ng-container>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</ng-container>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- ADD WAREHOUSE MODAL                                             -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<ng-container *ngIf="showAddWarehouseModal">
+    <div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="closeAddWarehouseModal()"></div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col">
+
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900">Add New Warehouse</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Fill in the details to create a new warehouse.</p>
+                </div>
+                <button (click)="closeAddWarehouseModal()"
+                    class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <!-- Name -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Warehouse Name <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="addWarehouseForm.name" autocomplete="off" type="text"
+                            placeholder="e.g. Main Warehouse"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Street -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Street <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="addWarehouseForm.street" autocomplete="off" type="text"
+                            placeholder="e.g. 123 Industrial Ave"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            City <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="addWarehouseForm.city" autocomplete="off" type="text"
+                            placeholder="e.g. Cairo"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- State -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">State</label>
+                        <input [(ngModel)]="addWarehouseForm.state" autocomplete="off" type="text"
+                            placeholder="e.g. Giza"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Postal Code -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Postal Code</label>
+                        <input [(ngModel)]="addWarehouseForm.postalCode" autocomplete="off" type="text"
+                            placeholder="e.g. 12345"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Country -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Country <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="addWarehouseForm.country" autocomplete="off" type="text"
+                            placeholder="e.g. Egypt"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Type -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Type</label>
+                        <div class="relative">
+                            <select [(ngModel)]="addWarehouseForm.type"
+                                class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] appearance-none bg-white">
+                                <option [value]="1">Main Distribution</option>
+                                <option [value]="2">Retail</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <span class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div
+                class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200 rounded-b-xl">
+                <button (click)="closeAddWarehouseModal()" [disabled]="isAddingWarehouse"
+                    class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-40">
+                    Cancel
+                </button>
+                <button (click)="submitAddWarehouse()" [disabled]="isAddingWarehouse"
+                    class="px-5 py-2.5 text-sm font-medium text-white bg-[#1E3A8A] rounded-lg hover:bg-blue-900 transition-colors flex items-center gap-2 disabled:opacity-40 min-w-[140px] justify-center">
+                    <ng-container *ngIf="isAddingWarehouse">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                        Creating…
+                    </ng-container>
+                    <ng-container *ngIf="!isAddingWarehouse">
+                        <span class="material-symbols-outlined text-sm">add</span>
+                        Create Warehouse
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- EDIT WAREHOUSE MODAL                                            -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+<ng-container *ngIf="showEditWarehouseModal">
+    <div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="closeEditWarehouseModal()"></div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col">
+
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900">Edit Warehouse</h2>
+                    <p class="text-sm text-slate-500 mt-0.5">Update warehouse details.</p>
+                </div>
+                <button (click)="closeEditWarehouseModal()"
+                    class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-6 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                    <!-- Name -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Warehouse Name <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="editWarehouseForm.name" type="text" placeholder="e.g. Main Warehouse"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Street -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Street <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="editWarehouseForm.street" type="text" placeholder="e.g. 123 Industrial Ave"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            City <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="editWarehouseForm.city" type="text" placeholder="e.g. Cairo"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- State -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">State</label>
+                        <input [(ngModel)]="editWarehouseForm.state" type="text" placeholder="e.g. Giza"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Postal Code -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Postal Code</label>
+                        <input [(ngModel)]="editWarehouseForm.postalCode" type="text" placeholder="e.g. 12345"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Country -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">
+                            Country <span class="text-red-500">*</span>
+                        </label>
+                        <input [(ngModel)]="editWarehouseForm.country" type="text" placeholder="e.g. Egypt"
+                            class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                    </div>
+
+                    <!-- Type -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-sm font-medium text-slate-700 mb-1.5">Type</label>
+                        <div class="relative">
+                            <select [(ngModel)]="editWarehouseForm.type"
+                                class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] appearance-none bg-white">
+                                <option [value]="1">Main Distribution</option>
+                                <option [value]="2">Retail</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <span class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div
+                class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200 rounded-b-xl">
+                <button (click)="closeEditWarehouseModal()" [disabled]="isEditingWarehouse"
+                    class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-40">
+                    Cancel
+                </button>
+                <button (click)="submitEditWarehouse()" [disabled]="isEditingWarehouse"
+                    class="px-5 py-2.5 text-sm font-medium text-white bg-[#1E3A8A] rounded-lg hover:bg-blue-900 transition-colors flex items-center gap-2 disabled:opacity-40 min-w-[140px] justify-center">
+                    <ng-container *ngIf="isEditingWarehouse">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                        Saving…
+                    </ng-container>
+                    <ng-container *ngIf="!isEditingWarehouse">
+                        <span class="material-symbols-outlined text-sm">save</span>
+                        Save Changes
+                    </ng-container>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</ng-container>

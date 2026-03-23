@@ -47,7 +47,10 @@ export class AdminLoginComponent {
               this._router.navigate(['/admin-dashboard']);
             } else if (role === 'SalesManager') {
               this._router.navigate(['/sales-analysis']);
-            } else {
+            } else if (role === 'WarehouseManager') {
+              this._router.navigate(['/warehouse-management'])
+            }
+            else {
               this._toastrService.error('Unauthorized role', 'Error');
             }
           }, 2000);

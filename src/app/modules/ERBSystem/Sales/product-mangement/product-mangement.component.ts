@@ -86,6 +86,10 @@ export class ProductMangementComponent implements OnInit {
     });
   }
 
+  viewProduct(id: string): void {
+    this._Router.navigate(['/product-details', id]);
+  }
+
   // ── Row selection ─────────────────────────────────────────────────
   selectedIds = new Set<string>();
 

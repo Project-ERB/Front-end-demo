@@ -22,6 +22,7 @@ export class ForgetPasswordComponent {
   showPassword: WritableSignal<boolean> = signal(false);
   resetToken: string = '';
 
+  //Sales#21976
   // Step 1
   emailForm: FormGroup = this._fb.group({
     email: ['', [Validators.required, Validators.email]],

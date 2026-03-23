@@ -27,42 +27,62 @@ export class ProductService {
     });
     const body = {
       query: `
-      query {
-        products {
-          nodes {
-            id
-            code
-            name
-            shortDescription
-            categoryId
-            uomCode
-            uomName
-            costPrice
-            sellingPrice
-            currency
-            taxRateValue
-            taxRateName
-            isTrackInventory
-            baseBarcode
-            notes
-            imageUrl
-            specifications {
-              key
-              value
-              displayOrder
-            }
-            variants {
-              sku
-              barcode
-              priceOverrideAmount
-            }
-          }
+    query {
+      products(where: { id: { eq: "${id}" } }) {
+        nodes {
+          id
+          code
+          name
+          shortDescription
+          fullDescription
+          categoryId
+          productType
+          uomCode
+          uomName
+          costPrice
+          sellingPrice
+          currency
+          taxRateValue
+          taxRateName
+          isTrackInventory
+          baseBarcode
+          notes
+          imageUrl
+          specifications { key value displayOrder }
+          variants { sku barcode priceOverrideAmount }
         }
       }
-    `
+    }`
     };
-    return this._HttpClient.post<any>(`${Environment.baseUrl}/graphql`, body, { headers });
+    return this._HttpClient.post<any>(
+      `${Environment.baseUrl}/graphql`,
+      body,
+      { headers }
+    );
   }
+
+  // getCategories(): Observable<any> {
+  //   const token = this.getToken();
+  //   const headers = new HttpHeaders({
+  //     'Content-Type': 'application/json',
+  //     Accept: 'application/json',
+  //     ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  //   });
+  //   const body = {
+  //     query: `
+  //   query {
+  //     parentCategories {
+  //       nodes {
+  //         id
+  //         code
+  //         name
+  //         description
+  //       }
+  //     }
+  //   }`
+  //   };
+  //   return this._HttpClient.post<any>(`${Environment.baseUrl}/graphql`, body, { headers });
+  // }
 
   // ✅ Cache-busting timestamp added to force fresh data every call
   getProducts(): Observable<any> {

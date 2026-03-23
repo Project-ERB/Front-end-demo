@@ -33,7 +33,10 @@ export const serverRoutes: ServerRoute[] = [
     path: 'role-details/:id',
     renderMode: RenderMode.Server,
   },
-
+  {
+    path: 'product-details/:id',
+    renderMode: RenderMode.Server
+  },
 
   // All other routes use Prerender
   {

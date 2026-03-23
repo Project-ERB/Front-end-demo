@@ -301,6 +301,10 @@ export const routes: Routes = [
         title: 'product-management'
       },
       {
+        path: 'product-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/Sales/product-details/product-details/product-details.component').then((S) => S.ProductDetailsComponent)
+      },
+      {
         path: 'add-product',
         loadComponent: () => import('./modules/ERBSystem/Sales/add-product/add-product.component').then((A) => A.AddProductComponent),
         title: 'add-product'
@@ -333,6 +337,14 @@ export const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () => import('./modules/ERBSystem/Sales/orders/orders.component').then((O) => O.OrdersComponent)
+      },
+      {
+        path: 'warehouse-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/warehouse-managment/warehouse-managment/warehouse-managment.component').then((W) => W.WarehouseManagmentComponent)
+      },
+      {
+        path: 'warehouse-details',
+        loadComponent: () => import('./modules/ERBSystem/HR/warehouse-details/warehouse-details/warehouse-details.component').then((D) => D.WarehouseDetailsComponent)
       }
     ]
   }

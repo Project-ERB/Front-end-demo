@@ -1,17 +1,10 @@
 <div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f6f6f8] font-sans text-[#0f172a]">
 
-    <!-- ═══════════════════════════════════════════
-       SIDEBAR
-  ════════════════════════════════════════════ -->
-
     <app-sideba-sales></app-sideba-sales>
 
-    <!-- ═══════════════════════════════════════════
-       MAIN
-  ════════════════════════════════════════════ -->
     <div class="flex flex-1 flex-col overflow-hidden">
 
-        <!-- ── Top Header ──────────────────────────────────────────────── -->
+        <!-- ── Top Header ── -->
         <header class="flex h-16 shrink-0 items-center justify-between border-b border-[#e2e8f0] bg-white px-6">
             <h1 class="text-xl font-bold text-[#0f172a]">Product Management</h1>
 
@@ -29,7 +22,7 @@
             </div>
         </header>
 
-        <!-- ── Page Content ─────────────────────────────────────────────── -->
+        <!-- ── Page Content ── -->
         <main class="flex flex-1 flex-col gap-5 overflow-hidden p-6">
 
             <!-- Action bar -->
@@ -50,7 +43,9 @@
                             class="h-10 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
                             [ngClass]="selectedCategory ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
                             <option value="">Category: All</option>
-                            <option *ngFor="let cat of availableCategories" [value]="cat">{{ cat }}</option>
+                            @for (cat of availableCategories; track cat) {
+                            <option [value]="cat">{{ cat }}</option>
+                            }
                         </select>
                         <span
                             class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
@@ -68,11 +63,13 @@
                             class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
                     </div>
 
-                    <button *ngIf="activeFilterCount > 0" (click)="clearFilters()"
+                    @if (activeFilterCount > 0) {
+                    <button (click)="clearFilters()"
                         class="flex h-10 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 text-xs font-medium text-red-600 transition-colors hover:bg-red-100">
                         <span class="material-symbols-outlined text-[16px]">close</span>
                         Clear
                     </button>
+                    }
                 </div>
 
                 <div class="flex w-full items-center gap-2 sm:w-auto">
@@ -89,7 +86,7 @@
                 </div>
             </div>
 
-            <!-- ── Table card ──────────────────────────────────────────── -->
+            <!-- ── Table card ── -->
             <div class="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
 
                 <div class="flex-1 overflow-auto" style="scrollbar-width:thin;scrollbar-color:#cbd5e1 #f1f5f9;">
@@ -127,8 +124,8 @@
 
                         <tbody class="divide-y divide-[#f1f5f9]">
 
-                            <tr *ngFor="let product of pagedProducts"
-                                class="group transition-colors hover:bg-[#f8fafc]">
+                            @for (product of pagedProducts; track product.id) {
+                            <tr class="group transition-colors hover:bg-[#f8fafc]">
 
                                 <td class="p-4">
                                     <input type="checkbox"
@@ -138,13 +135,14 @@
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-10 w-10 shrink-0 overflow-hidden rounded-lg border bg-[#f1f5f9]">
-                                            <img *ngIf="product.imageUrl"
-                                                [src]="'https://erplocal.runasp.net/' + product.imageUrl"
+                                            @if (product.imageUrl) {
+                                            <img [src]="'https://erplocal.runasp.net/' + product.imageUrl"
                                                 class="h-full w-full object-cover" />
-                                            <div *ngIf="!product.imageUrl"
-                                                class="flex h-full w-full items-center justify-center text-[#94a3b8]">
+                                            } @else {
+                                            <div class="flex h-full w-full items-center justify-center text-[#94a3b8]">
                                                 <span class="material-symbols-outlined">inventory_2</span>
                                             </div>
+                                            }
                                         </div>
                                         <div class="flex flex-col">
                                             <span class="text-sm font-bold text-[#0f172a]">{{ product.name }}</span>
@@ -179,31 +177,37 @@
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button
+                                            class="flex h-8 w-8 items-center justify-center rounded-lg text-[#64748b] transition-colors hover:bg-slate-100 hover:text-[#1e3b8a]"
+                                            (click)="viewProduct(product.id)" title="View Details">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        </button>
+                                        <button
                                             class="flex h-8 w-8 items-center justify-center rounded-lg text-[#1e3b8a] transition-colors hover:bg-blue-50"
                                             (click)="EditProduct(product.id)" title="Edit">
                                             <span class="material-symbols-outlined text-[18px]">edit</span>
                                         </button>
                                         <button
                                             class="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 transition-colors hover:bg-red-50"
-                                            (click)="deleteProduct(product.id)" k title="Delete">
+                                            (click)="deleteProduct(product.id)" title="Delete">
                                             <span class="material-symbols-outlined text-[18px]">delete</span>
                                         </button>
                                     </div>
                                 </td>
 
                             </tr>
-
-                            <tr *ngIf="pagedProducts.length === 0">
+                            } @empty {
+                            <tr>
                                 <td colspan="8" class="px-6 py-16 text-center">
                                     <p class="text-[#64748b]">No products found</p>
                                 </td>
                             </tr>
+                            }
 
                         </tbody>
                     </table>
                 </div>
 
-                <!-- ── Pagination footer ──────────────────────────────────── -->
+                <!-- ── Pagination footer ── -->
                 <div class="flex shrink-0 items-center justify-between border-t border-[#e2e8f0] bg-white px-6 py-4">
                     <span class="hidden text-sm text-[#64748b] sm:block">
                         Showing
@@ -219,16 +223,18 @@
                             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
 
-                        <ng-container *ngFor="let page of pageNumbers">
-                            <span *ngIf="page === '...'"
-                                class="flex h-9 w-9 items-center justify-center text-xs text-[#64748b]">…</span>
-                            <button *ngIf="page !== '...'" (click)="goToPage(page)" [ngClass]="page === currentPage
-                  ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-bold shadow-sm'
-                  : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
-                                class="flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-colors">
-                                {{ page }}
-                            </button>
-                        </ng-container>
+                        @for (page of pageNumbers; track page) {
+                        @if (page === '...') {
+                        <span class="flex h-9 w-9 items-center justify-center text-xs text-[#64748b]">…</span>
+                        } @else {
+                        <button (click)="goToPage(page)" [ngClass]="page === currentPage
+                                        ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-bold shadow-sm'
+                                        : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                            class="flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-colors">
+                            {{ page }}
+                        </button>
+                        }
+                        }
 
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages"
                             class="flex h-9 w-9 items-center justify-center rounded-lg border border-[#e2e8f0] text-[#64748b] transition-colors hover:bg-[#f8fafc] hover:text-[#1e3b8a] disabled:cursor-not-allowed disabled:opacity-40">
@@ -237,7 +243,7 @@
                     </div>
                 </div>
 
-            </div><!-- /table card -->
+            </div>
         </main>
-    </div><!-- /main column -->
+    </div>
 </div>

@@ -1,0 +1,1505 @@
+<div class="bg-[#f6f6f8] min-h-screen flex font-sans text-slate-900 antialiased">
+
+    <app-siedbar-warehouse></app-siedbar-warehouse>
+
+    <!-- Wrapper للـ header والـ content -->
+    <div class="flex flex-col flex-1 min-h-screen overflow-hidden">
+
+        <!-- Top Navigation -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+            <div class="px-6 md:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="size-8 rounded bg-blue-50 flex items-center justify-center text-[#134dec]">
+                        <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                    </div>
+                    <h1 class="text-lg font-bold tracking-tight text-slate-900">ERP Inventory</h1>
+                    <div class="hidden md:flex ml-8 items-center gap-1">
+                        <a href="#"
+                            class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#134dec] transition-colors">Dashboard</a>
+                        <a href="#"
+                            class="px-3 py-2 text-sm font-medium text-[#134dec] bg-blue-50 rounded-md">Warehouses</a>
+                        <a href="#"
+                            class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#134dec] transition-colors">Reports</a>
+                        <a href="#"
+                            class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#134dec] transition-colors">Settings</a>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="relative p-2 text-slate-500 hover:text-[#134dec] transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span
+                            class="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white shadow-sm bg-cover bg-center"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHIO8CMGT-EM3Uutr0ZsANRYc-KdFVoYwGZAcpywhr_fy7knV3FjAS9Y8_ooCniZu6juiCNVeJiDYoGKyDa_hTp6hmEIk44gSwyFgNHYxvtau_frREl1oGxEdXU8g8uHDtn9Mqx9EUOwl_cDJ4zVSGTioq0BJrIZ1Q_uiGR-rivMEafhh2ZqoFWYsitJu6kw6NMt1soFCdq2xIhIdFcLaSAMGM1UM6X2dpMZHBwHFbCwlm9LmrVZJGKTYVNQSGPUtngCVZ0kMEmDEf')">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 px-6 md:px-8 py-8 w-full max-w-[1400px] mx-auto overflow-y-auto">
+
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center text-sm text-slate-500 mb-6">
+                <a href="#" class="hover:text-[#134dec] transition-colors">Dashboard</a>
+                <span class="material-symbols-outlined text-base mx-2">chevron_right</span>
+                <a href="#" class="hover:text-[#134dec] transition-colors">Warehouses</a>
+                <span class="material-symbols-outlined text-base mx-2">chevron_right</span>
+                <span class="font-medium text-slate-900">{{ warehouse.name }}</span>
+            </nav>
+
+            <!-- Warehouse Header Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-8">
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                    <div class="flex-1">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="p-3 bg-blue-50 rounded-lg text-[#134dec]">
+                                <span class="material-symbols-outlined text-3xl">warehouse</span>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-900 leading-tight">{{ warehouse.name }}</h2>
+                                <p class="text-slate-500 mt-1 flex flex-wrap items-center gap-2 text-sm">
+                                    <span
+                                        class="bg-slate-100 px-2 py-0.5 rounded text-xs font-semibold text-slate-600">{{
+                                        warehouse.code }}</span>
+                                    <span>Managed by: <span class="font-medium text-slate-700">{{ warehouse.manager
+                                            }}</span></span>
+                                    <span class="text-slate-300">•</span>
+                                    <span class="flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">location_on</span>
+                                        {{ warehouse.address }}
+                                    </span>
+                                </p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <label class="text-xs font-medium text-slate-500 whitespace-nowrap">Select
+                                        Warehouse:</label>
+                                    <div class="relative">
+                                        <select [(ngModel)]="selectedWarehouseGuid"
+                                            (ngModelChange)="onWarehouseChange()"
+                                            class="block pl-3 pr-8 py-1.5 text-sm border border-slate-200 rounded-lg focus:ring-1 focus:ring-[#134dec] focus:border-[#134dec] appearance-none bg-white shadow-sm cursor-pointer">
+                                            <option *ngFor="let wh of warehouseOptions" [value]="wh.guid">{{ wh.label }}
+                                            </option>
+                                        </select>
+                                        <div
+                                            class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                            <span
+                                                class="material-symbols-outlined text-slate-400 text-base">expand_more</span>
+                                        </div>
+                                    </div>
+                                    <svg *ngIf="warehouseOptions.length === 0"
+                                        class="animate-spin h-4 w-4 text-[#134dec]" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                            stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full md:w-auto">
+                        <ng-container *ngIf="activeTab !== 'adjustments'">
+                            <div class="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                                <p class="text-xs font-medium text-slate-500 mb-1">Total SKUs</p>
+                                <p class="text-xl font-bold text-slate-900">{{ warehouse.totalSkus }}</p>
+                            </div>
+                            <div class="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                                <p class="text-xs font-medium text-slate-500 mb-1">Valuation</p>
+                                <p class="text-xl font-bold text-slate-900">{{ warehouse.valuation }}</p>
+                            </div>
+                            <div class="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                                <p class="text-xs font-medium text-slate-500 mb-1">Utilization</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-xl font-bold text-slate-900">{{ warehouse.utilization }}%</p>
+                                    <span
+                                        class="text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">{{
+                                        warehouse.utilizationLabel }}</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="activeTab === 'adjustments'">
+                            <div class="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                                <p class="text-xs font-medium text-slate-500 mb-1">Total Adjustments</p>
+                                <p class="text-xl font-bold text-slate-900">{{ totalAdjustments }}</p>
+                            </div>
+                            <div class="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                                <p class="text-xs font-medium text-slate-500 mb-1">Net Value Impact</p>
+                                <p class="text-xl font-bold text-red-600">-$1.2k</p>
+                            </div>
+                            <div class="p-3 rounded-lg border border-slate-100 bg-slate-50/50">
+                                <p class="text-xs font-medium text-slate-500 mb-1">Accuracy Rate</p>
+                                <div class="flex items-center gap-2">
+                                    <p class="text-xl font-bold text-slate-900">98.5%</p>
+                                    <span
+                                        class="text-xs font-medium text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">High</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <div
+                            class="p-3 rounded-lg border border-slate-100 bg-slate-50/50 flex items-center justify-center">
+                            <button class="text-sm font-semibold text-[#134dec] hover:text-blue-700">View Map</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs + Content -->
+            <div class="flex flex-col h-full">
+
+                <!-- Tab Bar -->
+                <div class="border-b border-slate-200 mb-6">
+                    <nav class="flex gap-8">
+                        <button *ngFor="let tab of tabs" (click)="setTab(tab.key)" [ngClass]="getTabClass(tab.key)"
+                            class="border-b-2 py-4 px-1 text-sm transition-colors hover:border-slate-300 hover:text-slate-700">
+                            {{ tab.label }}
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- ══ TAB: INVENTORY ══ -->
+                <ng-container *ngIf="activeTab === 'inventory'">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div class="flex flex-1 w-full sm:w-auto items-center gap-3">
+                            <div class="relative w-full sm:w-80 group">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span
+                                        class="material-symbols-outlined text-slate-400 group-focus-within:text-[#134dec] transition-colors">search</span>
+                                </div>
+                                <input [(ngModel)]="searchQuery" type="text"
+                                    placeholder="Search by SKU, Name or Category..."
+                                    class="block w-full rounded-lg border-0 py-2.5 pl-10 pr-3 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#134dec] sm:text-sm shadow-sm transition-all" />
+                            </div>
+                            <div class="hidden md:flex gap-2">
+                                <select [(ngModel)]="selectedCategory"
+                                    class="block rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-[#134dec] sm:text-sm shadow-sm cursor-pointer">
+                                    <option value="">All Categories</option>
+                                    <option value="electronics">Electronics</option>
+                                    <option value="furniture">Furniture</option>
+                                    <option value="raw">Raw Materials</option>
+                                </select>
+                                <select [(ngModel)]="selectedStatus"
+                                    class="block rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-[#134dec] sm:text-sm shadow-sm cursor-pointer">
+                                    <option value="">Stock Status</option>
+                                    <option value="instock">In Stock</option>
+                                    <option value="low">Low Stock</option>
+                                    <option value="out">Out of Stock</option>
+                                </select>
+                            </div>
+                            <button
+                                class="md:hidden p-2.5 text-slate-500 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                <span class="material-symbols-outlined">filter_list</span>
+                            </button>
+                        </div>
+                        <!-- ✅ Stock Out + Stock In بدل Export + Add Product -->
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <button (click)="openDecreaseStockModal()"
+                                class="flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 transition-colors">
+                                <span class="material-symbols-outlined text-[1.125rem]">remove_circle</span> Stock Out
+                            </button>
+                            <button (click)="openIncreaseStockModal()"
+                                class="flex items-center justify-center gap-2 rounded-lg bg-[#134dec] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors">
+                                <span class="material-symbols-outlined text-[1.125rem]">add</span> Stock In
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            SKU</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Product Name</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            On Hand</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Reserved</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-bold text-[#134dec] uppercase tracking-wider">
+                                            Available</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Avg Cost</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Last Stock</th>
+                                        <th scope="col" class="relative py-3.5 pl-3 pr-6"><span
+                                                class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr *ngIf="isLoadingInventory">
+                                        <td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                            <svg class="animate-spin h-6 w-6 mx-auto mb-2 text-[#134dec]"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+                                                </path>
+                                            </svg>
+                                            Loading inventory...
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="inventoryLoadError && !isLoadingInventory">
+                                        <td colspan="8" class="px-6 py-12 text-center text-red-500 text-sm">
+                                            <span
+                                                class="material-symbols-outlined text-3xl block mb-1.5 text-red-300">error</span>
+                                            {{ inventoryLoadError }}
+                                        </td>
+                                    </tr>
+                                    <ng-container *ngIf="!isLoadingInventory && !inventoryLoadError">
+                                        <tr *ngFor="let item of filteredInventory" [class.bg-red-50]="isLowStock(item)"
+                                            class="hover:bg-slate-50 transition-colors group">
+                                            <td
+                                                class="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-mono text-slate-500">
+                                                {{ item.sku }}</td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-900">
+                                                <div class="flex items-center gap-3">
+                                                    <div *ngIf="item.imageUrl"
+                                                        class="h-9 w-9 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                                                        [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                                                    <div *ngIf="!item.imageUrl"
+                                                        class="h-9 w-9 flex-shrink-0 rounded bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                                        <span
+                                                            class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-medium">{{ item.name }}</div>
+                                                        <div *ngIf="isLowStock(item)"
+                                                            class="text-xs text-red-500 font-medium mt-0.5">Low Stock
+                                                            Alert</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-slate-600">{{
+                                                formatNumber(item.onHand) }}</td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-slate-600">{{
+                                                formatNumber(item.reserved) }}</td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right font-bold"
+                                                [ngClass]="isLowStock(item) ? 'text-red-600' : 'text-blue-600'">
+                                                {{ formatNumber(item.available) }}
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-slate-600">{{
+                                                formatCurrency(item.avgCost) }}</td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{{
+                                                item.lastStock }}</td>
+                                            <td
+                                                class="relative whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm font-medium">
+                                                <button
+                                                    class="text-slate-400 hover:text-[#134dec] transition-colors opacity-0 group-hover:opacity-100">
+                                                    <span
+                                                        class="material-symbols-outlined text-[1.25rem]">more_vert</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="filteredInventory.length === 0">
+                                            <td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                                <span
+                                                    class="material-symbols-outlined text-3xl block mb-1.5 text-slate-300">inventory_2</span>
+                                                No inventory items found for this warehouse.
+                                            </td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div
+                            class="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
+                            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                <p class="text-sm text-slate-700">
+                                    Showing <span class="font-medium">{{ pageStart }}</span> to
+                                    <span class="font-medium">{{ pageEnd }}</span> of
+                                    <span class="font-medium">{{ totalResults }}</span> results
+                                </p>
+                                <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                                    <button (click)="prevPage()" [disabled]="currentPage === 1"
+                                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                                    </button>
+                                    <button *ngFor="let p of [1,2,3]" (click)="goToPage(p)"
+                                        [ngClass]="getPageClass(currentPage, p)"
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors">
+                                        {{ p }}
+                                    </button>
+                                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- ══ TAB: STOCK MOVEMENTS ══ -->
+                <ng-container *ngIf="activeTab === 'movements'">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div class="flex flex-1 w-full sm:w-auto items-center gap-3">
+                            <div class="relative w-full sm:w-80 group">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span
+                                        class="material-symbols-outlined text-slate-400 group-focus-within:text-[#134dec] transition-colors">search</span>
+                                </div>
+                                <input [(ngModel)]="movementsSearch" type="text"
+                                    placeholder="Search by SKU, Ref ID or Warehouse..."
+                                    class="block w-full rounded-lg border-0 py-2.5 pl-10 pr-3 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-[#134dec] sm:text-sm shadow-sm transition-all" />
+                            </div>
+                            <div class="hidden md:flex gap-2">
+                                <select [(ngModel)]="selectedTransactionType"
+                                    class="block rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-[#134dec] sm:text-sm shadow-sm cursor-pointer">
+                                    <option value="">Transaction Type</option>
+                                    <option value="Stock In">Stock In</option>
+                                    <option value="Stock Out">Stock Out</option>
+                                    <option value="Transfer">Transfer</option>
+                                    <option value="Adjustment">Adjustment</option>
+                                </select>
+                                <select [(ngModel)]="selectedDateRange"
+                                    class="block rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-[#134dec] sm:text-sm shadow-sm cursor-pointer">
+                                    <option>Last 30 Days</option>
+                                    <option>Last 7 Days</option>
+                                    <option>Today</option>
+                                    <option>Custom Range</option>
+                                </select>
+                            </div>
+                            <button
+                                class="md:hidden p-2.5 text-slate-500 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                <span class="material-symbols-outlined">filter_list</span>
+                            </button>
+                        </div>
+                        <!-- ✅ مفيش زرار في Stock Movements -->
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Timestamp</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Transaction Type</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Product / SKU</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Quantity Change</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Warehouse</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Reference ID</th>
+                                        <th scope="col" class="relative py-3.5 pl-3 pr-6"><span
+                                                class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr *ngIf="isLoadingMovements">
+                                        <td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                            <svg class="animate-spin h-6 w-6 mx-auto mb-2 text-[#134dec]"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+                                                </path>
+                                            </svg>
+                                            Loading movements...
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="movementsLoadError && !isLoadingMovements">
+                                        <td colspan="7" class="px-6 py-12 text-center text-red-500 text-sm">
+                                            <span
+                                                class="material-symbols-outlined text-3xl block mb-1.5 text-red-300">error</span>
+                                            {{ movementsLoadError }}
+                                        </td>
+                                    </tr>
+                                    <ng-container *ngIf="!isLoadingMovements && !movementsLoadError">
+                                        <tr *ngFor="let movement of filteredMovements"
+                                            class="hover:bg-slate-50 transition-colors group">
+                                            <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm text-slate-500">
+                                                <div class="flex flex-col">
+                                                    <span class="font-medium text-slate-900">{{ movement.date }}</span>
+                                                    <span class="text-xs">{{ movement.time }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                                <span
+                                                    class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                                                    [ngClass]="getTransactionBadgeClass(movement.type)">
+                                                    {{ movement.type }}
+                                                </span>
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-900">
+                                                <div class="flex items-center gap-3">
+                                                    <div *ngIf="movement.imageUrl"
+                                                        class="h-8 w-8 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                                                        [style.background-image]="'url(' + movement.imageUrl + ')'">
+                                                    </div>
+                                                    <div *ngIf="!movement.imageUrl"
+                                                        class="h-8 w-8 flex-shrink-0 rounded bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                                        <span
+                                                            class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="font-medium">{{ movement.productName }}</div>
+                                                        <div class="text-xs text-slate-500 font-mono">{{ movement.sku }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-right font-semibold"
+                                                [ngClass]="getQuantityClass(movement.quantityChange)">
+                                                {{ formatQuantityChange(movement.quantityChange) }}
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-600">
+                                                <div class="flex items-center gap-2">
+                                                    <div
+                                                        class="h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold bg-indigo-100 text-indigo-600">
+                                                        {{ movement.userInitials }}
+                                                    </div>
+                                                    <span>{{ movement.userName }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm font-mono text-slate-500">{{
+                                                movement.referenceId }}</td>
+                                            <td
+                                                class="relative whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm font-medium">
+                                                <button
+                                                    class="text-slate-400 hover:text-[#134dec] transition-colors opacity-0 group-hover:opacity-100">
+                                                    <span
+                                                        class="material-symbols-outlined text-[1.25rem]">visibility</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr *ngIf="filteredMovements.length === 0">
+                                            <td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">No
+                                                transactions match your search.</td>
+                                        </tr>
+                                    </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div
+                            class="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
+                            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                <p class="text-sm text-slate-700">
+                                    Showing <span class="font-medium">{{ movementsPageStart }}</span> to
+                                    <span class="font-medium">{{ movementsPageEnd }}</span> of
+                                    <span class="font-medium">{{ totalMovements | number }}</span> transactions
+                                </p>
+                                <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                                    <button (click)="prevMovementsPage()" [disabled]="movementsPage === 1"
+                                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                                    </button>
+                                    <button *ngFor="let p of [1,2,3]" (click)="goToMovementsPage(p)"
+                                        [ngClass]="getPageClass(movementsPage, p)"
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors">
+                                        {{ p }}
+                                    </button>
+                                    <button (click)="nextMovementsPage()"
+                                        [disabled]="movementsPage === totalMovementPages"
+                                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- ══ TAB: ADJUSTMENTS ══ -->
+                <ng-container *ngIf="activeTab === 'adjustments'">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <div class="flex flex-1 w-full sm:w-auto items-center gap-3">
+                            <div class="relative w-full sm:w-80 group">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <span
+                                        class="material-symbols-outlined text-slate-400 group-focus-within:text-blue-600 transition-colors">search</span>
+                                </div>
+                                <input [(ngModel)]="adjustmentsSearch" type="text"
+                                    placeholder="Search product, reason or user..."
+                                    class="block w-full rounded-lg border-0 py-2.5 pl-10 pr-3 text-slate-900 ring-1 ring-inset ring-slate-200 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm shadow-sm transition-all" />
+                            </div>
+                            <div class="hidden md:flex gap-2">
+                                <select [(ngModel)]="selectedAdjustmentType"
+                                    class="block rounded-lg border-0 py-2.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-blue-600 sm:text-sm shadow-sm cursor-pointer">
+                                    <option value="">All Types</option>
+                                    <option value="Damage">Damage</option>
+                                    <option value="Physical Count">Physical Count</option>
+                                    <option value="Theft/Loss">Theft/Loss</option>
+                                    <option value="Found">Found Inventory</option>
+                                </select>
+                                <input [(ngModel)]="selectedAdjustmentDate" type="date"
+                                    class="block rounded-lg border-0 py-2.5 pl-3 pr-3 text-slate-900 ring-1 ring-inset ring-slate-200 focus:ring-2 focus:ring-blue-600 sm:text-sm shadow-sm cursor-pointer" />
+                            </div>
+                            <button
+                                class="md:hidden p-2.5 text-slate-500 border border-slate-200 rounded-lg bg-white shadow-sm">
+                                <span class="material-symbols-outlined">filter_list</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center gap-3 w-full sm:w-auto">
+                            <button
+                                class="flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors">
+                                <span class="material-symbols-outlined text-[1.125rem]">download</span> Export
+                            </button>
+                            <button (click)="openAdjustmentModal()"
+                                class="flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors">
+                                <span class="material-symbols-outlined text-[1.125rem]">add_circle</span> New Adjustment
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Date</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Product</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Type</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            System Qty</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Actual Qty</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                            Difference</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Reason</th>
+                                        <th scope="col"
+                                            class="px-3 py-3.5 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                            Approved By</th>
+                                        <th scope="col" class="relative py-3.5 pl-3 pr-6"><span
+                                                class="sr-only">Actions</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr *ngFor="let adj of filteredAdjustments"
+                                        class="hover:bg-slate-50 transition-colors group">
+                                        <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm text-slate-500">
+                                            {{ adj.date }}<br /><span class="text-xs text-slate-400">{{ adj.time
+                                                }}</span>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-900">
+                                            <div class="flex items-center gap-3">
+                                                <div *ngIf="adj.imageUrl"
+                                                    class="h-9 w-9 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                                                    [style.background-image]="'url(' + adj.imageUrl + ')'"></div>
+                                                <div *ngIf="!adj.imageUrl"
+                                                    class="h-9 w-9 flex-shrink-0 rounded bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                                    <span
+                                                        class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium">{{ adj.productName }}</div>
+                                                    <div class="text-xs text-slate-500">{{ adj.sku }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                            <span
+                                                class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
+                                                [ngClass]="getAdjustmentTypeBadgeClass(adj.type)">
+                                                {{ adj.type }}
+                                            </span>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-slate-600">{{
+                                            formatNumber(adj.systemQty) }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-right text-slate-600">{{
+                                            formatNumber(adj.actualQty) }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-right font-bold"
+                                            [ngClass]="getDifferenceClass(adj.difference)">
+                                            {{ formatDifference(adj.difference) }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">{{ adj.reason }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-700">
+                                            <div class="flex items-center gap-2">
+                                                <div
+                                                    class="h-6 w-6 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600">
+                                                    {{ adj.approverInitials }}
+                                                </div>
+                                                <span>{{ adj.approverName }}</span>
+                                            </div>
+                                        </td>
+                                        <td
+                                            class="relative whitespace-nowrap py-4 pl-3 pr-6 text-right text-sm font-medium">
+                                            <button
+                                                class="text-slate-400 hover:text-blue-600 transition-colors opacity-0 group-hover:opacity-100">
+                                                <span class="material-symbols-outlined text-[1.25rem]">visibility</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="filteredAdjustments.length === 0">
+                                        <td colspan="9" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                            <span
+                                                class="material-symbols-outlined text-3xl block mb-1.5 text-slate-300">tune</span>
+                                            No adjustments found.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div
+                            class="flex items-center justify-between border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
+                            <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                <p class="text-sm text-slate-700">
+                                    Showing <span class="font-medium">{{ adjustmentsPageStart }}</span> to
+                                    <span class="font-medium">{{ adjustmentsPageEnd }}</span> of
+                                    <span class="font-medium">{{ totalAdjustments }}</span> results
+                                </p>
+                                <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                                    <button (click)="prevAdjustmentsPage()" [disabled]="adjustmentsPage === 1"
+                                        class="relative inline-flex items-center rounded-l-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-sm">chevron_left</span>
+                                    </button>
+                                    <button *ngFor="let p of [1,2,3]" (click)="goToAdjustmentsPage(p)"
+                                        [ngClass]="getPageClass(adjustmentsPage, p)"
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors">
+                                        {{ p }}
+                                    </button>
+                                    <button (click)="nextAdjustmentsPage()"
+                                        [disabled]="adjustmentsPage === totalAdjustmentPages"
+                                        class="relative inline-flex items-center rounded-r-md px-2 py-2 text-slate-400 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                                        <span class="material-symbols-outlined text-sm">chevron_right</span>
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- ══ TAB: SETTINGS ══ -->
+                <ng-container *ngIf="activeTab === 'settings'">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 space-y-8">
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-lg font-bold text-slate-900">General Configuration</h3>
+                                    <button class="text-sm text-blue-600 hover:text-blue-700 font-medium">Save
+                                        Changes</button>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label class="block text-sm font-medium leading-6 text-slate-900">Warehouse
+                                                Name</label>
+                                            <div class="mt-2">
+                                                <input [(ngModel)]="generalConfig.warehouseName" type="text"
+                                                    class="block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium leading-6 text-slate-900">Warehouse
+                                                Code</label>
+                                            <div class="mt-2">
+                                                <input [value]="generalConfig.warehouseCode" type="text" disabled
+                                                    class="block w-full rounded-md border-0 py-2 text-slate-500 bg-slate-50 shadow-sm ring-1 ring-inset ring-slate-200 sm:text-sm sm:leading-6 cursor-not-allowed" />
+                                            </div>
+                                        </div>
+                                        <div class="md:col-span-2">
+                                            <label
+                                                class="block text-sm font-medium leading-6 text-slate-900">Address</label>
+                                            <div class="mt-2">
+                                                <input [(ngModel)]="generalConfig.address" type="text"
+                                                    class="block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="border-t border-slate-200 pt-6">
+                                        <h4 class="text-sm font-medium text-slate-900 mb-4">Capacity Management</h4>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium leading-6 text-slate-900">Max
+                                                    Capacity (Units)</label>
+                                                <div class="mt-2">
+                                                    <input [(ngModel)]="generalConfig.maxCapacity" type="number"
+                                                        class="block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium leading-6 text-slate-900">Current
+                                                    Occupancy</label>
+                                                <div class="mt-2 relative">
+                                                    <input [value]="generalConfig.currentOccupancy" type="text" disabled
+                                                        class="block w-full rounded-md border-0 py-2 text-slate-500 bg-slate-50 shadow-sm ring-1 ring-inset ring-slate-200 sm:text-sm sm:leading-6" />
+                                                    <div
+                                                        class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                                        <span class="h-2 w-2 rounded-full bg-yellow-500"
+                                                            title="Near Capacity"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium leading-6 text-slate-900">Square
+                                                    Footage</label>
+                                                <div class="mt-2">
+                                                    <input [(ngModel)]="generalConfig.squareFootage" type="number"
+                                                        class="block w-full rounded-md border-0 py-2 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                                <div class="mb-6">
+                                    <h3 class="text-lg font-bold text-slate-900">Inventory Control Rules</h3>
+                                    <p class="text-sm text-slate-500 mt-1">Automated rules for stock management in this
+                                        location.</p>
+                                </div>
+                                <div class="space-y-0">
+                                    <div *ngFor="let rule of inventoryRules; let last = last"
+                                        class="flex items-center justify-between py-4" [class.border-b]="!last"
+                                        [class.border-slate-100]="!last">
+                                        <div>
+                                            <p class="text-sm font-medium text-slate-900">{{ rule.label }}</p>
+                                            <p class="text-xs text-slate-500 mt-1">{{ rule.description }}</p>
+                                        </div>
+                                        <button type="button" (click)="toggleRule(rule)"
+                                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                                            [class.bg-blue-600]="rule.enabled" [class.bg-slate-200]="!rule.enabled">
+                                            <span
+                                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                                [class.translate-x-5]="rule.enabled"
+                                                [class.translate-x-0]="!rule.enabled"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-lg font-bold text-slate-900">Storage Zone Mapping</h3>
+                                    <button
+                                        class="text-sm font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-base">add</span> Add Zone
+                                    </button>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full text-sm text-left">
+                                        <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+                                            <tr>
+                                                <th scope="col" class="px-4 py-3 rounded-l-lg">Zone Name</th>
+                                                <th scope="col" class="px-4 py-3">Type</th>
+                                                <th scope="col" class="px-4 py-3">Capacity</th>
+                                                <th scope="col" class="px-4 py-3 rounded-r-lg text-right">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-slate-100">
+                                            <tr *ngFor="let zone of storageZones"
+                                                class="hover:bg-slate-50 transition-colors">
+                                                <td class="px-4 py-3 font-medium text-slate-900">{{ zone.name }}</td>
+                                                <td class="px-4 py-3 text-slate-500">{{ zone.type }}</td>
+                                                <td class="px-4 py-3 text-slate-500">{{ zone.capacity }}</td>
+                                                <td class="px-4 py-3 text-right">
+                                                    <button
+                                                        class="text-slate-400 hover:text-blue-600 transition-colors">
+                                                        <span class="material-symbols-outlined text-lg">edit</span>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Warehouse Status</h3>
+                                <div class="flex items-center justify-between mb-4">
+                                    <span class="text-sm font-medium text-slate-700">Operational Status</span>
+                                    <span
+                                        class="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded">ACTIVE</span>
+                                </div>
+                                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100 mb-4">
+                                    <p class="text-xs text-slate-500 mb-3">Accepting Incoming Shipments</p>
+                                    <button type="button"
+                                        (click)="warehouseStatus.acceptIncoming = !warehouseStatus.acceptIncoming"
+                                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                                        [class.bg-blue-600]="warehouseStatus.acceptIncoming"
+                                        [class.bg-slate-200]="!warehouseStatus.acceptIncoming">
+                                        <span
+                                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                            [class.translate-x-5]="warehouseStatus.acceptIncoming"
+                                            [class.translate-x-0]="!warehouseStatus.acceptIncoming"></span>
+                                    </button>
+                                    <span class="ml-3 text-xs font-semibold"
+                                        [class.text-blue-600]="warehouseStatus.acceptIncoming"
+                                        [class.text-slate-400]="!warehouseStatus.acceptIncoming">
+                                        {{ warehouseStatus.acceptIncoming ? 'Enabled' : 'Disabled' }}
+                                    </span>
+                                </div>
+                                <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                                    <p class="text-xs text-slate-500 mb-3">Allow Outgoing Shipments</p>
+                                    <button type="button"
+                                        (click)="warehouseStatus.allowOutgoing = !warehouseStatus.allowOutgoing"
+                                        class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+                                        [class.bg-blue-600]="warehouseStatus.allowOutgoing"
+                                        [class.bg-slate-200]="!warehouseStatus.allowOutgoing">
+                                        <span
+                                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                                            [class.translate-x-5]="warehouseStatus.allowOutgoing"
+                                            [class.translate-x-0]="!warehouseStatus.allowOutgoing"></span>
+                                    </button>
+                                    <span class="ml-3 text-xs font-semibold"
+                                        [class.text-blue-600]="warehouseStatus.allowOutgoing"
+                                        [class.text-slate-400]="!warehouseStatus.allowOutgoing">
+                                        {{ warehouseStatus.allowOutgoing ? 'Enabled' : 'Disabled' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                                <h3 class="text-lg font-bold text-slate-900 mb-4">Authorized Personnel</h3>
+                                <div class="space-y-4">
+                                    <div *ngFor="let person of personnel" class="flex items-center gap-3">
+                                        <div *ngIf="person.avatarUrl"
+                                            class="h-10 w-10 rounded-full bg-slate-200 bg-cover bg-center flex-shrink-0"
+                                            [style.background-image]="'url(' + person.avatarUrl + ')'"></div>
+                                        <div *ngIf="!person.avatarUrl"
+                                            class="h-10 w-10 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-semibold"
+                                            [ngClass]="getPersonnelAvatarClass(person.avatarColor)">
+                                            {{ person.initials }}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-sm font-medium text-slate-900 truncate">{{ person.name }}</p>
+                                            <p class="text-xs text-slate-500">{{ person.role }}</p>
+                                        </div>
+                                        <button (click)="removePersonnel(person)"
+                                            class="text-slate-400 hover:text-red-500 transition-colors flex-shrink-0">
+                                            <span class="material-symbols-outlined text-lg">remove_circle_outline</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button
+                                    class="w-full mt-6 py-2 border border-dashed border-slate-300 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">person_add</span> Add Personnel
+                                </button>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-sm border border-red-200 p-6">
+                                <h3 class="text-lg font-bold text-red-600 mb-2">Danger Zone</h3>
+                                <p class="text-xs text-slate-500 mb-4">Irreversible actions for this warehouse.</p>
+                                <div class="space-y-2">
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded transition-colors flex items-center justify-between group">
+                                        <span>Archive Warehouse</span>
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 group-hover:text-slate-600">archive</span>
+                                    </button>
+                                    <button
+                                        class="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition-colors flex items-center justify-between font-medium">
+                                        <span>Delete Warehouse Data</span>
+                                        <span class="material-symbols-outlined text-red-500">delete_forever</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
+        </main>
+
+    </div><!-- end content wrapper -->
+
+</div><!-- end main flex container -->
+
+<!-- ══ INITIALIZE STOCK MODAL ══ -->
+<ng-container *ngIf="showInitStockModal">
+    <div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="closeInitStockModal()"></div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900 leading-tight">Add Product to Warehouse</h2>
+                    <p class="text-sm text-slate-500 mt-1">Initialize stock levels for a new item.</p>
+                </div>
+                <button (click)="closeInitStockModal()"
+                    class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700">Select Product</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+                        </div>
+                        <input [(ngModel)]="initStockForm.productSearch" type="text"
+                            placeholder="Search by SKU or name..."
+                            class="block w-full rounded-lg border border-slate-200 bg-white pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-100 focus:border-blue-600 transition-all shadow-sm" />
+                    </div>
+                    <div
+                        class="rounded-lg border border-slate-200 bg-white shadow-md overflow-hidden divide-y divide-slate-100 max-h-52 overflow-y-auto">
+                        <button *ngFor="let item of initStockProductResults" type="button"
+                            (click)="selectInitStockProduct(item)"
+                            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+                            [class.bg-blue-50]="initStockForm.selectedProduct?.sku === item.sku">
+                            <div *ngIf="item.imageUrl"
+                                class="h-9 w-9 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                                [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                            <div *ngIf="!item.imageUrl"
+                                class="h-9 w-9 flex-shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-slate-900 truncate">{{ item.name }}</p>
+                                <p class="text-xs text-slate-500">SKU: {{ item.sku }}</p>
+                            </div>
+                            <span *ngIf="initStockForm.selectedProduct?.sku === item.sku"
+                                class="material-symbols-outlined text-blue-600 text-sm flex-shrink-0">check_circle</span>
+                        </button>
+                        <div *ngIf="initStockProductResults.length === 0"
+                            class="px-4 py-5 text-sm text-slate-400 text-center">No products found.</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Initial Quantity</label>
+                        <div
+                            class="flex items-center rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-600">
+                            <button type="button" (click)="decrementQty()"
+                                class="p-3 bg-slate-50 border-r border-slate-200 hover:bg-slate-100 transition-colors text-slate-600">
+                                <span class="material-symbols-outlined text-[18px] block">remove</span>
+                            </button>
+                            <input [(ngModel)]="initStockForm.quantity" type="number" min="0"
+                                class="block w-full border-0 p-0 py-2.5 text-center bg-transparent focus:ring-0 text-slate-900 text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                            <button type="button" (click)="incrementQty()"
+                                class="p-3 bg-slate-50 border-l border-slate-200 hover:bg-slate-100 transition-colors text-blue-600">
+                                <span class="material-symbols-outlined text-[18px] block">add</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Average Unit Cost</label>
+                        <div class="relative rounded-lg shadow-sm">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <span class="text-slate-500 text-sm">$</span>
+                            </div>
+                            <input [(ngModel)]="initStockForm.unitCost" type="number" min="0" step="0.01"
+                                placeholder="0.00"
+                                class="block w-full rounded-lg border border-slate-200 bg-white pl-7 pr-12 py-2.5 text-right text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-100 focus:border-blue-600 transition-all shadow-sm" />
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                <span class="text-slate-500 text-sm">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-4 flex items-start gap-3 border border-slate-100">
+                    <span class="material-symbols-outlined text-blue-600 text-xl mt-0.5">info</span>
+                    <div>
+                        <p class="text-sm font-medium text-slate-900">Estimated Total Value</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Calculated as Quantity × Unit Cost.</p>
+                        <p class="text-lg font-bold text-slate-900 mt-2">{{ formatCurrency(estimatedTotalValue) }}</p>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200 rounded-b-xl flex-wrap">
+                <button type="button" (click)="closeInitStockModal()"
+                    class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+                <button type="button" (click)="submitInitStock()"
+                    [disabled]="!initStockForm.selectedProduct || (initStockForm.quantity ?? 0) <= 0 || isSubmittingInitStock"
+                    class="px-4 py-2.5 text-sm font-medium text-white bg-[#1d3b8b] rounded-lg hover:bg-[#162d6b] shadow-sm flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed min-w-[150px] justify-center">
+                    <ng-container *ngIf="isSubmittingInitStock">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>Submitting…
+                    </ng-container>
+                    <ng-container *ngIf="!isSubmittingInitStock">
+                        <span class="material-symbols-outlined text-[18px]">inventory_2</span>Initialize Stock
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<!-- ══ INCREASE STOCK MODAL ══ -->
+<ng-container *ngIf="showIncreaseStockModal">
+    <div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="closeIncreaseStockModal()"></div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900 leading-tight">Increase Product Stock</h2>
+                    <p class="text-sm text-slate-500 mt-1">Adjust inventory levels for an existing item.</p>
+                </div>
+                <button (click)="closeIncreaseStockModal()"
+                    class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700">Select Product</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+                        </div>
+                        <input [(ngModel)]="increaseStockForm.productSearch" type="text"
+                            placeholder="Search by SKU or name..."
+                            class="block w-full rounded-lg border border-slate-200 bg-white pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-100 focus:border-blue-600 transition-all shadow-sm" />
+                    </div>
+                    <div
+                        class="rounded-lg border border-slate-200 bg-white shadow-md overflow-hidden divide-y divide-slate-100 max-h-48 overflow-y-auto">
+                        <button *ngFor="let item of increaseStockProductResults" type="button"
+                            (click)="selectIncreaseStockProduct(item)"
+                            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+                            [class.bg-blue-50]="increaseStockForm.selectedProduct?.sku === item.sku">
+                            <div *ngIf="item.imageUrl"
+                                class="h-9 w-9 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                                [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                            <div *ngIf="!item.imageUrl"
+                                class="h-9 w-9 flex-shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-slate-900 truncate">{{ item.name }}</p>
+                                <p class="text-xs text-slate-500">SKU: {{ item.sku }}</p>
+                            </div>
+                            <span *ngIf="increaseStockForm.selectedProduct?.sku === item.sku"
+                                class="material-symbols-outlined text-blue-600 text-sm flex-shrink-0">check_circle</span>
+                        </button>
+                        <div *ngIf="increaseStockProductResults.length === 0"
+                            class="px-4 py-5 text-sm text-slate-400 text-center">No products found.</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Existing Quantity</label>
+                        <div class="flex items-center rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+                            <span class="material-symbols-outlined text-slate-400 text-xl mr-2">inventory</span>
+                            <span class="text-sm font-medium text-slate-600">{{
+                                getExistingQty(increaseStockForm.selectedProduct) }}</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Add Quantity</label>
+                        <div
+                            class="flex items-center rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-blue-100 focus-within:border-blue-600">
+                            <button type="button" (click)="decrementAddQty()"
+                                class="p-3 bg-slate-50 border-r border-slate-200 hover:bg-slate-100 transition-colors text-slate-600">
+                                <span class="material-symbols-outlined text-[18px] block">remove</span>
+                            </button>
+                            <input [(ngModel)]="increaseStockForm.addQty" type="number" min="0"
+                                class="block w-full border-0 p-0 py-2.5 text-center bg-transparent focus:ring-0 text-slate-900 text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                            <button type="button" (click)="incrementAddQty()"
+                                class="p-3 bg-slate-50 border-l border-slate-200 hover:bg-slate-100 transition-colors text-blue-700">
+                                <span class="material-symbols-outlined text-[18px] block">add</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Average Unit Cost</label>
+                        <div class="relative rounded-lg shadow-sm">
+                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                <span class="text-slate-500 text-sm">$</span>
+                            </div>
+                            <input [(ngModel)]="increaseStockForm.unitCost" type="number" min="0" step="0.01"
+                                placeholder="0.00"
+                                class="block w-full rounded-lg border border-slate-200 bg-white pl-7 pr-12 py-2.5 text-right text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-100 focus:border-blue-600 transition-all shadow-sm" />
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                                <span class="text-slate-500 text-sm">USD</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Estimated Total Value</label>
+                        <div
+                            class="flex items-center justify-end rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5">
+                            <div class="flex flex-col items-end">
+                                <span
+                                    class="text-xs text-blue-500 uppercase font-semibold tracking-wider leading-none mb-1">Calculated</span>
+                                <span class="text-base font-bold text-blue-700">{{
+                                    formatCurrency(increaseStockEstimatedValue) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200 rounded-b-xl flex-wrap">
+                <button type="button" (click)="closeIncreaseStockModal()"
+                    class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+                <button type="button" (click)="submitIncreaseStock()"
+                    [disabled]="!increaseStockForm.selectedProduct || (increaseStockForm.addQty ?? 0) <= 0 || isSubmittingIncreaseStock"
+                    class="px-4 py-2.5 text-sm font-medium text-white bg-[#1e3a8a] rounded-lg hover:bg-blue-900 shadow-sm flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed min-w-[140px] justify-center">
+                    <ng-container *ngIf="isSubmittingIncreaseStock">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>Submitting…
+                    </ng-container>
+                    <ng-container *ngIf="!isSubmittingIncreaseStock">
+                        <span class="material-symbols-outlined text-[18px]">update</span>Update Stock
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<!-- ══ DECREASE STOCK MODAL ══ -->
+<ng-container *ngIf="showDecreaseStockModal">
+    <div class="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm" (click)="closeDecreaseStockModal()"></div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="relative w-full max-w-lg bg-white rounded-xl shadow-2xl border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-200">
+                <div>
+                    <h2 class="text-xl font-semibold text-slate-900 leading-tight">Stock Out</h2>
+                    <p class="text-sm text-slate-500 mt-1">Decrease inventory quantity for a product.</p>
+                </div>
+                <button (click)="closeDecreaseStockModal()"
+                    class="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-2xl">close</span>
+                </button>
+            </div>
+            <div class="p-6 space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700">Select Product</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+                        </div>
+                        <input [(ngModel)]="decreaseStockForm.productSearch" type="text"
+                            placeholder="Search by SKU or name..."
+                            class="block w-full rounded-lg border border-slate-200 bg-white pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-red-100 focus:border-red-500 transition-all shadow-sm" />
+                    </div>
+                    <div
+                        class="rounded-lg border border-slate-200 bg-white shadow-md overflow-hidden divide-y divide-slate-100 max-h-48 overflow-y-auto">
+                        <button *ngFor="let item of decreaseStockProductResults" type="button"
+                            (click)="selectDecreaseStockProduct(item)"
+                            class="w-full flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition-colors text-left"
+                            [class.bg-red-50]="decreaseStockForm.selectedProduct?.sku === item.sku">
+                            <div *ngIf="item.imageUrl"
+                                class="h-9 w-9 flex-shrink-0 rounded-lg bg-slate-100 bg-cover bg-center border border-slate-200"
+                                [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                            <div *ngIf="!item.imageUrl"
+                                class="h-9 w-9 flex-shrink-0 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-slate-900 truncate">{{ item.name }}</p>
+                                <p class="text-xs text-slate-500">SKU: {{ item.sku }} · Available: {{
+                                    formatNumber(item.available) }}</p>
+                            </div>
+                            <span *ngIf="decreaseStockForm.selectedProduct?.sku === item.sku"
+                                class="material-symbols-outlined text-red-500 text-sm flex-shrink-0">check_circle</span>
+                        </button>
+                        <div *ngIf="decreaseStockProductResults.length === 0"
+                            class="px-4 py-5 text-sm text-slate-400 text-center">No products found.</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Quantity to Remove</label>
+                        <div
+                            class="flex items-center rounded-lg border border-slate-200 bg-white shadow-sm overflow-hidden focus-within:ring-2 focus-within:ring-red-100 focus-within:border-red-500">
+                            <button type="button" (click)="decrementDecreaseQty()"
+                                class="p-3 bg-slate-50 border-r border-slate-200 hover:bg-slate-100 transition-colors text-slate-600">
+                                <span class="material-symbols-outlined text-[18px] block">remove</span>
+                            </button>
+                            <input [(ngModel)]="decreaseStockForm.qty" type="number" min="0"
+                                class="block w-full border-0 p-0 py-2.5 text-center bg-transparent focus:ring-0 text-slate-900 text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" />
+                            <button type="button" (click)="incrementDecreaseQty()"
+                                class="p-3 bg-slate-50 border-l border-slate-200 hover:bg-slate-100 transition-colors text-red-600">
+                                <span class="material-symbols-outlined text-[18px] block">add</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Reference <span
+                                class="text-slate-400 font-normal">(optional)</span></label>
+                        <input [(ngModel)]="decreaseStockForm.reference" type="text" placeholder="e.g. ORD-1234"
+                            class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-red-100 focus:border-red-500 transition-all shadow-sm" />
+                    </div>
+                </div>
+                <div *ngIf="decreaseStockForm.selectedProduct"
+                    class="bg-amber-50 rounded-lg p-4 flex items-start gap-3 border border-amber-200">
+                    <span class="material-symbols-outlined text-amber-500 text-xl mt-0.5">warning</span>
+                    <div>
+                        <p class="text-sm font-medium text-amber-800">Available Stock Check</p>
+                        <p class="text-xs text-amber-600 mt-0.5">
+                            Current available: <strong>{{ formatNumber(decreaseStockForm.selectedProduct.available) }}
+                                units</strong>.
+                            After removal: <strong>{{ formatNumber(decreaseStockForm.selectedProduct.available -
+                                decreaseStockForm.qty) }} units</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200 rounded-b-xl flex-wrap">
+                <button type="button" (click)="closeDecreaseStockModal()"
+                    class="px-4 py-2.5 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">Cancel</button>
+                <button type="button" (click)="submitDecreaseStock()"
+                    [disabled]="!decreaseStockForm.selectedProduct || decreaseStockForm.qty <= 0 || isSubmittingDecreaseStock"
+                    class="px-4 py-2.5 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-sm flex items-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed min-w-[150px] justify-center">
+                    <ng-container *ngIf="isSubmittingDecreaseStock">
+                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>Submitting…
+                    </ng-container>
+                    <ng-container *ngIf="!isSubmittingDecreaseStock">
+                        <span class="material-symbols-outlined text-[18px]">remove_circle</span>Decrease Stock
+                    </ng-container>
+                </button>
+            </div>
+        </div>
+    </div>
+</ng-container>
+
+<!-- ══ NEW ADJUSTMENT MODAL ══ -->
+<ng-container *ngIf="showAdjustmentModal">
+    <div class="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm" (click)="closeAdjustmentModal()"></div>
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div
+            class="relative w-full max-w-xl bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="bg-slate-50 px-6 py-5 border-b border-slate-200 flex-shrink-0">
+                <div class="flex items-center justify-between mb-5">
+                    <h3 class="text-lg font-bold text-slate-900">New Adjustment</h3>
+                    <button (click)="closeAdjustmentModal()"
+                        class="text-slate-400 hover:text-slate-600 transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-1 text-sm">
+                    <ng-container *ngFor="let s of [1,2,3]; let i = index">
+                        <span [class.text-blue-600]="modalStep >= s" [class.font-semibold]="modalStep === s"
+                            [class.text-slate-400]="modalStep < s">
+                            {{ s }}. {{ modalStepLabel(s) }}
+                        </span>
+                        <span *ngIf="i < 2"
+                            class="material-symbols-outlined text-slate-300 text-sm mx-1">chevron_right</span>
+                    </ng-container>
+                </div>
+                <div class="mt-4 flex gap-1.5">
+                    <div *ngFor="let s of [1,2,3]" class="h-1 flex-1 rounded-full transition-colors duration-300"
+                        [class.bg-blue-600]="modalStep >= s" [class.bg-slate-200]="modalStep < s"></div>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto px-6 py-6">
+                <!-- STEP 1 -->
+                <div *ngIf="modalStep === 1" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-900 mb-2">Select Product</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <span class="material-symbols-outlined text-slate-400">search</span>
+                            </div>
+                            <input [(ngModel)]="modalForm.productSearch" type="text"
+                                placeholder="Search by name or SKU..."
+                                class="block w-full rounded-lg border-0 py-2.5 pl-10 pr-4 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" />
+                        </div>
+                        <div
+                            class="mt-1 max-h-48 overflow-y-auto rounded-lg border border-slate-200 bg-white shadow-lg divide-y divide-slate-100">
+                            <button *ngFor="let item of modalProductResults" type="button"
+                                (click)="selectModalProduct(item)"
+                                class="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-50 transition-colors text-left"
+                                [class.bg-blue-50]="modalForm.selectedProduct?.sku === item.sku">
+                                <div *ngIf="item.imageUrl"
+                                    class="h-8 w-8 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                                    [style.background-image]="'url(' + item.imageUrl + ')'"></div>
+                                <div *ngIf="!item.imageUrl"
+                                    class="h-8 w-8 flex-shrink-0 rounded bg-slate-100 border border-slate-200 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-slate-900 truncate">{{ item.name }}</p>
+                                    <p class="text-xs text-slate-500">SKU: {{ item.sku }}</p>
+                                </div>
+                                <span *ngIf="modalForm.selectedProduct?.sku === item.sku"
+                                    class="material-symbols-outlined text-blue-600 text-sm flex-shrink-0">check_circle</span>
+                            </button>
+                            <div *ngIf="modalProductResults.length === 0"
+                                class="px-3 py-4 text-sm text-slate-400 text-center">No products found.</div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-900 mb-3">Adjustment Type</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button *ngFor="let t of modalAdjustmentTypes" type="button"
+                                (click)="modalForm.adjustmentType = t.value"
+                                class="relative flex flex-col items-center p-4 rounded-lg transition-all"
+                                [ngClass]="getModalTypeClass(t.value)">
+                                <span class="material-symbols-outlined text-2xl mb-2" [ngClass]="t.iconColor">{{ t.icon
+                                    }}</span>
+                                <span class="text-sm font-semibold text-slate-900">{{ t.label }}</span>
+                                <span *ngIf="modalForm.adjustmentType === t.value"
+                                    class="absolute top-2 right-2 h-4 w-4 rounded-full bg-blue-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-[10px]">check</span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- <div>
+                        <label class="block text-sm font-medium text-slate-900 mb-2">Adjustment Date</label>
+                        <input [(ngModel)]="modalForm.adjustmentDate" type="date"
+                            class="block w-full rounded-lg border-0 py-2.5 pl-3 pr-3 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" />
+                    </div> -->
+                </div>
+                <!-- STEP 2 -->
+                <div *ngIf="modalStep === 2" class="space-y-6">
+                    <div *ngIf="modalForm.selectedProduct"
+                        class="flex items-center gap-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <div *ngIf="modalForm.selectedProduct.imageUrl"
+                            class="h-10 w-10 flex-shrink-0 rounded bg-slate-100 bg-cover bg-center border border-slate-200"
+                            [style.background-image]="'url(' + modalForm.selectedProduct.imageUrl + ')'"></div>
+                        <div *ngIf="!modalForm.selectedProduct.imageUrl"
+                            class="h-10 w-10 flex-shrink-0 rounded bg-slate-100 border border-slate-200 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-slate-400 text-base">inventory_2</span>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900">{{ modalForm.selectedProduct.name }}</p>
+                            <p class="text-xs text-slate-500">{{ modalForm.selectedProduct.sku }} · {{
+                                modalForm.adjustmentType }}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-900 mb-2">System Quantity</label>
+                            <input [value]="modalForm.systemQty" type="number" disabled class="block w-full rounded-lg border-0 py-2.5 px-3 
+                  text-slate-500 bg-slate-100 ring-1 ring-inset 
+                  ring-slate-200 sm:text-sm cursor-not-allowed" />
+                            <p class="text-xs text-slate-400 mt-1">Current stock in system</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-900 mb-2">Actual Quantity</label>
+                            <input [(ngModel)]="modalForm.actualQty" type="number" min="0"
+                                class="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" />
+                            <p class="text-xs text-slate-400 mt-1">Physical count result</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-lg border transition-colors" [class.bg-red-50]="modalDifference < 0"
+                        [class.border-red-200]="modalDifference < 0" [class.bg-emerald-50]="modalDifference > 0"
+                        [class.border-emerald-200]="modalDifference > 0" [class.bg-slate-50]="modalDifference === 0"
+                        [class.border-slate-200]="modalDifference === 0">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-slate-700">Difference</span>
+                            <span class="text-xl font-bold" [class.text-red-600]="modalDifference < 0"
+                                [class.text-emerald-600]="modalDifference > 0"
+                                [class.text-slate-500]="modalDifference === 0">
+                                {{ modalDifference > 0 ? '+' : '' }}{{ modalDifference }}
+                            </span>
+                        </div>
+                        <p class="text-xs mt-1" [class.text-red-500]="modalDifference < 0"
+                            [class.text-emerald-600]="modalDifference > 0"
+                            [class.text-slate-400]="modalDifference === 0">
+                            <ng-container *ngIf="modalDifference < 0">Stock loss of {{ modalDifference * -1 }} unit(s)
+                                will be recorded.</ng-container>
+                            <ng-container *ngIf="modalDifference > 0">Stock gain of {{ modalDifference }} unit(s) will
+                                be recorded.</ng-container>
+                            <ng-container *ngIf="modalDifference === 0">No difference — quantities match.</ng-container>
+                        </p>
+                    </div>
+                </div>
+                <!-- STEP 3 -->
+                <div *ngIf="modalStep === 3" class="space-y-6">
+                    <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 divide-y divide-slate-100 text-sm">
+                        <div class="flex justify-between pb-2">
+                            <span class="text-slate-500">Product</span>
+                            <span class="font-medium text-slate-900">{{ modalForm.selectedProduct?.name }}</span>
+                        </div>
+                        <div class="flex justify-between py-2">
+                            <span class="text-slate-500">Type</span>
+                            <span class="font-medium text-slate-900">{{ modalForm.adjustmentType }}</span>
+                        </div>
+                        <div class="flex justify-between pt-2">
+                            <span class="text-slate-500">Difference</span>
+                            <span class="font-bold" [class.text-red-600]="modalDifference < 0"
+                                [class.text-emerald-600]="modalDifference > 0"
+                                [class.text-slate-500]="modalDifference === 0">
+                                {{ modalDifference > 0 ? '+' : '' }}{{ modalDifference }}
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-900 mb-2">Reason <span
+                                class="text-red-500">*</span></label>
+                        <input [(ngModel)]="modalForm.reason" type="text"
+                            placeholder="e.g. Damaged during transit, Physical count discrepancy..."
+                            class="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm" />
+                    </div>
+                    <!-- <div>
+                        <label class="block text-sm font-medium text-slate-900 mb-2">Notes <span
+                                class="text-slate-400 font-normal">(optional)</span></label>
+                        <textarea [(ngModel)]="modalForm.notes" rows="3"
+                            placeholder="Additional context or observations..."
+                            class="block w-full rounded-lg border-0 py-2.5 px-3 text-slate-900 ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm resize-none"></textarea>
+                    </div> -->
+                </div>
+            </div>
+            <div class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex items-center flex-shrink-0">
+                <button *ngIf="modalStep === 1" type="button" (click)="closeAdjustmentModal()"
+                    class="inline-flex items-center rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-300 bg-white hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button *ngIf="modalStep > 1" type="button" (click)="modalBack()" [disabled]="isSubmittingAdjustment"
+                    class="inline-flex items-center gap-1.5 rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-700 ring-1 ring-inset ring-slate-300 bg-white hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                    <span class="material-symbols-outlined text-base">arrow_back</span> Back
+                </button>
+                <div class="ml-auto flex items-center gap-3 flex-wrap justify-end">
+                    <button *ngIf="modalStep < 3" type="button" (click)="modalNext()"
+                        [disabled]="modalStep === 1 && !modalForm.selectedProduct"
+                        class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                        Next Step <span class="material-symbols-outlined text-base">arrow_forward</span>
+                    </button>
+                    <button *ngIf="modalStep === 3" type="button" (click)="submitAdjustment()"
+                        [disabled]="!modalForm.reason.trim() || isSubmittingAdjustment"
+                        class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors min-w-[180px] justify-center">
+                        <ng-container *ngIf="isSubmittingAdjustment">
+                            <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>Submitting…
+                        </ng-container>
+                        <ng-container *ngIf="!isSubmittingAdjustment">
+                            <span class="material-symbols-outlined text-base">check_circle</span> Submit Adjustment
+                        </ng-container>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-container>
