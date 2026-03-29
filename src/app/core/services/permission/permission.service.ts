@@ -138,13 +138,7 @@ export class PermissionService {
           nodes {
             id
             name
-            resources
-            allowAccess {
-              allowCreate
-              allowDelete
-              allowUpdate
-              allowView
-            }
+              description
           }
         }
       }
