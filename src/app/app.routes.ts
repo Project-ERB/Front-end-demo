@@ -240,7 +240,7 @@ export const routes: Routes = [
       {
         path: 'admin-dashboard',
         loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-dash/admin-dash.component').then((A) => A.AdminDashComponent),
-        title: 'admin-dashboard'
+        title: 'admin-dashboard',
       },
       {
         path: 'permissions',

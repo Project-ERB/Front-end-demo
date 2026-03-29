@@ -165,18 +165,6 @@ export class AdminService {
           id
           name
           description
-          permissions {
-            id
-            name
-            description
-            resources
-            allowAccess {
-              allowCreate
-              allowDelete
-              allowUpdate
-              allowView
-            }
-          }
         }
       }
     `;
