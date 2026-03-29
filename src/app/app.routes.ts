@@ -367,7 +367,7 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/HR/employee-management/employee-management/employee-management.component').then((E) => E.EmployeeManagementComponent)
       },
       {
-        path: 'employee-details:/id',
+        path: 'employee-details/:id',
         loadComponent: () => import('./modules/ERBSystem/HR/employee-details/employee-details/employee-details.component').then((E) => E.EmployeeDetailsComponent)
       },
       {
@@ -396,7 +396,7 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/HR/update-jop/update-jop/update-jop.component').then((U) => U.UpdateJopComponent)
       },
       {
-        path: 'jop-details:/id',
+        path: 'jop-details/:id',
         loadComponent: () => import('./modules/ERBSystem/HR/jop-details/jop-details/jop-details.component').then((J) => J.JopDetailsComponent)
       },
       {
