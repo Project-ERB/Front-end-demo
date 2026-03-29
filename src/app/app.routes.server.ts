@@ -37,7 +37,38 @@ export const serverRoutes: ServerRoute[] = [
     path: 'product-details/:id',
     renderMode: RenderMode.Server
   },
-
+  {
+    path: 'employee-details/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'payroll-details/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'jop-details:/id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'candidate-details/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'application-details/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'interview-details/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'offer-details/:id',
+    renderMode: RenderMode.Server
+  },
+  {
+    path: 'contract-details/:id',
+    renderMode: RenderMode.Server
+  },
   // All other routes use Prerender
   {
     path: '**',
