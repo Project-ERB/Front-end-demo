@@ -1,0 +1,245 @@
+<div
+    class="flex h-screen overflow-hidden font-[Public_Sans,sans-serif] bg-[#f8f6f6] dark:bg-[#221610] text-slate-900 dark:text-slate-100">
+
+    <!-- ── Sidebar ── -->
+    <aside class="w-64 bg-white dark:bg-[#221610] border-r border-slate-200 dark:border-slate-800 flex flex-col">
+
+        <!-- Brand -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="bg-[#ec5b13]/10 p-2 rounded-lg">
+                <span class="material-symbols-outlined text-[#ec5b13] text-2xl">corporate_fare</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold leading-none">HR Core</h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Admin Portal</p>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-4 space-y-1 mt-4">
+            <a *ngFor="let item of navItems" href="#"
+                [class]="item.active
+          ? 'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors bg-[#ec5b13]/10 text-[#ec5b13] border-r-[3px] border-[#ec5b13]'
+          : 'flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors'">
+                <span class="material-symbols-outlined">{{ item.icon }}</span>
+                <span class="text-sm font-medium">{{ item.label }}</span>
+            </a>
+        </nav>
+
+        <!-- Bottom: Settings + Status -->
+        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+            <div class="mt-4 p-4 bg-[#ec5b13]/5 rounded-xl">
+                <p class="text-xs font-semibold text-[#ec5b13] uppercase tracking-wider mb-1">System Status</p>
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span class="text-xs text-slate-600 dark:text-slate-400">All systems operational</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="flex-1 overflow-y-auto flex flex-col">
+
+        <!-- Header -->
+        <header
+            class="h-16 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-[#221610] px-8 flex items-center justify-between sticky top-0 z-10">
+            <h2 class="text-xl font-bold">Employee Directory</h2>
+            <div class="flex items-center gap-4">
+                <button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <div class="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold leading-none">Alex Morgan</p>
+                        <p class="text-xs text-slate-500">HR Director</p>
+                    </div>
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn0u3SviV7mj3-LllajdqijToCPCyyT5mCBzS22avPTYbrHvqWTAALeqQHkq8ZGoCCZ5eYcCZRp61HmRAfxFCsssTfgfWYvrF4FbeGBHvofpTtLJ7AWAYQnq1dYN53PhPYi500mD1EK3WfCFlIuw1DiKcfm2nmx6ycBlEK_EP3_Jfmunv3dvNg9lo64_4wnU-uzRmdSNeheGNIvdNBctbElvCWsiGK6rsYhlaOHbeLiNeyWRdbX7jPeZtYT8Ohab29r9lXm__QZM2O"
+                        alt="Alex Morgan" class="w-10 h-10 rounded-full border-2 border-[#ec5b13]/20 object-cover" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Workspace -->
+        <div class="p-8 space-y-6">
+
+            <!-- Action Bar -->
+            <div class="flex flex-col md:flex-row justify-between gap-4">
+                <div class="flex flex-1 gap-4 max-w-2xl">
+
+                    <!-- Search -->
+                    <div class="relative flex-1">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                        <input type="text" [(ngModel)]="searchQuery"
+                            placeholder="Search by name, email or employee ID..."
+                            class="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] outline-none text-sm" />
+                    </div>
+
+                    <!-- Department Filter -->
+                    <select [(ngModel)]="selectedDepartment"
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] outline-none">
+                        <option value="">All Departments</option>
+                        <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+                    </select>
+
+                    <!-- Status Filter -->
+                    <select [(ngModel)]="selectedStatus"
+                        class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] outline-none">
+                        <option value="">All Statuses</option>
+                        <option *ngFor="let s of statuses" [value]="s">{{ s }}</option>
+                    </select>
+                </div>
+
+                <!-- Add Employee -->
+                <button
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20">
+                    <span class="material-symbols-outlined">add</span>
+                    Add New Employee
+                </button>
+            </div>
+
+            <!-- Table Card -->
+            <div
+                class="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
+                        <tr>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Name</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Department
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Level</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-right">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700">
+
+                        <!-- No results -->
+                        <tr *ngIf="filteredEmployees.length === 0">
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                <span class="material-symbols-outlined text-4xl block mb-2">manage_search</span>
+                                No employees match your search criteria.
+                            </td>
+                        </tr>
+
+                        <!-- Employee rows -->
+                        <tr *ngFor="let emp of filteredEmployees"
+                            class="hover:bg-slate-50/50 dark:hover:bg-slate-700/50 transition-colors">
+                            <!-- Name + Avatar -->
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <img [src]="emp.avatar" [alt]="emp.name"
+                                        class="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                                    <div>
+                                        <p class="font-semibold text-sm">{{ emp.name }}</p>
+                                        <p class="text-xs text-slate-500">{{ emp.email }}</p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Department -->
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.department }}</td>
+
+                            <!-- Level -->
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.level }}</td>
+
+                            <!-- Status Badge -->
+                            <td class="px-6 py-4">
+                                <span
+                                    [class]="'px-2.5 py-1 text-xs font-medium rounded-full ' + statusBadgeClass(emp.status)">
+                                    {{ emp.status }}
+                                </span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <button (click)="onView(emp)"
+                                        class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                    </button>
+                                    <button (click)="onEdit(emp)"
+                                        class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                    </button>
+                                    <button (click)="onDelete(emp)"
+                                        class="p-1.5 text-slate-400 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div
+                    class="px-6 py-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                    <p class="text-sm text-slate-500">
+                        Showing <span class="font-medium">{{ showingFrom }}</span> to
+                        <span class="font-medium">{{ showingTo }}</span> of
+                        <span class="font-medium">{{ totalEmployees }}</span> employees
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <!-- Prev -->
+                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                            class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+
+                        <!-- Page numbers -->
+                        <ng-container *ngFor="let p of visiblePages">
+                            <button (click)="goToPage(p)" [class]="p === currentPage
+                  ? 'px-4 py-2 rounded-lg bg-[#ec5b13] text-white font-medium text-sm'
+                  : 'px-4 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium'">{{ p
+                                }}</button>
+                        </ng-container>
+
+                        <span class="text-slate-400">...</span>
+
+                        <button (click)="goToPage(totalPages)" [class]="totalPages === currentPage
+                ? 'px-4 py-2 rounded-lg bg-[#ec5b13] text-white font-medium text-sm'
+                : 'px-4 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium'">{{ totalPages
+                            }}</button>
+
+                        <!-- Next -->
+                        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                            class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div *ngFor="let card of statCards"
+                    class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div [class]="'p-3 rounded-lg ' + card.iconBg + ' ' + card.iconColor">
+                            <span class="material-symbols-outlined">{{ card.icon }}</span>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">{{ card.label }}</p>
+                            <h3 class="text-2xl font-bold">
+                                {{ card.value }}
+                                <span *ngIf="card.sub" class="text-xs text-green-500 font-normal">{{ card.sub }}</span>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>

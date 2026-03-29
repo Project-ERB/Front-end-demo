@@ -1,0 +1,190 @@
+<div class="flex h-screen overflow-hidden bg-[#f8fafd] font-['Public_Sans',sans-serif] text-slate-900">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white">
+                <span class="material-symbols-outlined block">corporate_fare</span>
+            </div>
+            <h2 class="text-xl font-bold tracking-tight">HR ERP</h2>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="flex-1 px-4 space-y-1 mt-4">
+            <a *ngFor="let item of navItems" href="#" [class]="item.active
+    ? 'flex items-center gap-3 px-3 py-2 bg-blue-600/10 text-blue-600 rounded-lg transition-colors'
+    : 'flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors'">
+                <span class="material-symbols-outlined"
+                    [style.font-variation-settings]="item.active ? `'FILL' 1` : `'FILL' 0`">
+                    {{ item.icon }}
+                </span>
+
+                <span class="text-sm font-medium">
+                    {{ item.label }}
+                </span>
+            </a>
+        </nav>
+
+        <!-- User Profile -->
+        <div class="p-4 border-t border-slate-200">
+            <div class="flex items-center gap-3 p-2">
+                <div class="w-10 h-10 rounded-full bg-slate-200 bg-cover bg-center flex-shrink-0"
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuApsWuGzHVH43FY4fc-eY5w3YM50YpYDnJ7qjxanN5Dht_bXBFOMx-LR0_j68RdsQvLzaHP9VBgPdJ4HXmLOp5F14wz-zSD50Tz-wFGxPW_3bNCJxrv0pwt0ZxaK2viR2kdzCUyASMIqmyCwO1PFfL1zxaC5K77j3Sc6XPhXvBKOQk1NUwnoN1uj9u2ZS8lcp4LfFU11gXBZLfnjAa214c0JIv4dqhmIpjW0lPVbZ_PfY8298tz35pXWZarP2WRE-TjTkXaWtiOMsmE');">
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-sm font-semibold">Alex Rivera</span>
+                    <span class="text-xs text-slate-500">HR Manager</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col overflow-y-auto">
+
+        <!-- Top Header -->
+        <header
+            class="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 sticky top-0 z-10">
+            <div class="flex items-center gap-2 text-sm text-slate-500">
+                <a href="#" class="hover:text-blue-600 transition-colors">HR</a>
+                <span class="material-symbols-outlined text-xs leading-none">chevron_right</span>
+                <a href="#" class="hover:text-blue-600 transition-colors">Applications</a>
+                <span class="material-symbols-outlined text-xs leading-none">chevron_right</span>
+                <span class="text-slate-900 font-medium">New Process</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Body -->
+        <div class="p-8 max-w-4xl mx-auto w-full">
+
+            <!-- Page Heading -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Create New Application Process</h1>
+                <p class="text-slate-500 mt-2">Initiate a recruitment workflow by assigning a candidate to a specific
+                    job role.</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+
+                <!-- Card Header -->
+                <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-semibold text-slate-800">Process Details</h3>
+                </div>
+
+                <!-- Form -->
+                <form (ngSubmit)="onSubmit()" class="p-8 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Candidate Selection -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">Select Candidate</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none">search</span>
+                                <select [(ngModel)]="form.candidateId" name="candidateId"
+                                    class="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all appearance-none text-sm">
+                                    <option [ngValue]="null" disabled>Search and select candidate...</option>
+                                    <option *ngFor="let c of candidates" [ngValue]="c.id">
+                                        {{ c.name }} ({{ c.role }})
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">unfold_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Job Selection -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">Select Job Requirement</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none">work_outline</span>
+                                <select [(ngModel)]="form.jobId" name="jobId"
+                                    class="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all appearance-none text-sm">
+                                    <option [ngValue]="null" disabled>Search and select job...</option>
+                                    <option *ngFor="let j of jobs" [ngValue]="j.id">
+                                        {{ j.code }}: {{ j.title }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">unfold_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Start Date -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">Start Date</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none">calendar_today</span>
+                                <input type="date" [(ngModel)]="form.startDate" name="startDate"
+                                    class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all text-sm" />
+                            </div>
+                        </div>
+
+                        <!-- Initial Stage -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-semibold text-slate-700">Initial Stage</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl pointer-events-none">account_tree</span>
+                                <select [(ngModel)]="form.initialStage" name="initialStage"
+                                    class="w-full pl-10 pr-10 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all appearance-none text-sm">
+                                    <option *ngFor="let s of stages" [value]="s.value">{{ s.label }}</option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">unfold_more</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-semibold text-slate-700">Internal Notes <span
+                                class="font-normal text-slate-400">(Optional)</span></label>
+                        <textarea [(ngModel)]="form.notes" name="notes" rows="3"
+                            placeholder="Add any initial context or requirements..."
+                            class="w-full p-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 transition-all text-sm resize-none"></textarea>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="pt-6 flex items-center justify-end gap-4 border-t border-slate-100">
+                        <button type="button" (click)="onCancel()"
+                            class="px-6 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-blue-600/20 transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined text-xl">add_circle</span>
+                            Create Process
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Info Banner -->
+            <div class="mt-8 p-6 bg-blue-50 rounded-xl border border-blue-100 flex gap-4">
+                <span class="material-symbols-outlined text-blue-600 flex-shrink-0">info</span>
+                <div>
+                    <p class="text-sm font-medium text-blue-900">Helpful Tip</p>
+                    <p class="text-sm text-blue-700/80 mt-1">
+                        Once created, an automated email will be sent to the candidate with instructions for their
+                        initial stage tasks.
+                        You can edit the notification template in Settings.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>

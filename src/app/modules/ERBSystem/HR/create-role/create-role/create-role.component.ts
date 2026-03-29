@@ -147,87 +147,87 @@ export class CreateRoleComponent implements OnInit {
   RoleForm: FormGroup = this._FormBuilder.group({
     name: [null, Validators.required],
     description: [null],
-    setPermissions: this._FormBuilder.array([]),
+    // setPermissions: this._FormBuilder.array([]),
   });
 
-  get setPermissions(): FormArray {
-    return this.RoleForm.get('setPermissions') as FormArray;
-  }
+  // get setPermissions(): FormArray {
+  //   return this.RoleForm.get('setPermissions') as FormArray;
+  // }
 
-  getPermGroup(i: number): FormGroup {
-    return this.setPermissions.at(i) as FormGroup;
-  }
+  // getPermGroup(i: number): FormGroup {
+  //   return this.setPermissions.at(i) as FormGroup;
+  // }
 
   // ── Build form array from API data ──────────────────────────────────────
-  buildPermissionControls(): void {
-    this.setPermissions.clear();
-    this.allPermissions.forEach(perm => {
-      this.setPermissions.push(
-        this._FormBuilder.group({
-          permissionId: [perm.id],
-          allowCreate: [false],
-          allowDelete: [false],
-          allowUpdated: [false],
-          allowView: [false],
-        })
-      );
-    });
-  }
+  // buildPermissionControls(): void {
+  //   this.setPermissions.clear();
+  //   this.allPermissions.forEach(perm => {
+  //     this.setPermissions.push(
+  //       this._FormBuilder.group({
+  //         permissionId: [perm.id],
+  //         allowCreate: [false],
+  //         allowDelete: [false],
+  //         allowUpdated: [false],
+  //         allowView: [false],
+  //       })
+  //     );
+  //   });
+  // }
 
   // ── Helpers ─────────────────────────────────────────────────────────────
   getResourceLabels(resources: string[]): string[] {
     return (resources || []).map(r => RESOURCE_LABEL_MAP[r] ?? r);
   }
 
-  getCheckedCount(i: number): number {
-    const g = this.getPermGroup(i).value;
-    return [g.allowCreate, g.allowDelete, g.allowUpdated, g.allowView].filter(Boolean).length;
-  }
+  // getCheckedCount(i: number): number {
+  //   const g = this.getPermGroup(i).value;
+  //   return [g.allowCreate, g.allowDelete, g.allowUpdated, g.allowView].filter(Boolean).length;
+  // }
 
-  toggleAll(i: number, checked: boolean): void {
-    this.getPermGroup(i).patchValue({
-      allowCreate: checked,
-      allowDelete: checked,
-      allowUpdated: checked,
-      allowView: checked,
-    });
-    this.markDirty();
-  }
+  // toggleAll(i: number, checked: boolean): void {
+  //   this.getPermGroup(i).patchValue({
+  //     allowCreate: checked,
+  //     allowDelete: checked,
+  //     allowUpdated: checked,
+  //     allowView: checked,
+  //   });
+  //   this.markDirty();
+  // }
 
-  isAllChecked(i: number): boolean {
-    const g = this.getPermGroup(i).value;
-    return g.allowCreate && g.allowDelete && g.allowUpdated && g.allowView;
-  }
+  // isAllChecked(i: number): boolean {
+  //   const g = this.getPermGroup(i).value;
+  //   return g.allowCreate && g.allowDelete && g.allowUpdated && g.allowView;
+  // }
 
   markDirty(): void { this.isDirty = true; this.saveSuccess = false; }
 
   cancel(): void {
     if (this.isDirty && !confirm('Discard unsaved changes?')) return;
     this.RoleForm.reset();
-    this.buildPermissionControls();
+    // this.buildPermissionControls();
     this.isDirty = false;
     this.formError = '';
   }
 
   // ── Lifecycle ───────────────────────────────────────────────────────────
   ngOnInit(): void {
-    this.loadPermissions();
+    // this.loadPermissions();
   }
 
-  loadPermissions(): void {
-    this.isLoadingPermissions = true;
-    this._PermissionService.getPermissions().subscribe({
-      next: (data) => {
-        this.allPermissions = data;
-        this.isLoadingPermissions = false;
-        this.buildPermissionControls();
-      },
-      error: () => {
-        this.isLoadingPermissions = false;
-        this._ToastrService.error('Failed to load permissions.');
-      },
-    });
-  }
+  // loadPermissions(): void {
+  //   this.isLoadingPermissions = true;
+  //   this._PermissionService.getPermissions().subscribe({
+  //     next: (data) => {
+  //       this.allPermissions = data;
+  //       this.isLoadingPermissions = false;
+  //       this.buildPermissionControls();
+  //     },
+  //     error: () => {
+  //       this.isLoadingPermissions = false;
+  //       this._ToastrService.error('Failed to load permissions.');
+  //     },
+  //   });
+  // }
 
   // ── Submit ──────────────────────────────────────────────────────────────
   createRole(): void {

@@ -1,0 +1,277 @@
+<div class="flex h-screen overflow-hidden bg-[#f8fafd] font-sans text-slate-900">
+
+    <!-- Sidebar -->
+    <aside class="w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
+
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="size-8 bg-[#2563EB] rounded-lg flex items-center justify-center text-white">
+                <span class="material-symbols-outlined text-lg">corporate_fare</span>
+            </div>
+            <div>
+                <h1 class="text-sm font-bold tracking-tight text-slate-900 uppercase">Enterprise HR</h1>
+                <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider leading-none">Admin Portal
+                </p>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <span class="material-symbols-outlined text-xl">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <span class="material-symbols-outlined text-xl">group</span>
+                <span class="text-sm font-medium">Candidates</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <span class="material-symbols-outlined text-xl">work</span>
+                <span class="text-sm font-medium">Job Openings</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 bg-blue-50 text-[#2563EB] rounded-lg">
+                <span class="material-symbols-outlined text-xl">contract</span>
+                <span class="text-sm font-semibold">Offers</span>
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <span class="material-symbols-outlined text-xl">badge</span>
+                <span class="text-sm font-medium">Employees</span>
+            </a>
+            <div class="pt-4 pb-2 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">System</div>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                <span class="material-symbols-outlined text-xl">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+        </nav>
+
+        <!-- Upgrade box -->
+        <div class="p-4 border-t border-slate-200">
+            <div class="bg-blue-50 rounded-xl p-4">
+                <p class="text-xs font-semibold text-slate-600 mb-2">Enterprise Plan</p>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full mb-3">
+                    <div class="bg-[#2563EB] h-1.5 rounded-full w-[75%]"></div>
+                </div>
+                <button
+                    class="w-full py-2 bg-[#2563EB] text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition-colors">
+                    Upgrade Storage
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10">
+            <div class="flex items-center flex-1 max-w-md">
+                <div class="relative w-full">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input [(ngModel)]="searchQuery"
+                        class="w-full bg-slate-100 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-200 outline-none"
+                        placeholder="Search offers, candidates..." type="text" />
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="p-2 text-slate-400 hover:bg-slate-100 rounded-lg relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="h-8 w-px bg-slate-200"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-bold text-slate-900">Sarah Jenkins</p>
+                        <p class="text-[10px] text-slate-500 font-medium">HR Director</p>
+                    </div>
+                    <img class="size-9 rounded-full bg-slate-200 object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtmbmTyatS2kmAg1-V3lxnWgKHLTQwhVbnKVOLRdhJHr64Kk-PD9vPPD2VCj6XImOsYxTpJeKFra2AL7wAdDA_PRZO2Z3P_Jc-7yMvt095-h5Vvehh5RjpBG_hrK9Ih9hOn0o-uc4FQ8kEi8Q-Qv5PJY8VKIi9yKII-KfPYt9cuCDLJIwJXXt1mJjvkZLvk3GlDWPWsDDcz4yfCKuzl6t3W9eXtO695nr9mXoGZBZPlcSX_WiOdHDL7deLHz9LNJMgCxC1A3egUv4C"
+                        alt="HR Manager" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-8">
+
+            <!-- Title Row -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Offer Management</h2>
+                    <p class="text-slate-500 text-sm mt-1">Review, manage and track employee offer lifecycles.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button (click)="exportCSV()"
+                        class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Export CSV
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-5 py-2.5 bg-[#2563EB] text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:scale-[1.02] transition-transform">
+                        <span class="material-symbols-outlined text-lg">add_circle</span>
+                        Create New Offer
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div *ngFor="let stat of stats" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div [class]="'p-2 rounded-lg ' + stat.colorClass">
+                            <span class="material-symbols-outlined">{{ stat.icon }}</span>
+                        </div>
+                        <span
+                            [class]="'text-xs font-bold flex items-center gap-1 ' + (stat.trendUp ? 'text-emerald-500' : 'text-rose-500')">
+                            <span class="material-symbols-outlined text-sm">{{ stat.trendUp ? 'trending_up' :
+                                'trending_down' }}</span>
+                            {{ stat.trend }}
+                        </span>
+                    </div>
+                    <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">{{ stat.label }}</p>
+                    <h3 class="text-2xl font-black text-slate-900 mt-1">{{ stat.value }}</h3>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+
+                <!-- Table Controls -->
+                <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 items-center justify-between">
+                    <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+                        <button *ngFor="let f of statusFilters" (click)="setFilter(f)" [class]="activeFilter === f
+                ? 'px-4 py-1.5 bg-slate-100 text-slate-900 text-xs font-bold rounded-full'
+                : 'px-4 py-1.5 text-slate-500 hover:bg-slate-50 text-xs font-semibold rounded-full'">
+                            {{ f }}
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <select [(ngModel)]="selectedPeriod"
+                                class="appearance-none bg-slate-50 border border-slate-200 rounded-lg pl-3 pr-8 py-1.5 text-xs font-medium text-slate-600 focus:ring-0 outline-none">
+                                <option *ngFor="let p of periods" [value]="p">{{ p }}</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-sm">expand_more</span>
+                        </div>
+                        <button class="p-2 bg-slate-50 border border-slate-200 rounded-lg text-slate-400">
+                            <span class="material-symbols-outlined text-sm">filter_list</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50">
+                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Candidate Name</th>
+                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Job
+                                    Title</th>
+                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Salary (Annual)</th>
+                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Expiration</th>
+                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                    Status</th>
+                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Is
+                                    Active</th>
+                                <th class="px-6 py-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr *ngFor="let offer of filteredOffers" class="hover:bg-slate-50 transition-colors">
+                                <!-- Candidate -->
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            [class]="'size-8 rounded-full flex items-center justify-center font-bold text-xs ' + getInitialsClasses(offer.initials)">
+                                            {{ offer.initials }}
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-slate-900">{{ offer.candidateName }}</p>
+                                            <p class="text-[10px] text-slate-500 font-medium">Interviewed on {{
+                                                offer.interviewDate }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Job -->
+                                <td class="px-6 py-4">
+                                    <p class="text-sm text-slate-700 font-medium">{{ offer.jobTitle }}</p>
+                                    <p class="text-[10px] text-slate-500">{{ offer.workType }} • {{ offer.location }}
+                                    </p>
+                                </td>
+
+                                <!-- Salary -->
+                                <td class="px-6 py-4">
+                                    <p class="text-sm font-bold text-slate-900">{{ offer.salary }}</p>
+                                    <p class="text-[10px] text-slate-500 uppercase">{{ offer.currency }}</p>
+                                </td>
+
+                                <!-- Expiration -->
+                                <td class="px-6 py-4 text-sm text-slate-600">{{ offer.expiration }}</td>
+
+                                <!-- Status -->
+                                <td class="px-6 py-4">
+                                    <span
+                                        [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ' + getStatusClasses(offer.status)">
+                                        {{ offer.status }}
+                                    </span>
+                                </td>
+
+                                <!-- Toggle -->
+                                <td class="px-6 py-4">
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" [checked]="offer.isActive"
+                                            (change)="toggleActive(offer)" />
+                                        <div
+                                            class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2563EB]">
+                                        </div>
+                                    </label>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-4 text-right">
+                                    <button class="p-1 text-slate-400 hover:text-slate-600">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="filteredOffers.length === 0">
+                                <td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    No offers match the current filter.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-5 flex items-center justify-between bg-slate-50">
+                    <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                        Showing {{ filteredOffers.length }} of 1,284 offers
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <button
+                            class="p-2 border border-slate-200 rounded-lg text-slate-400 hover:bg-white transition-colors">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        </button>
+                        <button class="px-3 py-1 bg-[#2563EB] text-white text-xs font-bold rounded-lg">1</button>
+                        <button
+                            class="px-3 py-1 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">2</button>
+                        <button
+                            class="px-3 py-1 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-200 transition-colors">3</button>
+                        <button
+                            class="p-2 border border-slate-200 rounded-lg text-slate-400 hover:bg-white transition-colors">
+                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>

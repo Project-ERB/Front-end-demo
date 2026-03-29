@@ -1,0 +1,256 @@
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f6]">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3">
+        <div class="flex items-center gap-8">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 text-blue-600">
+                <div class="size-8 bg-blue-600/10 rounded-lg flex items-center justify-center">
+                    <span class="material-symbols-outlined text-blue-600">layers</span>
+                </div>
+                <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">TalentFlow ERP</h2>
+            </div>
+
+            <!-- Search -->
+            <div class="hidden md:flex flex-col min-w-40 h-10 max-w-64">
+                <div class="flex w-full flex-1 items-stretch rounded-xl h-full">
+                    <div class="flex items-center justify-center pl-4 bg-slate-100 rounded-l-xl text-slate-400">
+                        <span class="material-symbols-outlined text-[20px]">search</span>
+                    </div>
+                    <input type="text" placeholder="Search applications..."
+                        class="flex-1 bg-slate-100 border-none focus:ring-0 text-sm text-slate-900 placeholder:text-slate-400 px-4 rounded-r-xl outline-none" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Right side -->
+        <div class="flex items-center gap-4">
+            <div class="flex gap-2">
+                <button
+                    class="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button
+                    class="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+            </div>
+            <div class="size-10 rounded-full bg-cover bg-center bg-no-repeat ring-2 ring-blue-600/20"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuALhPz6zI1oLaybPy-ARjrqX1tlQUgMky9_90Re5er8QjqfhzcBbLj20zcmrSlCLz0BDLFgRjTfj_xLd8SjDxCjqHeaO9Z8yYsG7ijRgW_sK-AXXCbiXJW1A2iqNn65LTEJ0GvZ4Yvve9ch9n9rNfFMUyBCM2nXw45EwMCGHjrNWaKRuUh9GPOxoUcflplydB99cne3UV05Xl3288rYcTlPCxkcihR_rq-UYEe5xIOMAaSJlSRH_4uDXbQSZkMdIMkg4QnYwOITZfIL')">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-[1200px] mx-auto w-full px-6 py-8">
+
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 mb-6 text-sm">
+            <a href="#" class="text-slate-500 hover:text-blue-600 transition-colors">Applications</a>
+            <span class="material-symbols-outlined text-slate-400 text-xs">chevron_right</span>
+            <span class="text-slate-900 font-medium">Application Process Details</span>
+        </nav>
+
+        <!-- Profile Header -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-8">
+            <div class="flex flex-col gap-6 lg:flex-row lg:justify-between lg:items-center">
+                <!-- Avatar + Info -->
+                <div class="flex gap-6 items-center">
+                    <div class="relative shrink-0">
+                        <div class="size-24 rounded-full bg-cover bg-center bg-no-repeat border-4 border-slate-50 shadow-sm"
+                            [style.backgroundImage]="'url(' + candidate.avatarUrl + ')'"></div>
+                        <div *ngIf="candidate.online"
+                            class="absolute bottom-0 right-0 size-5 rounded-full bg-green-500 border-2 border-white">
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <div class="flex items-center gap-3">
+                            <h1 class="text-slate-900 text-3xl font-bold tracking-tight">{{ candidate.name }}</h1>
+                            <span
+                                class="px-3 py-1 bg-blue-600/10 text-blue-600 text-xs font-bold rounded-full uppercase tracking-wider">
+                                {{ candidate.status }}
+                            </span>
+                        </div>
+                        <p class="text-slate-600 text-lg mt-1">
+                            {{ candidate.role }}
+                            <span class="mx-2 text-slate-300">|</span>
+                            Ref: {{ candidate.ref }}
+                        </p>
+                        <div class="flex gap-4 mt-2">
+                            <span class="flex items-center gap-1 text-slate-500 text-sm">
+                                <span class="material-symbols-outlined text-sm">calendar_today</span>
+                                Applied on {{ candidate.appliedOn }}
+                            </span>
+                            <span class="flex items-center gap-1 text-slate-500 text-sm">
+                                <span class="material-symbols-outlined text-sm">mail</span>
+                                {{ candidate.email }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 mt-4 lg:mt-0">
+                    <button (click)="onReject()"
+                        class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-slate-100 text-slate-700 font-bold text-sm hover:bg-red-50 hover:text-red-600 border border-transparent hover:border-red-100 transition-all">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                        Reject
+                    </button>
+                    <button (click)="onScheduleInterview()"
+                        class="flex items-center justify-center gap-2 rounded-xl h-11 px-6 bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all">
+                        <span class="material-symbols-outlined text-sm">event</span>
+                        Schedule Interview
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Body Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Column: Timeline -->
+            <div class="lg:col-span-2 space-y-8">
+                <section class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                    <!-- Section Header -->
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="text-lg font-bold text-slate-900">Application Timeline</h3>
+                        <div class="flex items-center gap-2 text-blue-600 text-sm font-semibold">
+                            <span class="size-2 rounded-full bg-blue-600 animate-pulse"></span>
+                            Current Stage: {{ currentStageLabel }}
+                        </div>
+                    </div>
+
+                    <!-- Timeline Stages -->
+                    <div class="p-8">
+                        <div class="relative space-y-8">
+                            <!-- Vertical connector line -->
+                            <div class="absolute left-[15px] top-2 bottom-2 w-0.5 bg-slate-200"></div>
+
+                            <ng-container *ngFor="let stage of timeline">
+
+                                <!-- Active Stage -->
+                                <div *ngIf="stage.status === 'active'" class="relative pl-10">
+                                    <div
+                                        class="absolute left-0 top-1 size-8 rounded-full bg-blue-600/20 border-2 border-blue-600 flex items-center justify-center z-10">
+                                        <span class="material-symbols-outlined text-blue-600 text-[18px]">{{ stage.icon
+                                            }}</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="flex justify-between items-start">
+                                            <h4 class="font-bold text-slate-900">{{ stage.title }}</h4>
+                                            <span
+                                                class="text-xs font-medium text-blue-600 bg-blue-600/5 px-2 py-1 rounded">
+                                                {{ stage.activeLabel }}
+                                            </span>
+                                        </div>
+                                        <p class="text-sm text-slate-500 mt-1">{{ stage.description }}</p>
+                                        <div *ngIf="stage.actions?.length" class="mt-3 flex gap-2">
+                                            <ng-container *ngFor="let action of stage.actions; let i = index">
+                                                <button (click)="onStageAction(action)"
+                                                    class="text-xs font-bold text-blue-600 hover:underline">
+                                                    {{ action.label }}
+                                                </button>
+                                                <span *ngIf="i < (stage.actions?.length ?? 0) - 1"
+                                                    class="text-slate-300">•</span>
+                                            </ng-container>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Completed Stage -->
+                                <div *ngIf="stage.status === 'completed'" class="relative pl-10 opacity-70">
+                                    <div
+                                        class="absolute left-0 top-1 size-8 rounded-full bg-green-500 border-2 border-green-500 flex items-center justify-center z-10">
+                                        <span class="material-symbols-outlined text-white text-[18px]">check</span>
+                                    </div>
+                                    <div class="flex flex-col">
+                                        <div class="flex justify-between items-start">
+                                            <h4 class="font-bold text-slate-900">{{ stage.title }}</h4>
+                                            <span class="text-xs font-medium text-slate-400 italic">{{ stage.date
+                                                }}</span>
+                                        </div>
+                                        <p class="text-sm text-slate-500 mt-1">{{ stage.description }}</p>
+                                    </div>
+                                </div>
+
+                            </ng-container>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Side Cards -->
+            <div class="space-y-6">
+
+                <!-- Job Details Card -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Job Details</h3>
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="size-12 rounded-lg bg-blue-600/5 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-blue-600">work</span>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">{{ jobDetail.title }}</p>
+                            <p class="text-sm text-slate-500">{{ jobDetail.team }} • {{ jobDetail.type }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Hiring Manager</span>
+                            <span class="font-medium text-slate-900">{{ jobDetail.hiringManager }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Department</span>
+                            <span class="font-medium text-slate-900">{{ jobDetail.department }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Budget Range</span>
+                            <span class="font-medium text-slate-900">{{ jobDetail.budgetRange }}</span>
+                        </div>
+                    </div>
+                    <button (click)="onViewJobDescription()"
+                        class="w-full mt-6 py-2 text-blue-600 font-bold text-sm bg-blue-600/5 rounded-lg hover:bg-blue-600/10 transition-colors">
+                        View Job Description
+                    </button>
+                </div>
+
+                <!-- Candidate Assets Card -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Candidate Assets</h3>
+                    <ul class="space-y-3">
+                        <li *ngFor="let asset of assets">
+                            <a [href]="asset.href"
+                                class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors border border-slate-100">
+                                <span class="material-symbols-outlined" [ngClass]="asset.iconColor">{{ asset.icon
+                                    }}</span>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-slate-900 truncate">{{ asset.name }}</p>
+                                    <p class="text-xs text-slate-500">{{ asset.meta }}</p>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-400 text-sm shrink-0">{{
+                                    asset.actionIcon }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Internal Notes Card -->
+                <div class="bg-blue-600/5 rounded-xl border border-blue-600/20 p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-blue-600 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">sticky_note_2</span>
+                            Internal Notes
+                        </h3>
+                        <button (click)="onEditNote()" class="text-blue-600 hover:text-blue-600/70 transition-colors">
+                            <span class="material-symbols-outlined text-sm">edit</span>
+                        </button>
+                    </div>
+                    <p class="text-sm text-slate-700 italic leading-relaxed">{{ internalNote.text }}</p>
+                    <p class="text-[11px] text-slate-500 mt-2">— {{ internalNote.author }}, {{ internalNote.timeAgo }}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>

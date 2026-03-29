@@ -1,0 +1,200 @@
+<div class="flex min-h-screen flex-col bg-[#f8f6f6] font-['Public_Sans',sans-serif] text-slate-900">
+
+    <!-- ── Top Navigation ── -->
+    <header class="sticky top-0 z-10 border-b border-slate-200 bg-white">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+
+                <!-- Left: Logo + Nav -->
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-3 text-[#ec5b13]">
+                        <span class="material-symbols-outlined text-3xl">corporate_fare</span>
+                        <h2 class="text-lg font-bold tracking-tight text-slate-900">HR Cloud</h2>
+                    </div>
+                    <nav class="hidden items-center gap-6 md:flex">
+                        <a *ngFor="let link of navLinks" href="#"
+                            class="text-sm font-medium text-slate-600 transition-colors hover:text-[#ec5b13]">{{
+                            link.label }}</a>
+                    </nav>
+                </div>
+
+                <!-- Right: Search + Notif + Avatar -->
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden sm:block">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">search</span>
+                        <input type="text" placeholder="Search candidates..."
+                            class="w-64 rounded-xl border-none bg-slate-100 py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#ec5b13]/50" />
+                    </div>
+                    <button class="rounded-full p-2 text-slate-500 transition-colors hover:bg-slate-100">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <div
+                        class="flex size-8 items-center justify-center rounded-full border border-[#ec5b13]/30 bg-[#ec5b13]/20 text-[#ec5b13]">
+                        <span class="material-symbols-outlined text-sm">person</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
+
+        <!-- Page Header -->
+        <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+            <div>
+                <!-- Breadcrumb -->
+                <nav class="mb-2 flex items-center gap-2 text-sm text-slate-500">
+                    <ng-container *ngFor="let crumb of breadcrumbs; let last = last">
+                        <a *ngIf="!last; else currentCrumb" href="#" class="transition-colors hover:text-[#ec5b13]">{{
+                            crumb.label }}</a>
+                        <ng-template #currentCrumb>
+                            <span class="font-medium text-slate-900">{{ crumb.label }}</span>
+                        </ng-template>
+                        <span *ngIf="!last" class="material-symbols-outlined text-xs">chevron_right</span>
+                    </ng-container>
+                </nav>
+                <h1 class="text-3xl font-bold text-slate-900">Profile Details</h1>
+            </div>
+
+            <!-- Header Action Buttons -->
+            <div class="flex flex-wrap gap-3">
+                <button *ngFor="let action of headerActions" [ngClass]="action.primary
+            ? 'bg-[#ec5b13] text-white hover:opacity-90'
+            : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50'"
+                    class="flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all">
+                    <span class="material-symbols-outlined text-lg">{{ action.icon }}</span>
+                    {{ action.label }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+
+            <!-- ── Left Sidebar ── -->
+            <div class="space-y-8 lg:col-span-1">
+
+                <!-- Profile Card -->
+                <div class="rounded-xl border border-slate-200 bg-white p-6 text-center shadow-sm">
+                    <!-- Avatar -->
+                    <div class="relative mx-auto mb-4 inline-block">
+                        <div
+                            class="flex size-32 items-center justify-center overflow-hidden rounded-full border-4 border-[#ec5b13]/10 bg-slate-100">
+                            <span class="material-symbols-outlined text-6xl text-slate-300">person</span>
+                        </div>
+                        <!-- Online indicator -->
+                        <div *ngIf="candidate.isOnline"
+                            class="absolute bottom-0 right-0 size-8 rounded-full border-4 border-white bg-green-500">
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-slate-900">{{ candidate.name }}</h2>
+                    <p class="mb-4 font-medium text-[#ec5b13]">{{ candidate.jobTitle }}</p>
+
+                    <!-- Stats row -->
+                    <div class="mt-6 grid grid-cols-2 gap-2 border-t border-slate-100 pt-6">
+                        <div class="text-left">
+                            <p class="text-xs uppercase tracking-wider text-slate-400">Experience</p>
+                            <p class="font-semibold">{{ candidate.experience }}</p>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-xs uppercase tracking-wider text-slate-400">Applied</p>
+                            <p class="font-semibold">{{ candidate.appliedAgo }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CV Preview Card -->
+                <div class="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <h3 class="mb-4 text-xs font-bold uppercase tracking-widest text-slate-900">Resume / CV</h3>
+                    <div
+                        class="group relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 transition-colors hover:border-[#ec5b13]/50">
+                        <div class="flex h-full flex-col items-center justify-center">
+                            <span
+                                class="material-symbols-outlined text-5xl text-slate-300 transition-colors group-hover:text-[#ec5b13]">description</span>
+                            <p class="mt-2 text-sm text-slate-500">{{ candidate.resumeFileName }}</p>
+                        </div>
+                        <!-- Hover overlay -->
+                        <div
+                            class="absolute inset-0 flex items-center justify-center rounded-lg bg-[#ec5b13]/5 opacity-0 transition-opacity group-hover:opacity-100">
+                            <button
+                                class="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-xs font-bold text-[#ec5b13] shadow-lg">
+                                <span class="material-symbols-outlined text-sm">visibility</span>
+                                Preview File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Right Content ── -->
+            <div class="space-y-6 lg:col-span-2">
+
+                <!-- Detailed Information Card -->
+                <div class="rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
+
+                    <!-- Section heading -->
+                    <div class="mb-8 flex items-center gap-2 text-[#ec5b13]">
+                        <span class="material-symbols-outlined">info</span>
+                        <h3 class="text-lg font-bold text-slate-900">Detailed Information</h3>
+                    </div>
+
+                    <!-- Info fields grid -->
+                    <div class="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+                        <div *ngFor="let field of candidate.infoFields"
+                            [ngClass]="field.spanFull ? 'md:col-span-2' : ''" class="space-y-1">
+                            <label class="text-xs font-medium uppercase tracking-wider text-slate-400">{{ field.label
+                                }}</label>
+                            <div class="flex items-start gap-2 text-slate-700">
+                                <span class="material-symbols-outlined mt-0.5 text-lg text-slate-400">{{ field.icon
+                                    }}</span>
+                                <p class="font-medium">{{ field.value }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Compensation section -->
+                    <div class="mt-12 border-t border-slate-100 pt-8">
+                        <div class="mb-6 flex items-center gap-2 text-[#ec5b13]">
+                            <span class="material-symbols-outlined">payments</span>
+                            <h3 class="text-lg font-bold text-slate-900">Compensation Expectations</h3>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 gap-8 rounded-xl border border-slate-100 bg-slate-50 p-6 md:grid-cols-2">
+                            <div class="space-y-1">
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400">Preferred
+                                    Currency</label>
+                                <p class="text-lg font-bold text-slate-900">{{ candidate.currency }}</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs font-medium uppercase tracking-wider text-slate-400">Expected
+                                    Salary</label>
+                                <div class="flex items-baseline gap-1">
+                                    <p class="text-2xl font-bold text-[#ec5b13]">{{ candidate.salary }}</p>
+                                    <p class="text-sm text-slate-400">/ per annum</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Row -->
+                <div class="grid grid-cols-3 gap-4">
+                    <button *ngFor="let action of quickActions"
+                        class="group flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-4 transition-all hover:border-[#ec5b13]/50">
+                        <div
+                            class="mb-2 flex size-10 items-center justify-center rounded-full bg-[#ec5b13]/10 text-[#ec5b13] transition-colors group-hover:bg-[#ec5b13] group-hover:text-white">
+                            <span class="material-symbols-outlined">{{ action.icon }}</span>
+                        </div>
+                        <span class="text-xs font-bold uppercase text-slate-500">{{ action.label }}</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>

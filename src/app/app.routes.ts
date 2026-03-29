@@ -197,14 +197,9 @@ export const routes: Routes = [
         title: 'Department-management'
       },
       {
-        path: 'job-applications-management',
-        loadComponent: () => import('./modules/ERBSystem/HR/jop-application-management/jop-application-management.component').then((J) => J.JopApplicationManagementComponent),
-        title: 'job-applications-management'
-      },
-      {
-        path: 'contract-management',
-        loadComponent: () => import('./modules/ERBSystem/HR/contract-management/contract-management.component').then((C) => C.ContractManagementComponent),
-        title: 'contract-management'
+        path: 'job-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/jop-management/jop-management/jop-management.component').then((J) => J.JopManagementComponent),
+        title: 'job-management'
       },
       {
         path: 'candidate-management',
@@ -345,6 +340,136 @@ export const routes: Routes = [
       {
         path: 'warehouse-details',
         loadComponent: () => import('./modules/ERBSystem/HR/warehouse-details/warehouse-details/warehouse-details.component').then((D) => D.WarehouseDetailsComponent)
+      },
+      //هنا البدايه 
+      {
+        path: 'hr-dashboard',
+        loadComponent: () => import('./modules/ERBSystem/HR/HR-Dashboard/hr-dashboard/hr-dashboard.component').then((H) => H.HrDashboardComponent)
+      },
+      {
+        path: 'hr-department',
+        loadComponent: () => import('./modules/ERBSystem/HR/HR-Department/hr-department/hr-department.component').then((D) => D.HrDepartmentComponent)
+      },
+      {
+        path: 'department-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/HR-DepartmentDetails/department-details/department-details.component').then((D) => D.DepartmentDetailsComponent)
+      },
+      {
+        path: 'add-department',
+        loadComponent: () => import('./modules/ERBSystem/HR/Add-Department/add-department//add-department.component').then((A) => A.AddDepartmentComponent)
+      },
+      {
+        path: 'update-department',
+        loadComponent: () => import('./modules/ERBSystem/HR/update-department/update-department/update-department.component').then((U) => U.UpdateDepartmentComponent)
+      },
+      {
+        path: 'employee-managment',
+        loadComponent: () => import('./modules/ERBSystem/HR/employee-management/employee-management/employee-management.component').then((E) => E.EmployeeManagementComponent)
+      },
+      {
+        path: 'employee-details:/id',
+        loadComponent: () => import('./modules/ERBSystem/HR/employee-details/employee-details/employee-details.component').then((E) => E.EmployeeDetailsComponent)
+      },
+      {
+        path: 'add-employee',
+        loadComponent: () => import('./modules/ERBSystem/HR/add-employee/add-employee/add-employee.component').then((E) => E.AddEmployeeComponent)
+      },
+      {
+        path: 'ubdate-employee',
+        loadComponent: () => import('./modules/ERBSystem/HR/ubdate-employee/ubdate-employee/ubdate-employee.component').then((E) => E.UbdateEmployeeComponent)
+      },
+      {
+        path: 'payroll-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/payroll-management/payroll-management/payroll-management.component').then((P) => P.PayrollManagementComponent)
+      },
+      {
+        path: 'payroll-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/payroll-details/payroll-details/payroll-details.component').then((P) => P.PayrollDetailsComponent)
+      },
+
+      {
+        path: 'add-jop',
+        loadComponent: () => import('./modules/ERBSystem/HR/Add-Jop/add-jop/add-jop.component').then((J) => J.AddJopComponent)
+      },
+      {
+        path: 'update-jop',
+        loadComponent: () => import('./modules/ERBSystem/HR/update-jop/update-jop/update-jop.component').then((U) => U.UpdateJopComponent)
+      },
+      {
+        path: 'jop-details:/id',
+        loadComponent: () => import('./modules/ERBSystem/HR/jop-details/jop-details/jop-details.component').then((J) => J.JopDetailsComponent)
+      },
+      {
+        path: 'Candidate-Management',
+        loadComponent: () => import('./modules/ERBSystem/HR/candidate-management/candidate-management.component').then((C) => C.CandidateManagementComponent)
+      },
+      {
+        path: 'add-candidate',
+        loadComponent: () => import('./modules/ERBSystem/HR/Add-Candidate/add-candidate/add-candidate.component').then((C) => C.AddCandidateComponent)
+      },
+      {
+        path: 'candidate-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/Candidate-Details/candidate-details/candidate-details.component').then((D) => D.CandidateDetailsComponent)
+      },
+      {
+        path: 'application-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/Application-management/application-management/application-management.component').then((A) => A.ApplicationManagementComponent)
+      },
+      {
+        path: 'application-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/Application-details/application-details/application-details.component').then((A) => A.ApplicationDetailsComponent)
+      },
+      {
+        path: 'add-application',
+        loadComponent: () => import('./modules/ERBSystem/HR/Add-Applications/add-application/add-application.component').then((A) => A.AddApplicationComponent)
+      },
+      {
+        path: 'schedule-interview',
+        loadComponent: () => import('./modules/ERBSystem/HR/Schedule -Interview/schedule-interview/schedule-interview.component').then((S) => S.ScheduleInterviewComponent)
+      },
+      {
+        path: 'interview-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/interview-details/interview-details/interview-details.component').then((I) => I.InterviewDetailsComponent)
+      },
+      {
+        path: 'interview-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/interview-management/interview-management/interview-management.component').then((I) => I.InterviewManagementComponent)
+      },
+      {
+        path: 'offer-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/offer-details/offer-details/offer-details.component').then((O) => O.OfferDetailsComponent)
+      },
+      {
+        path: 'add-offer',
+        loadComponent: () => import('./modules/ERBSystem/HR/Add-Offer/add-offer/add-offer.component').then((O) => O.AddOfferComponent)
+      },
+      {
+        path: 'offer-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/offer-management/offer-management/offer-management.component').then((O) => O.OfferManagementComponent)
+      },
+      {
+        path: 'contract-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/contract-management/contract-management.component').then((C) => C.ContractManagementComponent),
+        title: 'contract-management'
+      },
+      {
+        path: 'contract-details/:id',
+        loadComponent: () => import('./modules/ERBSystem/HR/contract-details/contract-details/contract-details.component').then((C) => C.ContractDetailsComponent),
+        title: 'contract-management'
+      },
+      {
+        path: 'add-contract',
+        loadComponent: () => import('./modules/ERBSystem/HR/add-contract/add-contract/add-contract.component').then((C) => C.AddContractComponent),
+        title: 'contract-management'
+      },
+      {
+        path: 'update-contract',
+        loadComponent: () => import('./modules/ERBSystem/HR/update-contract/update-contract/update-contract.component').then((C) => C.UpdateContractComponent),
+        title: 'contract-management'
+      },
+      {
+        path: 'attendance-dashboard',
+        loadComponent: () => import('./modules/ERBSystem/HR/Attendance-dashboard/attendance-dashboard/attendance-dashboard.component').then((A) => A.AttendanceDashboardComponent)
       }
     ]
   }

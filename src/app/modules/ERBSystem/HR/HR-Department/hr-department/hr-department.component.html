@@ -1,0 +1,240 @@
+<div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
+
+    <!-- ─── Sidebar ─── -->
+    <aside style="min-width:256px; width:256px;" class="flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
+
+        <!-- Logo -->
+        <div class="px-6 py-5 flex items-center gap-3">
+            <div class="rounded-lg p-1.5 text-white" style="background:#2563EB;">
+                <span class="material-symbols-outlined" style="font-size:24px;">corporate_fare</span>
+            </div>
+            <div>
+                <h1 class="text-base font-bold leading-tight">HR ERP</h1>
+                <p class="text-[11px] text-slate-500">Admin Panel</p>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-4 space-y-1">
+            <a *ngFor="let item of navItems" href="#"
+                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors" [ngClass]="item.active
+          ? 'bg-blue-50 text-blue-600'
+          : 'text-slate-600 hover:bg-slate-100'">
+                <span class="material-symbols-outlined" [ngClass]="item.active ? 'text-blue-600' : ''"
+                    style="font-size:22px;">{{ item.icon }}</span>
+                <span>{{ item.label }}</span>
+            </a>
+        </nav>
+
+        <!-- Settings -->
+        <div class="p-4 border-t border-slate-200">
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition-colors">
+                <span class="material-symbols-outlined" style="font-size:22px;">settings</span>
+                <span>Settings</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- ─── Main ─── -->
+    <main class="flex-1 flex flex-col overflow-hidden min-w-0">
+
+        <!-- Header -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
+            <h2 class="text-xl font-bold text-slate-900">Department Directory</h2>
+            <div class="flex items-center gap-4">
+                <!-- Global Search -->
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                        style="font-size:20px;">search</span>
+                    <input type="text" placeholder="Global search..."
+                        class="pl-10 pr-4 py-2 bg-slate-100 border-0 rounded-xl text-sm outline-none w-64" />
+                </div>
+                <!-- Notifications -->
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">notifications</span>
+                </button>
+                <!-- Avatar -->
+                <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMSiKWtMaYa4Iassjh1kmhg0tMT7OzUB_vAzd_LW-OeziByxDON39RUzZmFHKhIR4ADSZGASRTm4dz2e84mlFI9h-bbBjiN9w6h26GloJss2zOBKlji1v-b6RvRRVwz9k0-PQyUm9QTpLeVuV8zYKGMX_UuTwcd0KSW3SPvDI5ktQCOG0m3qZIdia2CXRPeVdvWnmNT4QzdDV0C7ZasQthsJxwRpDuyGS-NJMtlRprNez3lS-VocjpwV4jjAHv9LYr67K_jdlAicZ8"
+                        alt="Admin user" class="w-full h-full object-cover" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto p-8">
+            <div class="max-w-6xl mx-auto space-y-6">
+
+                <!-- Page Title + CTA -->
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h3 class="text-2xl font-bold tracking-tight text-slate-900">Organization Overview</h3>
+                        <p class="text-slate-500 text-sm mt-1">Manage your company's departments and structure.</p>
+                    </div>
+                    <button
+                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all shadow-lg"
+                        style="background:#2563EB; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
+                        <span class="material-symbols-outlined" style="font-size:20px;">add</span>
+                        Create New Department
+                    </button>
+                </div>
+
+                <!-- Filters Bar -->
+                <div
+                    class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center gap-4">
+                    <!-- Search -->
+                    <div class="relative flex-1" style="min-width:240px;">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                            style="font-size:20px;">search</span>
+                        <input type="text" placeholder="Search by department name or head..." [value]="searchQuery()"
+                            (input)="setSearch($any($event.target).value)"
+                            class="w-full pl-10 pr-4 py-2 border border-slate-200 bg-transparent rounded-lg text-sm outline-none focus:border-blue-400" />
+                    </div>
+                    <!-- Status filter -->
+                    <div class="flex items-center gap-2">
+                        <button
+                            (click)="setStatus(statusFilter() === 'All' ? 'Active' : statusFilter() === 'Active' ? 'Inactive' : 'All')"
+                            class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size:18px;">filter_list</span>
+                            Status: {{ statusFilter() }}
+                            <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+                        </button>
+                        <!-- Sort -->
+                        <button (click)="setSort(sortBy() === 'Name' ? 'Employees' : 'Name')"
+                            class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size:18px;">sort</span>
+                            Sort by: {{ sortBy() }}
+                            <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
+                                <th class="px-6 py-4">Department Name</th>
+                                <th class="px-6 py-4">Department Head</th>
+                                <th class="px-6 py-4">Total Employees</th>
+                                <th class="px-6 py-4">Status</th>
+                                <th class="px-6 py-4 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr *ngFor="let dept of pagedDepartments()" class="hover:bg-slate-50 transition-colors">
+                                <!-- Name -->
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                                            [ngClass]="iconClasses(dept)">
+                                            <span class="material-symbols-outlined" style="font-size:20px;">{{ dept.icon
+                                                }}</span>
+                                        </div>
+                                        <span class="font-semibold text-sm text-slate-800">{{ dept.name }}</span>
+                                    </div>
+                                </td>
+
+                                <!-- Head -->
+                                <td class="px-6 py-4">
+                                    <div *ngIf="dept.head; else vacantTpl" class="flex items-center gap-2">
+                                        <div class="w-7 h-7 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
+                                            <img [src]="dept.headAvatar" [alt]="dept.head"
+                                                class="w-full h-full object-cover" />
+                                        </div>
+                                        <span class="text-sm text-slate-700">{{ dept.head }}</span>
+                                    </div>
+                                    <ng-template #vacantTpl>
+                                        <div class="flex items-center gap-2 text-slate-400 italic">
+                                            <div
+                                                class="w-7 h-7 rounded-full bg-slate-100 border border-dashed border-slate-300 flex items-center justify-center">
+                                                <span class="material-symbols-outlined"
+                                                    style="font-size:14px;">person_off</span>
+                                            </div>
+                                            <span class="text-sm">Vacant</span>
+                                        </div>
+                                    </ng-template>
+                                </td>
+
+                                <!-- Employees -->
+                                <td class="px-6 py-4 text-sm text-slate-700">{{ dept.employees }}</td>
+
+                                <!-- Status -->
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                        [ngClass]="statusClass(dept.status)">{{ dept.status }}</span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-4 text-right">
+                                    <button class="text-slate-400 hover:text-blue-600 transition-colors">
+                                        <span class="material-symbols-outlined" style="font-size:22px;">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="pagedDepartments().length === 0">
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    No departments match your filters.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                        <p class="text-sm text-slate-500">
+                            Showing {{ (currentPage() - 1) * pageSize + 1 }} –
+                            {{ minVal(currentPage() * pageSize, filteredDepartments().length) }}
+                            of {{ filteredDepartments().length }} departments
+                        </p>
+                        <div class="flex gap-2">
+                            <button (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 1"
+                                class="px-3 py-1 border border-slate-200 rounded-md bg-white text-sm disabled:opacity-40 hover:bg-slate-50 transition-colors">Previous</button>
+
+                            <button *ngFor="let p of pageNumbers()" (click)="goToPage(p)"
+                                class="px-3 py-1 rounded-md text-sm transition-colors" [ngClass]="p === currentPage()
+                  ? 'text-white'
+                  : 'border border-slate-200 bg-white hover:bg-slate-50'"
+                                [style.background]="p === currentPage() ? '#2563EB' : ''">{{ p }}</button>
+
+                            <button (click)="goToPage(currentPage() + 1)" [disabled]="currentPage() === totalPages()"
+                                class="px-3 py-1 border border-slate-200 rounded-md bg-white text-sm disabled:opacity-40 hover:bg-slate-50 transition-colors">Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="grid grid-cols-3 gap-6">
+                    <div *ngFor="let card of statCards"
+                        class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-slate-500 font-medium text-sm">{{ card.label }}</span>
+                            <span class="material-symbols-outlined" style="color:#2563EB; font-size:22px;">{{ card.icon
+                                }}</span>
+                        </div>
+                        <p class="text-3xl font-bold text-slate-900">{{ card.value }}</p>
+
+                        <!-- Sub line -->
+                        <p *ngIf="card.sub" class="text-xs mt-2 flex items-center gap-1"
+                            [ngClass]="card.subColor ?? 'text-slate-500'">
+                            <span *ngIf="card.subIcon" class="material-symbols-outlined" style="font-size:14px;">{{
+                                card.subIcon }}</span>
+                            {{ card.sub }}
+                        </p>
+
+                        <!-- Progress bar -->
+                        <div *ngIf="card.progress !== undefined" class="w-full bg-slate-100 rounded-full h-1.5 mt-4">
+                            <div class="h-1.5 rounded-full" style="background:#2563EB;" [style.width.%]="card.progress">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
+import { interval, Subscription, switchMap } from 'rxjs';
+import { AdminService, SystemHealth } from '../../../../core/services/Admin-service/admin.service';
 
 export interface SystemLog {
   timestamp: string;
@@ -22,8 +24,9 @@ export interface SystemLog {
   templateUrl: './admin-dash.component.html',
   styleUrl: './admin-dash.component.scss'
 })
-export class AdminDashComponent {
+export class AdminDashComponent implements OnInit, OnDestroy {
 
+  constructor(private _adminService: AdminService) { }
   // ── Search & Filter ──────────────────────────────────────────────────────
   searchQuery = '';
   selectedFilter = 'All Events';
@@ -188,4 +191,127 @@ export class AdminDashComponent {
     console.log('Viewing details for:', log);
   }
 
+  ngOnInit(): void {
+    // Placeholder for future data fetching logic
+    this.fetchHealth();
+    // بتحدث كل 30 ثانية تلقائياً
+    this.pollSub = interval(30000)
+      .pipe(switchMap(() => this._adminService.getSystemHealth()))
+      .subscribe({
+        next: (data) => { this.health = data; },
+        error: () => { this.hasError = true; }
+      });
+  }
+
+  health: SystemHealth | null = null;
+  hasError = false;
+  isLoading = false;
+  lastUpdated: Date | null = null
+  private pollSub?: Subscription;
+
+  ngOnDestroy(): void {
+    this.pollSub?.unsubscribe();
+  }
+
+  fetchHealth(): void {
+    console.log('Hello world!');
+    this.isLoading = true;
+    this.hasError = false;
+    this._adminService.getSystemHealth().subscribe({
+      next: (data) => {
+        this.health = data;
+        this.lastUpdated = new Date();
+        this.isLoading = false;
+        console.log('System health:', data);
+        console.log('CPU Load %:', data.cpuLoadPercentage);
+        console.log('Memory Usage GB:', data.memoryUsageGb);
+        console.log('Total Memory GB:', data.totalMemoryGb);
+        console.log('Network Latency ms:', data.networkLatencyMs);
+      },
+      error: () => {
+        this.hasError = true;
+        this.isLoading = false;
+      }
+    });
+  }
+
+  get memoryPercent(): number {
+    if (!this.health) return 0;
+    return Math.round((this.health.memoryUsageGb / this.health.totalMemoryGb) * 100);
+  }
+
+  get freeMemory(): number {
+    if (!this.health) return 0;
+    return Math.round((this.health.totalMemoryGb - this.health.memoryUsageGb) * 100) / 100;
+  }
+
+  get cpuBarColor(): string {
+    const v = this.health?.cpuLoadPercentage ?? 0;
+    if (v < 50) return 'bg-emerald-500';
+    if (v < 80) return 'bg-amber-500';
+    return 'bg-red-500';
+  }
+
+  get memBarColor(): string {
+    if (this.memoryPercent < 50) return 'bg-emerald-500';
+    if (this.memoryPercent < 80) return 'bg-amber-500';
+    return 'bg-red-500';
+  }
+
+  get cpuBadge(): string {
+    const v = this.health?.cpuLoadPercentage ?? 0;
+    if (v < 50) return 'bg-emerald-100 text-emerald-700';
+    if (v < 80) return 'bg-amber-100 text-amber-700';
+    return 'bg-red-100 text-red-700';
+  }
+
+  get cpuBadgeLabel(): string {
+    const v = this.health?.cpuLoadPercentage ?? 0;
+    if (v < 50) return 'Normal';
+    if (v < 80) return 'Moderate';
+    return 'High';
+  }
+
+  get memBadge(): string {
+    if (this.memoryPercent < 50) return 'bg-emerald-100 text-emerald-700';
+    if (this.memoryPercent < 80) return 'bg-amber-100 text-amber-700';
+    return 'bg-red-100 text-red-700';
+  }
+
+  get memBadgeLabel(): string {
+    if (this.memoryPercent < 50) return 'Normal';
+    if (this.memoryPercent < 80) return 'Moderate';
+    return 'High';
+  }
+
+  get latencyBadge(): string {
+    const v = this.health?.networkLatencyMs ?? 0;
+    if (v < 50) return 'bg-emerald-100 text-emerald-700';
+    if (v < 150) return 'bg-amber-100 text-amber-700';
+    return 'bg-red-100 text-red-700';
+  }
+
+  get latencyBadgeLabel(): string {
+    const v = this.health?.networkLatencyMs ?? 0;
+    if (v < 50) return 'Excellent';
+    if (v < 150) return 'Good';
+    return 'Slow';
+  }
+
+  get latencyTextColor(): string {
+    const v = this.health?.networkLatencyMs ?? 0;
+    if (v < 50) return 'text-emerald-600';
+    if (v < 150) return 'text-amber-600';
+    return 'text-red-600';
+  }
+
+  get statusBadgeClass(): string {
+    return this.health?.status === 'Healthy'
+      ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
+      : 'bg-red-100 text-red-700 border border-red-200';
+  }
+
+  get statusDotClass(): string {
+    return this.health?.status === 'Healthy' ? 'bg-emerald-500' : 'bg-red-500';
+  }
 }

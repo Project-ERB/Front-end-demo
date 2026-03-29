@@ -1,0 +1,302 @@
+<div
+    class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+
+    <!-- ── Sidebar ── -->
+    <aside class="w-64 flex-shrink-0 bg-slate-900 text-white flex flex-col">
+
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="size-8 rounded-lg flex items-center justify-center text-white"
+                style="background-color:#2563EB;">
+                <span class="material-symbols-outlined" style="font-size:20px;line-height:1;">corporate_fare</span>
+            </div>
+            <h1 class="text-xl font-bold tracking-tight">Enterprise ERP</h1>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-4 space-y-2 mt-4">
+            <div *ngFor="let item of navItems"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors" [ngClass]="item.active
+          ? 'bg-primary text-white shadow-lg shadow-primary/20'
+          : 'text-slate-400 hover:text-white'" [style.backgroundColor]="item.active ? '#2563EB' : ''">
+                <span class="material-symbols-outlined">{{ item.icon }}</span>
+                <span class="text-sm font-medium">{{ item.label }}</span>
+            </div>
+        </nav>
+
+        <!-- User Info -->
+        <div class="p-4 mt-auto border-t border-slate-800">
+            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-xl">
+                <div
+                    class="size-10 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden border border-slate-600 flex-shrink-0">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrc3HdaDe4DfUrOiGulZhNu6KtQnMU4klW-YOsoHrRzt1g8SIyTu0wZ7RvjQaYKh36X2QklSBMhZ-PDNqopqNGYbIsQy4JefdLpgJn8bY-y9Vi3lJowrZxNdm-EGCA0TbSnOd3Vd4WeMHTsqtNyK9Ku7XNF-zCkIyM_6CSrpTkaU53FGtoPSoY-fj-Bpgq4uvjA6rmJDH3vIDHs7QyygV07XPaCpvHcHK2Xzz__YkTkFO_Jm7Jn_7WYWVxMzy1pwYxD4qWTZ5943Ab"
+                        alt="Receptionist Profile" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex flex-col min-w-0">
+                    <span class="text-xs font-bold text-white truncate">Sarah Jenkins</span>
+                    <span class="text-[10px] text-slate-400 uppercase tracking-wider">Reception Desk</span>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ── Main Content ── -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+
+        <!-- Header -->
+        <header
+            class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 flex-shrink-0">
+
+            <!-- Search -->
+            <div class="flex-1 max-w-md">
+                <div class="relative group">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"
+                        style="font-size:20px;">search</span>
+                    <input [(ngModel)]="searchQuery" type="text" placeholder="Search employees by name or ID..."
+                        class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary transition-all" />
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-4">
+                <button
+                    class="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                </button>
+                <button
+                    class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Today</span>
+                    <span class="material-symbols-outlined text-slate-400" style="font-size:20px;">calendar_month</span>
+                </div>
+            </div>
+
+        </header>
+
+        <!-- Scrollable Dashboard Body -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-6">
+
+            <!-- Page Title + Actions -->
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Attendance Dashboard</h2>
+                    <p class="text-slate-500 text-sm mt-1">Real-time status of employees checking in and out today.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined" style="font-size:18px;">filter_list</span>
+                        Filter
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined" style="font-size:18px;">file_download</span>
+                        Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Entry Console -->
+            <div
+                class="bg-gradient-to-r from-blue-50 via-blue-50/50 to-transparent border border-blue-100 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="size-12 rounded-xl flex items-center justify-center text-white shadow-lg"
+                        style="background-color:#2563EB; box-shadow:0 8px 16px rgba(37,99,235,0.3);">
+                        <span class="material-symbols-outlined" style="font-size:24px;">swipe_vertical</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Quick Entry Console</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm">Scan badge or enter employee ID for manual
+                            check-in/out.</p>
+                    </div>
+                </div>
+                <div class="flex w-full md:w-auto gap-3">
+                    <input [(ngModel)]="employeeIdInput" type="text" placeholder="Enter Employee ID..."
+                        class="flex-1 md:w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
+                    <button (click)="onCheckInOut()"
+                        class="text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg"
+                        style="background-color:#2563EB; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
+                        <span>Check In / Out</span>
+                        <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="flex flex-wrap gap-4">
+                <div *ngFor="let stat of stats"
+                    class="flex-1 min-w-[200px] bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
+                    <div class="size-10 rounded-lg flex items-center justify-center"
+                        [ngClass]="[stat.colorBg, stat.colorText]">
+                        <span class="material-symbols-outlined">{{ stat.icon }}</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ stat.label }}</p>
+                        <p class="text-xl font-bold">{{ stat.value }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Table -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+
+                <!-- Table Header -->
+                <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <h3 class="font-bold text-lg">Daily Attendance Logs</h3>
+                    <div class="flex gap-2">
+                        <button (click)="setActiveTab('today')"
+                            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'today'
+                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Today</button>
+                        <button (click)="setActiveTab('yesterday')"
+                            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'yesterday'
+                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Yesterday</button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Employee
+                                    Name</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Check-in
+                                    Time</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    Check-out Time</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status
+                                </th>
+                                <th
+                                    class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">
+                                    Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                            <tr *ngFor="let emp of filteredEmployees"
+                                class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                <!-- Employee Name -->
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="size-8 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
+                                            <img [src]="emp.avatar" [alt]="emp.name"
+                                                class="w-full h-full rounded-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold">{{ emp.name }}</p>
+                                            <p class="text-xs text-slate-400">{{ emp.role }} • {{ emp.empCode }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Check-in -->
+                                <td class="px-6 py-4">
+                                    <ng-container *ngIf="emp.checkIn; else noCheckin">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined" style="font-size:18px;"
+                                                [ngClass]="checkInIconColor(emp.status)">login</span>
+                                            <span class="text-sm font-medium">{{ emp.checkIn }}</span>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #noCheckin>
+                                        <span class="text-sm text-slate-400">—</span>
+                                    </ng-template>
+                                </td>
+
+                                <!-- Check-out -->
+                                <td class="px-6 py-4">
+                                    <ng-container *ngIf="emp.checkOut; else checkoutFallback">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-slate-400"
+                                                style="font-size:18px;">logout</span>
+                                            <span class="text-sm font-medium">{{ emp.checkOut }}</span>
+                                        </div>
+                                    </ng-container>
+                                    <ng-template #checkoutFallback>
+                                        <span class="text-sm text-slate-400 italic" *ngIf="emp.checkIn">Still logged
+                                            in</span>
+                                        <span class="text-sm text-slate-400" *ngIf="!emp.checkIn">—</span>
+                                    </ng-template>
+                                </td>
+
+                                <!-- Status Badge -->
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
+                                        [ngClass]="statusBadgeClass(emp.status)">
+                                        <span class="size-1.5 rounded-full"
+                                            [ngClass]="statusDotClass(emp.status)"></span>
+                                        {{ statusLabel(emp.status) }}
+                                    </span>
+                                </td>
+
+                                <!-- Action -->
+                                <td class="px-6 py-4 text-right">
+                                    <button class="p-2 text-slate-400 hover:text-primary transition-colors">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="filteredEmployees.length === 0">
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    No employees match your search.
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <p class="text-sm text-slate-500">
+                        Showing <span class="font-bold">1 – {{ filteredEmployees.length }}</span>
+                        of <span class="font-bold">{{ totalEmployees }}</span> employees
+                    </p>
+                    <div class="flex items-center gap-2">
+
+                        <!-- Prev -->
+                        <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1"
+                            class="size-9 flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined" style="font-size:18px;">chevron_left</span>
+                        </button>
+
+                        <!-- Page buttons -->
+                        <ng-container *ngFor="let page of visiblePages">
+                            <ng-container *ngIf="page !== '...'; else ellipsis">
+                                <button (click)="setPage(page)"
+                                    class="size-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors"
+                                    [ngClass]="currentPage === page
+                    ? 'text-white shadow-md'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'"
+                                    [style.backgroundColor]="currentPage === page ? '#2563EB' : ''">{{ page }}</button>
+                            </ng-container>
+                            <ng-template #ellipsis>
+                                <span class="text-slate-400 mx-1">...</span>
+                            </ng-template>
+                        </ng-container>
+
+                        <!-- Next -->
+                        <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                            class="size-9 flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="material-symbols-outlined" style="font-size:18px;">chevron_right</span>
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</div>

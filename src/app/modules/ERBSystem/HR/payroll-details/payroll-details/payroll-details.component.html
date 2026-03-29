@@ -1,0 +1,272 @@
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f6] text-slate-900 font-sans">
+    <div class="layout-container flex h-full grow flex-col">
+
+        <!-- Top Navigation Bar -->
+        <header class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3 lg:px-20">
+            <div class="flex items-center gap-4 text-[#ec5b13]">
+                <div class="size-8 flex items-center justify-center bg-orange-50 rounded-lg">
+                    <span class="material-symbols-outlined">payments</span>
+                </div>
+                <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">HR Portal</h2>
+            </div>
+
+            <div class="flex flex-1 justify-end gap-6 items-center">
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#"
+                        class="text-slate-600 text-sm font-medium hover:text-[#ec5b13] transition-colors">Dashboard</a>
+                    <a href="#"
+                        class="text-slate-600 text-sm font-medium hover:text-[#ec5b13] transition-colors">Directory</a>
+                    <a href="#"
+                        class="text-[#ec5b13] text-sm font-semibold border-b-2 border-[#ec5b13] py-1">Payroll</a>
+                    <a href="#"
+                        class="text-slate-600 text-sm font-medium hover:text-[#ec5b13] transition-colors">Reports</a>
+                </nav>
+
+                <div class="flex gap-2">
+                    <button
+                        class="flex size-10 cursor-pointer items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-orange-50 hover:text-[#ec5b13] transition-all">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <button
+                        class="flex size-10 cursor-pointer items-center justify-center rounded-xl bg-slate-100 text-slate-600 hover:bg-orange-50 hover:text-[#ec5b13] transition-all">
+                        <span class="material-symbols-outlined">settings</span>
+                    </button>
+                </div>
+
+                <div
+                    class="bg-orange-100 aspect-square rounded-full size-10 flex items-center justify-center overflow-hidden border border-orange-200">
+                    <span class="material-symbols-outlined text-[#ec5b13]">person</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-1 px-6 py-8 lg:px-20 max-w-7xl mx-auto w-full">
+
+            <!-- Breadcrumbs -->
+            <nav class="flex items-center gap-2 mb-6 text-sm">
+                <a href="#" class="text-slate-500 hover:text-[#ec5b13]">Payroll</a>
+                <span class="text-slate-400 material-symbols-outlined text-xs">chevron_right</span>
+                <a href="#" class="text-slate-500 hover:text-[#ec5b13]">Employee List</a>
+                <span class="text-slate-400 material-symbols-outlined text-xs">chevron_right</span>
+                <span class="text-[#ec5b13] font-semibold">Payroll Detail</span>
+            </nav>
+
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+                <div class="flex flex-col gap-1">
+                    <h1 class="text-slate-900 text-3xl font-bold tracking-tight">Payroll Detail</h1>
+                    <p class="text-slate-500">Reviewing payment cycle for October 2023</p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button (click)="onDownloadPDF()"
+                        class="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-outlined text-lg">download</span>
+                        Download PDF
+                    </button>
+                    <button (click)="onPrintPayslip()"
+                        class="flex items-center justify-center gap-2 px-5 py-2 bg-[#ec5b13] text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-200 hover:opacity-90 transition-all">
+                        <span class="material-symbols-outlined text-lg">print</span>
+                        Print Payslip
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile Overview Card -->
+            <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm mb-8">
+                <div class="flex flex-col md:flex-row items-center gap-6">
+                    <div
+                        class="size-24 rounded-full bg-slate-100 flex items-center justify-center border-4 border-orange-50 overflow-hidden">
+                        <img [src]="employee.photoUrl" [alt]="employee.name" class="w-full h-full object-cover" />
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left">
+                        <h2 class="text-slate-900 text-2xl font-bold">{{ employee.name }}</h2>
+                        <p class="text-[#ec5b13] font-medium">{{ employee.title }}</p>
+                        <div
+                            class="mt-2 flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-slate-500">
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">id_card</span>
+                                {{ employee.id }}
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">corporate_fare</span>
+                                {{ employee.department }}
+                            </span>
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">location_on</span>
+                                {{ employee.location }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 w-full md:w-auto">
+                        <div class="bg-[#f8f6f6] p-3 rounded-lg border border-slate-100">
+                            <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Pay Period</p>
+                            <p class="text-sm font-semibold text-slate-700">{{ employee.payPeriodStart }} - {{
+                                employee.payPeriodEnd }}</p>
+                        </div>
+                        <div class="bg-[#f8f6f6] p-3 rounded-lg border border-slate-100">
+                            <p class="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Pay Date</p>
+                            <p class="text-sm font-semibold text-slate-700">{{ employee.payDate }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Breakdown Grid -->
+            <div class="grid lg:grid-cols-3 gap-8">
+
+                <!-- Left Column: Earnings + Deductions -->
+                <div class="lg:col-span-2 space-y-6">
+
+                    <!-- Earnings Section -->
+                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-green-500">add_circle</span>
+                                Earnings &amp; Bonuses
+                            </h3>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Amount (USD)</span>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div *ngFor="let item of earnings" class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-slate-700 font-medium">{{ item.label }}</p>
+                                    <p class="text-xs text-slate-400">{{ item.description }}</p>
+                                </div>
+                                <p class="text-slate-900 font-semibold">{{ formatCurrency(item.amount) }}</p>
+                            </div>
+
+                            <!-- Gross Total -->
+                            <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                                <p class="text-slate-900 font-bold uppercase text-sm">Gross Earnings</p>
+                                <p class="text-slate-900 font-bold text-lg">{{ formatCurrency(grossEarnings) }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deductions Section -->
+                    <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                            <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-red-500">remove_circle</span>
+                                Deductions
+                            </h3>
+                        </div>
+                        <div class="p-6 space-y-4">
+                            <div *ngFor="let item of deductions" class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-slate-700 font-medium">{{ item.label }}</p>
+                                    <p class="text-xs text-slate-400">{{ item.description }}</p>
+                                </div>
+                                <p class="text-red-500 font-semibold">{{ formatCurrency(item.amount, true) }}</p>
+                            </div>
+
+                            <!-- Total Deductions -->
+                            <div class="pt-4 border-t border-slate-100 flex justify-between items-center">
+                                <p class="text-slate-900 font-bold uppercase text-sm">Total Deductions</p>
+                                <p class="text-red-500 font-bold text-lg">{{ formatCurrency(totalDeductions, true) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Net Pay Sidebar -->
+                <div class="space-y-6">
+
+                    <!-- Net Pay Card -->
+                    <div
+                        class="bg-[#ec5b13] rounded-xl p-8 text-white shadow-xl shadow-orange-200 flex flex-col items-center text-center relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-4 opacity-10">
+                            <span class="material-symbols-outlined text-9xl">receipt_long</span>
+                        </div>
+                        <p class="text-sm font-semibold uppercase tracking-widest mb-1 opacity-80">Net Pay</p>
+                        <h4 class="text-4xl font-black mb-4">{{ formatCurrency(netPay) }}</h4>
+                        <div class="w-full h-px bg-white/20 mb-4"></div>
+                        <p class="text-xs px-4 leading-relaxed opacity-80">
+                            This is the final amount deposited to your primary bank account (**** 4291)
+                        </p>
+                    </div>
+
+                    <!-- Bank Details Card -->
+                    <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                        <h3 class="font-bold text-slate-900 mb-4">Bank Details</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                                    <span class="material-symbols-outlined">account_balance</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400">Bank Name</p>
+                                    <p class="text-sm font-semibold text-slate-700">{{ bankDetails.bankName }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                                    <span class="material-symbols-outlined">credit_card</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400">Account Ending In</p>
+                                    <p class="text-sm font-semibold text-slate-700">{{ bankDetails.accountEnding }}</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-500">
+                                    <span class="material-symbols-outlined">verified</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400">Payment Status</p>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold"
+                                        [ngClass]="{
+                      'bg-green-100 text-green-700': bankDetails.paymentStatus === 'COMPLETED',
+                      'bg-yellow-100 text-yellow-700': bankDetails.paymentStatus === 'PENDING',
+                      'bg-red-100 text-red-700': bankDetails.paymentStatus === 'FAILED'
+                    }">
+                                        {{ bankDetails.paymentStatus }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Help Card -->
+                    <div class="bg-orange-50 border border-orange-100 rounded-xl p-4">
+                        <div class="flex gap-3">
+                            <span class="material-symbols-outlined text-[#ec5b13]">info</span>
+                            <div>
+                                <p class="text-sm font-bold text-[#ec5b13] mb-1">Need help?</p>
+                                <p class="text-xs text-slate-600">
+                                    If you have questions about your bonuses or deductions, please contact the
+                                    <a href="#" class="underline font-medium text-[#ec5b13]">Payroll Department</a>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-auto py-8 border-t border-slate-200 px-6 lg:px-20 bg-white">
+            <div
+                class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+                <p>© 2023 Horizon HR ERP Systems. All rights reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-[#ec5b13] transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-[#ec5b13] transition-colors">Support Center</a>
+                    <a href="#" class="hover:text-[#ec5b13] transition-colors">Help Documentation</a>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+</div>

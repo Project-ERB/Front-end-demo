@@ -74,7 +74,7 @@ export class RoleDetailsComponent {
     if (!this.role?.permissions?.length) return 'inactive';
     const anyFull = this.role.permissions.some(p => {
       const a = this.getAccess(p);
-      return a && a.allowCreate && a.allowDelete && a.allowUpdate && a.allowView;
+      return a && a.allowCreate && a.allowDelete && a.allowUpdated && a.allowView;
     });
     return anyFull ? 'active' : 'restricted';
   }
@@ -101,7 +101,7 @@ export class RoleDetailsComponent {
     return this.role.permissions.reduce((sum, p) => {
       const a = this.getAccess(p);
       if (!a) return sum;
-      return sum + [a.allowCreate, a.allowDelete, a.allowUpdate, a.allowView].filter(Boolean).length;
+      return sum + [a.allowCreate, a.allowDelete, a.allowUpdated, a.allowView].filter(Boolean).length;
     }, 0);
   }
 

@@ -1,0 +1,201 @@
+<div
+    class="flex h-full grow flex-col min-h-screen bg-[#f8f6f6] dark:bg-[#221610] font-sans text-slate-900 dark:text-slate-100">
+
+    <!-- Top Navigation Bar -->
+    <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-3 lg:px-10">
+        <div class="flex items-center gap-4 text-[#2563EB]">
+            <div class="size-8 flex items-center justify-center bg-[#2563EB]/10 rounded-lg">
+                <span class="material-symbols-outlined">description</span>
+            </div>
+            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">HR ERP</h2>
+        </div>
+
+        <div class="flex flex-1 justify-end gap-4 items-center">
+            <div class="flex gap-2">
+                <button
+                    class="flex size-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button
+                    class="flex size-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+            </div>
+
+            <div class="h-8 w-px bg-slate-200 dark:bg-slate-800 mx-2"></div>
+
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold leading-none">Alex Rivera</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">HR Admin</p>
+                </div>
+                <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-200 dark:border-slate-700"
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAw6r4owM7-YK4QHQfw73DEkKJQ_kWbIlck6TgkVtpToPesPXGNYiiBzxnZIP0UGKD0of2aLkcnEUjMAfo9RA4QI41fkTYwbnR9n4oko14KdtCECeFDHCHumwsCUsZEa9BIOu7WlLJdAbNS9nJaNsot9a3JGSjI74uXtUaJJJHqIxLPoHnvvcj7pLyYA20iD5y-UTWU_p36HaVj9ldCBZjzDKkubDIpM7GbckHDOGKT27-izc3rQlNhlHTPq4v9CUioqIoLOgMrO6PQ')">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-1 justify-center py-8 px-4 sm:px-10">
+        <div
+            class="flex flex-col max-w-[960px] flex-1 bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+
+            <!-- Page Header -->
+            <div class="flex flex-wrap justify-between gap-3 p-6 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2 text-[#2563EB] mb-1">
+                        <span class="material-symbols-outlined text-sm">arrow_back</span>
+                        <span class="text-xs font-bold uppercase tracking-wider">Contracts / New</span>
+                    </div>
+                    <h1 class="text-slate-900 dark:text-white text-2xl font-bold leading-tight">Add New Contract</h1>
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">Set up employment terms and legal conditions
+                        for new staff members.</p>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <form (ngSubmit)="onSave()" class="p-6 lg:p-10 space-y-8">
+
+                <!-- Section 1: Employee Information -->
+                <section class="space-y-6">
+                    <div class="flex items-center gap-2 border-l-4 border-[#2563EB] pl-4">
+                        <h3 class="text-lg font-bold">Employee Information</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Select Employee -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Select
+                                Employee</label>
+                            <div class="relative group">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#2563EB] transition-colors">search</span>
+                                <select [(ngModel)]="form.employeeId" name="employeeId"
+                                    class="pl-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 appearance-none pr-4">
+                                    <option value="" disabled>Search by name or ID</option>
+                                    <option *ngFor="let emp of employees" [value]="emp.id">
+                                        {{ emp.name }} ({{ emp.empId }})
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Contract Type -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Contract
+                                Type</label>
+                            <select [(ngModel)]="form.contractType" name="contractType"
+                                class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 appearance-none px-4">
+                                <option value="" disabled>Choose type</option>
+                                <option *ngFor="let type of contractTypes" [value]="type.value">{{ type.label }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 2: Terms & Salary -->
+                <section class="space-y-6">
+                    <div class="flex items-center gap-2 border-l-4 border-[#2563EB] pl-4">
+                        <h3 class="text-lg font-bold">Terms &amp; Salary</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Start Date -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Start Date</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">calendar_today</span>
+                                <input type="date" [(ngModel)]="form.startDate" name="startDate"
+                                    class="pl-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 pr-4" />
+                            </div>
+                        </div>
+
+                        <!-- End Date -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">End Date
+                                (Optional)</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">event_busy</span>
+                                <input type="date" [(ngModel)]="form.endDate" name="endDate"
+                                    class="pl-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 pr-4" />
+                            </div>
+                        </div>
+
+                        <!-- Salary -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Salary (Annual
+                                Gross)</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                                <input type="number" [(ngModel)]="form.salary" name="salary" placeholder="0.00"
+                                    class="pl-8 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 pr-4" />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section 3: Initial Configuration -->
+                <section class="space-y-6">
+                    <div class="flex items-center gap-2 border-l-4 border-[#2563EB] pl-4">
+                        <h3 class="text-lg font-bold">Initial Configuration</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Contract Status -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Contract
+                                Status</label>
+                            <div class="flex gap-4">
+                                <label
+                                    *ngFor="let option of [{value: 'draft', label: 'Draft'}, {value: 'active', label: 'Active'}]"
+                                    class="flex-1 flex items-center justify-center gap-2 p-4 border rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                    [ngClass]="getStatusBorderClass(option.value)">
+                                    <input type="radio" [value]="option.value" [(ngModel)]="form.status" name="status"
+                                        class="text-[#2563EB] focus:ring-[#2563EB]" />
+                                    <span class="font-medium">{{ option.label }}</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Department Manager -->
+                        <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Department
+                                Manager</label>
+                            <select [(ngModel)]="form.managerId" name="managerId"
+                                class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 appearance-none px-4">
+                                <option *ngFor="let manager of managers" [value]="manager.value">{{ manager.label }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Action Buttons -->
+                <div
+                    class="pt-8 border-t border-slate-100 dark:border-slate-800 flex flex-col-reverse sm:flex-row justify-end gap-3">
+                    <button type="button" (click)="onCancel()"
+                        class="px-8 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="px-10 py-3 rounded-xl bg-[#2563EB] text-white font-bold hover:bg-blue-700 shadow-lg shadow-[#2563EB]/20 transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">save</span>
+                        Save Contract
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-slate-400 dark:text-slate-500 text-xs">
+        <p>© 2023 Enterprise HR Solutions. All legal document updates are logged for auditing purposes.</p>
+    </footer>
+
+</div>

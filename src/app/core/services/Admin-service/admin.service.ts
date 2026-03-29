@@ -8,8 +8,16 @@ import { isPlatformBrowser } from '@angular/common';
 export interface RoleAllowAccess {
   allowCreate: boolean;
   allowDelete: boolean;
-  allowUpdate: boolean;
+  allowUpdated: boolean;
   allowView: boolean;
+}
+
+export interface SystemHealth {
+  status: string;
+  cpuLoadPercentage: number;
+  memoryUsageGb: number;
+  totalMemoryGb: number;
+  networkLatencyMs: number;
 }
 
 export interface RolePermission {
@@ -40,6 +48,13 @@ export interface UpdateRoleBody {
   name: number;
   description: string;
   setPermissions: UpdateRolePermission[];
+}
+
+// ── Permission node returned by GraphQL ──────────────────────────────────────
+export interface PermissionNode {
+  id: string;
+  name: string;
+  description: string;
 }
 
 // ── Service ──────────────────────────────────────────────────────────────────
@@ -102,18 +117,6 @@ export class AdminService {
             id
             name
             description
-            permissions {
-              id
-              name
-              description
-              resources
-              allowAccess {
-                allowCreate
-                allowDelete
-                allowUpdate
-                allowView
-              }
-            }
           }
         }
       }
@@ -127,35 +130,69 @@ export class AdminService {
       .pipe(map((res) => res.data.roles.nodes));
   }
 
-  getRoleById(id: string): Observable<Role> {
+  // ── Get all permissions (GraphQL) ────────────────────────────────────────
+  getPermissions(): Observable<PermissionNode[]> {
     const query = `
-    query GetRole($id: UUID!) {
-      role(id: $id) {
-        id
-        name
-        description
+      query {
         permissions {
-          id
-          name
-          description
-          resources
-          allowAccess {
-            allowCreate
-            allowDelete
-            allowUpdate
-            allowView
+          nodes {
+            id 
+            name
+            description
           }
         }
       }
-    }
-  `;
+    `;
+    return this._http
+      .post<{ data: { permissions: { nodes: PermissionNode[] } } }>(
+        `${Environment.baseUrl}/graphql?t=${Date.now()}`,
+        { query },
+        { headers: this.headers }
+      )
+      .pipe(
+        map((res) => {
+          console.log('Permissions nodes:', res.data.permissions.nodes);
+          return res.data.permissions.nodes;
+        })
+      );
+  }
 
+  // ── Get role by id (GraphQL) ─────────────────────────────────────────────
+  getRoleById(id: string): Observable<Role> {
+    const query = `
+      query GetRole($id: UUID!) {
+        role(id: $id) {
+          id
+          name
+          description
+          permissions {
+            id
+            name
+            description
+            resources
+            allowAccess {
+              allowCreate
+              allowDelete
+              allowUpdate
+              allowView
+            }
+          }
+        }
+      }
+    `;
     return this._http
       .post<{ data: { role: Role } }>(
         `${Environment.baseUrl}/graphql?t=${Date.now()}`,
-        { query, variables: { id } },   // ← الـ id بيتبعت كـ variable مش hardcoded
+        { query, variables: { id } },
         { headers: this.headers }
       )
       .pipe(map((res) => res.data.role));
+  }
+
+  getSystemHealth(): Observable<SystemHealth> {
+    return this._http.get<SystemHealth>(
+      `${Environment.baseUrl}/Admin/healthy`,
+      { headers: this.headers }
+    );
   }
 }

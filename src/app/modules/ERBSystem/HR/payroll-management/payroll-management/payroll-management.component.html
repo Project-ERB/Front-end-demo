@@ -1,0 +1,258 @@
+<div class="flex min-h-screen bg-[#f8f6f6] text-slate-900 font-sans antialiased">
+
+    <!-- ───────────────────── Sidebar ───────────────────── -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="bg-[#ec5b13] rounded-xl p-2 flex items-center justify-center text-white">
+                <span class="material-symbols-outlined">corporate_fare</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold leading-tight">HR ERP</h1>
+                <p class="text-xs text-slate-500">Enterprise Edition</p>
+            </div>
+        </div>
+
+        <!-- Nav -->
+        <nav class="flex-1 px-4 space-y-1">
+            <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
+          ? 'flex items-center gap-3 px-3 py-2 bg-orange-50 text-[#ec5b13] rounded-xl transition-colors'
+          : 'flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors'">
+                <span class="material-symbols-outlined text-[22px]">{{ item.icon }}</span>
+                <span [class]="item.active ? 'text-sm font-semibold' : 'text-sm font-medium'">{{ item.label }}</span>
+            </a>
+        </nav>
+
+        <!-- New Record Button -->
+        <div class="p-4 border-t border-slate-200">
+            <button (click)="onNewRecord()"
+                class="w-full flex items-center justify-center gap-2 bg-[#ec5b13] text-white py-2.5 rounded-xl font-bold text-sm shadow-sm hover:shadow-md active:scale-[0.98] transition-all">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                <span>New Record</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ───────────────────── Main ───────────────────── -->
+    <main class="flex-1 flex flex-col min-w-0">
+
+        <!-- Header -->
+        <header
+            class="h-16 flex items-center justify-between px-8 bg-white border-b border-slate-200 sticky top-0 z-10">
+
+            <!-- Search -->
+            <div class="flex items-center gap-4 flex-1 max-w-xl">
+                <div class="relative w-full">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+                    <input type="text" [value]="searchQuery()" (input)="onSearch($any($event.target).value)"
+                        placeholder="Search payroll records, employee ID, or name..."
+                        class="w-full bg-slate-50 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 placeholder:text-slate-400" />
+                </div>
+            </div>
+
+            <!-- User / Actions -->
+            <div class="flex items-center gap-4">
+                <button class="p-2 text-slate-500 hover:bg-slate-50 rounded-lg relative">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute top-2 right-2.5 w-2 h-2 bg-[#ec5b13] rounded-full border-2 border-white"></span>
+                </button>
+                <div class="h-8 w-px bg-slate-200 mx-2"></div>
+                <div class="flex items-center gap-3 cursor-pointer group">
+                    <div class="text-right">
+                        <p class="text-sm font-semibold leading-none">Alex Rivera</p>
+                        <p class="text-xs text-slate-500 mt-1">HR Admin</p>
+                    </div>
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_3Wo08_xCfFFSCSnYwpeFSe8_KfAQKodYZ3N0mQXitpF0HHnX6zY5PuSFCx_-2FnXByiltVeFYpNLDDGg-bXK6tmVEg3WdQPUiXTRX4PeGTIP8EBXFqxK-P4142KaZ8HOM8C-g3GsOWI9gB4BDm82mA9MsDBGSFX9ugmbiSBCIndTnwRZ76ygktwMjcfQx3Nu543NibsVAw16Gp3s5Ab88H0fDqR1jCdxrE_M_4vtH9BYrHXpiWaC9NnBIpFpghbttfQPesV0khh-"
+                        alt="Alex Rivera"
+                        class="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-orange-200 transition-all" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="p-8">
+
+            <!-- Page Title & Actions -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-3xl font-extrabold tracking-tight">Payroll Directory</h2>
+                    <p class="text-slate-500 mt-1">Overview of all processed employee payroll records for the current
+                        fiscal year.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button (click)="onExportCSV()"
+                        class="flex items-center gap-2 px-4 py-2 border border-slate-200 bg-white rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">download</span>
+                        Export CSV
+                    </button>
+                    <button (click)="onPrintAll()"
+                        class="flex items-center gap-2 px-4 py-2 border border-slate-200 bg-white rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">print</span>
+                        Print All
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-6 flex flex-wrap items-center gap-4">
+                <span class="text-sm font-semibold text-slate-500 whitespace-nowrap">Filter by:</span>
+                <div class="flex-1 flex flex-wrap gap-3">
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200">
+                        <span>Department: All</span>
+                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200">
+                        <span>Period: Monthly</span>
+                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200">
+                        <span>Date: Oct 2023</span>
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                    </button>
+                </div>
+                <button (click)="clearFilters()" class="text-[#ec5b13] text-sm font-semibold hover:underline">
+                    Clear all filters
+                </button>
+            </div>
+
+            <!-- Payroll Table -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Employee
+                                    Name</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Payment
+                                    Date</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Period
+                                    Start</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Period
+                                    End</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Basic
+                                    Salary</th>
+                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Bonuses
+                                </th>
+                                <th
+                                    class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">
+                                    Net Salary</th>
+                                <th class="px-6 py-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr *ngFor="let record of filteredRecords()" class="hover:bg-slate-50 transition-colors">
+                                <!-- Name + Avatar -->
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs"
+                                            [ngClass]="record.highlightInitials
+                        ? 'bg-orange-50 text-[#ec5b13]'
+                        : 'bg-slate-100 text-slate-600'">
+                                            {{ record.initials }}
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold">{{ record.name }}</p>
+                                            <p class="text-xs text-slate-500">{{ record.department }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-sm">{{ record.paymentDate }}</td>
+                                <td class="px-6 py-4 text-sm">{{ record.periodStart }}</td>
+                                <td class="px-6 py-4 text-sm">{{ record.periodEnd }}</td>
+                                <td class="px-6 py-4 text-sm font-medium">{{ formatCurrency(record.basicSalary) }}</td>
+                                <!-- Bonus -->
+                                <td class="px-6 py-4 text-sm font-medium"
+                                    [ngClass]="record.bonus > 0 ? 'text-green-600' : 'text-slate-400'">
+                                    {{ formatBonus(record.bonus) }}
+                                </td>
+                                <!-- Net Salary -->
+                                <td class="px-6 py-4 text-sm font-bold text-slate-900 text-right">
+                                    {{ formatCurrency(record.basicSalary + record.bonus) }}
+                                </td>
+                                <!-- Actions -->
+                                <td class="px-6 py-4 text-right">
+                                    <button (click)="onMoreOptions(record)"
+                                        class="p-1 hover:bg-slate-100 rounded transition-colors text-slate-400">
+                                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="filteredRecords().length === 0">
+                                <td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    No records match your search.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                    <p class="text-xs font-medium text-slate-500">{{ showingText }}</p>
+                    <div class="flex items-center gap-2">
+                        <!-- Prev -->
+                        <button [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)"
+                            class="p-1 border border-slate-200 rounded-lg text-slate-400 disabled:opacity-40">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+
+                        <!-- Page buttons -->
+                        <ng-container *ngFor="let page of pages; let i = index">
+                            <span *ngIf="i === 3" class="text-slate-400">...</span>
+                            <button (click)="setPage(page)" [ngClass]="currentPage() === page
+                  ? 'w-8 h-8 rounded-lg bg-[#ec5b13] text-white text-xs font-bold'
+                  : 'w-8 h-8 rounded-lg hover:bg-slate-200 text-xs font-medium'">
+                                {{ page }}
+                            </button>
+                        </ng-container>
+
+                        <!-- Next -->
+                        <button [disabled]="currentPage() === 9" (click)="setPage(currentPage() + 1)"
+                            class="p-1 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 disabled:opacity-40">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div *ngFor="let card of summaryCards"
+                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{{ card.label }}</p>
+                    <div class="flex items-end justify-between">
+                        <h3 class="text-2xl font-black">{{ card.value }}</h3>
+
+                        <!-- Green badge -->
+                        <span *ngIf="card.badge && card.badgeColor === 'green'"
+                            class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                            {{ card.badge }}
+                        </span>
+
+                        <!-- Neutral badge -->
+                        <span *ngIf="card.badge && card.badgeColor === 'neutral'"
+                            class="text-xs font-bold text-slate-400 px-2 py-1">
+                            {{ card.badge }}
+                        </span>
+
+                        <!-- Progress bar -->
+                        <div *ngIf="card.showBar" class="flex flex-col items-end gap-1 mb-1">
+                            <div class="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="bg-[#ec5b13] h-full rounded-full" [style.width.%]="card.barPercent"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /content -->
+    </main>
+</div>

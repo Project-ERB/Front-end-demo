@@ -208,7 +208,7 @@ export class RolemanagementComponent implements OnInit {
       permissionName: p.name ?? p.id ?? '',  // ← التعديل هنا
       allowCreate: p.allowAccess?.[0]?.allowCreate ?? false,
       allowDelete: p.allowAccess?.[0]?.allowDelete ?? false,
-      allowUpdated: p.allowAccess?.[0]?.allowUpdate ?? false,
+      allowUpdated: p.allowAccess?.[0]?.allowUpdated ?? false,
       allowView: p.allowAccess?.[0]?.allowView ?? false,
     }));
 

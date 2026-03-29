@@ -1,0 +1,345 @@
+<div
+    class="min-h-screen flex flex-col font-[Public_Sans,sans-serif] bg-[#f8f6f6] dark:bg-[#221610] text-slate-900 dark:text-slate-100 antialiased">
+
+    <!-- ── Top Navigation ── -->
+    <header class="sticky top-0 z-50 w-full bg-white dark:bg-[#221610] border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                <!-- Left: Brand + Search -->
+                <div class="flex items-center gap-8">
+                    <div class="flex items-center gap-2">
+                        <div class="bg-[#ec5b13] p-1.5 rounded-lg text-white">
+                            <span class="material-symbols-outlined block">corporate_fare</span>
+                        </div>
+                        <h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">HR ERP</h2>
+                    </div>
+                    <div class="hidden md:block relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                            <span class="material-symbols-outlined text-sm">search</span>
+                        </span>
+                        <input type="text" placeholder="Search employees..."
+                            class="block w-64 pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-[#ec5b13] focus:border-[#ec5b13] text-sm" />
+                    </div>
+                </div>
+
+                <!-- Right: Edit + Avatar -->
+                <div class="flex items-center gap-4">
+                    <button
+                        class="hidden sm:flex items-center gap-2 bg-[#ec5b13] hover:bg-[#ec5b13]/90 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors">
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                        <span>Edit Profile</span>
+                    </button>
+                    <div
+                        class="h-10 w-10 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border-2 border-slate-100 dark:border-slate-800 shadow-sm">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9xE7_GlqyiVWIvjjvgxnMO6XzWgO9rYVJh2mTr3LFO_iWhtMNAeU4HqXTTolpKrblqWcYnNSb4Qj7vrvv2PkuyuvUckCMz2Q1XkKG5MlRLIStRDOD1YskxWjQ7jwQ3NV6zjgDoFLioVIJuDpCCJcwsbjOctFjHijZInH8ywOO8PFzT76IA1D4pG3FDO-sPFFZkyOitybVI7t8eoT15pez7RPZnj5bCFC6wnwHeKmNQjBL5FRJv53m9-QaNU61lyu0p4zVqYyKmMAK"
+                            alt="Admin user" class="w-full h-full object-cover" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Breadcrumbs -->
+        <nav class="flex mb-8 text-sm font-medium text-slate-500 dark:text-slate-400">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="#" class="hover:text-[#ec5b13] inline-flex items-center">
+                        <span class="material-symbols-outlined text-base mr-1">home</span> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-base mx-1">chevron_right</span>
+                        <a href="#" class="hover:text-[#ec5b13]">Employees</a>
+                    </div>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <span class="material-symbols-outlined text-base mx-1 text-slate-300">chevron_right</span>
+                        <span class="text-slate-900 dark:text-white">{{ personal.fullName }}</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- ── Employee Header Card ── -->
+        <div
+            class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-6 mb-8 shadow-sm">
+            <div class="flex flex-col md:flex-row items-center gap-6">
+
+                <!-- Avatar -->
+                <div class="relative flex-shrink-0">
+                    <div
+                        class="size-32 rounded-full overflow-hidden border-4 border-slate-50 dark:border-slate-800 shadow-lg">
+                        <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBPNt-Yh2crbG-xuL24zFjKM9WNLZfPZDA86ZZ4fCWT4S2yMQV6-_fwMWtc0thmq3fZe2iwgpFpxNAtHOFdrG6_8rVNQMqmtu7LM5jLTGx9_NuWtj15jrP5PDt0nyyzJ8OxqkLD_xoLP7eo70DOZXHnEb_wDVXelUuSsjWNnLbfRaRDyOxGRde-bF_iAJBxEJHmlDEaz7igSKoHYWda6_ZVSse0z8DFWOTjj1PNx7uGQMOAlvWWknSd0DI4UEANCMfVuwPV9jjYkEgH"
+                            alt="Johnathan Doe" class="w-full h-full object-cover" />
+                    </div>
+                    <span
+                        class="absolute bottom-1 right-1 size-6 bg-green-500 border-4 border-white dark:border-slate-900 rounded-full"></span>
+                </div>
+
+                <!-- Name + badges -->
+                <div class="flex-1 text-center md:text-left">
+                    <h1 class="text-3xl font-bold text-slate-900 dark:text-white">{{ personal.fullName }}</h1>
+                    <p class="text-lg text-[#ec5b13] font-medium mb-2">Senior Software Engineer</p>
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            {{ employment.department }}
+                        </span>
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                            Full-time
+                        </span>
+                        <span class="inline-flex items-center text-sm text-slate-500 dark:text-slate-400">
+                            <span class="material-symbols-outlined text-base mr-1">location_on</span> San Francisco, CA
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="flex gap-3">
+                    <button
+                        class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors border border-slate-200 dark:border-slate-700 rounded-lg">
+                        <span class="material-symbols-outlined">mail</span>
+                    </button>
+                    <button
+                        class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors border border-slate-200 dark:border-slate-700 rounded-lg">
+                        <span class="material-symbols-outlined">phone</span>
+                    </button>
+                    <button
+                        class="bg-[#ec5b13]/10 text-[#ec5b13] hover:bg-[#ec5b13] hover:text-white px-4 py-2 rounded-lg font-bold transition-all">
+                        Actions
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="mt-8 border-t border-slate-100 dark:border-slate-800 pt-4">
+                <nav class="flex gap-8 overflow-x-auto">
+                    <a *ngFor="let tab of tabs" href="#" (click)="$event.preventDefault(); selectTab(tab.label)"
+                        [class]="tab.active
+              ? 'border-b-2 border-[#ec5b13] text-[#ec5b13] pb-4 font-semibold whitespace-nowrap'
+              : 'border-b-2 border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 pb-4 font-medium whitespace-nowrap transition-colors'">{{
+                        tab.label }}</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- ── Main Grid ── -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left Column -->
+            <div class="lg:col-span-2 space-y-8">
+
+                <!-- Personal Information -->
+                <section
+                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#ec5b13]">person</span>
+                            Personal Information
+                        </h3>
+                        <button class="text-sm text-[#ec5b13] font-medium hover:underline">Edit</button>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Full
+                                Name</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ personal.fullName }}</p>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Email
+                                Address</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ personal.email }}</p>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Phone
+                                Number</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ personal.phone }}</p>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Birth
+                                Date</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ personal.birthDate }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Home
+                                Address</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ personal.address }}</p>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- Employment Details -->
+                <section
+                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                        <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#ec5b13]">badge</span>
+                            Employment Details
+                        </h3>
+                    </div>
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Department</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ employment.department }}</p>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Employee
+                                Level</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ employment.level }}</p>
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Employment
+                                Type</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ employment.type }}</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Hire
+                                Date</label>
+                            <p class="text-slate-900 dark:text-slate-100 font-medium">{{ employment.hireDate }}</p>
+                        </div>
+
+                        <!-- Manager row -->
+                        <div
+                            class="md:col-span-2 flex items-center gap-4 p-4 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <div class="size-12 rounded-full overflow-hidden shrink-0">
+                                <img [src]="employment.managerImg" [alt]="employment.managerName"
+                                    class="w-full h-full object-cover" />
+                            </div>
+                            <div class="flex-1">
+                                <label
+                                    class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Reports
+                                    to</label>
+                                <p class="text-slate-900 dark:text-slate-100 font-bold">{{ employment.managerName }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ employment.managerTitle }}</p>
+                            </div>
+                            <button
+                                class="text-[#ec5b13] material-symbols-outlined hover:bg-white dark:hover:bg-slate-700 p-2 rounded-full transition-colors">
+                                arrow_forward
+                            </button>
+                        </div>
+
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-8">
+
+                <!-- Financials -->
+                <section
+                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50">
+                        <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#ec5b13]">payments</span>
+                            Financials
+                        </h3>
+                    </div>
+                    <div class="p-6 space-y-6">
+
+                        <!-- Salary -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Base
+                                Salary (Annual)</label>
+                            <div class="flex items-end gap-1">
+                                <p class="text-2xl font-bold text-slate-900 dark:text-white">{{ financials.salary }}</p>
+                                <p class="text-sm text-slate-500 mb-1">{{ financials.currency }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Payroll Status -->
+                        <div>
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Payroll
+                                Status</label>
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                <span class="size-2 rounded-full bg-green-600"></span>
+                                Active &amp; Verified
+                            </span>
+                        </div>
+
+                        <!-- Direct Deposit -->
+                        <div class="pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <label
+                                class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Direct
+                                Deposit</label>
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-10 bg-slate-100 dark:bg-slate-800 rounded flex items-center justify-center text-slate-400">
+                                    <span class="material-symbols-outlined">account_balance</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-slate-900 dark:text-white">{{ financials.bankName
+                                        }}</p>
+                                    <p class="text-xs text-slate-500">{{ financials.bankType }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- View Paystubs -->
+                        <button
+                            class="w-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold py-2.5 rounded-xl transition-colors flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-lg">receipt_long</span>
+                            View Paystubs
+                        </button>
+
+                    </div>
+                </section>
+
+                <!-- Time Off -->
+                <section
+                    class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6">
+                    <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-6">
+                        <span class="material-symbols-outlined text-[#ec5b13]">event_busy</span>
+                        Time Off
+                    </h3>
+                    <div class="space-y-4">
+                        <div *ngFor="let band of timeOff">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-600 dark:text-slate-400 font-medium">{{ band.label }}</span>
+                                <span class="text-slate-900 dark:text-white font-bold">{{ band.used }} / {{ band.total
+                                    }} Days</span>
+                            </div>
+                            <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
+                                <div class="h-2 rounded-full transition-all duration-500" [class]="band.color"
+                                    [style.width.%]="bandPercent(band)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer class="bg-white dark:bg-[#221610] border-t border-slate-200 dark:border-slate-800 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm text-slate-500 dark:text-slate-400">© 2024 Enterprise HR ERP System. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+</div>

@@ -1,0 +1,233 @@
+<div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
+        <!-- Logo -->
+        <div class="p-6 flex items-center gap-3">
+            <div class="bg-blue-600 rounded-lg p-1.5 flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-2xl">corporate_fare</span>
+            </div>
+            <div>
+                <h1 class="text-slate-900 text-lg font-bold leading-tight">HR Cloud</h1>
+                <p class="text-slate-500 text-xs font-medium">ERP Administration</p>
+            </div>
+        </div>
+
+        <!-- Nav Links -->
+        <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[22px]">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 bg-blue-600/10 text-blue-600 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[22px]">description</span>
+                <span class="text-sm font-semibold">Applications</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[22px]">work</span>
+                <span class="text-sm font-medium">Requirements</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[22px]">group</span>
+                <span class="text-sm font-medium">Candidates</span>
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[22px]">event</span>
+                <span class="text-sm font-medium">Schedule</span>
+            </a>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="p-4 border-t border-slate-200">
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                <span class="material-symbols-outlined text-[22px]">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+            <div class="mt-4 flex items-center gap-3 px-3 py-2">
+                <div class="size-8 rounded-full bg-slate-200 overflow-hidden shrink-0">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjjIKDXhmvdSlTtiCC5cAcVbWCD7g0C_qtRg8_X8Tyi0Sz3jMBJgKV-NpFok-WzNG4hjRRq1RnWdjcyXVYG27b7IftcwO3zTvECYPTa7N6iCwBaur7m50oLFAQ5sn-pzlNmFuQzNAL-MHz_VzQi5t_7Ddse5qhRfe1Wr0tL2qOYE-KAe_pqnGvJPWPuaX91DDZJsnQkWC3LhdOGy1a1ccILw1NLS0l7dw3a5kPbOPZk15PJNTzXLVBZqcw8_RElAXmtdVg_f4HiUbH"
+                        alt="HR manager avatar" class="w-full h-full object-cover" />
+                </div>
+                <div class="min-w-0">
+                    <p class="text-sm font-semibold truncate">Marcus Chen</p>
+                    <p class="text-xs text-slate-500 truncate">HR Director</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#f8f6f6]">
+
+        <!-- Top Bar -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
+            <div class="flex-1 max-w-xl">
+                <div class="relative">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                    <input type="text" placeholder="Search applications, candidates or job requirements..."
+                        class="w-full bg-slate-100 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 outline-none transition-all" />
+                </div>
+            </div>
+            <div class="flex items-center gap-4 ml-4">
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg relative transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+                <div class="h-6 w-px bg-slate-200 mx-2"></div>
+                <button
+                    class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                    New Application
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex-1 overflow-y-auto p-8">
+
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">Application Processes Management
+                </h2>
+                <p class="text-slate-500">Track and manage recruitment workflows for all active candidates across
+                    departments.</p>
+            </div>
+
+            <!-- Filters & Actions -->
+            <div class="flex flex-wrap items-center gap-4 mb-6">
+                <!-- Filter Tabs -->
+                <div class="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
+                    <button *ngFor="let filter of filters" (click)="setFilter(filter.key)" [class]="activeFilter === filter.key
+              ? 'px-4 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-lg'
+              : 'px-4 py-1.5 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors'">
+                        {{ filter.label }} ({{ filter.count }})
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-2 ml-auto">
+                    <button
+                        class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined text-sm">filter_list</span> Filter
+                    </button>
+                    <button
+                        class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                        <span class="material-symbols-outlined text-sm">download</span> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 border-b border-slate-200">
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Candidate
+                                Name</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Job Title
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Start Date
+                            </th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
+                                Current Stage</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
+                                Status</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">
+                                Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr *ngFor="let app of applications" class="hover:bg-slate-50/50 transition-colors">
+                            <!-- Candidate -->
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="size-9 rounded-full flex items-center justify-center font-bold text-xs"
+                                        [ngClass]="getAvatarClasses(app.avatarColor)">
+                                        {{ app.initials }}
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-slate-900">{{ app.name }}</p>
+                                        <p class="text-xs text-slate-500">{{ app.email }}</p>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Job Title -->
+                            <td class="px-6 py-4">
+                                <p class="text-sm text-slate-700 font-medium">{{ app.jobTitle }}</p>
+                                <p class="text-xs text-slate-500">{{ app.department }}</p>
+                            </td>
+
+                            <!-- Start Date -->
+                            <td class="px-6 py-4 text-sm text-slate-600">{{ app.startDate }}</td>
+
+                            <!-- Stage -->
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                                    [ngClass]="getStageClasses(app.stageColor)">
+                                    <span class="size-1.5 rounded-full mr-2"
+                                        [ngClass]="getStageDotClasses(app.stageColor)"></span>
+                                    {{ app.stage }}
+                                </span>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="px-6 py-4 text-center">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                                    [ngClass]="getStatusClasses(app.status)">
+                                    {{ app.status }}
+                                </span>
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button (click)="onView(app)" title="View Details"
+                                        class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-600/10 rounded-lg transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                    </button>
+                                    <button (click)="onAccept(app)" title="Accept for Next Step"
+                                        class="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                    </button>
+                                    <button (click)="onReject(app)" title="Reject"
+                                        class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                                        <span class="material-symbols-outlined text-[20px]">cancel</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination -->
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                    <p class="text-xs text-slate-500 font-medium">Showing 1 to 4 of 124 results</p>
+                    <div class="flex items-center gap-2">
+                        <button disabled
+                            class="p-1 border border-slate-200 rounded hover:bg-white disabled:opacity-50 transition-colors">
+                            <span class="material-symbols-outlined text-sm">chevron_left</span>
+                        </button>
+                        <span class="text-xs font-bold text-blue-600 px-2">1</span>
+                        <span class="text-xs font-medium text-slate-400 px-2">2</span>
+                        <span class="text-xs font-medium text-slate-400 px-2">3</span>
+                        <button class="p-1 border border-slate-200 rounded hover:bg-white transition-colors">
+                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>

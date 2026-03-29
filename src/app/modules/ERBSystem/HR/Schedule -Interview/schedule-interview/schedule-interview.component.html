@@ -1,0 +1,205 @@
+<div class="flex h-full grow flex-col font-sans text-slate-900 min-h-screen bg-[#f8f6f6]">
+
+    <!-- Top Navigation Bar -->
+    <header
+        class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 bg-white px-6 md:px-10 py-3 sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <div class="text-[#0066FF] flex items-center justify-center">
+                <span class="material-symbols-outlined text-3xl">corporate_fare</span>
+            </div>
+            <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-[-0.015em]">HR Portal</h2>
+        </div>
+        <div class="flex flex-1 justify-end gap-8">
+            <nav class="hidden md:flex items-center gap-9">
+                <a href="#"
+                    class="text-slate-600 text-sm font-medium hover:text-[#0066FF] transition-colors">Dashboard</a>
+                <a href="#"
+                    class="text-slate-600 text-sm font-medium hover:text-[#0066FF] transition-colors">Candidates</a>
+                <a href="#" class="text-slate-900 text-sm font-bold border-b-2 border-[#0066FF]">Interviews</a>
+                <a href="#" class="text-slate-600 text-sm font-medium hover:text-[#0066FF] transition-colors">Jobs</a>
+            </nav>
+            <div class="bg-slate-200 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-100"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCmxAQTuCayWqEgjtjOBeeUcjwHmxJVnTt6gYLhb51UWowK-DhUfFGZLjoB8UexFH_qrba_btQoB0EoG4sqyzRFwMnLGS7qLKuq-XdQIVfVn3O3LmLkGpKiyl_S7vcG-UztCs-cQ5MoL6XSCMBGB40gTZKXFqymLC2NiLc0550kfMizRiRQpYCpbNzSKw2qM3JOfjlreqLSmLLeE8Yzh6LlJGWbSNAeNQZ_LdxBOazeDgAkarKu1TsW0huln3XHCWHm7UyKUz-fmNLk')"
+                aria-label="User profile picture">
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex flex-1 justify-center py-10 px-4 md:px-0">
+        <div class="flex flex-col max-w-[800px] flex-1">
+
+            <!-- Page Header -->
+            <div class="flex flex-col gap-2 mb-8 px-4">
+                <h1 class="text-slate-900 text-3xl font-bold leading-tight">Schedule New Interview</h1>
+                <p class="text-slate-500 text-sm font-normal">Configure the details for the upcoming candidate
+                    evaluation session.</p>
+            </div>
+
+            <!-- Form Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <form (ngSubmit)="onSubmit()" #interviewForm="ngForm" class="space-y-6">
+
+                    <!-- Candidate & Stage -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Candidate / Application</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">person_search</span>
+                                <input type="text" name="candidateName" [(ngModel)]="form.candidateName"
+                                    placeholder="Search candidate name..."
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Interview Stage</label>
+                            <select name="interviewStage" [(ngModel)]="form.interviewStage"
+                                class="w-full px-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none">
+                                @for (stage of interviewStages; track stage) {
+                                <option [value]="stage">{{ stage }}</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Interviewer & Type -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Interviewer Name</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">badge</span>
+                                <input type="text" name="interviewerName" [(ngModel)]="form.interviewerName"
+                                    placeholder="Enter interviewer name"
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Interview Type</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">category</span>
+                                <select name="interviewType" [(ngModel)]="form.interviewType"
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none">
+                                    @for (type of interviewTypes; track type) {
+                                    <option [value]="type">{{ type }}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date & Time -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Date</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">calendar_today</span>
+                                <input type="date" name="date" [(ngModel)]="form.date"
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Time</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">schedule</span>
+                                <input type="time" name="time" [(ngModel)]="form.time"
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Work Preference & Location -->
+                    <div class="flex flex-col gap-4 py-4 border-y border-slate-100">
+
+                        <div class="flex items-center justify-between">
+                            <label class="text-sm font-semibold text-slate-700">Work Preference</label>
+                            <div class="flex items-center bg-slate-100 p-1 rounded-lg">
+                                <button type="button" (click)="setWorkPreference('OFFICE')" [class]="workPreference() === 'OFFICE'
+                    ? 'px-4 py-1.5 rounded-md text-xs font-bold transition-all bg-white shadow-sm text-[#0066FF]'
+                    : 'px-4 py-1.5 rounded-md text-xs font-bold transition-all text-slate-500 hover:text-slate-700'">
+                                    OFFICE
+                                </button>
+                                <button type="button" (click)="setWorkPreference('REMOTE')" [class]="workPreference() === 'REMOTE'
+                    ? 'px-4 py-1.5 rounded-md text-xs font-bold transition-all bg-white shadow-sm text-[#0066FF]'
+                    : 'px-4 py-1.5 rounded-md text-xs font-bold transition-all text-slate-500 hover:text-slate-700'">
+                                    REMOTE
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-semibold text-slate-700">Location / Meeting Link</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                    {{ workPreference() === 'OFFICE' ? 'location_on' : 'videocam' }}
+                                </span>
+                                <input type="text" name="location" [(ngModel)]="form.location"
+                                    [placeholder]="workPreference() === 'OFFICE' ? 'Office room number or address' : 'Paste Zoom/Teams/Meet link'"
+                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-end gap-4 pt-4">
+                        <button type="button" (click)="onCancel()"
+                            class="px-6 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-100 transition-all">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="px-10 py-3 rounded-lg bg-[#0066FF] text-white font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all">
+                            Schedule Interview
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Info Footer Tiles -->
+            <div class="mt-8 px-4 grid grid-cols-1 md:grid-cols-3 gap-4 opacity-70">
+                <div class="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
+                    <span class="material-symbols-outlined text-[#0066FF]">info</span>
+                    <div class="flex flex-col">
+                        <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Automation</p>
+                        <p class="text-xs font-medium">Invites will be sent via email</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
+                    <span class="material-symbols-outlined text-[#0066FF]">event_repeat</span>
+                    <div class="flex flex-col">
+                        <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Calendar Sync</p>
+                        <p class="text-xs font-medium">Synced with Outlook/Google</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
+                    <span class="material-symbols-outlined text-[#0066FF]">lock</span>
+                    <div class="flex flex-col">
+                        <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Visibility</p>
+                        <p class="text-xs font-medium">Private to HR &amp; Interviewer</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="mt-auto border-t border-slate-200 py-6 px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-xs">
+        <p>© 2023 Enterprise HR Management System</p>
+        <div class="flex gap-6">
+            <a href="#" class="hover:text-[#0066FF] transition-colors">Help Center</a>
+            <a href="#" class="hover:text-[#0066FF] transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-[#0066FF] transition-colors">Terms of Service</a>
+        </div>
+    </footer>
+
+</div>

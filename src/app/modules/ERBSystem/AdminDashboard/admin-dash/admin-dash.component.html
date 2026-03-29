@@ -25,8 +25,8 @@
                         class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
                     <input [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()" type="text"
                         placeholder="Search system logs..." class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm
-                   focus:outline-none focus:ring-2 focus:ring-[#2463eb]/50 focus:border-[#2463eb]
-                   w-64 transition-all" />
+                               focus:outline-none focus:ring-2 focus:ring-[#2463eb]/50 focus:border-[#2463eb]
+                               w-64 transition-all" />
                 </div>
 
                 <!-- Notifications -->
@@ -37,7 +37,7 @@
 
                 <!-- Export -->
                 <button (click)="onExport()" class="bg-[#2463eb] hover:bg-[#2463eb]/90 text-white px-4 py-2 rounded-lg text-sm
-                       font-semibold flex items-center gap-2 transition-colors">
+                           font-semibold flex items-center gap-2 transition-colors">
                     <span class="material-symbols-outlined text-[18px]">download</span>
                     Export Report
                 </button>
@@ -50,58 +50,119 @@
             <!-- ── Top Widgets Row ── -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <!-- System Health -->
-                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-4">
+                <!-- System Health Card -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+
+                    <!-- Card Header -->
+                    <div class="flex items-center justify-between mb-5">
                         <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                             <span class="material-symbols-outlined text-emerald-500">ecg_heart</span>
                             System Health
                         </h3>
-                        <span
-                            class="bg-emerald-50 text-emerald-700 text-xs font-bold px-2 py-1 rounded-full border border-emerald-100">
-                            {{ systemHealth.status }}
+
+                        <!-- Loading badge skeleton -->
+                        <div *ngIf="isLoading" class="w-16 h-5 bg-slate-200 rounded-full animate-pulse"></div>
+
+                        <!-- Status badge -->
+                        <span *ngIf="!isLoading && health"
+                            [class]="'inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border ' + statusBadgeClass">
+                            <span class="size-1.5 rounded-full animate-pulse" [class]="statusDotClass"></span>
+                            {{ health.status }}
                         </span>
                     </div>
 
-                    <div class="space-y-6">
+                    <!-- Loading Skeleton -->
+                    <div *ngIf="isLoading" class="space-y-6 animate-pulse flex-1">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <div class="w-16 h-3 bg-slate-200 rounded"></div>
+                                <div class="w-10 h-3 bg-slate-200 rounded"></div>
+                            </div>
+                            <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <div class="w-24 h-3 bg-slate-200 rounded"></div>
+                                <div class="w-20 h-3 bg-slate-200 rounded"></div>
+                            </div>
+                            <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                            <div>
+                                <div class="w-24 h-2.5 bg-slate-200 rounded mb-2"></div>
+                                <div class="w-16 h-6 bg-slate-200 rounded"></div>
+                            </div>
+                            <div class="size-10 bg-slate-200 rounded-lg"></div>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div *ngIf="!isLoading && hasError"
+                        class="flex-1 flex flex-col items-center justify-center gap-2 text-center py-4">
+                        <span class="material-symbols-outlined text-red-400 text-[36px]">error</span>
+                        <p class="text-sm font-medium text-slate-600">Failed to load health data</p>
+                        <button (click)="fetchHealth()"
+                            class="text-xs font-bold text-[#2463eb] hover:underline mt-1">Retry</button>
+                    </div>
+
+                    <!-- Health Data -->
+                    <div *ngIf="!isLoading && health && !hasError" class="space-y-5 flex-1">
+
                         <!-- CPU -->
                         <div>
-                            <div class="flex justify-between text-sm mb-1">
+                            <div class="flex justify-between text-sm mb-1.5">
                                 <span class="text-slate-600 font-medium">CPU Load</span>
-                                <span class="text-slate-900 font-bold">{{ systemHealth.cpuLoad }}%</span>
+                                <span class="font-bold text-slate-900">{{ health.cpuLoadPercentage }}%</span>
                             </div>
                             <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-emerald-500 rounded-full transition-all duration-700"
-                                    [style.width.%]="systemHealth.cpuLoad"></div>
+                                <div class="h-full rounded-full transition-all duration-700" [class]="cpuBarColor"
+                                    [style.width]="health.cpuLoadPercentage + '%'">
+                                </div>
                             </div>
+                            <p class="text-[10px] text-slate-400 mt-1">{{ 100 - health.cpuLoadPercentage }}% available
+                            </p>
                         </div>
 
                         <!-- Memory -->
                         <div>
-                            <div class="flex justify-between text-sm mb-1">
+                            <div class="flex justify-between text-sm mb-1.5">
                                 <span class="text-slate-600 font-medium">Memory Usage</span>
-                                <span class="text-slate-900 font-bold">
-                                    {{ systemHealth.memoryUsed }}GB
-                                    <span class="text-slate-400 font-normal">/ {{ systemHealth.memoryTotal }}GB</span>
+                                <span class="font-bold text-slate-900">
+                                    {{ health.memoryUsageGb }} GB
+                                    <span class="text-slate-400 font-normal">/ {{ health.totalMemoryGb }} GB</span>
                                 </span>
                             </div>
                             <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-[#2463eb] rounded-full transition-all duration-700"
-                                    [style.width.%]="systemHealth.memoryPercent"></div>
+                                <div class="h-full rounded-full transition-all duration-700" [class]="memBarColor"
+                                    [style.width]="memoryPercent + '%'">
+                                </div>
                             </div>
+                            <p class="text-[10px] text-slate-400 mt-1">{{ memoryPercent }}% used · {{ freeMemory }} GB
+                                free</p>
                         </div>
 
                         <!-- Latency -->
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-100 mt-2">
-                            <div class="flex flex-col">
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                            <div class="flex flex-col gap-0.5">
                                 <span class="text-xs text-slate-500">Network Latency</span>
-                                <span class="text-xl font-bold text-slate-900">{{ systemHealth.latency }}ms</span>
+                                <span class="text-2xl font-bold" [class]="latencyTextColor">
+                                    {{ health.networkLatencyMs }}<span class="text-sm font-medium text-slate-400">
+                                        ms</span>
+                                </span>
                             </div>
-                            <div class="text-emerald-500 bg-emerald-50 p-2 rounded-lg">
+                            <div class="p-2 rounded-lg"
+                                [class]="health.networkLatencyMs < 50 ? 'bg-emerald-50 text-emerald-500' : health.networkLatencyMs < 150 ? 'bg-amber-50 text-amber-500' : 'bg-red-50 text-red-500'">
                                 <span class="material-symbols-outlined">speed</span>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Last updated -->
+                    <p *ngIf="!isLoading && lastUpdated"
+                        class="text-[10px] text-slate-400 mt-4 flex items-center gap-1.5">
+                        <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Auto-refresh · {{ lastUpdated | date:'HH:mm:ss' }}
+                    </p>
                 </div>
 
                 <!-- Security Attacks Widget -->
@@ -143,7 +204,7 @@
 
                         <!-- X-axis labels -->
                         <div class="absolute bottom-0 left-0 w-full flex justify-between
-                        text-xs text-slate-400 font-medium px-2 translate-y-6">
+                                    text-xs text-slate-400 font-medium px-2 translate-y-6">
                             <span>00:00</span>
                             <span>04:00</span>
                             <span>08:00</span>
@@ -184,10 +245,10 @@
                         <!-- Filter -->
                         <div class="relative">
                             <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400
-                           material-symbols-outlined text-[18px]">filter_list</span>
+                                         material-symbols-outlined text-[18px]">filter_list</span>
                             <select [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange()" class="pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm
-                       focus:outline-none focus:ring-2 focus:ring-[#2463eb]/50 text-slate-600
-                       appearance-none cursor-pointer">
+                                       focus:outline-none focus:ring-2 focus:ring-[#2463eb]/50 text-slate-600
+                                       appearance-none cursor-pointer">
                                 <option *ngFor="let opt of filterOptions">{{ opt }}</option>
                             </select>
                         </div>
@@ -280,57 +341,57 @@
                 <div
                     class="p-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3">
 
-                    <!-- Entry count info -->
                     <span class="text-sm text-slate-500">
                         <ng-container *ngIf="filteredLogs.length > 0">
-                            Showing <span class="font-semibold text-slate-700">{{ rangeStart }}–{{ rangeEnd }}</span>
-                            of <span class="font-semibold text-slate-700">{{ filteredLogs.length }}</span> entries
+                            Showing
+                            <span class="font-semibold text-slate-700">{{ rangeStart }}–{{ rangeEnd }}</span>
+                            of
+                            <span class="font-semibold text-slate-700">{{ filteredLogs.length }}</span>
+                            entries
                         </ng-container>
-                        <ng-container *ngIf="filteredLogs.length === 0">
-                            No entries found
-                        </ng-container>
+                        <ng-container *ngIf="filteredLogs.length === 0">No entries found</ng-container>
                     </span>
 
-                    <!-- Paginator controls -->
                     <div class="flex items-center gap-1">
 
                         <!-- First page -->
-                        <button (click)="goToPage(1)" [disabled]="currentPage === 1" title="First page" class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                    border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                        <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
+                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-[18px]">first_page</span>
                         </button>
 
                         <!-- Previous -->
-                        <button (click)="prevPage()" [disabled]="currentPage === 1" title="Previous page" class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                    border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                        <button (click)="prevPage()" [disabled]="currentPage === 1"
+                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
+                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
 
-                        <!-- Ellipsis before -->
                         <span *ngIf="pageNumbers[0] > 1" class="px-1 text-slate-400 text-sm select-none">…</span>
 
-                        <!-- Page number buttons -->
+                        <!-- Page numbers -->
                         <button *ngFor="let page of pageNumbers" (click)="goToPage(page)"
                             [class]="page === currentPage
-                ? 'min-w-[34px] h-[34px] px-2 rounded-md text-sm font-bold bg-[#2463eb] text-white border border-[#2463eb] transition-all'
-                : 'min-w-[34px] h-[34px] px-2 rounded-md text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-[#2463eb] hover:text-[#2463eb] transition-all'">
+                                ? 'min-w-[34px] h-[34px] px-2 rounded-md text-sm font-bold bg-[#2463eb] text-white border border-[#2463eb] transition-all'
+                                : 'min-w-[34px] h-[34px] px-2 rounded-md text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-[#2463eb] hover:text-[#2463eb] transition-all'">
                             {{ page }}
                         </button>
 
-                        <!-- Ellipsis after -->
                         <span *ngIf="pageNumbers[pageNumbers.length - 1] < totalPages"
                             class="px-1 text-slate-400 text-sm select-none">…</span>
 
                         <!-- Next -->
-                        <button (click)="nextPage()" [disabled]="currentPage === totalPages" title="Next page" class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                     border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
+                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
 
                         <!-- Last page -->
-                        <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages" title="Last page"
+                        <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
                             class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                     border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined text-[18px]">last_page</span>
                         </button>
 

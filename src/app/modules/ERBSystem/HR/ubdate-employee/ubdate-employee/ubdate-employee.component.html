@@ -1,0 +1,296 @@
+<div
+    class="relative flex flex-col w-full overflow-x-hidden min-h-screen font-[Public_Sans,sans-serif] bg-[#f8f6f6] dark:bg-[#221610] text-slate-900 dark:text-slate-100">
+
+    <!-- ── Navigation ── -->
+    <header
+        class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-6 py-4 lg:px-20">
+        <div class="flex items-center gap-4">
+            <span class="material-symbols-outlined text-3xl text-[#ec5b13]">badge</span>
+            <h2 class="text-lg font-bold leading-tight tracking-tight text-slate-900 dark:text-white">Employee Portal
+            </h2>
+        </div>
+        <div class="flex flex-1 justify-end gap-6 items-center">
+            <!-- Nav links -->
+            <nav class="hidden md:flex items-center gap-8">
+                <a *ngFor="let link of navLinks" href="#" [class]="link.active
+            ? 'text-[#ec5b13] text-sm font-bold'
+            : 'text-slate-600 dark:text-slate-300 text-sm font-medium hover:text-[#ec5b13] transition-colors'">{{
+                    link.label }}</a>
+            </nav>
+            <!-- Icon buttons -->
+            <div class="flex gap-2">
+                <button
+                    class="flex items-center justify-center rounded-xl h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span class="material-symbols-outlined text-xl">notifications</span>
+                </button>
+                <button
+                    class="flex items-center justify-center rounded-xl h-10 w-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <span class="material-symbols-outlined text-xl">account_circle</span>
+                </button>
+            </div>
+            <!-- Avatar -->
+            <div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-[#ec5b13]/20"
+                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCrAkd1zw9byxIJV4P_776DNBOnxTZu9cnSzMWruktNIFGoGA-H4izewvy_cu86Ov0J0WQhkSjaXQoVABfRHoeeNmC-d_zK1TSwGr9ek9_cEiX67D3aCACdEjRm6YmS2d9VmbYtp9qTMtEpfzJksujlp7n8VvJbR_MxtStkWfcGfc6cTwmwljAyRcwGdG2lEAIIbPlPJlV6D-N5iv433OSHHDKknJTGmxTmCpkZvorbs7yUW3OTM03llb8rbMNUobyWdBTjzZe4ReA8')">
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="flex-1 max-w-5xl mx-auto w-full px-6 py-8">
+
+        <!-- Breadcrumbs -->
+        <div class="flex items-center gap-2 mb-6">
+            <a href="#"
+                class="text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-[#ec5b13]">Employees</a>
+            <span class="material-symbols-outlined text-xs text-slate-400">chevron_right</span>
+            <span class="text-slate-900 dark:text-white text-sm font-semibold">Update Employee Profile</span>
+        </div>
+
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div>
+                <h1 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight">Edit Profile: Alex Johnson
+                </h1>
+                <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Update the professional and personal records
+                    for this team member.</p>
+            </div>
+            <div class="flex gap-3">
+                <button type="button" (click)="onCancel()"
+                    class="px-6 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Cancel</button>
+                <button type="button" (click)="onSubmit()" [disabled]="isSubmitting"
+                    class="px-6 py-2.5 rounded-xl bg-[#ec5b13] text-white font-bold text-sm hover:opacity-90 shadow-lg shadow-[#ec5b13]/20 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
+                    <svg *ngIf="isSubmitting" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    {{ isSubmitting ? 'Saving...' : 'Save Changes' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Banner -->
+        <div *ngIf="submitSuccess"
+            class="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-700">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span class="text-sm font-semibold">Employee profile updated successfully!</span>
+        </div>
+
+        <!-- ── Form ── -->
+        <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" novalidate class="space-y-8">
+
+            <!-- Section: Personal Information -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <span class="material-symbols-outlined text-[#ec5b13]">person</span>
+                    <h3 class="text-slate-900 dark:text-white text-lg font-bold">Personal Information</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Full Name -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">
+                            Full Name <span class="text-[#ec5b13]">*</span>
+                        </label>
+                        <input type="text" formControlName="fullName" [class]="'rounded-xl border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none w-full ' +
+                (isFieldInvalid('fullName') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                        <p *ngIf="isFieldInvalid('fullName')" class="text-xs text-red-500">
+                            <span *ngIf="f['fullName'].errors?.['required']">Full name is required.</span>
+                            <span *ngIf="f['fullName'].errors?.['minlength']">Minimum 2 characters.</span>
+                        </p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">
+                            Email Address <span class="text-[#ec5b13]">*</span>
+                        </label>
+                        <input type="email" formControlName="email" [class]="'rounded-xl border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none w-full ' +
+                (isFieldInvalid('email') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                        <p *ngIf="isFieldInvalid('email')" class="text-xs text-red-500">
+                            <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+                            <span *ngIf="f['email'].errors?.['email']">Enter a valid email address.</span>
+                        </p>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">
+                            Phone Number <span class="text-[#ec5b13]">*</span>
+                        </label>
+                        <input type="tel" formControlName="phone" [class]="'rounded-xl border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none w-full ' +
+                (isFieldInvalid('phone') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                        <p *ngIf="isFieldInvalid('phone')" class="text-xs text-red-500">Phone number is required.</p>
+                    </div>
+
+                    <!-- Birth Date -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">
+                            Birth Date <span class="text-[#ec5b13]">*</span>
+                        </label>
+                        <input type="date" formControlName="birthDate" [class]="'rounded-xl border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none w-full ' +
+                (isFieldInvalid('birthDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                        <p *ngIf="isFieldInvalid('birthDate')" class="text-xs text-red-500">Birth date is required.</p>
+                    </div>
+
+                    <!-- Home Address -->
+                    <div class="flex flex-col gap-2 lg:col-span-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">
+                            Home Address <span class="text-[#ec5b13]">*</span>
+                        </label>
+                        <input type="text" formControlName="address" [class]="'rounded-xl border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none w-full ' +
+                (isFieldInvalid('address') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                        <p *ngIf="isFieldInvalid('address')" class="text-xs text-red-500">Address is required.</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Section: Employment Details -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <span class="material-symbols-outlined text-[#ec5b13]">work</span>
+                    <h3 class="text-slate-900 dark:text-white text-lg font-bold">Employment Details</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Department -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Department</label>
+                        <select formControlName="department"
+                            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none">
+                            <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Level -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Level</label>
+                        <select formControlName="level"
+                            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none">
+                            <option *ngFor="let l of levels" [value]="l">{{ l }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Employment Type -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Employment Type</label>
+                        <select formControlName="employmentType"
+                            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none">
+                            <option *ngFor="let t of employmentTypes" [value]="t">{{ t }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Manager -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Manager</label>
+                        <select formControlName="manager"
+                            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none">
+                            <option *ngFor="let m of managers" [value]="m">{{ m }}</option>
+                        </select>
+                    </div>
+
+                    <!-- Hire Date -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Hire Date</label>
+                        <input type="date" formControlName="hireDate"
+                            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none w-full" />
+                    </div>
+
+                    <!-- Status Toggle -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Status</label>
+                        <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+                            <button type="button" (click)="setStatus('Active')"
+                                [class]="'flex-1 py-2 text-xs font-bold rounded-lg transition-all ' +
+                  (employeeStatus === 'Active'
+                    ? 'bg-white dark:bg-slate-700 text-[#ec5b13] shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200')">Active</button>
+                            <button type="button" (click)="setStatus('On Leave')" [class]="'flex-1 py-2 text-xs font-bold rounded-lg transition-all ' +
+                  (employeeStatus === 'On Leave'
+                    ? 'bg-white dark:bg-slate-700 text-[#ec5b13] shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200')">On
+                                Leave</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Section: Compensation -->
+            <div
+                class="bg-white dark:bg-slate-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-slate-800 pb-4">
+                    <span class="material-symbols-outlined text-[#ec5b13]">payments</span>
+                    <h3 class="text-slate-900 dark:text-white text-lg font-bold">Compensation</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl">
+
+                    <!-- Annual Salary -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">
+                            Annual Salary (USD) <span class="text-[#ec5b13]">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">$</span>
+                            <input type="number" formControlName="salary" [class]="'w-full rounded-xl border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 pl-8 text-sm outline-none ' +
+                  (isFieldInvalid('salary') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                        </div>
+                        <p *ngIf="isFieldInvalid('salary')" class="text-xs text-red-500">
+                            <span *ngIf="f['salary'].errors?.['required']">Salary is required.</span>
+                            <span *ngIf="f['salary'].errors?.['min']">Salary must be a positive number.</span>
+                        </p>
+                    </div>
+
+                    <!-- Payroll Frequency -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Payroll
+                            Frequency</label>
+                        <select formControlName="payrollFrequency"
+                            class="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] text-slate-900 dark:text-white p-3 text-sm outline-none">
+                            <option *ngFor="let freq of payrollFrequencies" [value]="freq">{{ freq }}</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+
+        <!-- ── Unsaved Changes Banner ── -->
+        <div
+            class="mt-12 flex items-center justify-between p-6 bg-[#ec5b13]/5 dark:bg-[#ec5b13]/10 rounded-2xl border border-[#ec5b13]/20">
+            <div class="flex flex-col">
+                <span class="text-slate-900 dark:text-white font-bold">
+                    {{ changedFieldCount > 0 ? 'Unsaved changes' : 'No unsaved changes' }}
+                </span>
+                <span class="text-slate-500 dark:text-slate-400 text-xs">
+                    {{ changedFieldCount > 0
+                    ? 'You have modified ' + changedFieldCount + ' field' + (changedFieldCount === 1 ? '' : 's') + ' in
+                    this profile.'
+                    : 'All fields are up to date.' }}
+                </span>
+            </div>
+            <button type="button" (click)="onSubmit()" [disabled]="isSubmitting || changedFieldCount === 0"
+                class="px-8 py-3 rounded-xl bg-[#ec5b13] text-white font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-[#ec5b13]/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+                <svg *ngIf="isSubmitting" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                    fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                </svg>
+                {{ isSubmitting ? 'Applying...' : 'Apply Changes' }}
+            </button>
+        </div>
+
+    </main>
+
+    <!-- ── Footer ── -->
+    <footer
+        class="mt-12 border-t border-slate-200 dark:border-slate-800 py-8 text-center text-slate-500 dark:text-slate-400 text-sm">
+        <p>© 2024 Employee Management System. All rights reserved.</p>
+    </footer>
+
+</div>

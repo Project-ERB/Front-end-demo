@@ -1,0 +1,214 @@
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f6] text-slate-900 font-sans">
+    <div class="flex h-full grow flex-col">
+
+        <!-- ───────────────────── Top Nav ───────────────────── -->
+        <header
+            class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 px-6 py-3 bg-white sticky top-0 z-50">
+            <div class="flex items-center gap-8">
+
+                <!-- Logo -->
+                <div class="flex items-center gap-3 text-[#ec5b13]">
+                    <div class="size-8 flex items-center justify-center rounded-lg bg-orange-50">
+                        <span class="material-symbols-outlined text-[#ec5b13] text-2xl">work_history</span>
+                    </div>
+                    <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">HR Core</h2>
+                </div>
+
+                <!-- Search -->
+                <div class="flex min-w-64 h-10">
+                    <div class="flex w-full flex-1 items-stretch rounded-xl h-full border border-slate-200 bg-slate-50">
+                        <div class="text-slate-400 flex items-center justify-center pl-4">
+                            <span class="material-symbols-outlined text-xl">search</span>
+                        </div>
+                        <input type="text" [value]="searchQuery()" (input)="onSearch($any($event.target).value)"
+                            placeholder="Search requirements..."
+                            class="flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-none focus:ring-0 text-sm placeholder:text-slate-400 px-3" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right actions -->
+            <div class="flex items-center gap-4">
+                <button (click)="onAddNew()"
+                    class="flex min-w-[84px] cursor-pointer items-center justify-center gap-2 rounded-xl h-10 px-5 bg-[#ec5b13] text-white text-sm font-bold transition-all hover:opacity-90">
+                    <span class="material-symbols-outlined text-lg">add</span>
+                    <span class="truncate">Add New Requirement</span>
+                </button>
+
+                <!-- Avatar -->
+                <div class="flex items-center gap-2 border-l border-slate-200 ml-2 pl-4">
+                    <div class="bg-center bg-no-repeat bg-cover rounded-full size-9 border-2 border-orange-100"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCb5e19MTOTHpsj8V_ErHiUsTXvqHVAFUIMml5XUkzg4vJC9nro8mZxmlYjME6hU5_Z_4HQ5g75l6mube95MG-hnqueSVQF1FzQ5uJJL3inMkninmC6JrVisgtMb8e323LBOhHNYmx9aIoX0EgcEBt6ezcT48zk-gE4EPRZtzGqMzKh5oGWkqvDYPYFokf0YLTl_sQ6XXQvxjSvKne55wsvrAZuFCpGPxt9sriXBjrzNjQdRpRmFY7_ZxPfPWG3AxVRcTwbnid0dheF')">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- ───────────────────── Main ───────────────────── -->
+        <main class="flex-1 px-6 py-8 max-w-[1400px] mx-auto w-full">
+
+            <!-- Page heading -->
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
+                <div class="flex flex-col gap-1">
+                    <h1 class="text-slate-900 text-3xl font-black tracking-tight">Job Requirements</h1>
+                    <p class="text-slate-500 text-base">Manage and track active talent acquisition mandates across the
+                        organization.</p>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex gap-3 mb-6 flex-wrap">
+                <button
+                    class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white border border-slate-200 px-4 hover:border-orange-300 transition-colors">
+                    <span class="material-symbols-outlined text-slate-500 text-lg">category</span>
+                    <span class="text-slate-700 text-sm font-medium">Department</span>
+                    <span class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+                </button>
+                <button
+                    class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white border border-slate-200 px-4 hover:border-orange-300 transition-colors">
+                    <span class="material-symbols-outlined text-slate-500 text-lg">stairs</span>
+                    <span class="text-slate-700 text-sm font-medium">Experience Level</span>
+                    <span class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
+                </button>
+                <button
+                    class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white border border-slate-200 px-4 hover:border-orange-300 transition-colors ml-auto">
+                    <span class="material-symbols-outlined text-slate-500 text-lg">filter_list</span>
+                    <span class="text-slate-700 text-sm font-medium">More Filters</span>
+                </button>
+            </div>
+
+            <!-- Table card -->
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Title
+                                    &amp; Description</th>
+                                <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">
+                                    Department</th>
+                                <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Hiring
+                                    Manager</th>
+                                <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Salary
+                                    Range</th>
+                                <th
+                                    class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider text-center">
+                                    Experience</th>
+                                <th
+                                    class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider text-right">
+                                    Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-slate-100">
+                            <!-- Data rows -->
+                            <tr *ngFor="let req of filteredRequirements()"
+                                class="hover:bg-slate-50/50 transition-colors">
+                                <!-- Title + Description -->
+                                <td class="px-6 py-5">
+                                    <div class="flex flex-col">
+                                        <span class="text-slate-900 font-semibold text-sm">{{ req.title }}</span>
+                                        <span class="text-slate-500 text-xs line-clamp-1 mt-1">{{ req.description
+                                            }}</span>
+                                    </div>
+                                </td>
+
+                                <!-- Department -->
+                                <td class="px-6 py-5">
+                                    <span
+                                        class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">
+                                        {{ req.department }}
+                                    </span>
+                                </td>
+
+                                <!-- Hiring Manager -->
+                                <td class="px-6 py-5">
+                                    <div class="flex items-center gap-2">
+                                        <div class="size-6 rounded-full flex items-center justify-center text-[10px] font-bold"
+                                            [ngClass]="req.manager.avatarColor">
+                                            {{ req.manager.initials }}
+                                        </div>
+                                        <span class="text-slate-700 text-sm">{{ req.manager.name }}</span>
+                                    </div>
+                                </td>
+
+                                <!-- Salary Range -->
+                                <td class="px-6 py-5">
+                                    <span class="text-slate-900 text-sm font-medium">
+                                        {{ formatSalary(req.salaryMin) }} - {{ formatSalary(req.salaryMax) }}
+                                    </span>
+                                    <span class="text-slate-400 text-xs ml-1 uppercase">{{ req.currency }}</span>
+                                </td>
+
+                                <!-- Experience Badge -->
+                                <td class="px-6 py-5 text-center">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                        [ngClass]="experienceBadgeClass(req.experienceLevel)">
+                                        {{ req.experienceLevel }}
+                                    </span>
+                                </td>
+
+                                <!-- Actions -->
+                                <td class="px-6 py-5 text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button (click)="onView(req)" title="View Details"
+                                            class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors rounded-lg hover:bg-slate-100">
+                                            <span class="material-symbols-outlined text-xl">visibility</span>
+                                        </button>
+                                        <button (click)="onEditSalary(req)" title="Edit Salary"
+                                            class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors rounded-lg hover:bg-slate-100">
+                                            <span class="material-symbols-outlined text-xl">payments</span>
+                                        </button>
+                                        <button (click)="onDelete(req)" title="Delete"
+                                            class="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+                                            <span class="material-symbols-outlined text-xl">delete</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="filteredRequirements().length === 0">
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    No requirements match your search.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
+                    <span class="text-sm text-slate-500">{{ showingText }}</span>
+
+                    <div class="flex items-center gap-2">
+                        <!-- Prev -->
+                        <button [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)"
+                            class="flex size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-white disabled:opacity-40">
+                            <span class="material-symbols-outlined text-lg">chevron_left</span>
+                        </button>
+
+                        <!-- Page buttons -->
+                        <ng-container *ngFor="let page of pages; let i = index">
+                            <span *ngIf="i === 3" class="text-slate-400 px-1">...</span>
+                            <button (click)="setPage(page)"
+                                [ngClass]="currentPage() === page
+                  ? 'flex size-8 items-center justify-center rounded-lg bg-[#ec5b13] text-white text-xs font-bold'
+                  : 'flex size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 text-xs font-medium hover:bg-white transition-colors'">
+                                {{ page }}
+                            </button>
+                        </ng-container>
+
+                        <!-- Next -->
+                        <button [disabled]="currentPage() === 6" (click)="setPage(currentPage() + 1)"
+                            class="flex size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-white disabled:opacity-40 transition-colors">
+                            <span class="material-symbols-outlined text-lg">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>

@@ -1,0 +1,289 @@
+<div class="bg-[#f8f6f6] font-sans text-slate-900 min-h-screen flex flex-col">
+
+    <!-- ── Navigation ── -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 items-center justify-between">
+
+                <!-- Logo -->
+                <div class="flex items-center gap-2 text-[#ec5b13]">
+                    <span class="material-symbols-outlined text-3xl font-bold">corporate_fare</span>
+                    <h2 class="text-xl font-bold tracking-tight hidden sm:block">HR Cloud</h2>
+                </div>
+
+                <!-- Nav links -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="#"
+                        class="text-sm font-medium text-slate-600 hover:text-[#ec5b13] transition-colors">Dashboard</a>
+                    <a href="#"
+                        class="text-sm font-medium text-slate-600 hover:text-[#ec5b13] transition-colors">Candidates</a>
+                    <a href="#"
+                        class="text-sm font-medium text-[#ec5b13] border-b-2 border-[#ec5b13] pb-5 mt-5">Interviews</a>
+                    <a href="#"
+                        class="text-sm font-medium text-slate-600 hover:text-[#ec5b13] transition-colors">Jobs</a>
+                </nav>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-4">
+                    <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <div
+                        class="h-8 w-8 rounded-full bg-[#ec5b13]/20 flex items-center justify-center text-[#ec5b13] font-bold overflow-hidden">
+                        <img alt="Profile"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuASgcXAUM51EiLZ6ncZzQ2473oVGH_zSypa-VPHNPllv7x8ir_A-hjiuvKlnDQ5C3p0xaynVkDN3aJJisxUFadrx20Qy6hj60P5Jahr3ZICD6z5kGGVi83Pj6_dQxhHKC9HMO1O0QoTa8DFw0TnV5lXd4bE49jZaK-lkNQRYxu7rRkaTYTciDJaoo-WnbdAwwrLlcFbH9vEO0uDODMYNUN_qccxfGKPdG8pMe7TDyvV_WUUor5Jb7R1eOtArzr7SAgOxzFCWzWgtgOK" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ── Main ── -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+        <!-- Breadcrumb & Page Header -->
+        <div class="mb-8">
+            <nav class="flex items-center gap-2 text-sm text-slate-500 mb-4">
+                <a href="#" class="hover:text-[#ec5b13]">Home</a>
+                <span class="material-symbols-outlined text-xs">chevron_right</span>
+                <a href="#" class="hover:text-[#ec5b13]">Interviews</a>
+                <span class="material-symbols-outlined text-xs">chevron_right</span>
+                <span class="text-slate-900 font-medium">Interview ID {{ interview.id }}</span>
+            </nav>
+
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Interview Assessment</h1>
+                    <p class="mt-1 text-slate-500">
+                        Review candidate performance and log final results for {{ interview.role }} role.
+                    </p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button
+                        class="px-4 py-2 text-sm font-medium border border-slate-200 rounded-lg hover:bg-slate-50 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">edit</span>
+                        Update Details
+                    </button>
+                    <button (click)="openDeactivateModal()"
+                        class="px-4 py-2 text-sm font-medium bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-lg">delete</span>
+                        Deactivate
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- ── Left Column ── -->
+            <div class="lg:col-span-1 space-y-6">
+
+                <!-- Interview Info Card -->
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[#ec5b13]">info</span>
+                        Interview Information
+                    </h3>
+                    <div class="space-y-6">
+
+                        <!-- Interviewer -->
+                        <div class="flex items-start gap-4">
+                            <div class="p-2 bg-[#ec5b13]/10 rounded-lg text-[#ec5b13]">
+                                <span class="material-symbols-outlined">person</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Interviewer</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.interviewer.name }}
+                                </p>
+                                <p class="text-xs text-slate-500">{{ interview.interviewer.title }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="flex items-start gap-4">
+                            <div class="p-2 bg-[#ec5b13]/10 rounded-lg text-[#ec5b13]">
+                                <span class="material-symbols-outlined">calendar_today</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Date &amp; Time
+                                </p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.dateLabel }}</p>
+                                <p class="text-xs text-slate-500">{{ interview.timeLabel }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="flex items-start gap-4">
+                            <div class="p-2 bg-[#ec5b13]/10 rounded-lg text-[#ec5b13]">
+                                <span class="material-symbols-outlined">location_on</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Location</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.location }}</p>
+                                <p class="text-xs text-slate-500">{{ interview.locationSub }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Stage & Type -->
+                        <div class="flex items-start gap-4">
+                            <div class="p-2 bg-[#ec5b13]/10 rounded-lg text-[#ec5b13]">
+                                <span class="material-symbols-outlined">layers</span>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Stage &amp;
+                                    Type</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.stage }}</p>
+                                <div class="mt-1 flex gap-2">
+                                    <span
+                                        class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-bold text-slate-600 uppercase">
+                                        {{ interview.type }}
+                                    </span>
+                                    <span
+                                        class="px-2 py-0.5 bg-[#ec5b13]/10 rounded text-[10px] font-bold text-[#ec5b13] uppercase tracking-tight">
+                                        Stage {{ interview.stageNumber }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Candidate Card -->
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="h-20 bg-[#ec5b13]/10 relative">
+                        <div
+                            class="absolute -bottom-6 left-6 h-16 w-16 rounded-xl border-4 border-white bg-slate-200 overflow-hidden">
+                            <img [src]="candidate.avatar" [alt]="candidate.name" class="w-full h-full object-cover" />
+                        </div>
+                    </div>
+                    <div class="p-6 pt-10">
+                        <h4 class="text-lg font-bold">{{ candidate.name }}</h4>
+                        <p class="text-sm text-slate-500">{{ candidate.role }}</p>
+                        <div class="mt-4">
+                            <button
+                                class="w-full py-2 text-sm font-medium text-[#ec5b13] bg-[#ec5b13]/5 hover:bg-[#ec5b13]/10 rounded-lg transition-colors">
+                                View Resume
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ── Right Column: Result Form ── -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+                    <h3 class="text-xl font-bold mb-6">Log Interview Results</h3>
+
+                    <form (ngSubmit)="onSubmit()" class="space-y-6">
+
+                        <!-- Outcome Selector -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-3">Interview Outcome</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                @for (outcome of outcomes; track outcome.value) {
+                                <button type="button" (click)="setOutcome(outcome.value)"
+                                    [class]="'relative flex cursor-pointer rounded-xl border p-4 shadow-sm text-left transition-all bg-slate-50 ' +
+                      (selectedOutcome() === outcome.value ? outcome.activeRing : 'border-slate-200 hover:border-slate-300')">
+                                    <span class="flex flex-1 items-center gap-3">
+                                        <span [class]="'material-symbols-outlined ' + outcome.iconColor">{{ outcome.icon
+                                            }}</span>
+                                        <span class="flex flex-col">
+                                            <span class="block text-sm font-bold text-slate-900">{{ outcome.label
+                                                }}</span>
+                                            <span class="mt-1 text-xs text-slate-500">{{ outcome.sub }}</span>
+                                        </span>
+                                    </span>
+                                </button>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Feedback -->
+                        <div>
+                            <label for="feedback" class="block text-sm font-semibold text-slate-700 mb-2">
+                                Interview Result / Feedback
+                            </label>
+                            <textarea id="feedback" name="feedback" [(ngModel)]="feedback" rows="8"
+                                placeholder="Detail the candidate's strengths, weaknesses, and your overall impression..."
+                                class="block w-full rounded-xl border border-slate-200 bg-white text-slate-900 text-sm p-3 focus:border-[#ec5b13] focus:ring-[#ec5b13] focus:outline-none focus:ring-1 transition-all resize-none">
+              </textarea>
+                            <p class="mt-2 text-xs text-slate-500 italic">
+                                This feedback will be shared with the hiring committee but not the candidate.
+                            </p>
+                        </div>
+
+                        <!-- Skill Ratings -->
+                        <div class="border-t border-slate-100 pt-6">
+                            <label class="block text-sm font-semibold text-slate-700 mb-4">Core Skill Assessment</label>
+                            <div class="space-y-4">
+                                @for (skill of skillRatings(); track skill.label; let i = $index) {
+                                <div class="flex items-center justify-between gap-4">
+                                    <span class="text-sm text-slate-600">{{ skill.label }}</span>
+                                    <div class="flex gap-1">
+                                        @for (n of [1,2,3,4,5]; track n) {
+                                        <button type="button" (click)="setRating(i, n)" [class]="'material-symbols-outlined text-xl transition-colors ' +
+                            (n <= skill.rating ? 'text-[#ec5b13]' : 'text-slate-300 hover:text-[#ec5b13]/50')">
+                                            star
+                                        </button>
+                                        }
+                                    </div>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center justify-end gap-3 pt-6 border-t border-slate-100">
+                            <button type="button" (click)="onDiscard()"
+                                class="px-6 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                                Discard Changes
+                            </button>
+                            <button type="submit"
+                                class="px-8 py-2.5 bg-[#ec5b13] text-white text-sm font-bold rounded-xl shadow-lg shadow-[#ec5b13]/20 hover:bg-[#d44f0e] transition-all active:scale-95">
+                                Add Result
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ── Deactivate Confirmation Modal ── -->
+    @if (showDeactivateModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+        (click)="closeDeactivateModal()">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-200"
+            (click)="$event.stopPropagation()">
+            <div class="p-6">
+                <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 mb-4">
+                    <span class="material-symbols-outlined">warning</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Deactivate Interview Record?</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">
+                    This action will mark the interview record as inactive. The data will remain in history but will no
+                    longer
+                    appear in active candidate workflows. This action cannot be undone easily.
+                </p>
+            </div>
+            <div class="bg-slate-50 p-6 flex items-center justify-end gap-3">
+                <button (click)="closeDeactivateModal()"
+                    class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
+                    Cancel
+                </button>
+                <button (click)="confirmDeactivation()"
+                    class="px-4 py-2 text-sm font-bold bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                    Confirm Deactivation
+                </button>
+            </div>
+        </div>
+    </div>
+    }
+
+</div>
