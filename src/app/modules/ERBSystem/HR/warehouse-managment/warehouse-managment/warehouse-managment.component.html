@@ -573,6 +573,8 @@
                         <input [(ngModel)]="addWarehouseForm.name" autocomplete="off" type="text"
                             placeholder="e.g. Main Warehouse"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                        <p *ngIf="submittedAddWarehouse && !addWarehouseForm.name" class="text-red-500 text-xs mt-1">
+                            Name is required </p>
                     </div>
 
                     <!-- Street -->
@@ -583,6 +585,8 @@
                         <input [(ngModel)]="addWarehouseForm.street" autocomplete="off" type="text"
                             placeholder="e.g. 123 Industrial Ave"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                        <p *ngIf="submittedAddWarehouse && !addWarehouseForm.street" class="text-red-500 text-xs">
+                            Street is required </p>
                     </div>
 
                     <!-- City -->
@@ -593,6 +597,9 @@
                         <input [(ngModel)]="addWarehouseForm.city" autocomplete="off" type="text"
                             placeholder="e.g. Cairo"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                        <p *ngIf="submittedAddWarehouse && !addWarehouseForm.city" class="text-red-500 text-xs">
+                            City is required
+                        </p>
                     </div>
 
                     <!-- State -->
@@ -601,6 +608,9 @@
                         <input [(ngModel)]="addWarehouseForm.state" autocomplete="off" type="text"
                             placeholder="e.g. Giza"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                        <p *ngIf="submittedAddWarehouse && !addWarehouseForm.state" class="text-red-500 text-xs">
+                            State is required
+                        </p>
                     </div>
 
                     <!-- Postal Code -->
@@ -609,6 +619,10 @@
                         <input [(ngModel)]="addWarehouseForm.postalCode" autocomplete="off" type="text"
                             placeholder="e.g. 12345"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                        <p *ngIf="submittedAddWarehouse && !addWarehouseForm.postalCode" class="text-red-500 text-xs">
+                            Postal Code is required
+                        </p>
+
                     </div>
 
                     <!-- Country -->
@@ -619,6 +633,9 @@
                         <input [(ngModel)]="addWarehouseForm.country" autocomplete="off" type="text"
                             placeholder="e.g. Egypt"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
+                        <p *ngIf="submittedAddWarehouse && !addWarehouseForm.country" class="text-red-500 text-xs">
+                            Country is required
+                        </p>
                     </div>
 
                     <!-- Type -->

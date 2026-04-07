@@ -253,19 +253,44 @@
                             Category Name <span class="text-red-500">*</span>
                         </label>
                         <input type="text" formControlName="name"
-                            class="block w-full rounded-lg bg-white px-3.5 py-2.5 text-sm shadow-sm ring-1 ring-inset ring-[#dcdfe4] focus:ring-2 focus:outline-none" />
+                            class="block w-full rounded-lg px-3.5 py-2.5 text-sm shadow-sm ring-1 ring-inset" [ngClass]="{
+    'ring-red-500': CategoryForm.get('name')?.touched && CategoryForm.get('name')?.invalid,
+    'ring-[#dcdfe4]': !(CategoryForm.get('name')?.touched && CategoryForm.get('name')?.invalid)
+    }" />
+
+                        <!-- Error -->
+                        <div class="text-red-500 text-xs mt-1"
+                            *ngIf="CategoryForm.get('name')?.touched && CategoryForm.get('name')?.invalid">
+                            Category name is required
+                        </div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-[#374151]">
                             Category Code <span class="text-red-500">*</span>
                         </label>
                         <input type="text" formControlName="code"
-                            class="block w-full rounded-lg bg-[#f8fafc] px-3.5 py-2.5 text-sm uppercase shadow-sm ring-1 ring-inset ring-[#e2e8f0] focus:ring-2 focus:outline-none" />
+                            class="block w-full rounded-lg px-3.5 py-2.5 text-sm shadow-sm ring-1 ring-inset" [ngClass]="{
+    'ring-red-500': CategoryForm.get('code')?.touched && CategoryForm.get('code')?.invalid,
+    'ring-[#e2e8f0]': !(CategoryForm.get('code')?.touched && CategoryForm.get('code')?.invalid)
+    }" />
+
+                        <div class="text-red-500 text-xs mt-1"
+                            *ngIf="CategoryForm.get('code')?.touched && CategoryForm.get('code')?.invalid">
+                            Category code is required
+                        </div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-[#374151]">Description</label>
                         <textarea formControlName="description"
-                            class="block w-full rounded-lg bg-white px-3.5 py-2.5 text-sm shadow-sm ring-1 ring-inset ring-[#dcdfe4] focus:ring-2 focus:outline-none"></textarea>
+                            class="block w-full rounded-lg px-3.5 py-2.5 text-sm shadow-sm ring-1 ring-inset" [ngClass]="{
+    'ring-red-500': CategoryForm.get('description')?.touched && CategoryForm.get('description')?.invalid,
+    'ring-[#dcdfe4]': !(CategoryForm.get('description')?.touched && CategoryForm.get('description')?.invalid)
+    }"></textarea>
+
+                        <div class="text-red-500 text-xs mt-1"
+                            *ngIf="CategoryForm.get('description')?.touched && CategoryForm.get('description')?.invalid">
+                            Description is required
+                        </div>
                     </div>
                     <div class="space-y-1.5">
                         <label class="block text-sm font-medium text-[#374151]">Parent Category</label>
@@ -278,9 +303,23 @@
                         </select>
                     </div>
                     <div class="pt-2 space-y-2">
-                        <button type="submit"
-                            class="w-full rounded-lg bg-[#1e3b8a] px-3.5 py-2.5 text-sm font-medium text-white hover:bg-[#1a3274]">
-                            {{ isEditMode ? 'Update Category' : 'Add Category' }}
+                        <button type="submit" [disabled]="isSubmitting"
+                            class="w-full flex items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-3.5 py-2.5 text-sm font-medium text-white hover:bg-[#1a3274] disabled:opacity-60 disabled:cursor-not-allowed">
+
+                            <!-- Spinner -->
+                            <svg *ngIf="isSubmitting" class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke="white" stroke-width="3" fill="none"></circle>
+                            </svg>
+
+                            <!-- Text -->
+                            <span *ngIf="!isSubmitting">
+                                {{ isEditMode ? 'Update Category' : 'Add Category' }}
+                            </span>
+
+                            <span *ngIf="isSubmitting">
+                                Saving...
+                            </span>
+
                         </button>
                         <button type="button" (click)="closeModal()"
                             class="w-full rounded-lg bg-gray-200 px-3.5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-300">

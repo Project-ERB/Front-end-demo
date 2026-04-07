@@ -210,8 +210,12 @@ export class WarehouseManagmentComponent implements OnInit {
   }
 
   submitAddWarehouse(): void {
+    this.submittedAddWarehouse = true;
+
     if (this.isAddingWarehouse) return;
+
     const f = this.addWarehouseForm;
+
     if (!f.name.trim() || !f.street.trim() || !f.city.trim() || !f.country.trim()) {
       this.toastr.error('Please fill in all required fields.', 'Validation Error');
       return;
@@ -462,4 +466,6 @@ export class WarehouseManagmentComponent implements OnInit {
       },
     });
   }
+
+  submittedAddWarehouse = false;
 }

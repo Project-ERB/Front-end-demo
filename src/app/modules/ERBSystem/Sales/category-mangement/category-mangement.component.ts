@@ -200,26 +200,36 @@ export class CategoryMangementComponent implements OnInit {
       }
     });
   }
-
+  isSubmitting: boolean = false;
   // ── Form ──────────────────────────────────────────────────────────────────
   submitCategory() {
-    if (this.CategoryForm.invalid) return;
+    if (this.CategoryForm.invalid) {
+      this.CategoryForm.markAllAsTouched(); // 👈 يخلي ال validation يظهر
+      return;
+    }
+
+    this.isSubmitting = true; // 👈 تشغيل اللودينج
 
     const formValue = this.CategoryForm.value;
 
-    if (this.isEditMode && this.editingCategory) {
-      this._CategoriesService
-        .updataecategore(formValue, this.editingCategory.id)
-        .subscribe({
-          next: (res) => { console.log('Updated ✅', res); this.afterSuccess(); },
-          error: (err) => console.error(err)
-        });
-    } else {
-      this._CategoriesService.addCategory(formValue).subscribe({
-        next: (res) => { console.log('Created ✅', res); this.afterSuccess(); },
-        error: (err) => console.error(err)
-      });
-    }
+    const request$ = this.isEditMode && this.editingCategory
+      ? this._CategoriesService.updataecategore(formValue, this.editingCategory.id)
+      : this._CategoriesService.addCategory(formValue);
+
+    request$.subscribe({
+      next: (res) => {
+        console.log('Success ✅', res);
+        this.afterSuccess();
+        this._ToastrService.success('Category saved successfully', 'Success ✅');
+      },
+      error: (err) => {
+        console.error(err);
+        this._ToastrService.error('Something went wrong', 'Error ❌');
+      },
+      complete: () => {
+        this.isSubmitting = false; // 👈 إيقاف اللودينج
+      }
+    });
   }
 
   private afterSuccess() {

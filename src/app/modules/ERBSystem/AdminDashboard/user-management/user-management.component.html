@@ -138,6 +138,17 @@
 
             <!-- Modal Body -->
             <div class="max-h-[75vh] overflow-y-auto">
+                <!-- Overlay يظهر أثناء الـ submit -->
+                <div *ngIf="isSubmitting" class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 
+                flex items-center justify-center">
+                    <div class="flex flex-col items-center gap-3">
+                        <svg class="animate-spin" width="32" height="32" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="#2463eb" stroke-width="3" stroke-dasharray="32"
+                                stroke-dashoffset="12" stroke-linecap="round" />
+                        </svg>
+                        <p class="text-sm font-semibold text-[#2463eb]">Creating user...</p>
+                    </div>
+                </div>
                 <form [formGroup]="newUserForm" (ngSubmit)="createUser()" novalidate>
                     <div class="flex flex-col lg:flex-row">
 
@@ -353,16 +364,20 @@
 
             <!-- Modal Footer -->
             <div class="px-6 py-4 bg-[#f6f6f8] border-t border-[#dbdee6] flex justify-end gap-3">
-                <button (click)="closeModal()" class="px-4 py-2 rounded-lg text-sm font-semibold text-[#616e89]
-                           hover:text-[#111318] hover:bg-gray-100 transition-colors">
-                    Cancel
-                </button>
                 <button (click)="createUser()" [disabled]="isSubmitting" class="px-5 py-2 rounded-lg text-sm font-bold bg-[#2463eb] text-white
-                           hover:bg-[#2463eb]/90 shadow-lg shadow-[#2463eb]/25 transition-all
-                           flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
-                    <span class="material-symbols-outlined text-[18px]">
-                        {{ isSubmitting ? 'hourglass_top' : 'check' }}
-                    </span>
+           hover:bg-[#2463eb]/90 shadow-lg shadow-[#2463eb]/25 transition-all
+           flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+
+                    <!-- Spinner SVG يظهر بس لما isSubmitting = true -->
+                    <svg *ngIf="isSubmitting" class="animate-spin" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="white" stroke-width="3" stroke-dasharray="32"
+                            stroke-dashoffset="12" stroke-linecap="round" />
+                    </svg>
+
+                    <!-- الأيقونة العادية تظهر بس لما مش بيعمل submit -->
+                    <span *ngIf="!isSubmitting" class="material-symbols-outlined text-[18px]">check</span>
+
                     {{ isSubmitting ? 'Creating...' : 'Create User' }}
                 </button>
             </div>
