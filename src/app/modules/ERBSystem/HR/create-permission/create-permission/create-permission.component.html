@@ -68,36 +68,15 @@
                     <form (ngSubmit)="onSubmit()" class="space-y-6">
 
                         <!-- Permission Name -->
-                        <div class="space-y-2">
-                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300"
-                                for="permission-name">Permission Name</label>
-                            <div class="relative">
-                                <input
-                                    class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder:text-slate-400 outline-none"
-                                    id="permission-name" [(ngModel)]="permissionName" name="permissionName"
-                                    placeholder="e.g., user.management.create" type="text" />
-                            </div>
-                            <p class="text-[11px] text-slate-400">Use dot notation for naming (e.g.,
-                                module.feature.action).</p>
-                        </div>
+                        <select
+                            class="w-full px-4 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all text-slate-700 dark:text-slate-200 outline-none cursor-pointer"
+                            id="permission-name" [(ngModel)]="permissionName" name="permissionName">
+                            <option value="" disabled selected>Select a permission...</option>
+                            <optgroup *ngFor="let group of permissionGroups" [label]="group.label">
+                                <option *ngFor="let val of group.values" [value]="val">{{ val }}</option>
+                            </optgroup>
+                        </select>
 
-                        <!-- Module Category -->
-                        <div class="space-y-3">
-                            <label class="text-sm font-semibold text-slate-700 dark:text-slate-300">Module
-                                Category</label>
-                            <div
-                                class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700">
-                                <div *ngFor="let module of modules" class="flex items-center gap-3">
-                                    <input [id]="'mod-' + module.value" [(ngModel)]="module.checked"
-                                        [name]="'mod-' + module.value" type="checkbox"
-                                        class="w-4 h-4 text-primary border-slate-300 rounded focus:ring-primary dark:bg-slate-700 dark:border-slate-600 cursor-pointer" />
-                                    <label [for]="'mod-' + module.value"
-                                        class="text-xs font-medium text-slate-600 dark:text-slate-400 cursor-pointer">
-                                        {{ module.label }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- Description -->
                         <div class="space-y-2">

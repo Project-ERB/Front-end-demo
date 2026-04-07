@@ -175,4 +175,31 @@ export class CategoriesService {
       { headers: this.getHeaders(), params }
     );
   }
+
+  getCategoriesWithChildren(): Observable<any[]> {
+    const body = {
+      query: `
+      query {
+        parentCategories {
+          nodes {
+            id
+            name
+            code
+            childCategories {
+              nodes {
+                id
+                name
+                code
+                parentCategoryId
+              }
+            }
+          }
+        }
+      }
+    `,
+    };
+    return this._httpClient
+      .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders(true) })
+      .pipe(map(res => res?.data?.parentCategories?.nodes ?? []));
+  }
 }

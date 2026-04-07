@@ -78,6 +78,9 @@
                                     <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Name
                                     </th>
                                     <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
+                                        Description
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
                                         Resources</th>
                                     <!-- <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">
                                         Allow Access</th> -->
@@ -91,7 +94,7 @@
                             <tbody class="divide-y divide-slate-100">
 
                                 <tr *ngIf="isLoading">
-                                    <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
                                         <span
                                             class="material-symbols-outlined animate-spin text-2xl block mx-auto mb-2">progress_activity</span>
                                         Loading permissions...
@@ -108,6 +111,10 @@
 
                                     <td class="px-6 py-4">
                                         <span class="text-sm font-bold text-slate-900">{{ perm.name }}</span>
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-slate-500">{{ perm.description || '—' }}</span>
                                     </td>
 
                                     <td class="px-6 py-4">
@@ -257,11 +264,17 @@
             </div>
 
             <!-- Permission Name -->
+            <!-- Permission Name -->
+            <!-- Permission Name -->
             <div class="space-y-2">
                 <label class="text-sm font-semibold text-slate-700">Permission Name</label>
-                <input [(ngModel)]="editName" name="editName" type="text" placeholder="e.g. manage_financial_reports"
-                    class="w-full px-4 py-3 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
-                <p class="text-xs text-slate-400">Use underscores instead of spaces.</p>
+                <select [(ngModel)]="editName" name="editName"
+                    class="w-full px-4 py-3 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all cursor-pointer">
+                    <option value="" disabled>Select a permission...</option>
+                    <optgroup *ngFor="let group of permissionGroups" [label]="group.label">
+                        <option *ngFor="let val of group.values" [value]="val">{{ val }}</option>
+                    </optgroup>
+                </select>
             </div>
 
             <!-- Description -->
@@ -273,21 +286,6 @@
                 </textarea>
             </div>
 
-            <!-- Resources -->
-            <div class="space-y-3">
-                <label class="text-sm font-semibold text-slate-700">Module Resources</label>
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
-                    <div *ngFor="let module of editModules" class="flex items-center gap-2.5">
-                        <input [id]="'edit-mod-' + module.value" [(ngModel)]="module.checked"
-                            [name]="'edit-mod-' + module.value" type="checkbox"
-                            class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer" />
-                        <label [for]="'edit-mod-' + module.value"
-                            class="text-xs font-medium text-slate-600 cursor-pointer">
-                            {{ module.label }}
-                        </label>
-                    </div>
-                </div>
-            </div>
 
             <!-- Info -->
             <div class="flex gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">

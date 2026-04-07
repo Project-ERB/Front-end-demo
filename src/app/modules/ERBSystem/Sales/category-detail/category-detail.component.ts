@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CategoriesService } from '../../../../core/services/categories/categories.service';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 
@@ -16,7 +16,7 @@ export class CategoryDetailComponent implements OnInit {
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly route = inject(ActivatedRoute);
-
+  private readonly _Router = inject(Router);
   // ── Category details ──────────────────────────────────────────────
   categoreis: any = null;
   isLoadingCategory = false;
@@ -178,8 +178,10 @@ export class CategoryDetailComponent implements OnInit {
   }
 
   // ── Actions ───────────────────────────────────────────────────────
-  editCategory(): void { alert('Edit category'); }
-  deleteCategory(): void { if (confirm('Delete?')) alert('Deleted'); }
-  addSubCategory(): void { alert('Add sub-category'); }
+  editCategory(): void { this._Router.navigate(['/category-management']) };
+  deleteCategory(): void { this._Router.navigate(['/category-management']) };
+  addSubCategory(): void {
+    this._Router.navigate(['/category-management']);
+  }
   productMenu(p: any): void { alert(`Actions for: ${p.name}`); }
 }

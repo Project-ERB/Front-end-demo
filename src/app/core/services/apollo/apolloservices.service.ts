@@ -67,6 +67,7 @@ export class ApolloservicesService {
           nodes {
             username
             email
+            roleNames
           }
         }
       }

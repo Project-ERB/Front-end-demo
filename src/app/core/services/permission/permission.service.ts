@@ -56,8 +56,9 @@ export interface LogNode {
   newValues: string | null;
   userId: string | null;
   ipAddress: string;
+  userName: string | null;   // ✅ زود دي
+  userRole: string | null;   // ✅ زود دي
 }
-
 export interface AllowAccess {
   allowCreate: boolean;
   allowDelete: boolean;
@@ -67,8 +68,9 @@ export interface AllowAccess {
 
 export interface PermissionNode {
   id: string;
-  name: string;
+  name: PermissionName; // ← هنا نوعه PermissionName
   resources: string[];
+  description: string;
   allowAccess: AllowAccess[];
 }
 
@@ -90,6 +92,92 @@ export interface CreatePermissionResponse {
   [key: string]: any;
 }
 
+export enum PermissionName {
+  // Global
+  FullAccess = 'FullAccess',
+  // E-Commerce & Sales
+  ViewSales = 'ViewSales',
+  ManageSales = 'ManageSales',
+  ProcessRefunds = 'ProcessRefunds',
+  ManagePromotions = 'ManagePromotions',
+  // Inventory & Products
+  ViewWarehouses = 'ViewWarehouses',
+  ManageWarehouses = 'ManageWarehouses',
+  ViewProducts = 'ViewProducts',
+  ManageProducts = 'ManageProducts',
+  ManageSuppliers = 'ManageSuppliers',
+  // HR
+  ViewHR = 'ViewHR',
+  ManageHR = 'ManageHR',
+  ManagePayroll = 'ManagePayroll',
+  // Finance & Accounting
+  ViewFinanceReports = 'ViewFinanceReports',
+  ManageInvoices = 'ManageInvoices',
+  ManagePayments = 'ManagePayments',
+  // Customers
+  ViewCustomers = 'ViewCustomers',
+  ManageCustomers = 'ManageCustomers',
+  // System Administration
+  ManageUsersAndRoles = 'ManageUsersAndRoles',
+  ManageSystemSettings = 'ManageSystemSettings',
+}
+
+export const PERMISSION_GROUPS: { label: string; values: PermissionName[] }[] = [
+  {
+    label: 'Global Permissions',
+    values: [PermissionName.FullAccess],
+  },
+  {
+    label: 'E-Commerce & Sales',
+    values: [
+      PermissionName.ViewSales,
+      PermissionName.ManageSales,
+      PermissionName.ProcessRefunds,
+      PermissionName.ManagePromotions,
+    ],
+  },
+  {
+    label: 'Inventory & Products',
+    values: [
+      PermissionName.ViewWarehouses,
+      PermissionName.ManageWarehouses,
+      PermissionName.ViewProducts,
+      PermissionName.ManageProducts,
+      PermissionName.ManageSuppliers,
+    ],
+  },
+  {
+    label: 'HR',
+    values: [
+      PermissionName.ViewHR,
+      PermissionName.ManageHR,
+      PermissionName.ManagePayroll,
+    ],
+  },
+  {
+    label: 'Finance & Accounting',
+    values: [
+      PermissionName.ViewFinanceReports,
+      PermissionName.ManageInvoices,
+      PermissionName.ManagePayments,
+    ],
+  },
+  {
+    label: 'Customers',
+    values: [
+      PermissionName.ViewCustomers,
+      PermissionName.ManageCustomers,
+    ],
+  },
+  {
+    label: 'System Administration',
+    values: [
+      PermissionName.ManageUsersAndRoles,
+      PermissionName.ManageSystemSettings,
+    ],
+  },
+];
+
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
 
@@ -106,18 +194,20 @@ export class PermissionService {
       query {
         logs {
           nodes {
-            id
-            userAgent
-            correlationId
-            level
-            createdAt
-            tableName
-            action
-            primaryKey
-            oldValues
-            newValues
-            userId
-            ipAddress
+      id
+      userAgent
+      correlationId
+      level
+      createdAt
+      tableName
+      action
+      primaryKey
+      oldValues
+      newValues
+      userId
+      userName
+      userRole
+      ipAddress
           }
         }
       }
@@ -134,14 +224,14 @@ export class PermissionService {
   getPermissions(): Observable<PermissionNode[]> {
     const query = `
       query {
-        permissions {
-          nodes {
-            id
-            name
-              description
-          }
+      permissions {
+        nodes {
+          id
+          name
+          description
         }
       }
+    }
     `;
     return this.http
       .post<{ data: { permissions: { nodes: PermissionNode[] } } }>(

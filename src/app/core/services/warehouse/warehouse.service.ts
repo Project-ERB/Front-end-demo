@@ -91,6 +91,7 @@ export interface InventoryNode {
   averageCost: number;
   currency: string;
   lastStockDate: string;
+  lastCountDate: string | null; // ← أضف دي
 }
 
 // ✅ NEW: AdjustmentNode interface
@@ -198,14 +199,14 @@ export class WarehouseService {
   getStockMovements(): Observable<StockMovementNode[]> {
     const body = {
       query: `
-      query {
-        stockMovements {
-          nodes {
-            id warehouseName productName sku movementType
-            quantity unitCost currency reference movementDate
-          }
+    query {
+      stockMovements {
+        nodes {
+          id warehouseName productName sku movementType
+          quantity unitCost currency reference movementDate
         }
-      }`,
+      }
+    }`,
     };
     return this.http
       .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders() })
@@ -215,12 +216,12 @@ export class WarehouseService {
   getInventories(): Observable<InventoryNode[]> {
     const body = {
       query: `
-    query {
+query {
       inventories {
         nodes {
-          id  productName sku warehouseName
+          id productName sku warehouseName
           quantityOnHand quantityReserved quantityAvailable
-          averageCost currency lastStockDate
+          averageCost currency lastStockDate lastCountDate
         }
       }
     }`,

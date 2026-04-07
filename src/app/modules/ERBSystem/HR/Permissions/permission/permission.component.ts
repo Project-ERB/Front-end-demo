@@ -1,4 +1,4 @@
-import { PermissionService } from './../../../../../core/services/permission/permission.service';
+import { PERMISSION_GROUPS, PermissionName, PermissionService } from './../../../../../core/services/permission/permission.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,24 +12,7 @@ interface EditModule {
   checked: boolean;
 }
 
-// Map resource string (from API) back to enum value
-const RESOURCE_STRING_MAP: Record<string, Resource> = {
-  SALES: Resource.Sales,
-  SALES_DASHBOARD: Resource.SalesDashboard,
-  PRODUCTS: Resource.Products,
-  CATEGORIES: Resource.Categories,
-  DISCOUNTS: Resource.Discounts,
-  ORDERS: Resource.Orders,
-  CUSTOMERS: Resource.Customers,
-  HR: Resource.HR,
-  EMPLOYEES: Resource.Employees,
-  DEPARTMENTS: Resource.Departments,
-  RECRUITS: Resource.Recruits,
-  CANDIDATES: Resource.Candidates,
-  APPLICATIONS: Resource.Applications,
-  INVENTORY: Resource.Inventory,
-  ADMINATION: Resource.Admination,
-};
+
 
 @Component({
   selector: 'app-permission',
@@ -39,6 +22,9 @@ const RESOURCE_STRING_MAP: Record<string, Resource> = {
   styleUrl: './permission.component.scss',
 })
 export class PermissionComponent implements OnInit {
+
+  permissionGroups = PERMISSION_GROUPS;
+
 
   // ── List state ───────────────────────────────────────────────────────────────
   searchQuery = '';
@@ -54,7 +40,7 @@ export class PermissionComponent implements OnInit {
   // ── Edit Modal state ─────────────────────────────────────────────────────────
   showEditModal = false;
   editId = '';
-  editName = '';
+  editName: PermissionName | '' = '';   // ← بس الواحدة دي، احذف التانية string
   editDescription = '';
   editModules: EditModule[] = Object.keys(Resource)
     .filter(key => isNaN(Number(key)))
@@ -136,11 +122,11 @@ export class PermissionComponent implements OnInit {
 
   openEditModal(perm: PermissionNode): void {
     this.editId = perm.id;
-    this.editName = perm.name;
-    this.editDescription = '';
+    this.editName = perm.name as PermissionName;
+    this.editDescription = perm.description ?? '';
     this.updateSuccess = '';
     this.updateError = '';
-
+    this.showEditModal = true;
     // Map current resources (strings) back to checked state
     this.editModules = Object.keys(Resource)
       .filter(key => isNaN(Number(key)))
@@ -171,7 +157,7 @@ export class PermissionComponent implements OnInit {
       id: this.editId,
       name: this.editName.trim(),
       description: this.editDescription.trim(),
-      resources: this.editModules.filter(m => m.checked).map(m => m.value),
+      resources: [],
     };
 
     this.permissionService.updatePermission(payload).subscribe({

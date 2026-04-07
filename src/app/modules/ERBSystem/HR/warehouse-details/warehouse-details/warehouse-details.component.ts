@@ -2,7 +2,7 @@ import { WarehouseProduct } from './../../../../../core/services/warehouse/wareh
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import {
   WarehouseService,
@@ -11,7 +11,7 @@ import { SiedbarWarehouseComponent } from "../../../../../shared/UI/siedbar-ware
 import { ToastrService } from 'ngx-toastr';
 
 export type StockStatus = 'normal' | 'low';
-export type ActiveTab = 'inventory' | 'movements' | 'adjustments' | 'settings';
+export type ActiveTab = 'inventory' | 'movements' | 'adjustments';
 export type TransactionType = 'Stock In' | 'Stock Out' | 'Transfer' | 'Adjustment';
 export type AdjustmentType = 'Physical Count' | 'Damage' | 'Found' | 'Theft/Loss';
 
@@ -27,6 +27,8 @@ export interface StockMovement {
   date: string; time: string; type: TransactionType;
   productName: string; sku: string; imageUrl: string;
   quantityChange: number;
+  unitCost: number;      // ← أضف
+  currency: string;      // ← أضف
   userInitials: string; userName: string; userAvatarColor: string;
   referenceId: string;
 }
@@ -46,7 +48,7 @@ export interface InventoryRule { label: string; description: string; enabled: bo
 
 @Component({
   selector: 'app-warehouse-details',
-  imports: [CommonModule, FormsModule, SiedbarWarehouseComponent],
+  imports: [CommonModule, FormsModule, SiedbarWarehouseComponent, RouterLink],
   templateUrl: './warehouse-details.component.html',
   styleUrl: './warehouse-details.component.scss',
 })
@@ -128,7 +130,7 @@ export class WarehouseDetailsComponent implements OnInit {
     { key: 'inventory', label: 'Inventory' },
     { key: 'movements', label: 'Stock Movements' },
     { key: 'adjustments', label: 'Adjustments' },
-    { key: 'settings', label: 'Settings' },
+    // { key: 'settings', label: 'Settings' },
   ];
 
   // ── Data ─────────────────────────────────────────────────────────
@@ -219,11 +221,8 @@ export class WarehouseDetailsComponent implements OnInit {
 
     this.warehouseService.getInventories().subscribe({
       next: (nodes) => {
-        // ✅ فلتر بالـ warehouseName
-        const filtered = nodes.filter(n => n.warehouseName === this.warehouse.name);
-
-        this.inventory = filtered.map(n => ({
-          inventoryId: n.id,  // ← ده هو الـ inventoryId الصح
+        this.inventory = nodes.map(n => ({
+          inventoryId: n.id,
           productId: undefined,
           sku: n.sku,
           name: n.productName,
@@ -265,6 +264,8 @@ export class WarehouseDetailsComponent implements OnInit {
           sku: n.sku,
           imageUrl: '',
           quantityChange: n.movementType === 'Out' || n.movementType === 'TransferOut' ? -n.quantity : n.quantity,
+          unitCost: n.unitCost,       // ← أضف
+          currency: n.currency,       // ← أضف
           userInitials: '—',
           userName: n.warehouseName,
           userAvatarColor: 'indigo',
@@ -540,6 +541,7 @@ export class WarehouseDetailsComponent implements OnInit {
     this.initStockForm = { productSearch: '', selectedProduct: null, quantity: 0, unitCost: null };
     this.initStockError = '';
     this.initStockSuccess = false;
+    this.stockInWarehouseId = this.warehouseId; // ← default للمخزن الحالي
     this.showInitStockModal = true;
   }
   closeInitStockModal(): void { if (this.isSubmittingInitStock) return; this.showInitStockModal = false; }
@@ -556,7 +558,7 @@ export class WarehouseDetailsComponent implements OnInit {
   submitInitStock(): void {
     const p = this.initStockForm.selectedProduct;
     if (!p) return;
-    if (!this.warehouseId) { this.initStockError = 'No warehouse selected.'; return; }
+    if (!this.stockInWarehouseId) { this.initStockError = 'No warehouse selected.'; return; }
     if ((this.initStockForm.quantity ?? 0) <= 0) { this.initStockError = 'Quantity must be greater than 0.'; return; }
 
     this.isSubmittingInitStock = true;
@@ -645,10 +647,17 @@ export class WarehouseDetailsComponent implements OnInit {
     return (this.increaseStockForm.addQty ?? 0) * (this.increaseStockForm.unitCost ?? 0);
   }
 
+  stockInWarehouseId = '';
+  stockOutWarehouseId = '';
+
   openIncreaseStockModal(): void {
     this.increaseStockForm = { productSearch: '', selectedProduct: null, addQty: 0, unitCost: null };
-    this.increaseStockError = ''; this.increaseStockSuccess = false; this.showIncreaseStockModal = true;
+    this.increaseStockError = '';
+    this.increaseStockSuccess = false;
+    this.stockInWarehouseId = this.warehouseId; // ← نفس الـ property
+    this.showIncreaseStockModal = true;
   }
+
   closeIncreaseStockModal(): void { if (this.isSubmittingIncreaseStock) return; this.showIncreaseStockModal = false; }
   selectIncreaseStockProduct(item: WarehouseProduct): void {
     this.increaseStockForm.selectedProduct = item;
@@ -667,7 +676,7 @@ export class WarehouseDetailsComponent implements OnInit {
   submitIncreaseStock(): void {
     const p = this.increaseStockForm.selectedProduct;
     if (!p || (this.increaseStockForm.addQty ?? 0) <= 0) return;
-    if (!this.warehouseId) { this.increaseStockError = 'No warehouse selected.'; return; }
+    if (!this.stockInWarehouseId) { this.increaseStockError = 'No warehouse selected.'; return; }
 
     this.isSubmittingIncreaseStock = true;
     this.increaseStockError = '';
@@ -705,8 +714,12 @@ export class WarehouseDetailsComponent implements OnInit {
 
   openDecreaseStockModal(): void {
     this.decreaseStockForm = { productSearch: '', selectedProduct: null, qty: 0, reference: '' };
-    this.decreaseStockError = ''; this.decreaseStockSuccess = false; this.showDecreaseStockModal = true;
+    this.decreaseStockError = '';
+    this.decreaseStockSuccess = false;
+    this.stockOutWarehouseId = this.warehouseId; // ← default للمخزن الحالي
+    this.showDecreaseStockModal = true;
   }
+
   closeDecreaseStockModal(): void { if (this.isSubmittingDecreaseStock) return; this.showDecreaseStockModal = false; }
   selectDecreaseStockProduct(item: InventoryItem): void {
     if (!item.inventoryId) {
@@ -723,7 +736,7 @@ export class WarehouseDetailsComponent implements OnInit {
   submitDecreaseStock(): void {
     const p = this.decreaseStockForm.selectedProduct;
     if (!p || this.decreaseStockForm.qty <= 0) return;
-    if (!this.warehouseId) { this.decreaseStockError = 'No warehouse selected.'; return; }
+    if (!this.stockOutWarehouseId) { this.decreaseStockError = 'No warehouse selected.'; return; }
     if (!p.inventoryId) { this.decreaseStockError = 'Inventory ID not found.'; return; }
 
     // ✅ NEW: منع الـ negative stock
@@ -759,6 +772,8 @@ export class WarehouseDetailsComponent implements OnInit {
             type: 'Stock Out', productName: p.name, sku: p.sku, imageUrl: '',
             quantityChange: -reduced, userInitials: 'JD', userName: this.warehouse.name,
             userAvatarColor: 'indigo', referenceId: refId,
+            unitCost: 0,        // ← أضف
+            currency: '',       // ← أضف
           });
         }
         setTimeout(() => this.closeDecreaseStockModal(), 1500);
@@ -769,4 +784,6 @@ export class WarehouseDetailsComponent implements OnInit {
       },
     });
   }
+
+
 }

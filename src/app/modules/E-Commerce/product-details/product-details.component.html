@@ -173,9 +173,9 @@
             <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
               Full Description
             </h3>
-            <p class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
-              {{ product.description || '—' }}
-            </p>
+            <div class="text-gray-700 dark:text-gray-300 leading-relaxed prose dark:prose-invert max-w-none"
+              [innerHTML]="product.description || '—'">
+            </div>
           </div>
         </div>}
         @else if (activeTab() === 'specifications') {

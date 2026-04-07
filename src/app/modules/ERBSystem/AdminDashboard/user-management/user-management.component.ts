@@ -81,8 +81,15 @@ export class UserManagementComponent implements OnInit {
 
   getroles(): void {
     this._apolloService.getroles().subscribe({
-      next: (res) => { this.roleOptions = res?.data?.roles?.nodes ?? []; },
-      error: (err) => { console.error('roles error:', err); this.roleOptions = []; },
+      next: (res) => {
+        this.roleOptions = res?.data?.roles?.nodes ?? [];
+        this.loadUsers(); // ← هنا بدل ngOnInit
+      },
+      error: (err) => {
+        console.error('roles error:', err);
+        this.roleOptions = [];
+        this.loadUsers();
+      },
     });
   }
 
@@ -144,9 +151,8 @@ export class UserManagementComponent implements OnInit {
 
   // ── Lifecycle ──────────────────────────────────────────────────────────
   ngOnInit(): void {
-    this.getroles();
-    this.loadUsers();
-    this.loadPermissions(); // fetch once; checkboxes are reset on each modal open
+    this.getroles();      // هي اللي هتستدعي loadUsers جوّاها
+    this.loadPermissions();
   }
 
   trackByKey(index: number, mod: ModulePermission): string {
@@ -160,7 +166,7 @@ export class UserManagementComponent implements OnInit {
       next: (res) => {
         const nodes = res?.data?.users?.nodes ?? [];
         this.users = nodes
-          .filter((u: any) => u && u.username) // ← تصفية أي undefined
+          .filter((u: any) => u && u.username)
           .map((u: any, index: number) => {
             const avatar = buildAvatarStyle(index);
             return {
@@ -170,7 +176,7 @@ export class UserManagementComponent implements OnInit {
               initials: buildInitials(u.username ?? 'U'),
               avatarBg: avatar.bg,
               avatarText: avatar.text,
-              role: 'Viewer' as UserRole,
+              role: u.roleNames?.join(', ') ?? '',
               status: 'Active' as UserStatus,
               lastLogin: '-',
             };
@@ -332,5 +338,9 @@ export class UserManagementComponent implements OnInit {
 
   suspendUser(user: User): void { }
   deleteUser(user: User): void { }
+
+  getRoleName(roleId: string): string {
+    return this.roleOptions.find(r => r.id === roleId)?.name ?? 'Viewer';
+  }
 
 }

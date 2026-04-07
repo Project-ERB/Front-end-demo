@@ -104,7 +104,19 @@
                             <select formControlName="CategoryId" class="h-11 rounded-lg border px-4 text-sm w-full"
                                 [ngClass]="addproductform.get('CategoryId')?.invalid && addproductform.get('CategoryId')?.touched ? 'border-red-500' : ''">
                                 <option value="" disabled>Select category</option>
-                                <option *ngFor="let c of categoryOptions" [ngValue]="c.id">{{ c.name }}</option>
+
+                                <ng-container *ngFor="let parent of categoryOptions">
+                                    <!-- Parent كـ optgroup -->
+                                    <optgroup [label]="parent.name">
+                                        <!-- الـ parent نفسه كـ option -->
+                                        <option [ngValue]="parent.id">{{ parent.name }} (Main)</option>
+                                        <!-- الـ children -->
+                                        <option *ngFor="let child of parent.children" [ngValue]="child.id">
+                                            &nbsp;&nbsp; {{ child.name }}
+                                        </option>
+                                    </optgroup>
+                                </ng-container>
+
                             </select>
                             <span
                                 *ngIf="addproductform.get('CategoryId')?.invalid && addproductform.get('CategoryId')?.touched"

@@ -64,7 +64,7 @@ export class SystemLogsComponent implements OnInit {
   // ── Map API node → SystemLog ──────────────────────────────────────────────
   private mapNodeToLog(n: LogNode): SystemLog {
     const status = this.resolveStatus(n.level, n.action);
-    const { initials, bg, text, name } = this.resolveUser(n.userId, n.ipAddress);
+    const { initials, bg, text, name } = this.resolveUser(n);
 
     return {
       id: n.id,
@@ -93,12 +93,23 @@ export class SystemLogsComponent implements OnInit {
     return 'Info';
   }
 
-  private resolveUser(userId: string | null, ip: string) {
-    if (!userId) {
-      return { initials: 'SY', bg: 'bg-orange-100', text: 'text-orange-600', name: 'System (Auto)' };
+  private resolveUser(n: LogNode) {
+    if (n.userId) {
+      const short = n.userId.slice(0, 2).toUpperCase();
+      return { initials: short, bg: 'bg-blue-100', text: 'text-blue-600', name: n.userName ?? `User ${short}` };
     }
-    const short = userId.slice(0, 2).toUpperCase();
-    return { initials: short, bg: 'bg-blue-100', text: 'text-blue-600', name: `User ${short}` };
+
+    // System action — اعطيه اسم أوضح حسب الـ table
+    const systemLabels: Record<string, string> = {
+      RefreshTokens: 'Auth Service',
+      PasswordResetTokens: 'Reset Service',
+      OtpCodes: 'OTP Service',
+      Users: 'User Service',
+    };
+
+    const name = systemLabels[n.tableName] ?? 'System (Auto)';
+    const initials = name.slice(0, 2).toUpperCase();
+    return { initials, bg: 'bg-orange-100', text: 'text-orange-600', name };
   }
 
   // ── Select-all ─────────────────────────────────────────────────────────────
@@ -223,4 +234,5 @@ export class SystemLogsComponent implements OnInit {
     this.logService.set(log);
     this.router.navigate(['log-detail', log.id]);
   }
+
 }

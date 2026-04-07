@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { Router } from '@angular/router';
+import { forkJoin, Observable } from 'rxjs';
 
 export interface Step {
   label: string;
@@ -34,7 +35,7 @@ export class AddProductComponent implements OnInit {
   private readonly _Router = inject(Router)
 
   // FIX: Renamed to categoryOptions to reflect actual usage (CategoryId select)
-  categoryOptions: any[] = [];
+  categoryOptions: Array<{ id: string; name: string; children: Array<{ id: string; name: string }> }> = [];
   selectedFile: File | null = null;
 
   // ================= FORM =================
@@ -89,13 +90,34 @@ export class AddProductComponent implements OnInit {
   getcategorues(): void {
     this._ApollocatoriesService.getApollocategories().subscribe({
       next: (res: any) => {
-        this.categoryOptions = res?.data?.parentCategories?.nodes ?? [];
-        console.log('Raw response:', res.data);
-        console.log(this.categoryOptions);
+        const parents: any[] = res?.data?.parentCategories?.nodes ?? [];
+
+        if (!parents.length) {
+          this.categoryOptions = [];
+          return;
+        }
+
+        const childRequests: Observable<any[]>[] = parents.map((p: any) =>
+          this._categoryService.getChildCategories(p.id)
+        );
+
+        forkJoin(childRequests).subscribe({
+          next: (childResults: any[][]) => {
+            this.categoryOptions = parents.map((parent: any, i: number) => ({
+              ...parent,
+              children: childResults[i] ?? []
+            }));
+          },
+          error: (err: any) => {
+            console.error('Error loading children:', err);
+            // لو فشل نعرض الـ parents بدون children
+            this.categoryOptions = parents.map((p: any) => ({ ...p, children: [] }));
+          }
+        });
       },
       error: (err: any) => {
         console.error('Error loading categories:', err);
-      },
+      }
     });
   }
 

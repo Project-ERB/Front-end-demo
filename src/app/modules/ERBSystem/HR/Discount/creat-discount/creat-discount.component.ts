@@ -205,11 +205,27 @@ export class CreatDiscountComponent implements OnInit {
   get payloadPreview(): string { return JSON.stringify(this.buildPayload(), null, 2); }
 
   // ─── Navigation ──────────────────────────────────────────────────────────────
-  nextStep(): void { if (this.currentStep < 4) this.currentStep++; }
+  nextStep(): void {
+    let valid = false;
+    if (this.currentStep === 1) valid = this.validateStep1();
+    else if (this.currentStep === 2) valid = this.validateStep2();
+    else if (this.currentStep === 3) valid = this.validateStep3();
+    else valid = true;
+
+    if (!valid) {
+      this._Toastr.warning('Please fix the errors before continuing.', 'Incomplete Fields', {
+        timeOut: 3000,
+        positionClass: 'toast-top-right',
+      });
+      return;
+    }
+    this.fieldErrors = {};
+    if (this.currentStep < 4) this.currentStep++;
+  }
   prevStep(): void { if (this.currentStep > 1) this.currentStep--; }
   goToStep(n: number): void { if (n <= this.currentStep) this.currentStep = n; }
   saveDraft(): void { this._Toastr.info('Draft saved!', 'Draft'); }
-  cancel(): void { if (confirm('Discard changes?')) this.resetForm(); }
+  cancel(): void { this._Router.navigate(['/discount-management']); }
 
   // ─── Build payload ────────────────────────────────────────────────────────────
   private buildPayload(): CreateDiscountPayload {
@@ -381,4 +397,58 @@ export class CreatDiscountComponent implements OnInit {
   }
 
   ngOnInit(): void { }
+
+  // ─── Field Errors ─────────────────────────────────────────────────────────────
+  fieldErrors: Record<string, string> = {};
+
+  private validateStep1(): boolean {
+    this.fieldErrors = {};
+    if (!this.discountCode.trim())
+      this.fieldErrors['discountCode'] = 'Discount code is required.';
+    if (!this.discountName.trim())
+      this.fieldErrors['discountName'] = 'Discount name is required.';
+    if (this.selectedType !== 'bxgy') {
+      if (this.discountValue === null || this.discountValue === undefined)
+        this.fieldErrors['discountValue'] = 'Discount value is required.';
+      else if (this.selectedType === 'percentage' && (this.discountValue <= 0 || this.discountValue > 100))
+        this.fieldErrors['discountValue'] = 'Percentage must be between 1 and 100.';
+      else if (this.selectedType === 'fixed' && this.discountValue <= 0)
+        this.fieldErrors['discountValue'] = 'Fixed value must be greater than 0.';
+    } else {
+      if (this.buyQuantity <= 0)
+        this.fieldErrors['buyQuantity'] = 'Buy quantity must be greater than 0.';
+      if (this.getQuantity <= 0)
+        this.fieldErrors['getQuantity'] = 'Get quantity must be greater than 0.';
+      if (this.getDiscountPercentage <= 0 || this.getDiscountPercentage > 100)
+        this.fieldErrors['getDiscountPercentage'] = 'Must be between 1 and 100.';
+    }
+    return Object.keys(this.fieldErrors).length === 0;
+  }
+
+  private validateStep2(): boolean {
+    this.fieldErrors = {};
+    if (!this.startDate)
+      this.fieldErrors['startDate'] = 'Start date is required.';
+    if (!this.endDate)
+      this.fieldErrors['endDate'] = 'End date is required.';
+    if (this.startDate && this.endDate && new Date(this.endDate) <= new Date(this.startDate))
+      this.fieldErrors['endDate'] = 'End date must be after start date.';
+    if (this.targeting !== 'store' && this.targetId === '00000000-0000-0000-0000-000000000000')
+      this.fieldErrors['targetId'] = 'Please select a target.';
+    return Object.keys(this.fieldErrors).length === 0;
+  }
+
+  private validateStep3(): boolean {
+    this.fieldErrors = {};
+    // step 3 كله optional — بس لو دخل قيمة سالبة نرفضها
+    if (this.minimumQuantity !== null && this.minimumQuantity < 0)
+      this.fieldErrors['minimumQuantity'] = 'Must be 0 or greater.';
+    if (this.maximumDiscountAmount !== null && this.maximumDiscountAmount < 0)
+      this.fieldErrors['maximumDiscountAmount'] = 'Must be 0 or greater.';
+    if (this.usageLimit !== null && this.usageLimit <= 0)
+      this.fieldErrors['usageLimit'] = 'Must be greater than 0.';
+    if (this.usageLimitPerCustomer !== null && this.usageLimitPerCustomer <= 0)
+      this.fieldErrors['usageLimitPerCustomer'] = 'Must be greater than 0.';
+    return Object.keys(this.fieldErrors).length === 0;
+  }
 }

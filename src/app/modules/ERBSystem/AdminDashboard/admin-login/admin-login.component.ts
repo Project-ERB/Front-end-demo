@@ -1,13 +1,20 @@
 import { Component, ElementRef, inject, ViewChild, viewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RxReactiveFormsModule, RxwebValidators } from '@rxweb/reactive-form-validators';
 import { AuthService } from '../../../../core/services/Auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+
+const ROLE_ROUTES: Record<string, string> = {
+  SystemAdmin: '/admin-dashboard',
+  SalesManager: '/sales-analysis',
+  WarehouseManager: '/warehouse-management',
+  HRDirector: '/hr-dashboard',
+};
 @Component({
   selector: 'app-admin-login',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RxReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RxReactiveFormsModule, RouterLink, NgClass],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',
 })
@@ -24,12 +31,14 @@ export class AdminLoginComponent {
     confirmPassword: [null, RxwebValidators.compare({ fieldName: 'password' })],
     rememberMe: []
   })
+
+
   LoginSubmit() {
     if (this.loginform.valid) {
       this.isLoading = true;
       this._authService.AdminLogin(this.loginform.value).subscribe({
         next: (res) => {
-          this._toastrService.success('Login successful', 'Success');
+
           this.isLoading = false;
 
           // store tokens
@@ -42,21 +51,18 @@ export class AdminLoginComponent {
 
           setTimeout(() => {
             const role = res.roles[0];
+            const route = ROLE_ROUTES[role];
 
-            if (role === 'SystemAdmin') {
-              this._router.navigate(['/admin-dashboard']);
-            } else if (role === 'SalesManager') {
-              this._router.navigate(['/sales-analysis']);
-            } else if (role === 'WarehouseManager') {
-              this._router.navigate(['/warehouse-management'])
-            }
-            else {
+            if (route) {
+              this._router.navigate([route]);
+              this._toastrService.success('Login successful', 'Success');
+            } else {
               this._toastrService.error('Unauthorized role', 'Error');
             }
           }, 2000);
         },
         error: (err) => {
-          this._toastrService.error('Login failed', err);
+          this._toastrService.error('Login failed', 'Error');
           this.isLoading = false;
         }
       });

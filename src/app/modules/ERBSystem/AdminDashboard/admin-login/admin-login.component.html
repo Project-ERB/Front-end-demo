@@ -90,7 +90,11 @@
 
                 <!-- Email -->
                 <div>
-                    <label for="email" class="mb-2 block text-sm font-semibold text-slate-700">Admin Email</label>
+                    <label [ngClass]="{
+                'is-invalid': loginform.get('email')?.invalid && (loginform.get('email')?.touched || loginform.get('email')?.dirty),
+                'is-valid': !loginform.get('email')?.valid && (loginform.get('email')?.touched || loginform.get('email')?.dirty)
+            }" for="email" class="mb-2 block text-sm font-semibold text-slate-700">Admin Email</label>
+
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                             <span class="material-symbols-outlined text-lg">alternate_email</span>
@@ -100,7 +104,17 @@
                             class="w-full rounded-lg border border-slate-200 bg-white py-3 pl-10 pr-4 text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-[#2463eb] focus:ring-2 focus:ring-[#2463eb]/20" />
                     </div>
                 </div>
-
+                @if (loginform.get('email')?.invalid && (loginform.get('email')?.touched ||
+                loginform.get('email')?.dirty)) {
+                <div class="text-red-500">
+                    @if (loginform.get('email')?.getError('required')) {
+                    <p class="m-0">Email is required.</p>
+                    }
+                    @else if (loginform.get('email')?.getError('email')) {
+                    <p class="m-0">Please enter a valid email address.</p>
+                    }
+                </div>
+                }
                 <!-- Password -->
                 <div>
                     <div class="mb-2 flex items-center justify-between">
@@ -113,8 +127,11 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                             <span class="material-symbols-outlined text-lg">lock_outline</span>
                         </span>
-                        <input id="password" [type]="showPassword ? 'text' : 'password'" name="password"
-                            formControlName="password" placeholder="••••••••••••" required
+                        <input [ngClass]="{
+                'is-invalid': loginform.get('password')?.invalid && (loginform.get('password')?.touched || loginform.get('password')?.dirty),
+                'is-valid': !loginform.get('password')?.valid && (loginform.get('password')?.touched || loginform.get('password')?.dirty)
+            }" id="password" [type]="showPassword ? 'text' : 'password'" name="password" formControlName="password"
+                            placeholder="••••••••••••" required
                             class="w-full rounded-lg border border-slate-200 bg-white py-3 pl-10 pr-12 text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-[#2463eb] focus:ring-2 focus:ring-[#2463eb]/20" />
                         <!-- Toggle visibility -->
                         <button type="button" (click)="togglePassword()"
@@ -124,7 +141,18 @@
                         </button>
                     </div>
                 </div>
-
+                @if (loginform.get('password')?.invalid && (loginform.get('password')?.touched ||
+                loginform.get('password')?.dirty)) {
+                <div class="text-red-500">
+                    @if (loginform.get('password')?.getError('required')) {
+                    <p class="m-0">Password is required.</p>
+                    }
+                    @else if (loginform.get('password')?.getError('pattern')) {
+                    <p class="m-0">Password must contain at least one uppercase letter, one lowercase letter, one digit,
+                        and one special character.</p>
+                    }
+                </div>
+                }
                 <!-- Confirm password-->
                 <div>
                     <label for="confirmPassword" class="mb-2 block text-sm font-semibold text-slate-700">Confirm
@@ -133,8 +161,11 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                             <span class="material-symbols-outlined text-lg">lock_outline</span>
                         </span>
-                        <input id="confirmPassword" type="password" name="confirmPassword"
-                            formControlName="confirmPassword" placeholder="••••••••••••" required
+                        <input [ngClass]="{
+                'is-invalid': loginform.get('confirmPassword')?.invalid && (loginform.get('confirmPassword')?.touched || loginform.get('confirmPassword')?.dirty),
+                'is-valid': !loginform.get('confirmPassword')?.valid && (loginform.get('confirmPassword')?.touched || loginform.get('confirmPassword')?.dirty)
+            }" id="confirmPassword" type="password" name="confirmPassword" formControlName="confirmPassword"
+                            placeholder="••••••••••••" required
                             class="w-full rounded-lg border border-slate-200 bg-white py-3 pl-10 pr-4 text-slate-900 outline-none transition-all placeholder-slate-400 focus:border-[#2463eb] focus:ring-2 focus:ring-[#2463eb]/20" />
                         <button type="button" (click)="togglePassword()"
                             class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 transition-colors hover:text-slate-600">
@@ -143,6 +174,17 @@
                         </button>
                     </div>
                 </div>
+                @if (loginform.get('confirmPassword')?.invalid && (loginform.get('confirmPassword')?.touched ||
+                loginform.get('confirmPassword')?.dirty)) {
+                <div class="text-red-500">
+
+                    <p class="m-0">ConfirmPassword must match Password.</p>
+
+                    <!-- @else if (loginform.get('confirmPassword')?.getError('mustMatch')) {
+                    <p class="m-0">Passwords do not match.</p>
+                    } -->
+                </div>
+                }
 
                 <!-- Remember me -->
                 <div class="flex items-center">

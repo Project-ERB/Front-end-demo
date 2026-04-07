@@ -31,9 +31,9 @@
             <div class="flex items-center gap-3">
                 <button (click)="cancel()"
                     class="h-10 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8]">Cancel</button>
-                <button *ngIf="currentStep < 4" (click)="saveDraft()"
+                <!-- <button *ngIf="currentStep < 4" (click)="saveDraft()"
                     class="h-10 rounded-lg border border-[#dbdee6] bg-white px-4 text-sm font-bold text-[#111318] shadow-sm hover:bg-[#f6f6f8]">Save
-                    Draft</button>
+                    Draft</button> -->
             </div>
         </div>
 
@@ -97,6 +97,7 @@
                             </div>
                             <div class="space-y-5 p-6">
                                 <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+
                                     <!-- code -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -108,13 +109,21 @@
                                         <div class="relative flex items-center">
                                             <input type="text" [(ngModel)]="discountCode" name="code"
                                                 placeholder="SUMMER20"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 pr-24 font-mono text-sm uppercase tracking-wider outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['discountCode'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 px-4 pr-24 font-mono text-sm uppercase tracking-wider outline-none transition-all placeholder-[#616c89]/50 focus:ring-2 border" />
                                             <button type="button" (click)="generateCode()"
                                                 class="absolute right-2 rounded border border-[#dbdee6] bg-white px-3 py-1 text-xs font-bold text-[#1e3b8a] hover:bg-[#f6f6f8]"
                                                 style="top:6px;bottom:6px">Generate</button>
                                         </div>
-                                        <span class="text-xs text-[#616c89]">Customers enter this at checkout.</span>
+                                        <p *ngIf="fieldErrors['discountCode']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['discountCode'] }}
+                                        </p>
+                                        <span *ngIf="!fieldErrors['discountCode']"
+                                            class="text-xs text-[#616c89]">Customers enter this at checkout.</span>
                                     </label>
+
                                     <!-- name -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -125,10 +134,18 @@
                                         </div>
                                         <input type="text" [(ngModel)]="discountName" name="name"
                                             placeholder="e.g., Summer Sale 2024"
-                                            class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all placeholder-[#616c89]/50 focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
-                                        <span class="text-xs text-[#616c89]">Internal name for tracking.</span>
+                                            [ngClass]="fieldErrors['discountName'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                            class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all placeholder-[#616c89]/50 focus:ring-2 border" />
+                                        <p *ngIf="fieldErrors['discountName']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['discountName'] }}
+                                        </p>
+                                        <span *ngIf="!fieldErrors['discountName']"
+                                            class="text-xs text-[#616c89]">Internal name for tracking.</span>
                                     </label>
                                 </div>
+
                                 <!-- description -->
                                 <label class="flex flex-col gap-1.5">
                                     <div class="flex items-center justify-between">
@@ -173,7 +190,7 @@
                                     </div>
                                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                                         <button *ngFor="let opt of typeOptions" type="button"
-                                            (click)="selectedType = opt.value"
+                                            (click)="selectedType = opt.value; fieldErrors['discountValue'] = ''; fieldErrors['buyQuantity'] = ''; fieldErrors['getQuantity'] = ''; fieldErrors['getDiscountPercentage'] = ''"
                                             class="relative flex flex-col gap-2 rounded-xl border-2 p-4 text-left transition-all"
                                             [ngClass]="selectedType === opt.value ? 'border-[#1e3b8a] bg-[#1e3b8a]/5' : 'border-[#dbdee6] bg-white hover:border-[#1e3b8a]/30'">
                                             <div class="absolute right-3 top-3 text-[#1e3b8a]"
@@ -209,12 +226,18 @@
                                         <div class="relative">
                                             <input type="number" [(ngModel)]="discountValue" name="discountValue"
                                                 [placeholder]="valuePlaceholder"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pr-10 pl-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['discountValue'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-white pr-10 pl-4 text-sm outline-none transition-all focus:ring-2 border" />
                                             <div
                                                 class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#616c89]">
                                                 <span class="font-bold">{{ valueSuffix }}</span>
                                             </div>
                                         </div>
+                                        <p *ngIf="fieldErrors['discountValue']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['discountValue'] }}
+                                        </p>
                                     </label>
                                 </div>
 
@@ -224,6 +247,8 @@
                                     <p class="text-xs font-semibold uppercase tracking-wider text-[#616c89]">Buy X Get Y
                                         — 3 extra fields</p>
                                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+                                        <!-- buyQuantity -->
                                         <label class="flex flex-col gap-1.5">
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm font-semibold text-[#111318]">Buy Qty</span>
@@ -232,8 +257,16 @@
                                             </div>
                                             <input type="number" [(ngModel)]="buyQuantity" name="buyQuantity"
                                                 placeholder="2"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['buyQuantity'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-white px-4 text-sm outline-none transition-all focus:ring-2 border" />
+                                            <p *ngIf="fieldErrors['buyQuantity']"
+                                                class="flex items-center gap-1 text-xs text-red-500">
+                                                <span class="material-symbols-outlined text-[14px]">error</span>
+                                                {{ fieldErrors['buyQuantity'] }}
+                                            </p>
                                         </label>
+
+                                        <!-- getQuantity -->
                                         <label class="flex flex-col gap-1.5">
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm font-semibold text-[#111318]">Get Qty</span>
@@ -242,8 +275,16 @@
                                             </div>
                                             <input type="number" [(ngModel)]="getQuantity" name="getQuantity"
                                                 placeholder="1"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['getQuantity'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-white px-4 text-sm outline-none transition-all focus:ring-2 border" />
+                                            <p *ngIf="fieldErrors['getQuantity']"
+                                                class="flex items-center gap-1 text-xs text-red-500">
+                                                <span class="material-symbols-outlined text-[14px]">error</span>
+                                                {{ fieldErrors['getQuantity'] }}
+                                            </p>
                                         </label>
+
+                                        <!-- getDiscountPercentage -->
                                         <label class="flex flex-col gap-1.5">
                                             <div class="flex items-center justify-between">
                                                 <span class="text-sm font-semibold text-[#111318]">Discount %</span>
@@ -253,12 +294,18 @@
                                             <div class="relative">
                                                 <input type="number" [(ngModel)]="getDiscountPercentage"
                                                     name="getDiscountPercentage" placeholder="100"
-                                                    class="h-11 w-full rounded-lg border border-[#dbdee6] bg-white pr-10 pl-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                    [ngClass]="fieldErrors['getDiscountPercentage'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                    class="h-11 w-full rounded-lg bg-white pr-10 pl-4 text-sm outline-none transition-all focus:ring-2 border" />
                                                 <div
                                                     class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#616c89]">
                                                     <span class="font-bold">%</span>
                                                 </div>
                                             </div>
+                                            <p *ngIf="fieldErrors['getDiscountPercentage']"
+                                                class="flex items-center gap-1 text-xs text-red-500">
+                                                <span class="material-symbols-outlined text-[14px]">error</span>
+                                                {{ fieldErrors['getDiscountPercentage'] }}
+                                            </p>
                                         </label>
                                     </div>
                                 </div>
@@ -294,6 +341,7 @@
                             </div>
                             <div class="space-y-5 p-6">
                                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
                                     <!-- startDate -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -303,8 +351,15 @@
                                                 class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">startDate</span>
                                         </div>
                                         <input type="datetime-local" [(ngModel)]="startDate" name="startDate"
-                                            class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            [ngClass]="fieldErrors['startDate'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                            class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:ring-2 border" />
+                                        <p *ngIf="fieldErrors['startDate']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['startDate'] }}
+                                        </p>
                                     </label>
+
                                     <!-- endDate -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -314,9 +369,16 @@
                                                 class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">endDate</span>
                                         </div>
                                         <input type="datetime-local" [(ngModel)]="endDate" name="endDate"
-                                            class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                            [ngClass]="fieldErrors['endDate'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                            class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 px-4 text-sm outline-none transition-all focus:ring-2 border" />
+                                        <p *ngIf="fieldErrors['endDate']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['endDate'] }}
+                                        </p>
                                     </label>
                                 </div>
+
                                 <!-- currency -->
                                 <label class="flex flex-col gap-1.5 max-w-xs">
                                     <div class="flex items-center justify-between">
@@ -346,8 +408,8 @@
                                             <span class="material-symbols-outlined">target</span>
                                         </div>
                                         <div>
-                                            <h3 class="text-base font-bold text-[#111318]">Targeting &amp; Min. Purchase
-                                            </h3>
+                                            <h3 class="text-base font-bold text-[#111318]">Targeting &amp; Min.
+                                                Purchase</h3>
                                             <p class="text-xs text-[#616c89]">3 fields: <code
                                                     class="text-[#1e3b8a]">tagetType</code> · <code
                                                     class="text-[#1e3b8a]">targetId</code> · <code
@@ -387,7 +449,8 @@
                                             <span *ngSwitchCase="'store'">Valid for all products in the catalog.</span>
                                             <span *ngSwitchCase="'category'">Limit discount to a specific
                                                 category.</span>
-                                            <span *ngSwitchCase="'product'">Limit discount to a specific product.</span>
+                                            <span *ngSwitchCase="'product'">Limit discount to a specific
+                                                product.</span>
                                             <span *ngSwitchCase="'customer'">Limit discount to a specific
                                                 customer.</span>
                                         </ng-container>
@@ -428,7 +491,8 @@
                                     <div *ngIf="!isLoadingTargetIds && !targetIdError" class="relative">
                                         <select [(ngModel)]="targetId" name="targetId"
                                             [disabled]="targetIdOptions.length === 0"
-                                            class="h-11 w-full appearance-none rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-4 pr-10 text-sm font-medium outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20 disabled:cursor-not-allowed disabled:opacity-50">
+                                            [ngClass]="fieldErrors['targetId'] ? 'border-red-400 focus:border-red-500' : 'border-[#dbdee6] focus:border-[#1e3b8a]'"
+                                            class="h-11 w-full appearance-none rounded-lg bg-[#f6f6f8]/50 pl-4 pr-10 text-sm font-medium outline-none transition-all focus:ring-2 focus:ring-[#1e3b8a]/20 disabled:cursor-not-allowed disabled:opacity-50 border">
                                             <option value="00000000-0000-0000-0000-000000000000" disabled>
                                                 {{ targetIdOptions.length === 0
                                                 ? '— No ' + (targeting === 'category' ? 'categories' : targeting ===
@@ -446,8 +510,14 @@
                                         </div>
                                     </div>
 
+                                    <p *ngIf="fieldErrors['targetId']"
+                                        class="mt-1 flex items-center gap-1 text-xs text-red-500">
+                                        <span class="material-symbols-outlined text-[14px]">error</span>
+                                        {{ fieldErrors['targetId'] }}
+                                    </p>
+
                                     <!-- Selected ID preview -->
-                                    <p *ngIf="targetId !== '00000000-0000-0000-0000-000000000000'"
+                                    <p *ngIf="targetId !== '00000000-0000-0000-0000-000000000000' && !fieldErrors['targetId']"
                                         class="mt-1.5 flex items-center gap-1.5 text-xs text-[#616c89]">
                                         <span
                                             class="material-symbols-outlined text-[14px] text-green-500">check_circle</span>
@@ -491,7 +561,8 @@
                                         <div class="rounded-lg bg-[#1e3b8a]/10 p-2 text-[#1e3b8a]"><span
                                                 class="material-symbols-outlined">tune</span></div>
                                         <div>
-                                            <h3 class="text-base font-bold text-[#111318]">Usage Limits &amp; Rules</h3>
+                                            <h3 class="text-base font-bold text-[#111318]">Usage Limits &amp; Rules
+                                            </h3>
                                             <p class="text-xs text-[#616c89]">
                                                 5 fields: <code class="text-[#1e3b8a]">minimumQuantity</code> ·
                                                 <code class="text-[#1e3b8a]">maximumDiscountAmount</code> · <code
@@ -508,6 +579,7 @@
                             </div>
                             <div class="space-y-6 p-6">
                                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
                                     <!-- minimumQuantity -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -522,10 +594,18 @@
                                             </div>
                                             <input type="number" [(ngModel)]="minimumQuantity" name="minimumQuantity"
                                                 placeholder="0"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['minimumQuantity'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:ring-2 border" />
                                         </div>
-                                        <span class="text-xs text-[#616c89]">Min. items required in cart.</span>
+                                        <p *ngIf="fieldErrors['minimumQuantity']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['minimumQuantity'] }}
+                                        </p>
+                                        <span *ngIf="!fieldErrors['minimumQuantity']"
+                                            class="text-xs text-[#616c89]">Min. items required in cart.</span>
                                     </label>
+
                                     <!-- maximumDiscountAmount -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -541,10 +621,18 @@
                                             </div>
                                             <input type="number" [(ngModel)]="maximumDiscountAmount"
                                                 name="maximumDiscountAmount" placeholder="0.00"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['maximumDiscountAmount'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:ring-2 border" />
                                         </div>
-                                        <span class="text-xs text-[#616c89]">Leave empty for no cap.</span>
+                                        <p *ngIf="fieldErrors['maximumDiscountAmount']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['maximumDiscountAmount'] }}
+                                        </p>
+                                        <span *ngIf="!fieldErrors['maximumDiscountAmount']"
+                                            class="text-xs text-[#616c89]">Leave empty for no cap.</span>
                                     </label>
+
                                     <!-- totalUsageLimit -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -559,11 +647,18 @@
                                             </div>
                                             <input type="number" [(ngModel)]="usageLimit" name="totalUsageLimit"
                                                 placeholder="e.g. 100"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['usageLimit'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:ring-2 border" />
                                         </div>
-                                        <span class="text-xs text-[#616c89]">Max global uses. Leave empty for
-                                            unlimited.</span>
+                                        <p *ngIf="fieldErrors['usageLimit']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['usageLimit'] }}
+                                        </p>
+                                        <span *ngIf="!fieldErrors['usageLimit']" class="text-xs text-[#616c89]">Max
+                                            global uses. Leave empty for unlimited.</span>
                                     </label>
+
                                     <!-- usageLimitPerCustomer -->
                                     <label class="flex flex-col gap-1.5">
                                         <div class="flex items-center justify-between">
@@ -579,9 +674,16 @@
                                             </div>
                                             <input type="number" [(ngModel)]="usageLimitPerCustomer"
                                                 name="usageLimitPerCustomer" placeholder="e.g. 1"
-                                                class="h-11 w-full rounded-lg border border-[#dbdee6] bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20" />
+                                                [ngClass]="fieldErrors['usageLimitPerCustomer'] ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-[#dbdee6] focus:border-[#1e3b8a] focus:ring-[#1e3b8a]/20'"
+                                                class="h-11 w-full rounded-lg bg-[#f6f6f8]/50 pl-10 pr-4 text-sm outline-none transition-all focus:ring-2 border" />
                                         </div>
-                                        <span class="text-xs text-[#616c89]">Max uses per individual customer.</span>
+                                        <p *ngIf="fieldErrors['usageLimitPerCustomer']"
+                                            class="flex items-center gap-1 text-xs text-red-500">
+                                            <span class="material-symbols-outlined text-[14px]">error</span>
+                                            {{ fieldErrors['usageLimitPerCustomer'] }}
+                                        </p>
+                                        <span *ngIf="!fieldErrors['usageLimitPerCustomer']"
+                                            class="text-xs text-[#616c89]">Max uses per individual customer.</span>
                                     </label>
                                 </div>
 
@@ -592,8 +694,8 @@
                                     class="flex items-center justify-between rounded-xl border border-[#dbdee6] bg-[#f6f6f8]/50 p-4">
                                     <div>
                                         <div class="flex items-center gap-2">
-                                            <p class="text-sm font-semibold text-[#111318]">Combine with other discounts
-                                            </p>
+                                            <p class="text-sm font-semibold text-[#111318]">Combine with other
+                                                discounts</p>
                                             <span
                                                 class="rounded bg-[#eff6ff] px-1.5 py-0.5 font-mono text-[10px] font-bold text-[#1e3b8a] border border-blue-100">canCombineWithOtherDiscounts</span>
                                         </div>
@@ -633,7 +735,8 @@
                                     <p class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
                                         code</p>
                                     <code
-                                        class="rounded border border-[#dbdee6] bg-[#f6f6f8] px-2 py-0.5 font-mono text-sm font-bold text-[#1e3b8a]">{{ summaryCode }}</code>
+                                        class="rounded border border-[#dbdee6] bg-[#f6f6f8] px-2 py-0.5 font-mono text-sm font-bold text-[#1e3b8a]">{{
+                                        summaryCode }}</code>
                                 </div>
                                 <div>
                                     <p class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
@@ -649,8 +752,8 @@
                                     <p class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
                                         discountType</p>
                                     <p class="text-sm font-medium text-[#111318]">{{ summaryTypeLabel }} <span
-                                            class="text-xs text-[#94a3b8]">({{ discountTypeMap[selectedType] }})</span>
-                                    </p>
+                                            class="text-xs text-[#94a3b8]">({{ discountTypeMap[selectedType]
+                                            }})</span></p>
                                 </div>
                                 <div>
                                     <p class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
@@ -722,7 +825,8 @@
                                         targets[].targetId</p>
                                     <p class="text-sm font-medium text-[#1e3b8a]">{{ selectedTargetLabel }}</p>
                                     <p *ngIf="targeting !== 'store'"
-                                        class="font-mono text-[10px] text-[#94a3b8] break-all mt-0.5">{{ targetId }}</p>
+                                        class="font-mono text-[10px] text-[#94a3b8] break-all mt-0.5">{{ targetId }}
+                                    </p>
                                 </div>
                                 <div>
                                     <p class="mb-1 text-[10px] font-semibold uppercase tracking-wider text-[#616c89]">
@@ -803,7 +907,8 @@
                             <div class="flex items-center justify-between px-5 py-3">
                                 <span class="font-mono text-xs text-[#616c89]">code</span>
                                 <code
-                                    class="rounded bg-[#f6f6f8] px-2 py-0.5 font-mono text-xs font-bold text-[#111318]">{{ summaryCode }}</code>
+                                    class="rounded bg-[#f6f6f8] px-2 py-0.5 font-mono text-xs font-bold text-[#111318]">{{
+                                    summaryCode }}</code>
                             </div>
                             <div class="flex items-center justify-between px-5 py-3">
                                 <span class="font-mono text-xs text-[#616c89]">discountType</span>

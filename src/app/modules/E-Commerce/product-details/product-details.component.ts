@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NavbarECommerceComponent } from "../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 import { forkJoin } from 'rxjs';
+import { marked } from 'marked';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 interface ProductImage {
   url: string;
@@ -39,7 +41,8 @@ export class ProductDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private productService: ProductService,
-    private categoriesService: CategoriesService
+    private categoriesService: CategoriesService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit() {
@@ -73,7 +76,7 @@ export class ProductDetailsComponent implements OnInit {
         this.product = {
           name: p.name ?? '—',
           tagline: p.shortDescription ?? '',
-          description: p.fullDescription ?? '',
+          description: this.sanitizer.bypassSecurityTrustHtml(marked(p.fullDescription ?? '') as string),
           productType: p.productType ?? '—',
           category: categoryName,
           rating: 5,
@@ -110,7 +113,7 @@ export class ProductDetailsComponent implements OnInit {
     tagline: '',
     category: '',
     productType: '',
-    description: '',
+    description: '' as SafeHtml,
     rating: 5,
     reviewsCount: 0,
     currentPrice: 0,

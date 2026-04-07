@@ -1,16 +1,9 @@
-import { AllowAccess, CreatePermissionRequest, PermissionService, Resource } from './../../../../../core/services/permission/permission.service';
+import { AllowAccess, CreatePermissionRequest, PermissionService, PermissionName, PERMISSION_GROUPS } from './../../../../../core/services/permission/permission.service';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SiedeAdminComponent } from "../../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
-
-interface Module {
-  label: string;
-  value: Resource;
-  checked: boolean;
-}
-
 
 @Component({
   selector: 'app-create-permission',
@@ -20,15 +13,16 @@ interface Module {
 })
 export class CreatePermissionComponent {
 
-  private readonly _ToastrService = inject(ToastrService)
-  permissionName = '';
-  description = '';
+  private readonly _ToastrService = inject(ToastrService);
 
+  permissionName: PermissionName | '' = '';
+  description = '';
   isLoading = false;
   successMessage = '';
   errorMessage = '';
 
-  // allowAccess — كل واحدة false by default، تبقى true لو المستخدم شيكها
+  permissionGroups = PERMISSION_GROUPS;
+
   allowAccess: AllowAccess = {
     allowCreate: false,
     allowDelete: false,
@@ -36,53 +30,33 @@ export class CreatePermissionComponent {
     allowView: false,
   };
 
-  modules: Module[] = Object.keys(Resource)
-    .filter(key => isNaN(Number(key)))
-    .map(key => ({
-      label: key,
-      value: Resource[key as keyof typeof Resource] as Resource,
-      checked: false,
-    }));
-
-  navItems = [
-    { icon: 'dashboard', label: 'Dashboard', active: false },
-    { icon: 'group', label: 'Users', active: false },
-    { icon: 'lock_open', label: 'Permissions', active: true },
-    { icon: 'manage_accounts', label: 'Roles', active: false },
-  ];
-
-  systemItems = [
-    { icon: 'settings', label: 'Settings' },
-    { icon: 'history_edu', label: 'Audit Logs' },
-  ];
-
   constructor(private permissionService: PermissionService) { }
 
   onSubmit(): void {
-    if (!this.permissionName.trim() || this.isLoading) return;
+    if (!this.permissionName || this.isLoading) return;
 
     this.isLoading = true;
     this.successMessage = '';
     this.errorMessage = '';
 
     const payload: CreatePermissionRequest = {
-      name: this.permissionName.trim(),
+      name: this.permissionName,
       description: this.description.trim(),
-      resources: this.modules.filter(m => m.checked).map(m => m.value),
+      resources: [],
       allowAccess: { ...this.allowAccess },
     };
 
     this.permissionService.createPermission(payload).subscribe({
       next: (res) => {
-        console.log(res)
+        console.log(res);
         this.isLoading = false;
-        this._ToastrService.success('Permission created successfully!', 'successfully! ✅')
+        this._ToastrService.success('Permission created successfully!', 'successfully! ✅');
         this.onCancel();
       },
       error: (err) => {
-        console.log(err)
+        console.log(err);
         this.isLoading = false;
-        this._ToastrService.error('Permission created failed!', 'failed! ❌')
+        this._ToastrService.error('Permission created failed!', 'failed! ❌');
       },
     });
   }
@@ -90,7 +64,6 @@ export class CreatePermissionComponent {
   onCancel(): void {
     this.permissionName = '';
     this.description = '';
-    this.modules.forEach(m => (m.checked = false));
     this.allowAccess = {
       allowCreate: false,
       allowDelete: false,
