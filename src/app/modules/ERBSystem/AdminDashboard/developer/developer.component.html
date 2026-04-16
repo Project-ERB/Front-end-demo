@@ -1,0 +1,477 @@
+<div class="flex h-screen w-full bg-white text-gray-900 font-sans overflow-hidden">
+
+  <!-- Sidebar -->
+  <aside class="w-60 flex flex-col border-r border-gray-100 bg-gray-50/30">
+    <div class="p-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-bold">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5">
+            </path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="font-bold text-sm tracking-tight">Precision Auth</h1>
+          <p class="text-xs text-gray-500">Enterprise .NET v8.0</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-4 py-4 space-y-1">
+      <ng-container *ngFor="let item of navItems">
+        <a href="#" [class]="item.active ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors">
+          <div [class]="item.active ? 'bg-blue-600' : 'bg-gray-400'" class="w-4 h-4 rounded-sm flex-shrink-0"></div>
+          {{ item.name }}
+        </a>
+      </ng-container>
+    </nav>
+
+    <div class="p-4 border-t border-gray-100 space-y-1">
+      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm">
+        <div class="w-4 h-4 bg-gray-400 rounded-sm"></div> System Health
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm">
+        <div class="w-4 h-4 bg-gray-400 rounded-sm"></div> Settings
+      </a>
+    </div>
+  </aside>
+
+  <!-- Endpoints List -->
+  <div class="w-[340px] flex flex-col border-r border-gray-200 bg-gray-50/10">
+    <div class="px-6 py-5 flex items-center justify-between border-b border-gray-100">
+      <h2 class="text-xs font-semibold text-gray-500 tracking-wider">REGISTRY</h2>
+      <button (click)="openModal()" class="text-sm font-medium text-blue-600 hover:text-blue-700">
+        Register New
+      </button>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex-1 flex items-center justify-center">
+      <p class="text-sm text-gray-400 animate-pulse">Loading endpoints...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="flex-1 flex items-center justify-center px-6">
+      <p class="text-sm text-red-400 text-center">Failed to load endpoints. Please try again.</p>
+    </div>
+
+    <!-- Endpoints -->
+    <div *ngIf="!loading && !error" class="flex-1 overflow-y-auto">
+      <div *ngFor="let endpoint of endpoints" (click)="selectEndpoint(endpoint)"
+        [class]="endpoint.selected ? 'bg-gray-100/80 border-l-4 border-blue-600' : 'border-l-4 border-transparent hover:bg-gray-50'"
+        class="p-5 border-b border-gray-100 cursor-pointer transition-colors relative">
+        <div class="flex items-center justify-between mb-2">
+          <span [ngClass]="getMethodColor(endpoint.method)"
+            class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
+            {{ endpoint.method }}
+          </span>
+          <div class="flex items-center gap-1.5">
+            <div [class]="endpoint.isActive ? 'bg-blue-600' : 'bg-gray-400'" class="w-1.5 h-1.5 rounded-full"></div>
+            <span class="text-[10px] font-semibold text-gray-600 tracking-wider">
+              {{ endpoint.isActive ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+          </div>
+        </div>
+        <p class="font-mono text-sm font-medium text-gray-900 mb-1">{{ endpoint.path }}</p>
+        <p class="text-xs text-gray-500 truncate">{{ endpoint.description || 'API Endpoint' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col bg-white">
+
+    <!-- Header -->
+    <header class="h-16 border-b border-gray-100 flex items-center justify-between px-8 bg-white">
+      <div class="relative w-96">
+        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input type="text" [(ngModel)]="headerSearch" placeholder="SEARCH ENDPOINTS (CMD + K)"
+          class="w-full pl-9 pr-4 py-2 bg-gray-50 border-none rounded-md text-xs font-mono tracking-wide focus:ring-2 focus:ring-blue-100 outline-none">
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+            </path>
+          </svg>
+        </button>
+        <button class="text-gray-400 hover:text-gray-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+            </path>
+          </svg>
+        </button>
+        <div class="w-8 h-8 rounded-full bg-gray-300 overflow-hidden border border-gray-200">
+          <img src="https://i.pravatar.cc/150?img=11" alt="User" class="w-full h-full object-cover">
+        </div>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="flex-1 overflow-y-auto pb-24">
+      <div class="max-w-5xl mx-auto px-8 pt-10">
+
+        <!-- Endpoint Title -->
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-4">
+            <span [ngClass]="getMethodColor(selectedEndpoint?.method || 'GET')"
+              class="px-3 py-1 rounded text-sm font-bold tracking-wide">
+              {{ selectedEndpoint?.method || 'GET' }}
+            </span>
+            <h1 class="text-3xl font-mono font-bold text-gray-900">
+              {{ selectedEndpoint?.path || '/api/orders/{id}' }}
+            </h1>
+          </div>
+
+          <!-- Active Toggle -->
+          <div class="flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-full pl-4 pr-1 py-1">
+            <span class="text-xs font-semibold text-gray-700 tracking-wider">
+              {{ selectedEndpoint?.isActive ? 'ACTIVE' : 'INACTIVE' }}
+            </span>
+            <div [class]="selectedEndpoint?.isActive ? 'bg-blue-600' : 'bg-gray-300'"
+              class="w-10 h-6 rounded-full relative cursor-pointer shadow-inner transition-colors">
+              <div [class]="selectedEndpoint?.isActive ? 'right-1' : 'left-1'"
+                class="absolute top-1 w-4 h-4 bg-white rounded-full transition-all"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p class="text-gray-600 text-sm leading-relaxed max-w-3xl mb-12">
+          {{ selectedEndpoint?.description || 'No description available for this endpoint.' }}
+        </p>
+
+        <!-- Allowed Roles -->
+        <div class="mb-10">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z">
+              </path>
+            </svg>
+            <h3 class="text-xs font-bold text-gray-500 tracking-widest uppercase">Allowed Roles</h3>
+          </div>
+          <div class="grid grid-cols-4 gap-3">
+            <button *ngFor="let role of allowedRoles" (click)="toggleRole(role)"
+              [class]="role.assigned ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300'"
+              class="border rounded-md px-4 py-4 flex items-center justify-between transition-all duration-200">
+              <span class="font-medium text-sm">{{ role.name }}</span>
+              <svg *ngIf="role.assigned" class="w-4 h-4 text-white" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <svg *ngIf="!role.assigned" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Required Permissions -->
+        <div class="mb-12">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z"
+                clip-rule="evenodd"></path>
+            </svg>
+            <h3 class="text-xs font-bold text-gray-500 tracking-widest uppercase">Required Permissions</h3>
+          </div>
+          <div class="grid grid-cols-4 gap-3">
+            <button *ngFor="let perm of requiredPermissions" (click)="togglePermission(perm)"
+              [class]="perm.assigned ? 'bg-green-50 text-green-700 border-green-200' : 'bg-white text-gray-700 border-gray-200 hover:border-green-300'"
+              class="border rounded-md px-4 py-4 flex items-center justify-between transition-all duration-200">
+              <span class="font-medium text-sm">{{ perm.name }}</span>
+              <div *ngIf="perm.assigned" class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
+                <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <svg *ngIf="!perm.assigned" class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Authorized Endpoints -->
+        <div class="mb-12">
+          <div class="flex items-center gap-2 mb-4">
+            <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clip-rule="evenodd">
+              </path>
+            </svg>
+            <h3 class="text-xs font-bold text-gray-500 tracking-widest uppercase">Authorized Endpoints</h3>
+          </div>
+
+          <!-- Loading -->
+          <div *ngIf="loadingAuthorized" class="text-sm text-gray-400 animate-pulse">
+            Loading authorized endpoints...
+          </div>
+
+          <!-- Table -->
+          <div *ngIf="!loadingAuthorized" class="border border-gray-200 rounded-lg overflow-hidden">
+            <table class="w-full text-sm">
+              <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th class="text-left px-4 py-3 text-xs font-bold text-gray-500 tracking-widest uppercase">Method</th>
+                  <th class="text-left px-4 py-3 text-xs font-bold text-gray-500 tracking-widest uppercase">Path</th>
+                  <th class="text-left px-4 py-3 text-xs font-bold text-gray-500 tracking-widest uppercase">Status</th>
+                  <th class="text-left px-4 py-3 text-xs font-bold text-gray-500 tracking-widest uppercase">Type</th>
+                  <th class="text-left px-4 py-3 text-xs font-bold text-gray-500 tracking-widest uppercase">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ep of filteredAuthorizedEndpoints; let i = index"
+                  [class]="i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'"
+                  class="border-b border-gray-100 last:border-0 group transition-colors hover:bg-blue-50/30">
+
+                  <td class="px-4 py-3">
+                    <span [ngClass]="getMethodColor(ep.method)"
+                      class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wide">
+                      {{ ep.method }}
+                    </span>
+                  </td>
+
+                  <td class="px-4 py-3 font-mono text-sm text-gray-900">{{ ep.path }}</td>
+
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-1.5">
+                      <div [class]="ep.isActive ? 'bg-blue-600' : 'bg-gray-400'" class="w-1.5 h-1.5 rounded-full"></div>
+                      <span class="text-[10px] font-semibold text-gray-600 tracking-wider">
+                        {{ ep.isActive ? 'ACTIVE' : 'INACTIVE' }}
+                      </span>
+                    </div>
+                  </td>
+
+                  <td class="px-4 py-3 text-xs text-gray-400 font-mono">{{ ep.__typename }}</td>
+
+                  <!-- Actions -->
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-2   transition-opacity duration-200">
+                      <!-- group-hover:opacity-100 opacity-0 -->
+                      <!-- Edit Button (wrench/settings icon) -->
+                      <button (click)="openEditModal(ep)" title="Edit Endpoint"
+                        class="p-1.5 rounded-md bg-blue-50 text-blue-500 hover:bg-blue-100 hover:text-blue-700 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                          </path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+                          </path>
+                        </svg>
+                      </button>
+
+                      <!-- Delete Button -->
+                      <button (click)="deleteEndpoint(ep.id)" title="Delete Endpoint"
+                        class="p-1.5 rounded-md bg-red-50 text-red-400 hover:bg-red-100 hover:text-red-600 transition-colors">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                          </path>
+                        </svg>
+                      </button>
+
+                    </div>
+                  </td>
+
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf="filteredAuthorizedEndpoints.length === 0" class="text-center py-8 text-sm text-gray-400">
+              No authorized endpoints found.
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="authorizedEndpoints.length === 0" class="text-center py-8 text-sm text-gray-400">
+              No authorized endpoints found.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <div
+    class="fixed bottom-0 right-0 w-[calc(100%-15rem-21.25rem)] bg-white border-t border-gray-200 px-8 py-4 flex items-center justify-between z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+    <div class="flex items-center gap-8">
+      <div class="flex items-center gap-2">
+        <span class="text-lg font-bold text-blue-600">{{ assignedRolesCount }}</span>
+        <span class="text-xs font-bold text-gray-500 tracking-widest uppercase leading-tight">Roles<br>Assigned</span>
+      </div>
+      <div class="w-px h-8 bg-gray-200"></div>
+      <div class="flex items-center gap-2">
+        <span class="text-lg font-bold text-blue-600">{{ assignedPermissionsCount }}</span>
+        <span
+          class="text-xs font-bold text-gray-500 tracking-widest uppercase leading-tight">Permissions<br>Required</span>
+      </div>
+      <div class="w-px h-8 bg-gray-200"></div>
+      <div class="flex items-center gap-2">
+        <div [class]="selectedEndpoint?.isActive ? 'bg-blue-600' : 'bg-gray-400'" class="w-2 h-2 rounded-full"></div>
+        <span class="text-xs font-bold text-gray-600 tracking-widest uppercase">
+          {{ selectedEndpoint?.isActive ? 'ACTIVE' : 'INACTIVE' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button class="text-sm font-bold text-gray-900 hover:text-black tracking-wide mr-2">DISCARD</button>
+      <button
+        class="bg-gray-900 text-white hover:bg-black px-4 py-2.5 rounded-md text-xs font-bold tracking-wider flex items-center gap-3 transition-colors shadow-lg">
+        QUICK NAV
+        <div class="flex gap-1">
+          <span class="bg-gray-700 px-1.5 py-0.5 rounded text-[10px]">⌘</span>
+          <span class="bg-gray-700 px-1.5 py-0.5 rounded text-[10px]">K</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  CREATE MODAL                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div *ngIf="showModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+  <div class="bg-white w-[400px] rounded-lg p-6 shadow-xl">
+
+    <h2 class="text-lg font-bold mb-4">Create Endpoint</h2>
+
+    <div>
+      <select [(ngModel)]="newEndpoint.path" class="w-full border p-2 rounded mb-3">
+        <option [ngValue]="null" disabled>Select path</option>
+        <option *ngFor="let point of endpoints" [value]="point.path">{{ point.path }}</option>
+      </select>
+    </div>
+
+    <div>
+      <select [(ngModel)]="newEndpoint.method" class="w-full border p-2 rounded mb-4">
+        <option [ngValue]="null" disabled>Select method</option>
+        <option [value]="0">GET</option>
+        <option [value]="1">POST</option>
+        <option [value]="2">PUT</option>
+        <option [value]="3">DELETE</option>
+      </select>
+    </div>
+
+    <select [(ngModel)]="newEndpoint.roles" class="w-full border p-2 rounded mb-3">
+      <option [ngValue]="null" disabled>Select Role</option>
+      <option *ngFor="let role of rolesList" [value]="role">{{ role }}</option>
+    </select>
+
+    <select [(ngModel)]="newEndpoint.permissions" class="w-full border p-2 rounded mb-4">
+      <option [ngValue]="null" disabled>Select Permission</option>
+      <option *ngFor="let perm of permissionsList" [value]="perm">{{ perm }}</option>
+    </select>
+
+    <div class="flex justify-end gap-2">
+      <button (click)="closeModal()" class="px-4 py-2 text-gray-600">Cancel</button>
+      <button (click)="submitEndpoint()" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  EDIT MODAL                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div *ngIf="showEditModal && editingEndpoint" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+  <div class="bg-white w-[420px] rounded-xl shadow-2xl overflow-hidden">
+
+    <!-- Modal Header -->
+    <div class="bg-gray-900 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+            </path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z">
+            </path>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-white font-bold text-sm">Edit Endpoint</h2>
+          <p class="text-gray-400 text-xs font-mono">{{ editingEndpoint.path }}</p>
+        </div>
+      </div>
+      <button (click)="closeEditModal()" class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 space-y-4">
+
+      <!-- Path -->
+      <div>
+        <label class="text-xs font-bold text-gray-500 tracking-widest uppercase mb-1.5 block">Path</label>
+        <input [(ngModel)]="editingEndpoint.path" type="text"
+          class="w-full border border-gray-200 rounded-md px-3 py-2.5 font-mono text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300" />
+      </div>
+
+      <!-- Method -->
+      <div>
+        <label class="text-xs font-bold text-gray-500 tracking-widest uppercase mb-1.5 block">Method</label>
+        <div class="grid grid-cols-4 gap-2">
+          <button *ngFor="let m of ['GET','POST','PUT','DELETE']" (click)="editingEndpoint.method = m" [class]="editingEndpoint.method === m
+              ? getMethodColor(m) + ' border-2 border-current font-bold shadow-sm scale-105'
+              : 'bg-gray-50 text-gray-500 border border-gray-200 hover:bg-gray-100'"
+            class="py-2 rounded-md text-xs font-bold tracking-wide transition-all">
+            {{ m }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Toggle -->
+      <div>
+        <label class="text-xs font-bold text-gray-500 tracking-widest uppercase mb-1.5 block">Status</label>
+        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-md border border-gray-200 cursor-pointer"
+          (click)="editingEndpoint.isActive = !editingEndpoint.isActive">
+          <div [class]="editingEndpoint.isActive ? 'bg-blue-600' : 'bg-gray-300'"
+            class="w-10 h-6 rounded-full relative transition-colors flex-shrink-0">
+            <div [class]="editingEndpoint.isActive ? 'right-1' : 'left-1'"
+              class="absolute top-1 w-4 h-4 bg-white rounded-full transition-all shadow-sm"></div>
+          </div>
+          <span [class]="editingEndpoint.isActive ? 'text-blue-600' : 'text-gray-400'"
+            class="text-xs font-bold tracking-widest uppercase transition-colors">
+            {{ editingEndpoint.isActive ? 'ACTIVE' : 'INACTIVE' }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+      <button (click)="closeEditModal()"
+        class="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 tracking-wide transition-colors">
+        CANCEL
+      </button>
+      <button (click)="saveEdit()"
+        class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-md text-xs font-bold tracking-wider transition-colors shadow-sm">
+        SAVE CHANGES
+      </button>
+    </div>
+
+  </div>
+</div>

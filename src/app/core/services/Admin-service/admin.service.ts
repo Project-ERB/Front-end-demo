@@ -76,7 +76,7 @@ export class AdminService {
   private get headers(): HttpHeaders {
     return new HttpHeaders({
       Authorization: `Bearer ${this.getToken()}`,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     });
   }
 

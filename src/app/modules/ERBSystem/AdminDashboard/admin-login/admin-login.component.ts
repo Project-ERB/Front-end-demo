@@ -1,8 +1,8 @@
+import { AuthService } from './../../../../core/services/Auth/auth.service';
 import { Component, ElementRef, inject, ViewChild, viewChild } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RxReactiveFormsModule, RxwebValidators } from '@rxweb/reactive-form-validators';
-import { AuthService } from '../../../../core/services/Auth/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
@@ -32,7 +32,10 @@ export class AdminLoginComponent {
     rememberMe: []
   })
 
-
+ngOnInit(): void {
+console.log(this._authService.accessToken);
+  
+}
   LoginSubmit() {
     if (this.loginform.valid) {
       this.isLoading = true;

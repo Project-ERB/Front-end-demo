@@ -14,6 +14,8 @@ import { headerInterceptor } from './core/interceptors/Headers/header-intercepto
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache } from '@apollo/client/cache';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,11 +24,16 @@ export const appConfig: ApplicationConfig = {
 
     provideApollo(() => {
       const httpLink = inject(HttpLink);
+      const platformId = inject(PLATFORM_ID);
 
+
+      const uri = isPlatformBrowser(platformId)
+        ? 'https://erplocal.runasp.net/GraphQl/'
+        : 'hhttps://erplocal.runasp.net/GraphQl/';
       return {
-        link: httpLink.create({ uri: '/graphql' }),
+        link: httpLink.create({ uri }),
         cache: new InMemoryCache(),
-        // other options...
+        ssrMode: !isPlatformBrowser(platformId),
       };
     }),
 

@@ -173,6 +173,11 @@ export const routes: Routes = [
         title: 'super-admin',
       },
       {
+        path: 'developer',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/developer/developer.component').then((m) => m.DeveloperComponent),
+        title: 'developer',
+      },
+      {
         path: 'rolemanagement',
         loadComponent: () => import('./modules/ERBSystem/HR/rolemanagement/rolemanagement.component').then((R) => R.RolemanagementComponent),
         title: 'rolemanagement',
