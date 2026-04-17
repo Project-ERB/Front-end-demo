@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ApolloservicesService } from '../../../../core/services/apollo/apolloservices.service';
 import { PermissionService } from '../../../../core/services/permission/permission.service';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
+import { Router } from '@angular/router';
 
 interface Endpoint {
   method: string;
@@ -45,18 +46,29 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   constructor(
     private _developerService: DeveloperService,
     private __ApolloservicesService: ApolloservicesService,
-    private _PermissionService: PermissionService
+    private _PermissionService: PermissionService,
+    private _Router: Router
   ) { }
+
+  goToDetails(id: string) {
+    this._Router.navigate(['/Developer-Details', id]);
+  }
 
   pageSize = 10;
   currentCursor: string | null = null;
-  previousCursors: string[] = [];  // stack للـ back navigation
+  previousCursors: string[] = [];
   pageInfo: any = null;
   totalCount = 0;
 
+  authorizedPageSize = 10;
+  authorizedCurrentCursor: string | null = null;
+  authorizedPreviousCursors: string[] = [];
+  authorizedPageInfo: any = null;
+  authorizedTotalCount = 0;
+
   endpoints: Endpoint[] = [];
-  rolesList: string[] = [];
-  permissionsList: string[] = [];
+  rolesList: Role[] = [];
+  permissionsList: Permission[] = [];
   authorizedEndpoints: AuthorizedEndpoint[] = [];
   loadingAuthorized = true;
   loading = true;
@@ -70,6 +82,10 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   // Edit Modal
   showEditModal = false;
   editingEndpoint: AuthorizedEndpoint | null = null;
+
+  // ─── Toggle Status ───────────────────────────────────────────
+  showToggleConfirm = false;
+  pendingToggleEndpoint: AuthorizedEndpoint | null = null;
 
   ngOnInit() {
     this.loadEndpoints();
@@ -92,21 +108,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     { name: 'Permissions', icon: 'lock-closed', active: false }
   ];
 
-  allowedRoles: Role[] = [
-    { name: 'Administrator', assigned: true },
-    { name: 'System Manager', assigned: true },
-    { name: 'Operations', assigned: true },
-    { name: 'Developer', assigned: false },
-    { name: 'Auditor', assigned: false },
-    { name: 'Support Tier 2', assigned: false }
-  ];
 
-  requiredPermissions: Permission[] = [
-    { name: 'Orders.Read', assigned: true },
-    { name: 'Finance.View', assigned: true },
-    { name: 'Orders.Write', assigned: false },
-    { name: 'Inventory.Read', assigned: false }
-  ];
 
   loadEndpoints(after?: string) {
     this.loading = true;
@@ -146,13 +148,19 @@ export class DeveloperComponent implements OnInit, OnDestroy {
 
   loadRoles() {
     this.__ApolloservicesService.getroles().subscribe((res: any) => {
-      this.rolesList = res?.data?.roles?.nodes.map((r: any) => r.name);
+      this.rolesList = res?.data?.roles?.nodes.map((r: any) => ({
+        name: r.name,
+        assigned: false,
+      })) ?? [];
     });
   }
 
   loadPermissions() {
     this._PermissionService.getPermissions().subscribe((res: any) => {
-      this.permissionsList = res?.map((p: any) => p.name);
+      this.permissionsList = res?.map((p: any) => ({
+        name: p.name,
+        assigned: false,
+      })) ?? [];
     });
   }
 
@@ -195,19 +203,34 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   }
 
   // ─── Authorized Endpoints ────────────────────────────────────
-  loadAuthorizedEndpoints() {
-    this._developerService.getAuthorizedEndpoints()
+  loadAuthorizedEndpoints(after?: string) {
+    this._developerService.getAuthorizedEndpoints(this.authorizedPageSize, after)
       .subscribe(({ data, loading }: any) => {
         this.loadingAuthorized = loading;
         if (data?.authorizedEndpoints?.nodes) {
           this.authorizedEndpoints = data.authorizedEndpoints.nodes;
+          this.authorizedPageInfo = data.authorizedEndpoints.pageInfo;
+          this.authorizedTotalCount = data.authorizedEndpoints.totalCount;
         }
       });
   }
 
+  nextAuthorizedPage() {
+    if (!this.authorizedPageInfo?.hasNextPage) return;
+    this.authorizedPreviousCursors.push(this.authorizedCurrentCursor!);
+    this.authorizedCurrentCursor = this.authorizedPageInfo.endCursor;
+    this.loadAuthorizedEndpoints(this.authorizedCurrentCursor!);
+  }
+
+  prevAuthorizedPage() {
+    if (!this.authorizedPreviousCursors.length) return;
+    this.authorizedCurrentCursor = this.authorizedPreviousCursors.pop() ?? null;
+    this.loadAuthorizedEndpoints(this.authorizedCurrentCursor ?? undefined);
+  }
+
   // ─── Edit Modal ──────────────────────────────────────────────
   openEditModal(ep: AuthorizedEndpoint) {
-    this.editingEndpoint = { ...ep }; // clone
+    this.editingEndpoint = { ...ep };
     this.showEditModal = true;
   }
 
@@ -216,8 +239,63 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.editingEndpoint = null;
   }
 
+  saveEdit() {
+    if (!this.editingEndpoint) return;
+    // implement save logic here
+  }
 
+  // ─── Toggle Status ───────────────────────────────────────────
+  onToggleStatus(ep: AuthorizedEndpoint, event: Event) {
+    event.stopPropagation();
+    this.pendingToggleEndpoint = ep;
+    this.showToggleConfirm = true;
+  }
 
+  cancelToggle() {
+    this.showToggleConfirm = false;
+    this.pendingToggleEndpoint = null;
+  }
+
+  confirmToggle() {
+    if (!this.pendingToggleEndpoint) return;
+
+    const ep = this.pendingToggleEndpoint;
+    const newStatus = !ep.isActive;
+    const epId = ep.id;
+
+    // أغلق الـ dialog فوراً
+    this.showToggleConfirm = false;
+    this.pendingToggleEndpoint = null;
+
+    // ✅ Optimistic update
+    const index = this.authorizedEndpoints.findIndex(e => e.id === epId);
+    if (index !== -1) {
+      this.authorizedEndpoints = [
+        ...this.authorizedEndpoints.slice(0, index),
+        { ...this.authorizedEndpoints[index], isActive: newStatus },
+        ...this.authorizedEndpoints.slice(index + 1)
+      ];
+    }
+
+    // كال الـ API بس من غير reload بعدها
+    this._developerService.updateEndpoint(epId, newStatus).subscribe({
+      next: () => {
+        // ✅ مش بنعمل loadAuthorizedEndpoints() — الـ UI اتحدث فعلاً
+      },
+      error: (err) => {
+        console.error('Failed to update status:', err);
+        // Rollback لو فشل
+        const rollbackIndex = this.authorizedEndpoints.findIndex(e => e.id === epId);
+        if (rollbackIndex !== -1) {
+          this.authorizedEndpoints = [
+            ...this.authorizedEndpoints.slice(0, rollbackIndex),
+            { ...this.authorizedEndpoints[rollbackIndex], isActive: !newStatus },
+            ...this.authorizedEndpoints.slice(rollbackIndex + 1)
+          ];
+        }
+      }
+    });
+  }
   // ─── Helpers ─────────────────────────────────────────────────
   get selectedEndpoint(): Endpoint | undefined {
     return this.endpoints.find(e => e.selected);
@@ -232,6 +310,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
       ep.method.toLowerCase().includes(q)
     );
   }
+
   getMethodColor(method: string): string {
     const m = method?.toUpperCase() || 'GET';
     if (m === 'GET') return 'bg-blue-100 text-blue-700';
@@ -253,19 +332,15 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   togglePermission(permission: Permission) {
     permission.assigned = !permission.assigned;
   }
-
   get assignedRolesCount(): number {
-    return this.allowedRoles.filter(r => r.assigned).length;
+    return this.rolesList.filter(r => r.assigned).length;
   }
 
   get assignedPermissionsCount(): number {
-    return this.requiredPermissions.filter(p => p.assigned).length;
+    return this.permissionsList.filter(p => p.assigned).length;
   }
-
-  // في developer.component.ts أضف المتغيرات دي
   endpointSearch = '';
 
-  // أضف الـ getter ده
   get filteredEndpoints(): Endpoint[] {
     if (!this.endpointSearch.trim()) return this.endpoints;
 
@@ -287,11 +362,102 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ─── Roles & Permissions Modal ───────────────────────────────
+  showRolesPermModal = false;
+  editingRolesPermEndpoint: AuthorizedEndpoint | null = null;
 
-  saveEdit() {
-    if (!this.editingEndpoint) return;
+  // These hold the checkbox state for the modal
+  modalRoles: { name: string; assigned: boolean }[] = [];
+  modalPermissions: { name: string; assigned: boolean }[] = [];
 
+  openRolesPermModal(ep: AuthorizedEndpoint) {
+    this.editingRolesPermEndpoint = { ...ep };
+    this.modalRoles = (this.rolesList || []).map(r => ({ name: r.name, assigned: false }));
+    this.modalPermissions = (this.permissionsList || []).map(p => ({ name: p.name, assigned: false }));
+    this.showRolesPermModal = true;
   }
 
+  closeRolesPermModal() {
+    this.showRolesPermModal = false;
+    this.editingRolesPermEndpoint = null;
+    this.modalRoles = [];
+    this.modalPermissions = [];
+  }
 
+  saveRolesPermissions() {
+    if (!this.editingRolesPermEndpoint) return;
+
+    const selectedRoles = this.modalRoles
+      .filter(r => r.assigned)
+      .map(r => r.name);
+
+    const selectedPermissions = this.modalPermissions
+      .filter(p => p.assigned)
+      .map(p => p.name);
+
+    this._developerService
+      .updateRolesPermissions(this.editingRolesPermEndpoint.id, selectedRoles, selectedPermissions)
+      .subscribe({
+        next: () => {
+          this.closeRolesPermModal();
+          this.loadAuthorizedEndpoints();
+        },
+        error: (err) => console.error('Failed to update roles/permissions:', err)
+      });
+  }
+
+  get selectedModalRolesCount(): number {
+    return this.modalRoles.filter(r => r.assigned).length;
+  }
+
+  get selectedModalPermissionsCount(): number {
+    return this.modalPermissions.filter(p => p.assigned).length;
+  }
+
+  // ─── Create Modal Dropdown ───────────────────────────────────
+  showPathDropdown = false;
+  allEndpointsForSelect: Endpoint[] = [];
+  selectCursor: string | null = null;
+  selectPageInfo: any = null;
+  loadingMoreEndpoints = false;
+
+  loadEndpointsForSelect(after?: string) {
+    this.loadingMoreEndpoints = true;
+    this._developerService.getEndpoints(10, after).subscribe(({ data }: any) => {
+      this.loadingMoreEndpoints = false;
+      if (data?.endpoints?.nodes) {
+        const newItems = data.endpoints.nodes.map((node: any) => ({
+          method: node.method || 'GET',
+          path: node.path,
+          isActive: node.isActive,
+          __typename: node.__typename,
+          description: 'API Endpoint',
+        }));
+        this.allEndpointsForSelect = after
+          ? [...this.allEndpointsForSelect, ...newItems]
+          : newItems;
+        this.selectPageInfo = data.endpoints.pageInfo;
+      }
+    });
+  }
+
+  openPathDropdown() {
+    this.showPathDropdown = true;
+    if (this.allEndpointsForSelect.length === 0) {
+      this.loadEndpointsForSelect();
+    }
+  }
+
+  selectPath(path: string) {
+    this.newEndpoint.path = path;
+    this.showPathDropdown = false;
+  }
+
+  onDropdownScroll(event: Event) {
+    const el = event.target as HTMLElement;
+    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+    if (nearBottom && this.selectPageInfo?.hasNextPage && !this.loadingMoreEndpoints) {
+      this.loadEndpointsForSelect(this.selectPageInfo.endCursor);
+    }
+  }
 }

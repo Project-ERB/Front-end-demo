@@ -35,87 +35,7 @@ const RESOURCE_LABEL_MAP: Record<string, string> = {
   ADMINATION: 'Administration',
 };
 
-// Role name options — value is the number sent to API
-export const ROLE_NAME_OPTIONS = [
-  // ── الإدارة العليا
-  { label: 'System Admin', value: 0 },
-  { label: 'CEO', value: 1 },
-  { label: 'CFO', value: 2 },
-  { label: 'COO', value: 3 },
-  { label: 'HR Director', value: 4 },
 
-  // ── المحاسبة والمالية
-  { label: 'Accountant', value: 5 },
-  { label: 'Senior Accountant', value: 6 },
-  { label: 'Financial Manager', value: 7 },
-  { label: 'Auditor', value: 8 },
-  { label: 'Cashier', value: 9 },
-  { label: 'Treasury Manager', value: 10 },
-  { label: 'Tax Manager', value: 11 },
-  { label: 'AR Clerk', value: 12 },
-  { label: 'AP Clerk', value: 13 },
-
-  // ── المبيعات
-  { label: 'Sales Representative', value: 14 },
-  { label: 'Sales Manager', value: 15 },
-  { label: 'Sales Support', value: 16 },
-  { label: 'Customer', value: 17 },
-
-  // ── المشتريات
-  { label: 'Procurement Officer', value: 18 },
-  { label: 'Procurement Manager', value: 19 },
-  { label: 'Supplier Manager', value: 20 },
-  { label: 'Supplier', value: 21 },
-
-  // ── المخزون والمستودعات
-  { label: 'Inventory Clerk', value: 22 },
-  { label: 'Inventory Manager', value: 23 },
-  { label: 'Warehouse Keeper', value: 24 },
-  { label: 'Warehouse Manager', value: 25 },
-
-  // ── الموارد البشرية
-  { label: 'HR Clerk', value: 26 },
-  { label: 'Recruiter', value: 27 },
-  { label: 'Payroll Officer', value: 28 },
-  { label: 'Training Manager', value: 29 },
-
-  // ── شؤون الموظفين
-  { label: 'Employee', value: 30 },
-  { label: 'Department Manager', value: 31 },
-  { label: 'Attendance Officer', value: 32 },
-
-  // ── العملاء والموردين
-  { label: 'Customer Service', value: 33 },
-  { label: 'CRM Manager', value: 34 },
-  { label: 'Vendor Relations', value: 35 },
-
-  // ── الإنتاج والتصنيع
-  { label: 'Production Worker', value: 36 },
-  { label: 'Production Manager', value: 37 },
-  { label: 'Quality Controller', value: 38 },
-  { label: 'Maintenance Engineer', value: 39 },
-
-  // ── المشاريع
-  { label: 'Project Manager', value: 40 },
-  { label: 'Project Engineer', value: 41 },
-  { label: 'Task Assignee', value: 42 },
-
-  // ── BI والتقارير
-  { label: 'BI Analyst', value: 43 },
-  { label: 'Data Analyst', value: 44 },
-  { label: 'Report Viewer', value: 45 },
-
-  // ── التقنية والدعم
-  { label: 'IT Support', value: 46 },
-  { label: 'Developer', value: 47 },
-  { label: 'Database Admin', value: 48 },
-  { label: 'Security Officer', value: 49 },
-
-  // ── أخرى
-  { label: 'Guest', value: 50 },
-  { label: 'Supervisor', value: 51 },
-  { label: 'Operator', value: 52 },
-];
 
 @Component({
   selector: 'app-create-role',
@@ -141,11 +61,10 @@ export class CreateRoleComponent implements OnInit {
 
   readonly permLabels = PERM_LABELS;
   readonly resourceLabelMap = RESOURCE_LABEL_MAP;
-  readonly roleNameOptions = ROLE_NAME_OPTIONS;
 
   // ── Form ────────────────────────────────────────────────────────────────
   RoleForm: FormGroup = this._FormBuilder.group({
-    name: [null, Validators.required],
+    name: ['', Validators.required],
     description: [null],
     // setPermissions: this._FormBuilder.array([]),
   });

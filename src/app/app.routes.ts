@@ -178,6 +178,10 @@ export const routes: Routes = [
         title: 'developer',
       },
       {
+        path: 'Developer-Details/:id',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/developer-details/developer-details.component').then((D) => D.DeveloperDetailsComponent)
+      },
+      {
         path: 'rolemanagement',
         loadComponent: () => import('./modules/ERBSystem/HR/rolemanagement/rolemanagement.component').then((R) => R.RolemanagementComponent),
         title: 'rolemanagement',

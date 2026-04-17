@@ -59,15 +59,9 @@
                                     Role Name <span class="text-red-500">*</span>
                                 </label>
                                 <div class="relative">
-                                    <select formControlName="name" id="roleName"
-                                        class="w-full appearance-none rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 pr-10 text-sm text-[#131118] focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all cursor-pointer">
-                                        <option [ngValue]="null" disabled selected>Select a role name...</option>
-                                        <option *ngFor="let opt of roleNameOptions" [ngValue]="opt.value">
-                                            {{ opt.label }}
-                                        </option>
-                                    </select>
-                                    <span
-                                        class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#6e6189] material-symbols-outlined text-[20px]">expand_more</span>
+                                    <input type="text" formControlName="name" id="roleName"
+                                        placeholder="e.g. Sales Manager"
+                                        class="w-full appearance-none rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm text-[#131118] placeholder:text-[#6e6189]/60 focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all" />
                                 </div>
                                 <p *ngIf="formError" class="mt-1.5 text-xs text-red-500 flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[14px]">error</span>

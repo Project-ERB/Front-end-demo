@@ -1,0 +1,209 @@
+<div class="flex h-screen w-full bg-white text-gray-900 font-sans overflow-hidden">
+
+    <app-siede-admin></app-siede-admin>
+
+    <main class="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+
+        <!-- Header -->
+        <header class="h-16 border-b border-gray-100 flex items-center gap-4 px-8 bg-white shrink-0">
+            <button (click)="goBack()"
+                class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors group">
+                <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+                Back to Endpoints
+            </button>
+            <span class="text-gray-300">|</span>
+            <span class="text-xs font-semibold text-gray-400 tracking-wider">ENDPOINT DETAILS</span>
+        </header>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="flex-1 flex items-center justify-center">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-sm text-gray-400">Loading endpoint details...</p>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="error && !loading" class="flex-1 flex items-center justify-center">
+            <div class="text-center">
+                <svg class="w-10 h-10 text-red-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm text-gray-500 mb-4">Failed to load endpoint details.</p>
+                <button (click)="goBack()" class="text-xs text-blue-600 hover:underline">Go back</button>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div *ngIf="!loading && !error && endpoint" class="flex-1 overflow-y-auto p-8">
+            <div class="max-w-4xl mx-auto space-y-6">
+
+                <!-- Hero Card -->
+                <div [ngClass]="getMethodBorder(endpoint.method)" class="rounded-2xl border-2 p-8">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-center gap-4">
+                            <span [ngClass]="getMethodColor(endpoint.method)"
+                                class="px-4 py-1.5 rounded-lg text-sm font-black tracking-widest">
+                                {{ endpoint.method }}
+                            </span>
+                            <div>
+                                <h1 class="text-2xl font-mono font-bold text-gray-900 break-all">
+                                    {{ endpoint.path }}
+                                </h1>
+
+                            </div>
+                        </div>
+                        <!-- Status Badge — replace the existing static badge -->
+                        <button (click)="toggleActive()" [disabled]="toggling" [class]="endpoint.isActive
+    ? 'bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100'
+    : 'bg-gray-100 border border-gray-200 text-gray-500 hover:bg-gray-200'"
+                            class="flex items-center gap-2 px-4 py-2 rounded-full shrink-0 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+
+                            <!-- Spinner while toggling -->
+                            <div *ngIf="toggling"
+                                class="w-2 h-2 border border-current border-t-transparent rounded-full animate-spin">
+                            </div>
+
+                            <!-- Dot when idle -->
+                            <div *ngIf="!toggling" [class]="endpoint.isActive ? 'bg-emerald-500' : 'bg-gray-400'"
+                                class="w-2 h-2 rounded-full"></div>
+
+                            <span class="text-xs font-bold tracking-wider">
+                                {{ endpoint.isActive ? 'ACTIVE' : 'INACTIVE' }}
+                            </span>
+                        </button>
+                        <!-- Status Badge -->
+                        <div [class]="endpoint.isActive
+                ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                : 'bg-gray-100 border border-gray-200 text-gray-500'"
+                            class="flex items-center gap-2 px-4 py-2 rounded-full shrink-0">
+                            <div [class]="endpoint.isActive ? 'bg-emerald-500' : 'bg-gray-400'"
+                                class="w-2 h-2 rounded-full"></div>
+                            <span class="text-xs font-bold tracking-wider">
+                                {{ endpoint.isActive ? 'ACTIVE' : 'INACTIVE' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-black text-gray-900">{{ endpoint.roles?.length || 0 }}</p>
+                            <p class="text-xs text-gray-500 font-medium">Assigned Roles</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-black text-gray-900">{{ endpoint.permissions?.length || 0 }}</p>
+                            <p class="text-xs text-gray-500 font-medium">Permissions</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-black text-gray-900">{{ endpoint.isActive ? 'Online' : 'Offline' }}
+                            </p>
+                            <p class="text-xs text-gray-500 font-medium">Current Status</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roles & Permissions Grid -->
+                <div class="grid grid-cols-2 gap-6">
+
+                    <!-- Roles Card -->
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                            </svg>
+                            <h3 class="text-xs font-bold text-gray-700 tracking-widest uppercase">Allowed Roles</h3>
+                            <span
+                                class="ml-auto text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                                {{ endpoint.roles?.length || 0 }}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <div *ngIf="!endpoint.roles?.length" class="text-center py-6">
+                                <p class="text-xs text-gray-400">No roles assigned</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span *ngFor="let role of endpoint.roles"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-700 text-xs font-semibold border border-blue-100">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    {{ role }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions Card -->
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                            <svg class="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd"
+                                    d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <h3 class="text-xs font-bold text-gray-700 tracking-widest uppercase">Permissions</h3>
+                            <span
+                                class="ml-auto text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
+                                {{ endpoint.permissions?.length || 0 }}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <div *ngIf="!endpoint.permissions?.length" class="text-center py-6">
+                                <p class="text-xs text-gray-400">No permissions assigned</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <span *ngFor="let perm of endpoint.permissions"
+                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50 text-purple-700 text-xs font-semibold border border-purple-100">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    {{ perm }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</div>
