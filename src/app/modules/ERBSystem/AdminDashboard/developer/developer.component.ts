@@ -5,6 +5,7 @@ import { DeveloperService } from '../../../../core/services/Developer/developer.
 import { FormsModule } from '@angular/forms';
 import { ApolloservicesService } from '../../../../core/services/apollo/apolloservices.service';
 import { PermissionService } from '../../../../core/services/permission/permission.service';
+import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
 
 interface Endpoint {
   method: string;
@@ -36,7 +37,7 @@ interface Permission {
 @Component({
   selector: 'app-developer',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SiedeAdminComponent],
   templateUrl: './developer.component.html',
   styleUrl: './developer.component.scss',
 })
@@ -46,6 +47,12 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     private __ApolloservicesService: ApolloservicesService,
     private _PermissionService: PermissionService
   ) { }
+
+  pageSize = 10;
+  currentCursor: string | null = null;
+  previousCursors: string[] = [];  // stack للـ back navigation
+  pageInfo: any = null;
+  totalCount = 0;
 
   endpoints: Endpoint[] = [];
   rolesList: string[] = [];
@@ -101,8 +108,9 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     { name: 'Inventory.Read', assigned: false }
   ];
 
-  loadEndpoints() {
-    this.subscription = this._developerService.getEndpoints()
+  loadEndpoints(after?: string) {
+    this.loading = true;
+    this.subscription = this._developerService.getEndpoints(this.pageSize, after)
       .subscribe(({ data, loading, error }: any) => {
         this.loading = loading;
         this.error = error;
@@ -116,8 +124,24 @@ export class DeveloperComponent implements OnInit, OnDestroy {
             description: 'API Endpoint',
             selected: index === 0
           }));
+
+          this.pageInfo = data.endpoints.pageInfo;
+          this.totalCount = data.endpoints.totalCount;
         }
       });
+  }
+
+  nextPage() {
+    if (!this.pageInfo?.hasNextPage) return;
+    this.previousCursors.push(this.currentCursor!);
+    this.currentCursor = this.pageInfo.endCursor;
+    this.loadEndpoints(this.currentCursor!);
+  }
+
+  prevPage() {
+    if (!this.previousCursors.length) return;
+    this.currentCursor = this.previousCursors.pop() ?? null;
+    this.loadEndpoints(this.currentCursor ?? undefined);
   }
 
   loadRoles() {
@@ -192,27 +216,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.editingEndpoint = null;
   }
 
-  saveEdit() {
-    if (!this.editingEndpoint) return;
 
-    // this._developerService.updateEndpoint(this.editingEndpoint).subscribe({
-    //   next: () => {
-    //     this.closeEditModal();
-    //     this.loadAuthorizedEndpoints();
-    //   },
-    //   error: (err) => console.error(err)
-    // });
-  }
-
-  // ─── Delete ──────────────────────────────────────────────────
-  deleteEndpoint(id: string) {
-    if (!confirm('Are you sure you want to delete this endpoint?')) return;
-
-    // this._developerService.deleteEndpoint(id).subscribe({
-    //   next: () => this.loadAuthorizedEndpoints(),
-    //   error: (err) => console.error(err)
-    // });
-  }
 
   // ─── Helpers ─────────────────────────────────────────────────
   get selectedEndpoint(): Endpoint | undefined {
@@ -257,4 +261,37 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   get assignedPermissionsCount(): number {
     return this.requiredPermissions.filter(p => p.assigned).length;
   }
+
+  // في developer.component.ts أضف المتغيرات دي
+  endpointSearch = '';
+
+  // أضف الـ getter ده
+  get filteredEndpoints(): Endpoint[] {
+    if (!this.endpointSearch.trim()) return this.endpoints;
+
+    const q = this.endpointSearch.toLowerCase().trim();
+    return this.endpoints.filter(ep =>
+      ep.path.toLowerCase().includes(q) ||
+      ep.method.toLowerCase().includes(q)
+    );
+  }
+
+  deleteEndpoint(id: string) {
+    if (!confirm('Are you sure you want to delete this endpoint?')) return;
+    this._developerService.deleteEndpoint(id).subscribe({
+      next: () => {
+        this.loadEndpoints();
+        this.loadAuthorizedEndpoints();
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+
+  saveEdit() {
+    if (!this.editingEndpoint) return;
+
+  }
+
+
 }

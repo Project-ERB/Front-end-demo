@@ -6,14 +6,22 @@ import { isPlatformBrowser } from '@angular/common';
 import { Apollo, gql } from 'apollo-angular';
 
 const GET_ENDPOINTS = gql`
-  query {
-    endpoints {
+  query GetEndpoints($first: Int, $after: String) {
+    endpoints(first: $first, after: $after) {
       nodes {
         path
         method
         isActive
         __typename
       }
+      pageInfo{
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+      __typename
+    }
+      totalCount
     }
   }
 `;
@@ -54,11 +62,13 @@ export class DeveloperService {
   }
 
 
-  getEndpoints(): Observable<any> {
+  getEndpoints(first: number = 10, after?: string): Observable<any> {
     return this.apollo.watchQuery<any>({
-      query: GET_ENDPOINTS
+      query: GET_ENDPOINTS,
+      variables: { first, after }
     }).valueChanges;
   }
+
 
   private getToken(): string | null {
     if (isPlatformBrowser(this._PLATFORM_ID)) {
@@ -88,4 +98,13 @@ export class DeveloperService {
     );
   }
 
+  deleteEndpoint(id: string) {
+    return this.http.delete(`${Environment.baseUrl}/api/Authorization/${id}`)
+  }
+
+  updateEndpoint(id: string, data: any) {
+    return this.http.put(`${Environment.baseUrl}/api/Authorization/DeActive/${id}`,
+      data
+    );
+  }
 }

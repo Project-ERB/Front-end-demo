@@ -1,42 +1,7 @@
 <div class="flex h-screen w-full bg-white text-gray-900 font-sans overflow-hidden">
 
   <!-- Sidebar -->
-  <aside class="w-60 flex flex-col border-r border-gray-100 bg-gray-50/30">
-    <div class="p-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-bold">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5">
-            </path>
-          </svg>
-        </div>
-        <div>
-          <h1 class="font-bold text-sm tracking-tight">Precision Auth</h1>
-          <p class="text-xs text-gray-500">Enterprise .NET v8.0</p>
-        </div>
-      </div>
-    </div>
-
-    <nav class="flex-1 px-4 py-4 space-y-1">
-      <ng-container *ngFor="let item of navItems">
-        <a href="#" [class]="item.active ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-600 hover:bg-gray-100'"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors">
-          <div [class]="item.active ? 'bg-blue-600' : 'bg-gray-400'" class="w-4 h-4 rounded-sm flex-shrink-0"></div>
-          {{ item.name }}
-        </a>
-      </ng-container>
-    </nav>
-
-    <div class="p-4 border-t border-gray-100 space-y-1">
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm">
-        <div class="w-4 h-4 bg-gray-400 rounded-sm"></div> System Health
-      </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-md text-sm">
-        <div class="w-4 h-4 bg-gray-400 rounded-sm"></div> Settings
-      </a>
-    </div>
-  </aside>
+  <app-siede-admin></app-siede-admin>
 
   <!-- Endpoints List -->
   <div class="w-[340px] flex flex-col border-r border-gray-200 bg-gray-50/10">
@@ -57,9 +22,30 @@
       <p class="text-sm text-red-400 text-center">Failed to load endpoints. Please try again.</p>
     </div>
 
+    <!-- Search Input -->
+    <div class="px-4 py-3 border-b border-gray-100">
+      <div class="relative">
+        <svg class="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none"
+          stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" [(ngModel)]="endpointSearch" placeholder="Filter by path or method..." class="w-full pl-8 pr-8 py-1.5 bg-gray-50 border border-gray-200 rounded-md 
+             text-xs font-mono text-gray-700 focus:outline-none focus:ring-2 
+             focus:ring-blue-100 focus:border-blue-300 placeholder:text-gray-400" />
+        <!-- Clear Button -->
+        <button *ngIf="endpointSearch" (click)="endpointSearch = ''"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <!-- Endpoints -->
     <div *ngIf="!loading && !error" class="flex-1 overflow-y-auto">
-      <div *ngFor="let endpoint of endpoints" (click)="selectEndpoint(endpoint)"
+      <div *ngFor="let endpoint of filteredEndpoints" (click)="selectEndpoint(endpoint)"
         [class]="endpoint.selected ? 'bg-gray-100/80 border-l-4 border-blue-600' : 'border-l-4 border-transparent hover:bg-gray-50'"
         class="p-5 border-b border-gray-100 cursor-pointer transition-colors relative">
         <div class="flex items-center justify-between mb-2">
@@ -76,6 +62,32 @@
         </div>
         <p class="font-mono text-sm font-medium text-gray-900 mb-1">{{ endpoint.path }}</p>
         <p class="text-xs text-gray-500 truncate">{{ endpoint.description || 'API Endpoint' }}</p>
+      </div>
+      <!-- Pagination Controls -->
+      <div class="px-4 py-3 border-t border-gray-100 flex items-center justify-between ">
+        <span class="text-[10px] font-semibold text-black tracking-wider">
+          {{ totalCount }} TOTAL
+        </span>
+
+        <div class="flex items-center gap-2">
+
+          <!-- Prev -->
+          <button (click)="prevPage()" [disabled]="!previousCursors.length"
+            class="p-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <!-- Next -->
+          <button (click)="nextPage()" [disabled]="!pageInfo?.hasNextPage"
+            class="p-1.5 rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+        </div>
       </div>
     </div>
   </div>
@@ -302,45 +314,20 @@
           </div>
         </div>
 
+        <!-- بعد الـ *ngFor مباشرةً -->
+        <div *ngIf="filteredEndpoints.length === 0 && !loading"
+          class="flex flex-col items-center justify-center py-10 px-6 text-center">
+          <svg class="w-8 h-8 text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <p class="text-xs text-gray-400 font-mono">No endpoints match</p>
+          <p class="text-[10px] text-gray-300 mt-1 font-mono">"{{ endpointSearch }}"</p>
+        </div>
+
       </div>
     </div>
   </main>
-
-  <!-- Footer -->
-  <div
-    class="fixed bottom-0 right-0 w-[calc(100%-15rem-21.25rem)] bg-white border-t border-gray-200 px-8 py-4 flex items-center justify-between z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
-    <div class="flex items-center gap-8">
-      <div class="flex items-center gap-2">
-        <span class="text-lg font-bold text-blue-600">{{ assignedRolesCount }}</span>
-        <span class="text-xs font-bold text-gray-500 tracking-widest uppercase leading-tight">Roles<br>Assigned</span>
-      </div>
-      <div class="w-px h-8 bg-gray-200"></div>
-      <div class="flex items-center gap-2">
-        <span class="text-lg font-bold text-blue-600">{{ assignedPermissionsCount }}</span>
-        <span
-          class="text-xs font-bold text-gray-500 tracking-widest uppercase leading-tight">Permissions<br>Required</span>
-      </div>
-      <div class="w-px h-8 bg-gray-200"></div>
-      <div class="flex items-center gap-2">
-        <div [class]="selectedEndpoint?.isActive ? 'bg-blue-600' : 'bg-gray-400'" class="w-2 h-2 rounded-full"></div>
-        <span class="text-xs font-bold text-gray-600 tracking-widest uppercase">
-          {{ selectedEndpoint?.isActive ? 'ACTIVE' : 'INACTIVE' }}
-        </span>
-      </div>
-    </div>
-
-    <div class="flex items-center gap-4">
-      <button class="text-sm font-bold text-gray-900 hover:text-black tracking-wide mr-2">DISCARD</button>
-      <button
-        class="bg-gray-900 text-white hover:bg-black px-4 py-2.5 rounded-md text-xs font-bold tracking-wider flex items-center gap-3 transition-colors shadow-lg">
-        QUICK NAV
-        <div class="flex gap-1">
-          <span class="bg-gray-700 px-1.5 py-0.5 rounded text-[10px]">⌘</span>
-          <span class="bg-gray-700 px-1.5 py-0.5 rounded text-[10px]">K</span>
-        </div>
-      </button>
-    </div>
-  </div>
 
 </div>
 
