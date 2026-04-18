@@ -45,7 +45,7 @@ export interface UpdateRolePermission {
 }
 
 export interface UpdateRoleBody {
-  name: number;
+  name: string;
   description: string;
   setPermissions: UpdateRolePermission[];
 }
@@ -96,14 +96,14 @@ export class AdminService {
 
   // ── Update role ──────────────────────────────────────────────────────────
   updateRole(id: string, body: UpdateRoleBody): Observable<any> {
-    return this._http.put(`${Environment.baseUrl}/roles/${id}`, body, {
+    return this._http.put(`${Environment.baseUrl}/api/roles/${id}`, body, {
       headers: this.headers,
     });
   }
 
   // ── Delete role ──────────────────────────────────────────────────────────
   deleteRole(id: string): Observable<any> {
-    return this._http.delete(`${Environment.baseUrl}/roles/${id}`, {
+    return this._http.delete(`${Environment.baseUrl}/api/roles/${id}`, {
       headers: this.headers,
     });
   }

@@ -126,7 +126,7 @@ export class RolemanagementComponent implements OnInit {
   // ── Edit Modal state ──────────────────────────────────────────────────────
   showEditModal = false;
   editId = '';
-  editName: number | null = null;
+  editName: string = '';
   editDescription = '';
   editPermissions: UpdateRolePermission[] = [];
   isUpdating = false;
@@ -197,10 +197,7 @@ export class RolemanagementComponent implements OnInit {
   openEditModal(role: Role & { color: string }): void {
     this.editId = role.id;
 
-    const match = ROLE_NAME_OPTIONS.find(
-      (o) => o.label.toLowerCase() === role.name.toLowerCase()
-    );
-    this.editName = match ? match.value : null;
+    this.editName = role.name;
     this.editDescription = role.description ?? '';
 
     this.editPermissions = (role.permissions ?? []).map((p) => ({
@@ -220,7 +217,7 @@ export class RolemanagementComponent implements OnInit {
   closeEditModal(): void {
     this.showEditModal = false;
     this.editId = '';
-    this.editName = null;
+    this.editName = '';
     this.editDescription = '';
     this.editPermissions = [];
     this.updateSuccess = '';

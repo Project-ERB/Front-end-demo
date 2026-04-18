@@ -244,19 +244,19 @@ export class PermissionService {
 
   createPermission(payload: CreatePermissionRequest): Observable<CreatePermissionResponse> {
     return this.http.post<CreatePermissionResponse>(
-      `${Environment.baseUrl}/permissions`, payload
+      `${Environment.baseUrl}/api/permissions`, payload
     );
   }
 
   updatePermission(payload: UpdatePermissionRequest): Observable<CreatePermissionResponse> {
     return this.http.put<CreatePermissionResponse>(
-      `${Environment.baseUrl}/permissions`, payload
+      `${Environment.baseUrl}/api/permissions`, payload
     );
   }
 
   deletePermission(id: string): Observable<CreatePermissionResponse> {
     return this.http.delete<CreatePermissionResponse>(
-      `${Environment.baseUrl}/permissions/${id}`
+      `${Environment.baseUrl}/api/permissions/${id}`
     );
   }
 }

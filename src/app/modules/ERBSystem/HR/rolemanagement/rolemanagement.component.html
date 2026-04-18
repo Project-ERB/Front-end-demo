@@ -83,10 +83,10 @@
                                         Name</th>
                                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                         Description</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                    <!-- <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
                                         Permissions</th>
                                     <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                        Resources</th>
+                                        Resources</th> -->
                                     <th
                                         class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">
                                         Actions</th>
@@ -118,7 +118,7 @@
                                     </td>
 
                                     <!-- Permissions count + names -->
-                                    <td class="px-6 py-5">
+                                    <!-- <td class="px-6 py-5">
                                         <div class="flex flex-wrap gap-1">
                                             <ng-container *ngIf="role.permissions?.length; else noPerms">
                                                 <span *ngFor="let p of role.permissions.slice(0, 3)"
@@ -134,10 +134,10 @@
                                                 <span class="text-xs text-slate-400">No permissions</span>
                                             </ng-template>
                                         </div>
-                                    </td>
+                                    </td> -->
 
                                     <!-- Resources -->
-                                    <td class="px-6 py-5">
+                                    <!-- <td class="px-6 py-5">
                                         <div class="flex flex-wrap gap-1">
                                             <ng-container *ngIf="getResources(role).length; else noRes">
                                                 <span *ngFor="let r of getResources(role).slice(0, 3)"
@@ -153,7 +153,7 @@
                                                 <span class="text-xs text-slate-400">—</span>
                                             </ng-template>
                                         </div>
-                                    </td>
+                                    </td> -->
 
                                     <!-- Actions -->
                                     <td class="px-6 py-5 text-right">
@@ -271,7 +271,15 @@
 
             <!-- Role Name Select -->
             <div class="space-y-2">
-                <label class="text-sm font-semibold text-slate-700">Role Name</label>
+
+                <label class="mb-2 block text-sm font-semibold text-[#131118]" for="roleName">
+                    Role Name <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <!-- بدل formControlName="name" -->
+                    <input type="text" [(ngModel)]="editName" id="roleName" placeholder="e.g. Sales Manager"
+                        class="w-full appearance-none rounded-lg border border-[#dedbe6] bg-[#f6f6f8] px-4 py-3 text-sm text-[#131118] placeholder:text-[#6e6189]/60 focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all" />
+                    <!-- <label class="text-sm font-semibold text-slate-700">Role Name</label>
                 <div class="relative">
                     <select [(ngModel)]="editName"
                         class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 pr-10 text-sm text-slate-900 focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all cursor-pointer">
@@ -282,88 +290,90 @@
                     </select>
                     <span
                         class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">expand_more</span>
+                </div> -->
                 </div>
-            </div>
 
-            <!-- Description -->
-            <div class="space-y-2">
-                <label class="text-sm font-semibold text-slate-700">Description</label>
-                <textarea [(ngModel)]="editDescription" rows="3" placeholder="Enter role description..."
-                    class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all resize-none">
+                <!-- Description -->
+                <div class="space-y-2">
+                    <label class="text-sm font-semibold text-slate-700">Description</label>
+                    <textarea [(ngModel)]="editDescription" rows="3" placeholder="Enter role description..."
+                        class="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-[#6324eb] focus:ring-2 focus:ring-[#6324eb]/20 transition-all resize-none">
                 </textarea>
-            </div>
+                </div>
 
-            <!-- Permissions -->
-            <div class="space-y-2" *ngIf="editPermissions.length > 0">
-                <label class="text-sm font-semibold text-slate-700">Permissions</label>
-                <div
-                    class="rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100 max-h-52 overflow-y-auto">
-                    <div *ngFor="let perm of editPermissions; let i = index"
-                        class="px-4 py-3 bg-slate-50 hover:bg-slate-100/60 transition-colors">
-                        <p class="text-xs font-bold text-slate-700 mb-2">{{ perm.permissionName }}</p>
-                        <div class="flex flex-wrap gap-3">
+                <!-- Permissions -->
+                <div class="space-y-2" *ngIf="editPermissions.length > 0">
+                    <label class="text-sm font-semibold text-slate-700">Permissions</label>
+                    <div
+                        class="rounded-xl border border-slate-200 overflow-hidden divide-y divide-slate-100 max-h-52 overflow-y-auto">
+                        <div *ngFor="let perm of editPermissions; let i = index"
+                            class="px-4 py-3 bg-slate-50 hover:bg-slate-100/60 transition-colors">
+                            <p class="text-xs font-bold text-slate-700 mb-2">{{ perm.permissionName }}</p>
+                            <div class="flex flex-wrap gap-3">
 
-                            <!-- allowCreate -->
-                            <label class="flex items-center gap-1.5 cursor-pointer">
-                                <input type="checkbox" [(ngModel)]="editPermissions[i].allowCreate"
-                                    class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
-                                <span class="text-[11px] font-semibold text-slate-600">Create</span>
-                            </label>
+                                <!-- allowCreate -->
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="checkbox" [(ngModel)]="editPermissions[i].allowCreate"
+                                        class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
+                                    <span class="text-[11px] font-semibold text-slate-600">Create</span>
+                                </label>
 
-                            <!-- allowDelete -->
-                            <label class="flex items-center gap-1.5 cursor-pointer">
-                                <input type="checkbox" [(ngModel)]="editPermissions[i].allowDelete"
-                                    class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
-                                <span class="text-[11px] font-semibold text-slate-600">Delete</span>
-                            </label>
+                                <!-- allowDelete -->
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="checkbox" [(ngModel)]="editPermissions[i].allowDelete"
+                                        class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
+                                    <span class="text-[11px] font-semibold text-slate-600">Delete</span>
+                                </label>
 
-                            <!-- allowUpdated -->
-                            <label class="flex items-center gap-1.5 cursor-pointer">
-                                <input type="checkbox" [(ngModel)]="editPermissions[i].allowUpdated"
-                                    class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
-                                <span class="text-[11px] font-semibold text-slate-600">Update</span>
-                            </label>
+                                <!-- allowUpdated -->
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="checkbox" [(ngModel)]="editPermissions[i].allowUpdated"
+                                        class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
+                                    <span class="text-[11px] font-semibold text-slate-600">Update</span>
+                                </label>
 
-                            <!-- allowView -->
-                            <label class="flex items-center gap-1.5 cursor-pointer">
-                                <input type="checkbox" [(ngModel)]="editPermissions[i].allowView"
-                                    class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
-                                <span class="text-[11px] font-semibold text-slate-600">View</span>
-                            </label>
+                                <!-- allowView -->
+                                <label class="flex items-center gap-1.5 cursor-pointer">
+                                    <input type="checkbox" [(ngModel)]="editPermissions[i].allowView"
+                                        class="accent-[#6324eb] w-3.5 h-3.5 rounded" />
+                                    <span class="text-[11px] font-semibold text-slate-600">View</span>
+                                </label>
 
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Info -->
+                <div class="flex gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                    <span class="material-symbols-outlined text-blue-500 text-[18px] shrink-0">info</span>
+                    <p class="text-xs text-blue-700 leading-relaxed">
+                        Changing the role name or permissions will affect all users currently assigned to this role.
+                    </p>
+                </div>
+
             </div>
 
-            <!-- Info -->
-            <div class="flex gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
-                <span class="material-symbols-outlined text-blue-500 text-[18px] shrink-0">info</span>
-                <p class="text-xs text-blue-700 leading-relaxed">
-                    Changing the role name or permissions will affect all users currently assigned to this role.
-                </p>
+            <!-- Modal Footer -->
+            <div
+                class="px-7 py-5 bg-slate-50 border-t border-slate-100 rounded-b-2xl flex items-center justify-end gap-3">
+                <button (click)="closeEditModal()"
+                    class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">
+                    Cancel
+                </button>
+                <button (click)="onUpdate()" [disabled]="editName === null || isUpdating"
+                    class="px-7 py-2.5 text-sm font-bold text-white rounded-lg transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    [ngClass]="editName === null || isUpdating ? 'bg-slate-300' : 'bg-[#6324eb] hover:bg-[#501ac2] shadow-lg shadow-[#6324eb]/20'">
+                    <svg *ngIf="isUpdating" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span class="material-symbols-outlined text-[18px]" *ngIf="!isUpdating">save</span>
+                    <span>{{ isUpdating ? "Updating..." : "Update Role" }}</span>
+                </button>
             </div>
 
         </div>
-
-        <!-- Modal Footer -->
-        <div class="px-7 py-5 bg-slate-50 border-t border-slate-100 rounded-b-2xl flex items-center justify-end gap-3">
-            <button (click)="closeEditModal()"
-                class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-200 rounded-lg transition-colors">
-                Cancel
-            </button>
-            <button (click)="onUpdate()" [disabled]="editName === null || isUpdating"
-                class="px-7 py-2.5 text-sm font-bold text-white rounded-lg transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                [ngClass]="editName === null || isUpdating ? 'bg-slate-300' : 'bg-[#6324eb] hover:bg-[#501ac2] shadow-lg shadow-[#6324eb]/20'">
-                <svg *ngIf="isUpdating" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
-                    fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                </svg>
-                <span class="material-symbols-outlined text-[18px]" *ngIf="!isUpdating">save</span>
-                <span>{{ isUpdating ? "Updating..." : "Update Role" }}</span>
-            </button>
-        </div>
-
     </div>
-</div>

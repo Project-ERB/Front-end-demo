@@ -176,6 +176,12 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   closeModal() {
     this.showModal = false;
     this.newEndpoint = { path: '', method: 0, roles: [], permissions: [] };
+
+    // ✅ reset الـ dropdown state
+    this.allEndpointsForSelect = [];
+    this.selectCursor = null;
+    this.selectPageInfo = null;
+    this.showPathDropdown = false;
   }
 
   submitEndpoint() {
@@ -417,11 +423,13 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   // ─── Create Modal Dropdown ───────────────────────────────────
   showPathDropdown = false;
   allEndpointsForSelect: Endpoint[] = [];
-  selectCursor: string | null = null;
+  selectCursor: string | null = null;      // ✅ هيتحدث دلوقتي
   selectPageInfo: any = null;
   loadingMoreEndpoints = false;
 
   loadEndpointsForSelect(after?: string) {
+    if (this.loadingMoreEndpoints) return;  // ✅ guard ضد duplicate calls
+
     this.loadingMoreEndpoints = true;
     this._developerService.getEndpoints(10, after).subscribe(({ data }: any) => {
       this.loadingMoreEndpoints = false;
@@ -437,6 +445,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
           ? [...this.allEndpointsForSelect, ...newItems]
           : newItems;
         this.selectPageInfo = data.endpoints.pageInfo;
+        this.selectCursor = data.endpoints.pageInfo?.endCursor ?? null; // ✅ حفظ الـ cursor
       }
     });
   }
@@ -453,11 +462,13 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.showPathDropdown = false;
   }
 
+
   onDropdownScroll(event: Event) {
     const el = event.target as HTMLElement;
     const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
+
     if (nearBottom && this.selectPageInfo?.hasNextPage && !this.loadingMoreEndpoints) {
-      this.loadEndpointsForSelect(this.selectPageInfo.endCursor);
+      this.loadEndpointsForSelect(this.selectCursor!); // ✅ بيستخدم selectCursor مش selectPageInfo.endCursor
     }
   }
 }
