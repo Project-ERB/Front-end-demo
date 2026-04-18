@@ -186,27 +186,35 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.showPathDropdown = false;
   }
 
+  isLoading = false;
+
   submitEndpoint() {
     if (!this.newEndpoint.path) return;
+
+    this.isLoading = true;
 
     const payload = {
       path: this.newEndpoint.path,
       methode: this.newEndpoint.method,
       roles: Array.isArray(this.newEndpoint.roles)
-        ? this.newEndpoint.roles
-        : [this.newEndpoint.roles],
+        ? this.newEndpoint.roles.map((r: any) => r?.name ?? r)
+        : [this.newEndpoint.roles].map((r: any) => r?.name ?? r),
       permissions: Array.isArray(this.newEndpoint.permissions)
-        ? this.newEndpoint.permissions
-        : [this.newEndpoint.permissions]
+        ? this.newEndpoint.permissions.map((p: any) => p?.name ?? p)
+        : [this.newEndpoint.permissions].map((p: any) => p?.name ?? p)
     };
 
     this._developerService.createEndpoint(payload).subscribe({
       next: () => {
+        this.isLoading = false;
         this.closeModal();
         this.loadEndpoints();
         this.loadAuthorizedEndpoints();
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        this.isLoading = false;
+        console.error(err);
+      }
     });
   }
 

@@ -335,7 +335,7 @@
     <label class="block text-sm font-medium text-gray-700 mb-1">Roles</label>
     <select [(ngModel)]="newEndpoint.roles" class="w-full border p-2 rounded mb-3">
       <option [ngValue]="null" disabled selected hidden>Select Role</option>
-      <option *ngFor="let role of rolesList" [ngValue]="role">
+      <option *ngFor="let role of rolesList" [ngValue]="role.name"> <!-- ✅ string only -->
         {{ role.name }}
       </option>
     </select>
@@ -343,14 +343,25 @@
     <label class="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
     <select [(ngModel)]="newEndpoint.permissions" class="w-full border p-2 rounded mb-4">
       <option [ngValue]="null" disabled selected hidden>Select Permission</option>
-      <option *ngFor="let perm of permissionsList" [ngValue]="perm">
+      <option *ngFor="let perm of permissionsList" [ngValue]="perm.name"> <!-- ✅ string only -->
         {{ perm.name }}
       </option>
     </select>
 
     <div class="flex justify-end gap-2">
       <button (click)="closeModal()" class="px-4 py-2 text-gray-600">Cancel</button>
-      <button (click)="submitEndpoint()" class="bg-blue-600 text-white px-4 py-2 rounded">Save</button>
+      <button (click)="submitEndpoint()" [disabled]="isLoading"
+        class="bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+        <span *ngIf="!isLoading">Save</span>
+
+        <span *ngIf="isLoading" class="flex items-center gap-2">
+          <svg class="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="4" fill="none" opacity="0.3" />
+            <path d="M22 12a10 10 0 0 1-10 10" stroke="white" stroke-width="4" />
+          </svg>
+          Loading...
+        </span>
+      </button>
     </div>
 
   </div>
