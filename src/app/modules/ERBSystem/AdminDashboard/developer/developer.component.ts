@@ -22,6 +22,8 @@ interface AuthorizedEndpoint {
   method: string;
   path: string;
   isActive: boolean;
+  roles?: string[];        // ✅
+  permissions?: string[];  // ✅
   __typename?: string;
 }
 
@@ -378,11 +380,22 @@ export class DeveloperComponent implements OnInit, OnDestroy {
 
   openRolesPermModal(ep: AuthorizedEndpoint) {
     this.editingRolesPermEndpoint = { ...ep };
-    this.modalRoles = (this.rolesList || []).map(r => ({ name: r.name, assigned: false }));
-    this.modalPermissions = (this.permissionsList || []).map(p => ({ name: p.name, assigned: false }));
+
+    const assignedRoles: string[] = ep.roles ?? [];
+    const assignedPerms: string[] = ep.permissions ?? [];
+
+    this.modalRoles = (this.rolesList || []).map(r => ({
+      name: r.name,
+      assigned: assignedRoles.includes(r.name)  // ✅
+    }));
+
+    this.modalPermissions = (this.permissionsList || []).map(p => ({
+      name: p.name,
+      assigned: assignedPerms.includes(p.name)  // ✅
+    }));
+
     this.showRolesPermModal = true;
   }
-
   closeRolesPermModal() {
     this.showRolesPermModal = false;
     this.editingRolesPermEndpoint = null;

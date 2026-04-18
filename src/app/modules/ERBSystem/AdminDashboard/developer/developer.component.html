@@ -268,6 +268,7 @@
     <div>
       <!-- Path Custom Dropdown -->
       <div class="relative mb-3">
+        <label for="endpoint-path" class="block text-sm font-medium text-gray-700 mb-1">Path</label>
         <button type="button" (click)="openPathDropdown()"
           class="w-full border p-2 rounded text-left text-sm flex items-center justify-between bg-white hover:border-blue-300 transition-colors">
           <span [class]="newEndpoint.path ? 'text-gray-900 font-mono' : 'text-gray-400'">
@@ -321,6 +322,7 @@
     </div>
 
     <div>
+      <label for="endpoint-method" class="block text-sm font-medium text-gray-700 mb-1">Method</label>
       <select [(ngModel)]="newEndpoint.method" class="w-full border p-2 rounded mb-4">
         <option [ngValue]="null" disabled>Select method</option>
         <option [value]="0">GET</option>
@@ -330,14 +332,20 @@
       </select>
     </div>
 
+    <label class="block text-sm font-medium text-gray-700 mb-1">Roles</label>
     <select [(ngModel)]="newEndpoint.roles" class="w-full border p-2 rounded mb-3">
-      <option [ngValue]="null" disabled>Select Role</option>
-      <option *ngFor="let role of rolesList" [value]="role">{{ role.name }}</option>
+      <option [ngValue]="null" disabled selected hidden>Select Role</option>
+      <option *ngFor="let role of rolesList" [ngValue]="role">
+        {{ role.name }}
+      </option>
     </select>
 
+    <label class="block text-sm font-medium text-gray-700 mb-1">Permissions</label>
     <select [(ngModel)]="newEndpoint.permissions" class="w-full border p-2 rounded mb-4">
-      <option [ngValue]="null" disabled>Select Permission</option>
-      <option *ngFor="let perm of permissionsList" [value]="perm">{{ perm.name }}</option>
+      <option [ngValue]="null" disabled selected hidden>Select Permission</option>
+      <option *ngFor="let perm of permissionsList" [ngValue]="perm">
+        {{ perm.name }}
+      </option>
     </select>
 
     <div class="flex justify-end gap-2">
@@ -460,7 +468,7 @@
 
         <!-- ✅ FIX: rolesList now contains Role objects with .name and .assigned -->
         <div class="grid grid-cols-4 gap-3">
-          <button *ngFor="let role of rolesList" (click)="toggleRole(role)"
+          <button *ngFor="let role of modalRoles" (click)="toggleRole(role)"
             [class]="role.assigned ? 'bg-blue-600 text-white border-blue-600 shadow-sm' : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300'"
             class="border rounded-md px-4 py-4 flex items-center justify-between transition-all duration-200">
             <span class="font-medium text-sm">{{ role.name }}</span>
@@ -493,7 +501,7 @@
 
         <!-- ✅ FIX: permissionsList now contains Permission objects with .name and .assigned -->
         <div class="grid grid-cols-4 gap-3">
-          <button *ngFor="let perm of permissionsList" (click)="togglePermission(perm)"
+          <button *ngFor="let perm of modalPermissions" (click)="togglePermission(perm)"
             [class]="perm.assigned ? 'bg-green-50 text-green-700 border-green-200' : 'bg-white text-gray-700 border-gray-200 hover:border-green-300'"
             class="border rounded-md px-4 py-4 flex items-center justify-between transition-all duration-200">
             <span class="font-medium text-sm">{{ perm.name }}</span>

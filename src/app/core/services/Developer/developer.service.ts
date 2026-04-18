@@ -46,6 +46,8 @@ export class DeveloperService {
             path
             method
             isActive
+            roles        # ✅
+            permissions  # ✅
             __typename
           }
           pageInfo {
