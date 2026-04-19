@@ -6,14 +6,18 @@ import { AuthService } from '../../services/Auth/auth.service';
 export const headerInterceptor: HttpInterceptorFn = (req, next) => {
 
   const _platformID = inject(PLATFORM_ID);
-  const _authService = inject(AuthService);
 
   if (isPlatformBrowser(_platformID)) {
-    req = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${_authService.accessToken()}`,
-      },
-    });
+
+    const token = localStorage.getItem('accessToken');
+
+    if (token) {
+      req = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
   }
 
   return next(req);

@@ -7,9 +7,27 @@ import { Environment } from '../../../shared/UI/environment/env';
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private _http: HttpClient) { }
+  
+  constructor(private _http: HttpClient) {
+    this.initAuth(); 
+  }
 
-  accessToken: WritableSignal<string> = signal('');
+   accessToken: WritableSignal<string> = signal('');
+
+  initAuth() {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      this.accessToken.set(token);
+    }
+  }
+    saveAuthData(res: any) {
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+    localStorage.setItem('role', res.roles[0]);
+
+    this.accessToken.set(res.accessToken);
+  }
+
 
   AdminLogin(data: object): Observable<any> {
     return this._http.post(`${Environment.baseUrl}/api/Auth/Login`, data);
