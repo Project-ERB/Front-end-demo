@@ -4,6 +4,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/spec",
+    "rootDir": "./src", // 👈 أضف السطر ده
     "types": [
       "jasmine"
     ]

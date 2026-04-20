@@ -1,21 +1,24 @@
 import { ProductService } from './../../../core/services/products/product.service';
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NavbarECommerceComponent } from '../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component';
 import { ProductCardComponent } from '../product-card/product-card.component';
 
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, CommonModule, NavbarECommerceComponent, ProductCardComponent],
+  imports: [RouterModule, CommonModule, NavbarECommerceComponent, ProductCardComponent, RouterLink],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly _ECommerceService = inject(ECommerceService)
+  private readonly _ToastrService = inject(ToastrService)
+  private readonly _Router = inject(Router);
 
   products: any[] = [];
   isLoading = false;
@@ -66,14 +69,19 @@ export class HomeComponent implements OnInit {
         console.log('Added to cart:', res);
         this.cartSuccessMessage = `"${product.name}" added to cart!`;
         this.addingToCartSku = null;
-
+        this._ToastrService.success(this.cartSuccessMessage);
         // Auto-hide success message after 3s
         setTimeout(() => (this.cartSuccessMessage = ''), 3000);
       },
       error: (err) => {
         console.error('Error adding to cart:', err);
         this.addingToCartSku = null;
+        this._ToastrService.error('Failed to add to cart. Please try again.');
       },
     });
+  }
+
+  viewDetails(productId: string): void {
+    this._Router.navigate(['/cart-details', productId]);
   }
 }

@@ -3,13 +3,19 @@
   <div class="w-full max-w-6xl">
     <div
       class="grid grid-cols-1 lg:grid-cols-2 min-h-[720px] bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden">
+
+      <!-- Left Panel -->
       <div class="relative hidden lg:flex flex-col justify-center p-12 bg-gray-100 dark:bg-gray-900/50">
-        <div class="w-full h-full bg-center bg-no-repeat bg-cover rounded-lg" style="
-            background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop');
-          "></div>
+        <div class="w-full h-full bg-center bg-no-repeat bg-cover rounded-lg"
+          style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop');">
+        </div>
       </div>
 
+      <!-- Right Panel -->
       <div class="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
+
+        <!-- ── Step 1: Register Form ── -->
+        @if (currentStep() === 1) {
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-8 w-full max-w-md mx-auto">
           <div class="flex flex-col gap-3 text-center lg:text-left">
             <h1 class="text-3xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
@@ -22,15 +28,21 @@
 
           <div class="flex flex-col gap-4">
             <label class="flex flex-col">
-              <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Username</span>
-              <input formControlName="username" type="text" placeholder="Enter your username"
-                class="w-full rounded-lg border-gray-300 border-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 active:outline-none" />
+              <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Name</span>
+              <input formControlName="name" type="text" placeholder="Enter your name"
+                class="w-full rounded-lg border-gray-300 border dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3" />
+            </label>
+
+            <label class="flex flex-col">
+              <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Phone Number</span>
+              <input formControlName="phoneNumber" type="tel" placeholder="Enter your phone number"
+                class="w-full rounded-lg border-gray-300 border dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3" />
             </label>
 
             <label class="flex flex-col">
               <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Email</span>
               <input formControlName="email" type="email" placeholder="Enter your email"
-                class="w-full rounded-lg border-gray-300 dark:border-gray-600 border-1 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 " />
+                class="w-full rounded-lg border-gray-300 border dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3" />
             </label>
 
             <label class="flex flex-col">
@@ -38,48 +50,26 @@
               <div class="flex relative">
                 <input [type]="showPassword() ? 'text' : 'password'" formControlName="password"
                   placeholder="Enter your password"
-                  class="w-full rounded-lg border-gray-300 border-1  dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 pr-12" />
-                <button type="button" (click)="togglePassword()"
-                  class="absolute right-3 top-3 text-gray-400 hover:text">
-                  <span class="material-symbols-outlined">{{
-                    showPassword() ? "visibility_off" : "visibility"
-                    }}</span>
+                  class="w-full rounded-lg border-gray-300 border dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 pr-12" />
+                <button type="button" (click)="togglePassword()" class="absolute right-3 top-3 text-gray-400">
+                  <span class="material-symbols-outlined">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
                 </button>
               </div>
-              <p class="text-xs text-gray-500 mt-1.5">
-                Must be at least 8 characters long.
-              </p>
-            </label>
-
-            <label class="flex flex-col">
-              <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Confirm Password</span>
-              <div class="flex relative">
-                <input [type]="showConfirmPassword() ? 'text' : 'password'" formControlName="confirmPassword"
-                  placeholder="Confirm your password"
-                  class="w-full rounded-lg border-gray-300 border-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring focus:border h-12 p-3 pr-12" />
-                <button type="button" (click)="toggleConfirmPassword()"
-                  class="absolute right-3 top-3 text-gray-400 hover:text">
-                  <span class="material-symbols-outlined">{{
-                    showConfirmPassword() ? "visibility_off" : "visibility"
-                    }}</span>
-                </button>
-              </div>
+              <p class="text-xs text-gray-500 mt-1.5">Must be at least 8 characters long.</p>
             </label>
           </div>
 
           <div class="flex flex-col gap-4">
-            <div class="flex items-start gap-3">
-              <input formControlName="agreeToTerms" id="terms" type="checkbox"
-                class="h-5 w-5 rounded border-gray-300 text focus:ring" />
-              <label for="terms" class="text-sm text-gray-500 dark:text-gray-300">
-                By creating an account, you agree to our
-                <a href="#" class="font-semibold text hover:underline">Terms of Service</a>.
-              </label>
-            </div>
-
-            <button type="submit" [disabled]="registerForm.invalid"
+            @if (errorMessages().length > 0) {
+            <ul class="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3 flex flex-col gap-1">
+              @for (msg of errorMessages(); track msg) {
+              <li class="flex items-start gap-2"><span class="mt-0.5">•</span><span>{{ msg }}</span></li>
+              }
+            </ul>
+            }
+            <button type="submit" [disabled]="registerForm.invalid || isLoading()"
               class="h-12 w-full bg-main hover:bg-hover-main disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors cursor-pointer">
-              Create Account
+              {{ isLoading() ? 'Creating Account...' : 'Create Account' }}
             </button>
           </div>
 
@@ -88,6 +78,76 @@
             <span class="font-semibold text hover:underline cursor-pointer" (click)="ToLogin()">Log In</span>
           </p>
         </form>
+        }
+
+        <!-- ── Step 2: OTP Verification ── -->
+        @if (currentStep() === 2) {
+        <div class="flex flex-col gap-8 w-full max-w-md mx-auto">
+          <div class="flex flex-col items-center gap-3 text-center">
+            <div class="p-3 bg-main/10 rounded-full">
+              <svg class="h-8 w-8 text-main" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
+              </svg>
+            </div>
+            <h1 class="text-3xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
+              Check your email
+            </h1>
+            <p class="text-base text-gray-500 dark:text-gray-300">
+              We've sent a 6-digit code to
+              <span class="font-medium text-gray-900 dark:text-white">{{ registerForm.value.email }}</span>
+            </p>
+          </div>
+
+          <!-- OTP Inputs -->
+          <div class="flex gap-2 sm:gap-3 justify-center w-full">
+            @for (control of otpControls; track $index) {
+            <label [for]="'otpInput' + $index" class="sr-only">Digit {{ $index + 1 }}</label>
+            <input #otpInput [id]="'otpInput' + $index" type="text" inputmode="numeric" maxlength="1"
+              autocomplete="one-time-code" [formControl]="control" (input)="onInput($event, $index)"
+              (keydown)="onKeyDown($event, $index)"
+              class="flex h-14 w-full text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-main/50 bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-lg text-slate-900 dark:text-white transition-all" />
+            }
+          </div>
+
+          <div class="flex flex-col gap-4">
+            @if (errorMessages().length > 0) {
+            <ul class="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3 flex flex-col gap-1">
+              @for (msg of errorMessages(); track msg) {
+              <li class="flex items-start gap-2"><span class="mt-0.5">•</span><span>{{ msg }}</span></li>
+              }
+            </ul>
+            }
+            @if (successMessage()) {
+            <p class="text-sm text-green-600 text-center">{{ successMessage() }}</p>
+            }
+
+            <button (click)="onVerify()" [disabled]="otpForm.invalid || isLoading()"
+              class="h-12 w-full bg-main hover:bg-hover-main disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-lg transition-colors cursor-pointer">
+              {{ isLoading() ? 'Verifying...' : 'Verify Account' }}
+            </button>
+          </div>
+
+          <div class="flex flex-col items-center gap-3">
+            <p class="text-sm text-gray-500 dark:text-gray-300">
+              Didn't receive the code?
+              @if (resendCooldown() > 0) {
+              <span class="text-gray-400">Resend in {{ resendCooldown() }}s</span>
+              } @else {
+              <button (click)="onResend()" [disabled]="isResending()"
+                class="font-semibold text-main hover:underline disabled:opacity-50 cursor-pointer bg-transparent border-none">
+                {{ isResending() ? 'Sending...' : 'Resend code' }}
+              </button>
+              }
+            </p>
+            <button (click)="goBackToRegister()"
+              class="text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex items-center gap-1 cursor-pointer bg-transparent border-none">
+              ← Back to register
+            </button>
+          </div>
+        </div>
+        }
+
       </div>
     </div>
   </div>

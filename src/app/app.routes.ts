@@ -96,27 +96,20 @@ export const routes: Routes = [
         title: 'Home',
       },
       {
-        path: 'product',
-        loadComponent: () => import('./modules/E-Commerce/product-details/product-details.component').then((m) => m.ProductDetailsComponent),
-        title: 'Product',
-      }, //Demo
-      {
-        path: 'product/:id',
-        loadComponent: () => import('./modules/E-Commerce/product-details/product-details.component').then((m) => m.ProductDetailsComponent),
-        title: 'Product-Details',
-      },
-
-      {
         path: 'cart',
         loadComponent: () => import('./modules/E-Commerce/cart/cart.component').then((m) => m.CartComponent),
         title: 'Cart',
       },
       {
-        path: 'Profile',
-        loadComponent: () => import('./modules/E-Commerce/personal-information/personal-information.component').then((p) => p.PersonalInformationComponent),
-        title: 'Profile',
+        path: 'cart-details/:id',
+        loadComponent: () => import('./modules/E-Commerce/cart-details/cart-details/cart-details.component').then((c) => c.CartDetailsComponent),
+        title: 'Cart Details',
       },
-
+      {
+        path: 'customer-profile',
+        loadComponent: () => import('./modules/E-Commerce/customer-profile/customer-profile/customer-profile.component').then((c) => c.CustomerProfileComponent),
+        title: 'Customer Profile',
+      },
       {
         path: 'security',
         loadComponent: () => import('./modules/E-Commerce/security/security.component').then((s) => s.SecurityComponent),

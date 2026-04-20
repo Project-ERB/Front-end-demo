@@ -1,0 +1,349 @@
+<div class="min-h-screen bg-white dark:bg-gray-900">
+    <!-- Header -->
+    <app-navbar-e-commerce></app-navbar-e-commerce>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumbs -->
+        <nav class="mb-6">
+            <div class="flex flex-wrap gap-2 items-center text-sm">
+                <a routerLink="/home"
+                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Home</a>
+                <span class="text-gray-500 dark:text-gray-400">/</span>
+                <a routerLink="/home"
+                    class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Office
+                    Furniture</a>
+                <span class="text-gray-500 dark:text-gray-400">/</span>
+                <span class="text-gray-800 dark:text-gray-200 font-medium">{{ product.name }}</span>
+            </div>
+        </nav>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="flex items-center justify-center min-h-[60vh]">
+            <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+        </div>
+
+        <!-- Error State -->
+        <div *ngIf="loadError && !isLoading" class="flex items-center justify-center min-h-[60vh] text-red-500">
+            {{ loadError }}
+        </div>
+
+        <!-- Product Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <!-- Product Images -->
+            <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Thumbnails -->
+                <div class="flex lg:flex-col gap-4 order-2 lg:order-1">
+                    @for(image of productImages(); let i = $index; track i){
+                    <button aria-label="Select image {{ i + 1 }}" (click)="selectImage(i)"
+                        [class.border-2]="selectedImageIndex() === i"
+                        [class.border-blue-600]="selectedImageIndex() === i"
+                        class="w-20 h-20 lg:w-24 lg:h-24 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+                        <img [src]="getImageUrl(image.url)" [alt]="image.alt" class="w-full h-full object-cover" />
+                    </button>}
+                </div>
+
+                <!-- Main Image -->
+                <div class="flex-1 order-1 lg:order-2">
+                    <div
+                        class="aspect-square w-full rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800">
+                        <!-- ✅ الصورة شغالة دلوقتي -->
+                        <!-- ✅ صح - عرض الصورة الـ selected بس -->
+                        <img *ngIf="selectedImage() as img" [src]="getImageUrl(img.url)" [alt]="img.alt"
+                            class="w-full h-full object-cover" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="flex flex-col space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">{{ product.name }}</h1>
+                    <p class="text-gray-600 dark:text-gray-400 text-lg">{{ product.tagline }}</p>
+                </div>
+
+                <!-- Rating -->
+                <div class="flex items-center gap-2">
+                    <div class="flex items-center">
+                        @for (star of [1, 2, 3, 4, 5]; track $index) {
+                        <span class="material-symbols-outlined text-yellow-400 text-xl">star</span>}
+                    </div>
+                    <span class="text-gray-600 dark:text-gray-400 text-sm">({{ product.taxRateValue }} Reviews)</span>
+                </div>
+
+                <!-- Price -->
+                <div class="flex items-center gap-4">
+                    <span class="text-3xl font-bold text-gray-900 dark:text-white">${{ product.currentPrice.toFixed(2)
+                        }}</span>
+                    <span class="text-xl text-gray-400 line-through">${{ product.originalPrice.toFixed(2) }}</span>
+                    <span
+                        class="text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded">
+                        Save {{ discountPercentage }}%
+                    </span>
+                </div>
+
+                <!-- Color Selection -->
+                <div class="flex flex-col gap-3">
+                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Color: {{ selectedColor()
+                        }}</label>
+                    <div class="flex gap-3">
+                        @for (color of colorOptions; track $index) {
+                        <button aria-label="Select color {{ color.name }}" (click)="selectColor(color.name)"
+                            [class.ring-2]="selectedColor() === color.name"
+                            [class.ring-blue-600]="selectedColor() === color.name"
+                            [class.ring-offset-2]="selectedColor() === color.name"
+                            class="w-10 h-10 rounded-full border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 transition-colors"
+                            [style.background-color]="color.hex" [attr.aria-label]="color.name"></button>}
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="flex flex-col gap-3">
+                    <label class="text-sm font-semibold text-gray-700 dark:text-gray-300">Quantity</label>
+                    <div class="flex items-center gap-3 w-fit">
+                        <button (click)="decreasequantity(cartItemId, quantity())"
+                            class="w-10 h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300">
+                            <span class="material-symbols-outlined text-xl">remove</span>
+                        </button>
+                        <input aria-label="Quantity" type="number" [value]="quantity()" readonly
+                            class="w-16 h-10 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-medium" />
+                        <button (click)="increasequantity(cartItemId, quantity())"
+                            class="w-10 h-10 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300">
+                            <span class="material-symbols-outlined text-xl">add</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stock Status -->
+                <div class="flex items-center gap-2">
+                    <span class="text-green-600 dark:text-green-400 font-semibold">In Stock</span>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col gap-3 pt-4">
+                    <button (click)="addToCart(product, quantity())"
+                        class="flex items-center justify-center gap-2 w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        Add to Cart
+                    </button>
+                    <!-- <button (click)="addToWishlist()"
+                        class="flex items-center justify-center gap-2 w-full h-12 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-lg transition-colors">
+                        <span class="material-symbols-outlined">favorite</span>
+                        Add to Wishlist
+                    </button> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Description Tabs -->
+        <div class="mb-12">
+            <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
+                <div class="flex gap-8">
+                    <button (click)="setTab('description')" [class.border-b-2]="activeTab() === 'description'"
+                        [class.border-blue-600]="activeTab() === 'description'"
+                        [class.text-blue-600]="activeTab() === 'description'"
+                        [class.text-gray-600]="activeTab() !== 'description'"
+                        class="pb-4 px-1 font-semibold text-sm transition-colors">
+                        Full Description
+                    </button>
+                    <button (click)="setTab('specifications')" [class.border-b-2]="activeTab() === 'specifications'"
+                        [class.border-blue-600]="activeTab() === 'specifications'"
+                        [class.text-blue-600]="activeTab() === 'specifications'"
+                        [class.text-gray-600]="activeTab() !== 'specifications'"
+                        class="pb-4 px-1 font-semibold text-sm transition-colors">
+                        Specifications
+                    </button>
+                    <button (click)="setTab('reviews')" [class.border-b-2]="activeTab() === 'reviews'"
+                        [class.border-blue-600]="activeTab() === 'reviews'"
+                        [class.text-blue-600]="activeTab() === 'reviews'"
+                        [class.text-gray-600]="activeTab() !== 'reviews'"
+                        class="pb-4 px-1 font-semibold text-sm transition-colors">
+                        Customer Reviews
+                    </button>
+                </div>
+            </div>
+
+            <div class="prose dark:prose-invert max-w-none">
+                @if (activeTab() === 'description') {
+                <div class="space-y-6">
+                    <div>
+                        <h3
+                            class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                            Short Description
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                            {{ product.tagline || '—' }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3
+                            class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                            Full Description
+                        </h3>
+
+                        @if (product.hasDescription) {
+                        <div class="text-gray-700 dark:text-gray-300 leading-relaxed prose dark:prose-invert max-w-none"
+                            [innerHTML]="product.description">
+                        </div>
+                        } @else {
+                        <p class="text-gray-400 dark:text-gray-500 italic">
+                            No full description available for this product.
+                        </p>
+                        }
+                    </div>
+                </div>}
+                @else if (activeTab() === 'specifications') {
+                <div>
+                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Product Type</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.productType || '—' }}</dd>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Category</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.category || '—' }}</dd>
+                        </div>
+
+                        <!-- <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Material</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.specifications.material }}</dd>
+                        </div> -->
+                        <!-- <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Dimensions</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.specifications.dimensions }}</dd>
+                        </div> -->
+                        <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Weight</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.specifications.weight }}</dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Color Options</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.specifications.color }}</dd>
+                        </div>
+                        <!-- <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Warranty</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.specifications.warranty }}</dd>
+                        </div>
+                        <div class="flex flex-col">
+                            <dt class="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-1">Assembly</dt>
+                            <dd class="text-gray-900 dark:text-white">{{ product.specifications.assembly }}</dd>
+                        </div> -->
+
+                    </dl>
+                </div>}
+                @else if (activeTab() === 'reviews') {
+                <div class="flex items-center gap-1">
+                    <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+                        <span class="material-symbols-outlined"
+                            [ngClass]="i < product.taxRateValue ? 'text-yellow-400' : 'text-gray-300'">
+                            star
+                        </span>
+                    </ng-container>
+
+                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        {{ product.taxRateValue }}
+                    </span>
+                </div>
+                }
+            </div>
+        </div>
+
+        <!-- You Might Also Like Section -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">You Might Also Like</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                @for (relatedProduct of relatedProducts; track $index) {
+                <div (click)="navigateToProduct(relatedProduct.id)"
+                    class="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:shadow-lg transition-shadow cursor-pointer">
+                    <div class="aspect-square w-full bg-cover bg-center"
+                        [style.background-image]="'url(' + relatedProduct.imageUrl + ')'"></div>
+                    <div class="flex flex-col p-4 space-y-2">
+                        <h3 class="font-semibold text-gray-800 dark:text-white">{{ relatedProduct.name }}</h3>
+                        <p class="text-lg font-bold text-gray-900 dark:text-white">${{ relatedProduct.price.toFixed(2)
+                            }}</p>
+                    </div>
+                </div>}
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                        SOLUTIONS</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Marketing</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Analytics</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Commerce</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                        SUPPORT</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Pricing</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Documentation</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Guides</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                        COMPANY</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">About</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Blog</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Jobs</a>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">LEGAL
+                    </h3>
+                    <ul class="space-y-2">
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Claim</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Privacy</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm">Terms</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                <p class="text-center text-sm text-gray-600 dark:text-gray-400">© 2024 ERP Commerce, Inc. All rights
+                    reserved.
+                </p>
+            </div>
+        </div>
+    </footer>
+</div>

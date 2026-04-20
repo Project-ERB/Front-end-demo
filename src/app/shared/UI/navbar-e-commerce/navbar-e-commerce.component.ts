@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-e-commerce',
@@ -7,5 +8,11 @@ import { Component } from '@angular/core';
   styleUrl: './navbar-e-commerce.component.scss',
 })
 export class NavbarECommerceComponent {
+
+  private readonly _Router = inject(Router);
+
+  navigateToShopCart() {
+    this._Router.navigate(['/cart']);
+  }
 
 }

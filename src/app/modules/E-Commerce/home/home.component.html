@@ -7,53 +7,57 @@
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-2">
           <p class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Account</p>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:bg-main/20 dark:text-white text-sm font-semibold hover:bg-gray-100"
-            href="#">
-            <span class="material-symbols-outlined text-xl">person</span>Profile
-          </a>
+
+          <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            routerLink="/wishlist">
+            <span class="material-symbols-outlined text-xl">favorite</span>Wishlist
+          </a> -->
+
           <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-            href="#">
+            routerLink="/customer-profile">
+            <span class="material-symbols-outlined text-xl">person</span>My Profile
+          </a>
+
+          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            routerLink="/cart">
             <span class="material-symbols-outlined text-xl">shopping_bag</span>My Orders
           </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-            href="#">
-            <span class="material-symbols-outlined text-xl">favorite</span>Wishlist
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-            href="#">
+
+          <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            routerLink="/help-center">
             <span class="material-symbols-outlined text-xl">help_center</span>Help Center
-          </a>
+          </a> -->
         </div>
         <div class="flex flex-col gap-2">
           <p class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Categories</p>
           <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:bg-main/20 dark:text-white text-sm font-semibold hover:bg-gray-100"
-            href="#">
+            routerLink="/home">
             <span class="material-symbols-outlined text-xl"
               style="font-variation-settings: 'FILL' 1;">devices</span>Electronics
           </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-            href="#">
+          <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            routerLink="/apparel">
             <span class="material-symbols-outlined text-xl">checkroom</span>Apparel
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-            href="#">
+          </a> -->
+          <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            routerLink="/home-goods">
             <span class="material-symbols-outlined text-xl">chair</span>Home Goods
-          </a>
-          <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-            href="#">
+          </a> -->
+          <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+            routerLink="/books">
             <span class="material-symbols-outlined text-xl">auto_stories</span>Books
-          </a>
+          </a> -->
         </div>
       </div>
       <div class="flex flex-col gap-1 border-t border-gray-200 dark:border-gray-800 pt-4">
-        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
-          href="#">
+        <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 text-sm font-medium"
+          routerLink="/settings">
           <span class="material-symbols-outlined text-xl">settings</span>Settings
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-danger-main/10 hover:text-danger-main dark:hover:bg-white/10 text-sm font-medium"
-          href="#">
+        </a> -->
+        <!-- <a class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-danger-main/10 hover:text-danger-main dark:hover:bg-white/10 text-sm font-medium"
+          routerLink="/logout">
           <span class="material-symbols-outlined text-xl">logout</span>Log Out
-        </a>
+        </a> -->
       </div>
     </aside>
 
@@ -150,7 +154,8 @@
             class="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-background-dark/50 hover:shadow-lg transition-shadow duration-300">
 
             <!-- Product Image -->
-            <div class="aspect-square w-full bg-cover bg-center bg-gray-100 dark:bg-gray-800"
+            <div (click)="viewDetails(product.id)"
+              class="aspect-square w-full bg-cover bg-center bg-gray-100 dark:bg-gray-800"
               [style.background-image]="product.imageUrl ? 'url(' + product.imageUrl + ')' : 'none'">
               <!-- Fallback icon if no image -->
               <div *ngIf="!product.imageUrl" class="w-full h-full flex items-center justify-center">

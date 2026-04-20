@@ -49,7 +49,15 @@ export class ProductService {
           notes
           imageUrl
           specifications { key value displayOrder }
-          variants { sku barcode priceOverrideAmount }
+          variants { 
+            sku 
+            barcode 
+            priceOverrideAmount
+            options {
+              attributeName
+              value
+            }
+          }
         }
       }
     }`

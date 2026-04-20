@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';  // ← أضف HttpHeaders
+import { HttpClient } from '@angular/common/http';
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Environment } from '../../../shared/UI/environment/env';
@@ -7,12 +7,12 @@ import { Environment } from '../../../shared/UI/environment/env';
   providedIn: 'root',
 })
 export class AuthService {
-  
+
   constructor(private _http: HttpClient) {
-    this.initAuth(); 
+    this.initAuth();
   }
 
-   accessToken: WritableSignal<string> = signal('');
+  accessToken: WritableSignal<string> = signal('');
 
   initAuth() {
     const token = localStorage.getItem('accessToken');
@@ -20,14 +20,13 @@ export class AuthService {
       this.accessToken.set(token);
     }
   }
-    saveAuthData(res: any) {
+
+  saveAuthData(res: any) {
     localStorage.setItem('accessToken', res.accessToken);
     localStorage.setItem('refreshToken', res.refreshToken);
     localStorage.setItem('role', res.roles[0]);
-
     this.accessToken.set(res.accessToken);
   }
-
 
   AdminLogin(data: object): Observable<any> {
     return this._http.post(`${Environment.baseUrl}/api/Auth/Login`, data);
@@ -55,4 +54,16 @@ export class AuthService {
     return this._http.post(`${Environment.baseUrl}/api/User/VerifyResetOtp`, data);
   }
 
+  // ✅ الجديدة
+  RegisterCustomer(data: object): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/Customer/register`, data);
+  }
+
+  VerifyCustomerEmail(data: { otp: number; email: string }): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/Auth/ConfirmEmail`, data);
+  }
+
+  ResendVerificationCode(email: string): Observable<any> {
+    return this._http.post(`${Environment.baseUrl}/api/Auth/SendOTP`, { email });
+  }
 }

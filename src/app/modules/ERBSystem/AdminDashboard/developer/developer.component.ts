@@ -233,21 +233,32 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   // ─── Authorized Endpoints ────────────────────────────────────
   loadAuthorizedEndpoints(after?: string) {
     this._developerService.getAuthorizedEndpoints(this.authorizedPageSize, after)
-      .subscribe(({ data, loading }: any) => {
-        this.loadingAuthorized = loading;
-        if (data?.authorizedEndpoints?.nodes) {
-          this.authorizedEndpoints = data.authorizedEndpoints.nodes;
-          this.authorizedPageInfo = data.authorizedEndpoints.pageInfo;
-          this.authorizedTotalCount = data.authorizedEndpoints.totalCount;
+      .subscribe({
+        next: ({ data }: any) => {
+          this.loadingAuthorized = false;
+          if (data?.authorizedEndpoints?.nodes) {
+            this.authorizedEndpoints = data.authorizedEndpoints.nodes;
+            this.authorizedPageInfo = data.authorizedEndpoints.pageInfo;
+            this.authorizedTotalCount = data.authorizedEndpoints.totalCount;
+          }
+        },
+        error: (err) => {
+          this.loadingAuthorized = false;
+          console.error('Full error object:', JSON.stringify(err, null, 2));
+          console.error('GraphQL errors:', err?.graphQLErrors);
+          console.error('Network error:', err?.networkError);
+          console.error('Message:', err?.message);
+          console.error('GraphQL error details:', err);  // ✅ هتشوف السبب الحقيقي
         }
       });
   }
 
   nextAuthorizedPage() {
     if (!this.authorizedPageInfo?.hasNextPage) return;
+    const nextCursor = this.authorizedPageInfo.endCursor;
     this.authorizedPreviousCursors.push(this.authorizedCurrentCursor!);
-    this.authorizedCurrentCursor = this.authorizedPageInfo.endCursor;
-    this.loadAuthorizedEndpoints(this.authorizedCurrentCursor!);
+    this.authorizedCurrentCursor = nextCursor;
+    this.loadAuthorizedEndpoints(nextCursor);
   }
 
   prevAuthorizedPage() {

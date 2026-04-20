@@ -19,7 +19,7 @@ const ROLE_ROUTES: Record<string, string> = {
   styleUrl: './admin-login.component.scss',
 })
 export class AdminLoginComponent {
-   private readonly _toastrService = inject(ToastrService);
+  private readonly _toastrService = inject(ToastrService);
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _authService = inject(AuthService);
   private readonly _router = inject(Router);
@@ -34,6 +34,7 @@ export class AdminLoginComponent {
       Validators.required,
       Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/)
     ]],
+    confirmPassword: [null, RxwebValidators.compare({ fieldName: 'password' })],
     rememberMe: []
   });
 

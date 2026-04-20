@@ -14,44 +14,66 @@
 
         <!-- Cart Items -->
         <div class="space-y-4">
-          @for (item of cartItems(); track $index) {
+          <!-- Loading State -->
+          @if (isLoading()) {
+          <div class="flex justify-center items-center py-20">
+            <span class="material-symbols-outlined animate-spin text-4xl text-blue-500">progress_activity</span>
+          </div>
+          }
+
+          <!-- Error State -->
+          @if (errorMessage()) {
+          <p class="text-center text-red-500 py-10">{{ errorMessage() }}</p>
+          }
+
+          <!-- Cart Items — غيّر الـ @for الموجود -->
+          @for (item of cartItems(); track item.id) {
           <div
             class="flex flex-col sm:flex-row gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-background-dark/50">
+
             <!-- Product Image -->
             <div class="w-full sm:w-32 h-32 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-              <img [src]="item.imageUrl" [alt]="item.name" class="w-full h-full object-cover" alt />
+              <img [src]="item.productImageUrl" [alt]="item.productName" class="w-full h-full object-cover" />
             </div>
 
             <!-- Product Details -->
             <div class="flex-1 flex flex-col justify-between">
               <div>
                 <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-1">
-                  {{ item.name }}
+                  {{ item.productName }}
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                  {{ item.attributes }}
-                </p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">SKU: {{ item.sku }}</p>
+                <div class="flex items-center gap-1">
+                  <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
+                    <span class="material-symbols-outlined"
+                      [ngClass]="i < item.taxRate ? 'text-yellow-400' : 'text-gray-300'">
+                      star
+                    </span>
+                  </ng-container>
+
+                  <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                    {{ item.taxRate }}
+                  </span>
+                </div>
               </div>
 
               <!-- Quantity and Remove -->
-              <div class="flex items-center justify-between">
-                <!-- Quantity Selector -->
+              <div class="flex items-center justify-between mt-3">
                 <div class="flex items-center gap-3">
                   <button (click)="decreaseQuantity(item)"
-                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 cursor-pointer">
+                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
                     <span class="material-symbols-outlined text-base">remove</span>
                   </button>
                   <span class="w-12 text-center font-medium text-gray-900 dark:text-white">{{ item.quantity }}</span>
                   <button (click)="increaseQuantity(item)"
-                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300 cursor-pointer">
+                    class="w-8 h-8 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer">
                     <span class="material-symbols-outlined text-base">add</span>
                   </button>
                 </div>
 
-                <!-- Remove Button -->
                 <button (click)="removeItem(item.id)"
-                  class="flex items-center gap-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 cursor-pointer">
-                  <span class="material-symbols-outlined text-lg ">delete</span>
+                  class="flex items-center gap-2 text-red-600 hover:text-red-700 cursor-pointer">
+                  <span class="material-symbols-outlined text-lg">delete</span>
                 </button>
               </div>
             </div>
@@ -59,10 +81,10 @@
             <!-- Price -->
             <div class="flex flex-col items-end justify-between">
               <p class="text-lg font-bold text-gray-900 dark:text-white">
-                ${{ (item.price * item.quantity).toFixed(2) }}
+                ${{ item.totalPrice.toFixed(2) }}
               </p>
               <p class="text-sm text-gray-500 dark:text-gray-400">
-                ${{ item.price.toFixed(2) }} each
+                ${{ item.unitPrice.toFixed(2) }} each
               </p>
             </div>
           </div>
@@ -114,7 +136,7 @@
             </div>
 
             <!-- Promo Code -->
-            <div class="mb-6">
+            <!-- <div class="mb-6">
               <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Promo Code</label>
               <div class="flex gap-2">
                 <input type="text" [(ngModel)]="promoCode" placeholder="Enter code"
@@ -124,7 +146,7 @@
                   Apply
                 </button>
               </div>
-            </div>
+            </div> -->
 
             <!-- Checkout Button -->
             <button (click)="proceedToCheckout()"
@@ -169,4 +191,114 @@
       </div>
     </div>
   </footer>
+
+
+  <!-- ===== Checkout Modal ===== -->
+  @if (showCheckoutModal()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" (click)="closeCheckoutModal()">
+
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+    <!-- Modal Card -->
+    <div class="relative z-10 w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+      (click)="$event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-blue-600">shopping_bag</span>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Confirm Your Order</h2>
+        </div>
+        <button (click)="closeCheckoutModal()"
+          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="px-6 py-5" [formGroup]="checkoutForm">
+
+        <!-- Order Summary mini -->
+        <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-5 space-y-2 text-sm">
+          <div class="flex justify-between text-gray-600 dark:text-gray-300">
+            <span>Subtotal</span><span>${{ subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600 dark:text-gray-300">
+            <span>Shipping</span><span>${{ shippingCost.toFixed(2) }}</span>
+          </div>
+          <div class="flex justify-between text-gray-600 dark:text-gray-300">
+            <span>Tax</span><span>${{ estimatedTax.toFixed(2) }}</span>
+          </div>
+          <div
+            class="flex justify-between font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2 mt-1">
+            <span>Total</span><span>${{ total.toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Payment Method</p>
+        <div class="grid grid-cols-2 gap-3 mb-5">
+          @for (pm of paymentMethods; track pm.value) {
+          <button type="button" (click)="checkoutForm.get('method')?.setValue(pm.value)"
+            [class]="checkoutForm.get('method')?.value === pm.value
+            ? 'flex items-center gap-2 p-3 rounded-xl border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold cursor-pointer transition-all'
+            : 'flex items-center gap-2 p-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:border-blue-300 cursor-pointer transition-all'">
+            <span class="material-symbols-outlined text-xl">{{ pm.icon }}</span>
+            <span class="text-sm">{{ pm.label }}</span>
+          </button>
+          }
+        </div>
+
+        <!-- Shipping Toggle -->
+        <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl mb-4">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-gray-500">local_shipping</span>
+            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Requires Shipping</span>
+          </div>
+          <button type="button" (click)="checkoutForm.get('shipping')?.setValue(!checkoutForm.get('shipping')?.value)"
+            [class]="checkoutForm.get('shipping')?.value
+            ? 'w-11 h-6 rounded-full bg-blue-600 relative transition-colors cursor-pointer'
+            : 'w-11 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors cursor-pointer'">
+            <span [class]="checkoutForm.get('shipping')?.value
+            ? 'absolute top-1 left-5 w-4 h-4 bg-white rounded-full shadow transition-all'
+            : 'absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-all'"></span>
+          </button>
+        </div>
+
+        <!-- Shipping Address -->
+        @if (needsAddress) {
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Shipping Address
+          </label>
+          <textarea formControlName="shippingAddress" rows="2" placeholder="Enter your shipping address..."
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm">
+        </textarea>
+        </div>
+        }
+
+        <!-- Error if method not selected -->
+        @if (checkoutForm.get('method')?.invalid && checkoutForm.touched) {
+        <p class="text-xs text-red-500 mb-3">Please select a payment method.</p>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="px-6 pb-5 flex gap-3">
+        <button (click)="closeCheckoutModal()"
+          class="flex-1 py-3 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+          Cancel
+        </button>
+        <button (click)="submitOrder()" [disabled]="checkoutForm.invalid || isSubmittingOrder()"
+          class="flex-1 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold cursor-pointer transition-colors flex items-center justify-center gap-2">
+          @if (isSubmittingOrder()) {
+          <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+          }
+          {{ isSubmittingOrder() ? 'Placing...' : 'Place Order' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  }
 </div>

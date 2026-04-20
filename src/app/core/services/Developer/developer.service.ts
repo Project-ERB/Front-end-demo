@@ -37,7 +37,7 @@ export class DeveloperService {
   private authorizedEndpointsQuery: any;
 
   getAuthorizedEndpoints(first: number = 10, after?: string) {
-    this.authorizedEndpointsQuery = this.apollo.watchQuery({
+    return this.apollo.query({
       query: gql`
       query GetAuthorizedEndpoints($first: Int, $after: String) {
         authorizedEndpoints(first: $first, after: $after) {
@@ -46,8 +46,8 @@ export class DeveloperService {
             path
             method
             isActive
-            roles        # ✅
-            permissions  # ✅
+            roles
+            permissions
             __typename
           }
           pageInfo {
@@ -60,10 +60,9 @@ export class DeveloperService {
         }
       }
     `,
-      variables: { first, after },
+      variables: after ? { first, after } : { first },  // ✅ مش بيبعت after لو undefined
       fetchPolicy: 'network-only'
     });
-    return this.authorizedEndpointsQuery.valueChanges;
   }
 
   getEndpointById(id: string): Observable<any> {
