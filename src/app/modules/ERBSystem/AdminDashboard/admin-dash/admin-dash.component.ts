@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
 import { interval, Subscription, switchMap } from 'rxjs';
 import { AdminService, SystemHealth } from '../../../../core/services/Admin-service/admin.service';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 export interface SystemLog {
   timestamp: string;
@@ -22,13 +23,34 @@ export interface SystemLog {
   standalone: true,
   imports: [CommonModule, FormsModule, SiedeAdminComponent],
   templateUrl: './admin-dash.component.html',
-  styleUrl: './admin-dash.component.scss'
+  styleUrl: './admin-dash.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px)' }),
+        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('staggerRows', [
+      transition('* => *', [
+        query(
+          '.log-row',
+          [
+            style({ opacity: 0, transform: 'translateY(10px)' }),
+            stagger(35, [animate('220ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class AdminDashComponent implements OnInit, OnDestroy {
 
   constructor(private _adminService: AdminService) { }
   // ── Search & Filter ──────────────────────────────────────────────────────
   searchQuery = '';
+  isMobileSidebarOpen = false;
   selectedFilter = 'All Events';
   filterOptions = ['All Events', 'Errors Only', 'Warnings', 'Success'];
 
@@ -313,5 +335,13 @@ export class AdminDashComponent implements OnInit, OnDestroy {
 
   get statusDotClass(): string {
     return this.health?.status === 'Healthy' ? 'bg-emerald-500' : 'bg-red-500';
+  }
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
   }
 }

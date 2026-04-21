@@ -3,13 +3,28 @@ import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RxwebValidators } from '@rxweb/reactive-form-validators';
-import { Toast, ToastrService } from 'ngx-toastr';
+import { ToastrService } from 'ngx-toastr';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-login',
   imports: [ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
+  animations: [
+    trigger('logoReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-12px)' }),
+        animate('420ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('cardReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(24px) scale(0.98)' }),
+        animate('550ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+    ]),
+  ],
 })
 export class LoginComponent {
   private readonly _formBuilder = inject(FormBuilder);
@@ -61,5 +76,9 @@ export class LoginComponent {
 
   ToRegister() {
     this._router.navigate(['/register']);
+  }
+
+  ToForgotPassword() {
+    this._router.navigate(['/forget-password']);
   }
 }

@@ -8,6 +8,7 @@ import { marked } from 'marked';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NavbarECommerceComponent } from "../../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 import { ToastrService } from 'ngx-toastr';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 interface ProductImage { url: string; alt: string; }
 interface ColorOption { name: string; value: string; hex: string; }
@@ -18,6 +19,26 @@ interface RelatedProduct { id: string; name: string; price: number; imageUrl: st
   imports: [CommonModule, RouterModule, NavbarECommerceComponent],
   templateUrl: './cart-details.component.html',
   styleUrl: './cart-details.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px)' }),
+        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('staggerCards', [
+      transition('* => *', [
+        query(
+          '.related-card',
+          [
+            style({ opacity: 0, transform: 'translateY(16px) scale(0.98)' }),
+            stagger(70, [animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class CartDetailsComponent implements OnInit {
 

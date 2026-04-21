@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NavbarECommerceComponent } from "../../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 import { ECommerceService } from '../../../../core/services/e-commerce/e-commerce.service';
 import { RouterLink } from "@angular/router";
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 interface Address {
   label: string;
@@ -42,6 +43,26 @@ interface Order {
   imports: [CommonModule, FormsModule, NavbarECommerceComponent, RouterLink],
   templateUrl: './customer-profile.component.html',
   styleUrl: './customer-profile.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px)' }),
+        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('contentStagger', [
+      transition('* => *', [
+        query(
+          '.profile-card',
+          [
+            style({ opacity: 0, transform: 'translateY(14px) scale(0.98)' }),
+            stagger(90, [animate('320ms ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+  ],
 })
 export class CustomerProfileComponent implements OnInit {
 
@@ -56,6 +77,7 @@ export class CustomerProfileComponent implements OnInit {
   isEditing = false;
   isSaving = false;
   isChangingPassword = false;
+  isMobileSidebarOpen = false;
 
   editForm = {
     name: '',
@@ -167,5 +189,13 @@ export class CustomerProfileComponent implements OnInit {
   private showSuccess(message: string): void {
     this.successMessage = message;
     setTimeout(() => (this.successMessage = ''), 4000);
+  }
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
   }
 }

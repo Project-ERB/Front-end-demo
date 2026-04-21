@@ -2,6 +2,7 @@
 
     <!-- ═══ LEFT PANEL — Branding ══════════════════════════════════════ -->
     <div
+        @panelReveal
         class="relative hidden overflow-hidden bg-[#2463eb] lg:flex lg:w-1/2 lg:items-center lg:justify-center xl:w-7/12">
 
         <!-- Background photo -->
@@ -68,11 +69,13 @@
     </div>
 
     <!-- ═══ RIGHT PANEL — Login Form ════════════════════════════════════ -->
-    <div class="flex flex-1 flex-col items-center justify-center bg-white p-8 lg:p-16">
-        <div class="w-full max-w-md">
+    <div class="relative auth-login-shell flex flex-1 flex-col items-center justify-center bg-white p-5 sm:p-8 lg:p-16">
+        <div class="auth-glow auth-glow-top"></div>
+        <div class="auth-glow auth-glow-bottom"></div>
+        <div @formReveal class="w-full max-w-md rounded-2xl border border-slate-200/80 bg-white/85 backdrop-blur-xl p-5 sm:p-7 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
 
             <!-- Mobile logo -->
-            <div class="mb-12 flex items-center gap-2 lg:hidden">
+            <div class="mb-8 sm:mb-10 flex items-center gap-2 lg:hidden">
                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[#2463eb]">
                     <span class="material-symbols-outlined text-white">layers</span>
                 </div>
@@ -80,7 +83,7 @@
             </div>
 
             <!-- Welcome text -->
-            <div class="mb-10">
+            <div class="mb-8">
                 <h2 class="mb-2 text-3xl font-extrabold text-slate-900">Welcome Back</h2>
                 <p class="text-slate-500">Please enter your administrative credentials to continue.</p>
             </div>
@@ -197,7 +200,7 @@
 
                 <!-- Submit -->
                 <button type="submit" [disabled]="isLoading"
-                    class="group flex w-full items-center justify-center gap-2 rounded-lg bg-[#2463eb] px-4 py-3.5 font-bold text-white shadow-lg shadow-[#2463eb]/20 transition-all hover:bg-[#2463eb]/90 focus:ring-4 focus:ring-[#2463eb]/30 disabled:opacity-60 disabled:cursor-not-allowed">
+                    class="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2463eb] to-indigo-500 px-4 py-3.5 font-bold text-white shadow-lg shadow-[#2463eb]/20 transition-all duration-300 hover:from-[#1e58d5] hover:to-indigo-600 hover:-translate-y-0.5 focus:ring-4 focus:ring-[#2463eb]/30 disabled:opacity-60 disabled:cursor-not-allowed">
                     <!-- Spinner while loading -->
                     <ng-container *ngIf="isLoading; else loginLabel">
                         <svg class="h-5 w-5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
@@ -217,7 +220,7 @@
             </form>
 
             <!-- Footer links -->
-            <div class="mt-10 border-t border-slate-100 pt-10">
+            <div class="mt-8 border-t border-slate-100 pt-8">
                 <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
                     <div class="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-slate-400">
                         <span class="material-symbols-outlined text-xs text-green-500">security</span>

@@ -7,6 +7,7 @@ import { ApolloservicesService } from '../../../../core/services/apollo/apollose
 import { PermissionService } from '../../../../core/services/permission/permission.service';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
 import { Router } from '@angular/router';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 interface Endpoint {
   method: string;
@@ -43,6 +44,35 @@ interface Permission {
   imports: [CommonModule, FormsModule, SiedeAdminComponent],
   templateUrl: './developer.component.html',
   styleUrl: './developer.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px)' }),
+        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('staggerItems', [
+      transition('* => *', [
+        query(
+          '.endpoint-item, .auth-card-row',
+          [
+            style({ opacity: 0, transform: 'translateY(10px)' }),
+            stagger(40, [animate('220ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+    trigger('modalPop', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.97) translateY(10px)' }),
+        animate('240ms ease-out', style({ opacity: 1, transform: 'scale(1) translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('160ms ease-in', style({ opacity: 0, transform: 'scale(0.98) translateY(8px)' })),
+      ]),
+    ]),
+  ],
 })
 export class DeveloperComponent implements OnInit, OnDestroy {
 

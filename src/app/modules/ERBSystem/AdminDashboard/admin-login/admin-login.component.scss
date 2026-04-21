@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.auth-login-shell {
+  overflow: hidden;
+}
+
+.auth-glow {
+  pointer-events: none;
+  position: absolute;
+  height: 16rem;
+  width: 16rem;
+  border-radius: 9999px;
+  filter: blur(54px);
+  opacity: 0.35;
+}
+
+.auth-glow-top {
+  top: -4rem;
+  right: -4rem;
+  background: rgba(36, 99, 235, 0.32);
+}
+
+.auth-glow-bottom {
+  bottom: -5rem;
+  left: -4rem;
+  background: rgba(34, 211, 238, 0.28);
+}
+
+input {
+  transition: border-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+
+input:hover {
+  transform: translateY(-1px);
+}

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavbarECommerceComponent } from "../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 import { ToastrService } from 'ngx-toastr';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 export enum PaymentMethod {
   Cash = 1,
@@ -41,6 +42,35 @@ interface Cart {
   imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NavbarECommerceComponent],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(18px)' }),
+        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('cartStagger', [
+      transition('* => *', [
+        query(
+          '.cart-row',
+          [
+            style({ opacity: 0, transform: 'translateY(14px) scale(0.98)' }),
+            stagger(70, [animate('320ms ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+    trigger('modalPop', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.96) translateY(10px)' }),
+        animate('260ms ease-out', style({ opacity: 1, transform: 'scale(1) translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('180ms ease-in', style({ opacity: 0, transform: 'scale(0.97) translateY(8px)' })),
+      ]),
+    ]),
+  ],
 })
 export class CartComponent implements OnInit {
   private readonly _eCommerceService = inject(ECommerceService);

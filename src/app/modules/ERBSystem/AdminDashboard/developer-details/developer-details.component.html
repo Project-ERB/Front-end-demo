@@ -1,11 +1,20 @@
-<div class="flex h-screen w-full bg-white text-gray-900 font-sans overflow-hidden">
+<div
+    class="relative flex h-screen w-full bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 text-gray-900 font-sans overflow-hidden">
+    <div
+        class="pointer-events-none absolute left-0 top-0 h-[20rem] w-[20rem] rounded-full bg-blue-500/15 blur-3xl -translate-x-1/3 -translate-y-1/3">
+    </div>
+    <div
+        class="pointer-events-none absolute right-0 bottom-0 h-[22rem] w-[22rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
+    </div>
 
-    <app-siede-admin></app-siede-admin>
+    <div class="hidden lg:block relative z-10">
+        <app-siede-admin></app-siede-admin>
+    </div>
 
-    <main class="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+    <main class="relative z-10 flex-1 flex flex-col bg-white/75 backdrop-blur-sm overflow-hidden">
 
         <!-- Header -->
-        <header class="h-16 border-b border-gray-100 flex items-center gap-4 px-8 bg-white shrink-0">
+        <header class="h-16 border-b border-gray-100 flex items-center gap-4 px-4 sm:px-8 bg-white/85 backdrop-blur-xl shrink-0">
             <button (click)="goBack()"
                 class="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition-colors group">
                 <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor"
@@ -39,12 +48,12 @@
         </div>
 
         <!-- Content -->
-        <div *ngIf="!loading && !error && endpoint" class="flex-1 overflow-y-auto p-8">
+        <div *ngIf="!loading && !error && endpoint" class="flex-1 overflow-y-auto p-4 sm:p-8">
             <div class="max-w-4xl mx-auto space-y-6">
 
                 <!-- Hero Card -->
-                <div [ngClass]="getMethodBorder(endpoint.method)" class="rounded-2xl border-2 p-8">
-                    <div class="flex items-start justify-between">
+                <div [ngClass]="getMethodBorder(endpoint.method)" class="rounded-2xl border-2 p-5 sm:p-8 shadow-sm" @fadeUp>
+                    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                         <div class="flex items-center gap-4">
                             <span [ngClass]="getMethodColor(endpoint.method)"
                                 class="px-4 py-1.5 rounded-lg text-sm font-black tracking-widest">
@@ -76,23 +85,12 @@
                                 {{ endpoint.isActive ? 'ACTIVE' : 'INACTIVE' }}
                             </span>
                         </button>
-                        <!-- Status Badge -->
-                        <div [class]="endpoint.isActive
-                ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
-                : 'bg-gray-100 border border-gray-200 text-gray-500'"
-                            class="flex items-center gap-2 px-4 py-2 rounded-full shrink-0">
-                            <div [class]="endpoint.isActive ? 'bg-emerald-500' : 'bg-gray-400'"
-                                class="w-2 h-2 rounded-full"></div>
-                            <span class="text-xs font-bold tracking-wider">
-                                {{ endpoint.isActive ? 'ACTIVE' : 'INACTIVE' }}
-                            </span>
-                        </div>
                     </div>
                 </div>
 
                 <!-- Stats Row -->
-                <div class="grid grid-cols-3 gap-4">
-                    <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" @fadeUp>
+                    <div class="bg-white/95 rounded-xl border border-gray-200 p-5 flex items-center gap-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300" @cardReveal>
                         <div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path
@@ -100,12 +98,12 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-2xl font-black text-gray-900">{{ endpoint.roles?.length || 0 }}</p>
+                            <p class="text-2xl font-black text-gray-900">{{ endpoint.roles.length || 0 }}</p>
                             <p class="text-xs text-gray-500 font-medium">Assigned Roles</p>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                    <div class="bg-white/95 rounded-xl border border-gray-200 p-5 flex items-center gap-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300" @cardReveal>
                         <div class="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -114,12 +112,12 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="text-2xl font-black text-gray-900">{{ endpoint.permissions?.length || 0 }}</p>
+                            <p class="text-2xl font-black text-gray-900">{{ endpoint.permissions.length || 0 }}</p>
                             <p class="text-xs text-gray-500 font-medium">Permissions</p>
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
+                    <div class="bg-white/95 rounded-xl border border-gray-200 p-5 flex items-center gap-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300" @cardReveal>
                         <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -135,10 +133,10 @@
                 </div>
 
                 <!-- Roles & Permissions Grid -->
-                <div class="grid grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" @fadeUp>
 
                     <!-- Roles Card -->
-                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-white/95 rounded-xl border border-gray-200 overflow-hidden shadow-sm" @cardReveal>
                         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
                             <svg class="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path
@@ -147,11 +145,11 @@
                             <h3 class="text-xs font-bold text-gray-700 tracking-widest uppercase">Allowed Roles</h3>
                             <span
                                 class="ml-auto text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
-                                {{ endpoint.roles?.length || 0 }}
+                                {{ endpoint.roles.length || 0 }}
                             </span>
                         </div>
                         <div class="p-4">
-                            <div *ngIf="!endpoint.roles?.length" class="text-center py-6">
+                            <div *ngIf="!endpoint.roles.length" class="text-center py-6">
                                 <p class="text-xs text-gray-400">No roles assigned</p>
                             </div>
                             <div class="flex flex-wrap gap-2">
@@ -169,7 +167,7 @@
                     </div>
 
                     <!-- Permissions Card -->
-                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <div class="bg-white/95 rounded-xl border border-gray-200 overflow-hidden shadow-sm" @cardReveal>
                         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
                             <svg class="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -179,11 +177,11 @@
                             <h3 class="text-xs font-bold text-gray-700 tracking-widest uppercase">Permissions</h3>
                             <span
                                 class="ml-auto text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">
-                                {{ endpoint.permissions?.length || 0 }}
+                                {{ endpoint.permissions.length || 0 }}
                             </span>
                         </div>
                         <div class="p-4">
-                            <div *ngIf="!endpoint.permissions?.length" class="text-center py-6">
+                            <div *ngIf="!endpoint.permissions.length" class="text-center py-6">
                                 <p class="text-xs text-gray-400">No permissions assigned</p>
                             </div>
                             <div class="flex flex-wrap gap-2">

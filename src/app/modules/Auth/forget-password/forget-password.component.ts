@@ -4,12 +4,30 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../../app/core/services/Auth/auth.service';
 import { RxwebValidators, RxReactiveFormsModule } from '@rxweb/reactive-form-validators';
 import { ToastrService } from 'ngx-toastr';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-forget-password',
   imports: [ReactiveFormsModule, RxReactiveFormsModule],
   templateUrl: './forget-password.component.html',
   styleUrl: './forget-password.component.scss',
+  animations: [
+    trigger('cardReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px) scale(0.98)' }),
+        animate('500ms ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+    ]),
+    trigger('stepTransition', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(14px) scale(0.98)' }),
+        animate('360ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+      transition(':leave', [
+        animate('220ms ease-in', style({ opacity: 0, transform: 'translateY(-10px) scale(0.98)' })),
+      ]),
+    ]),
+  ],
 })
 export class ForgetPasswordComponent {
   private readonly _fb = inject(FormBuilder);

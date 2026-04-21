@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DeveloperService } from '../../../../core/services/Developer/developer.service';
 import { SiedeAdminComponent } from '../../../../shared/UI/siede-admin/siede-admin/siede-admin.component';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 interface EndpointDetail {
   id: string;
@@ -18,7 +19,21 @@ interface EndpointDetail {
   standalone: true,
   imports: [CommonModule, SiedeAdminComponent],
   templateUrl: './developer-details.component.html',
-  styleUrl: './developer-details.component.scss'
+  styleUrl: './developer-details.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px)' }),
+        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('cardReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px) scale(0.98)' }),
+        animate('320ms ease-out', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+    ]),
+  ],
 })
 export class DeveloperDetailsComponent implements OnInit {
 

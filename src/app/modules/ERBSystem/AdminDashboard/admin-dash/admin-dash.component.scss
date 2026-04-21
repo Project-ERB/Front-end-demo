@@ -3,7 +3,19 @@
 /* Custom scrollbar */
 :host {
     display: block;
-    height: 100%;
+    min-height: 100vh;
+}
+
+.mobile-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(2px);
+}
+
+.mobile-sidebar {
+    will-change: transform;
 }
 
 .custom-scrollbar::-webkit-scrollbar {

@@ -2,12 +2,30 @@ import { AuthService } from './../../../core/services/Auth/auth.service';
 import { Component, ElementRef, inject, QueryList, signal, ViewChildren, WritableSignal } from '@angular/core';
 import { FormBuilder, FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-register',
   imports: [ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
+  animations: [
+    trigger('heroReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(-30px) scale(0.98)' }),
+        animate('600ms ease-out', style({ opacity: 1, transform: 'translateX(0) scale(1)' })),
+      ]),
+    ]),
+    trigger('stepTransition', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(16px) scale(0.98)' }),
+        animate('380ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+      transition(':leave', [
+        animate('220ms ease-in', style({ opacity: 0, transform: 'translateY(-10px) scale(0.98)' })),
+      ]),
+    ]),
+  ],
 })
 export class RegisterComponent {
   @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;

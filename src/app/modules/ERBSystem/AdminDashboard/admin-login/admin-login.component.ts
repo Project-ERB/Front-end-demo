@@ -5,6 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, Validators, ReactiveFormsModule } 
 import { RxReactiveFormsModule, RxwebValidators } from '@rxweb/reactive-form-validators';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 const ROLE_ROUTES: Record<string, string> = {
   SystemAdmin: '/admin-dashboard',
@@ -17,6 +18,20 @@ const ROLE_ROUTES: Record<string, string> = {
   imports: [CommonModule, FormsModule, ReactiveFormsModule, RxReactiveFormsModule, RouterLink, NgClass],
   templateUrl: './admin-login.component.html',
   styleUrl: './admin-login.component.scss',
+  animations: [
+    trigger('panelReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(-26px) scale(0.98)' }),
+        animate('560ms ease-out', style({ opacity: 1, transform: 'translateX(0) scale(1)' })),
+      ]),
+    ]),
+    trigger('formReveal', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(18px)' }),
+        animate('460ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class AdminLoginComponent {
   private readonly _toastrService = inject(ToastrService);
