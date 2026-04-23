@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 export interface KpiCard {
   icon: string;
@@ -34,7 +35,7 @@ export interface NavItem {
 
 @Component({
   selector: 'app-hr-dashboard',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, HrSidebarComponent],
   templateUrl: './hr-dashboard.component.html',
   styleUrl: './hr-dashboard.component.scss',
 })

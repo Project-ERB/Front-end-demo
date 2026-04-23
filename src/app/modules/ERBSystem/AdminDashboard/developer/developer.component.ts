@@ -8,6 +8,7 @@ import { PermissionService } from '../../../../core/services/permission/permissi
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
 import { Router } from '@angular/router';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ToastrService } from 'ngx-toastr';
 
 interface Endpoint {
   method: string;
@@ -80,7 +81,8 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     private _developerService: DeveloperService,
     private __ApolloservicesService: ApolloservicesService,
     private _PermissionService: PermissionService,
-    private _Router: Router
+    private _Router: Router,
+    private _ToastrService: ToastrService
   ) { }
 
   goToDetails(id: string) {
@@ -247,15 +249,18 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     };
 
     this._developerService.createEndpoint(payload).subscribe({
-      next: () => {
+      next: (res) => {
         this.isLoading = false;
         this.closeModal();
         this.loadEndpoints();
         this.loadAuthorizedEndpoints();
+        this._ToastrService.success('Submit Endpoint Success', 'Success')
+        console.log(res)
       },
       error: (err) => {
         this.isLoading = false;
         console.error(err);
+        this._ToastrService.error('Failed Submit Endpoint', 'Error')
       }
     });
   }

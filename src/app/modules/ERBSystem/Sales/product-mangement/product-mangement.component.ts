@@ -213,9 +213,16 @@ export class ProductMangementComponent implements OnInit {
   }
 
   buildProducts(products: any[], categoryLookup: Record<string, string>): void {
+    const baseUrl = 'https://erplocal.runasp.net/';
+
     this.products = products.map(p => ({
       ...p,
       categoryName: categoryLookup[p.categoryId] ?? 'No Category',
+      imageUrl: p.imageUrl
+        ? p.imageUrl.startsWith('http')
+          ? p.imageUrl                        // full URL → خليها زي ما هي
+          : baseUrl + p.imageUrl              // relative → أضف base URL
+        : null,
     }));
     this.productpage = [...this.products];
   }

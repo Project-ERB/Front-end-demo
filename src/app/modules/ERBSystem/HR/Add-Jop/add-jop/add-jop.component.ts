@@ -1,6 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JopService } from '../../../../../core/services/Auth/jop/jop.service';
+import { Toast, ToastrService } from 'ngx-toastr';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 export interface NavItem {
   icon: string;
@@ -15,12 +18,13 @@ export interface SelectOption {
 
 @Component({
   selector: 'app-add-jop',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HrSidebarComponent],
   templateUrl: './add-jop.component.html',
   styleUrl: './add-jop.component.scss',
 })
 export class AddJopComponent {
-
+  readonly _JopService = inject(JopService);
+  private readonly _ToastrService = inject(ToastrService);
   form: FormGroup;
   isSaving = signal(false);
 
@@ -76,9 +80,32 @@ export class AddJopComponent {
   onSave(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
+
     this.isSaving.set(true);
-    console.log('Saving requirement:', this.form.value);
-    setTimeout(() => this.isSaving.set(false), 1500);
+
+    const payload = {
+      title: this.form.value.jobTitle,
+      description: this.form.value.jobDescription,
+      minSalaryAmount: this.form.value.minSalary ?? 0,
+      maxSalaryAmount: this.form.value.maxSalary ?? 0,
+      salaryCurrency: this.form.value.currency,
+      experienceLevel: this.form.value.experienceLevel,
+      departmentsId: this.form.value.department,
+      hiringManagerId: this.form.value.hiringManager ?? null,
+    };
+
+    this._JopService.addrequirements(payload).subscribe({
+      next: (res) => {
+        console.log('Saved successfully:', res);
+        this._ToastrService.success('Job requirements added successfully!', 'Success');
+        this.isSaving.set(false);
+      },
+      error: (err) => {
+        console.error('Error saving:', err);
+        this._ToastrService.error('Failed to add job requirements. Please try again.', 'Error');
+        this.isSaving.set(false);
+      }
+    });
   }
 
   onCancel(): void {

@@ -76,9 +76,9 @@
                     <!-- Image card -->
                     <div class="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
                         <div class="flex h-56 w-full items-center justify-center bg-[#f8fafc]">
+                            <!-- مكان الصورة الكبيرة -->
                             @if (product.imageUrl) {
-                            <img [src]="'https://erplocal.runasp.net/' + product.imageUrl"
-                                class="h-full w-full object-contain p-4" />
+                            <img [src]="getImageUrl(product.imageUrl)" class="h-full w-full object-contain p-4" />
                             } @else {
                             <div class="flex flex-col items-center gap-2 text-[#cbd5e1]">
                                 <span class="material-symbols-outlined text-[64px]">inventory_2</span>
@@ -125,7 +125,7 @@
                                     product.currency }}</span>
                             </div>
 
-                            <div class="flex items-center justify-between py-3">
+                            <!-- <div class="flex items-center justify-between py-3">
                                 <span class="flex items-center gap-2 text-sm text-[#64748b]">
                                     <span
                                         class="material-symbols-outlined text-[16px] text-[#94a3b8]">shopping_cart</span>
@@ -133,25 +133,25 @@
                                 </span>
                                 <span class="text-sm font-semibold text-[#0f172a]">{{ product.purchasePrice ?? '—' }} {{
                                     product.currency }}</span>
-                            </div>
+                            </div> -->
 
-                            <div class="flex items-center justify-between py-3">
+                            <!-- <div class="flex items-center justify-between py-3">
                                 <span class="flex items-center gap-2 text-sm text-[#64748b]">
                                     <span class="material-symbols-outlined text-[16px] text-[#94a3b8]">scale</span>
                                     Unit of Measure
                                 </span>
                                 <span class="text-sm font-semibold text-[#0f172a]">{{ product.unitOfMeasure ?? '—'
                                     }}</span>
-                            </div>
+                            </div> -->
 
-                            <div class="flex items-center justify-between py-3">
+                            <!-- <div class="flex items-center justify-between py-3">
                                 <span class="flex items-center gap-2 text-sm text-[#64748b]">
                                     <span class="material-symbols-outlined text-[16px] text-[#94a3b8]">local_atm</span>
                                     Tax Rate
                                 </span>
                                 <span class="text-sm font-semibold text-[#0f172a]">{{ product.taxRate != null ?
                                     product.taxRate + '%' : '—' }}</span>
-                            </div>
+                            </div> -->
 
                         </div>
                     </div>
@@ -233,11 +233,13 @@
                                     <p class="text-sm text-[#475569]">{{ product.shortDescription || '—' }}</p>
                                 </div>
 
-                                @if (product.description) {
+                                <!-- Full Description في تاب General -->
+                                @if (product.fullDescription) {
                                 <div class="sm:col-span-2 rounded-lg border border-[#f1f5f9] bg-[#f8fafc] p-4">
                                     <p class="mb-1 text-xs font-bold uppercase tracking-wider text-[#94a3b8]">Full
                                         Description</p>
-                                    <p class="text-sm text-[#475569]">{{ product.description }}</p>
+                                    <p class="text-sm text-[#475569] whitespace-pre-line">{{ product.fullDescription }}
+                                    </p>
                                 </div>
                                 }
 
@@ -246,7 +248,7 @@
                         }
 
                         <!-- Tab: Pricing -->
-                        @if (activeTab === 'pricing') {
+                        <!-- @if (activeTab === 'pricing') {
                         <div class="flex-1 overflow-auto p-6">
                             <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
@@ -290,10 +292,10 @@
 
                             </div>
                         </div>
-                        }
+                        } -->
 
                         <!-- Tab: Attributes -->
-                        @if (activeTab === 'attributes') {
+                        <!-- @if (activeTab === 'attributes') {
                         <div class="flex-1 overflow-auto p-6">
                             @if (product.attributes && product.attributes.length > 0) {
                             <div class="overflow-hidden rounded-lg border border-[#e2e8f0]">
@@ -325,7 +327,7 @@
                             </div>
                             }
                         </div>
-                        }
+                        } -->
 
                     </div>
                 </div>

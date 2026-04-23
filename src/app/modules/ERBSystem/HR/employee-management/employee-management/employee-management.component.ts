@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 export type EmployeeStatus = 'Active' | 'On Leave' | 'Probation' | 'Terminated';
 
@@ -31,7 +32,7 @@ interface NavItem {
 
 @Component({
   selector: 'app-employee-management',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HrSidebarComponent],
   templateUrl: './employee-management.component.html',
   styleUrl: './employee-management.component.scss',
 })

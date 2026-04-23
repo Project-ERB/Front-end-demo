@@ -199,11 +199,6 @@ export const routes: Routes = [
         title: 'Department-management'
       },
       {
-        path: 'job-management',
-        loadComponent: () => import('./modules/ERBSystem/HR/jop-management/jop-management/jop-management.component').then((J) => J.JopManagementComponent),
-        title: 'job-management'
-      },
-      {
         path: 'candidate-management',
         loadComponent: () => import('./modules/ERBSystem/HR/candidate-management/candidate-management.component').then((C) => C.CandidateManagementComponent),
         title: 'candidate-management'
@@ -388,13 +383,17 @@ export const routes: Routes = [
         path: 'payroll-details/:id',
         loadComponent: () => import('./modules/ERBSystem/HR/payroll-details/payroll-details/payroll-details.component').then((P) => P.PayrollDetailsComponent)
       },
-
       {
-        path: 'add-jop',
+        path: 'job-requierments-management',
+        loadComponent: () => import('./modules/ERBSystem/HR/jop-management/jop-management/jop-management.component').then((J) => J.JopManagementComponent),
+        title: 'job-management'
+      },
+      {
+        path: 'add-jop-requierments',
         loadComponent: () => import('./modules/ERBSystem/HR/Add-Jop/add-jop/add-jop.component').then((J) => J.AddJopComponent)
       },
       {
-        path: 'update-jop',
+        path: 'update-jop-requierments',
         loadComponent: () => import('./modules/ERBSystem/HR/update-jop/update-jop/update-jop.component').then((U) => U.UpdateJopComponent)
       },
       {

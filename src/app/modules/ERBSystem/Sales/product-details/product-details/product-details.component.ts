@@ -29,8 +29,8 @@ export class ProductDetailsComponent implements OnInit {
 
   tabs = [
     { key: 'general', label: 'General', icon: 'info' },
-    { key: 'pricing', label: 'Pricing', icon: 'sell' },
-    { key: 'attributes', label: 'Attributes', icon: 'tune' },
+    // { key: 'pricing', label: 'Pricing', icon: 'sell' },
+    // { key: 'attributes', label: 'Attributes', icon: 'tune' },
   ];
 
   // ── Lifecycle ─────────────────────────────────────────────────────
@@ -106,5 +106,10 @@ export class ProductDetailsComponent implements OnInit {
   calcMargin(selling: number, purchase: number): string {
     if (!purchase || purchase === 0) return '0';
     return (((selling - purchase) / selling) * 100).toFixed(1);
+  }
+
+  getImageUrl(imageUrl: string | null): string | null {
+    if (!imageUrl) return null;
+    return imageUrl.startsWith('http') ? imageUrl : 'https://erplocal.runasp.net/' + imageUrl;
   }
 }
