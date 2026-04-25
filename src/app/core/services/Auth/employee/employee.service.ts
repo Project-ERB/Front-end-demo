@@ -15,8 +15,7 @@ export interface EmployeeNode {
   employeeType: string;
   status: string;
   managerId: string;
-  nationalId: string;
-  // ── Fields جديدة ──
+  nationalID?: string;   // ← was a nested object, now just a string
   hiredate?: string;
   roleId?: string;
   email?: string;
@@ -26,36 +25,6 @@ export interface EmployeeNode {
     state: string;
     postalCode: string;
     country: string;
-  };
-  nationalID?: {
-    value: string;
-    birthDate: string;
-    age: number;
-    gender: string;
-    genderAr: string;
-    governorateNameEn: string;
-    governorateNameAr: string;
-    governorateCode: string;
-    governorate: string;
-    birthRegion: string;
-    birthRegionNameAr: string;
-    birthRegionNameEn: string;
-    serialNumber: string;
-    generation: string;
-    generationAr: string;
-    generationEn: string;
-    isAdult: boolean;
-    isDigitalNative: boolean;
-    isFromUpperEgypt: boolean;
-    isFromLowerEgypt: boolean;
-    isFromCoastalRegion: boolean;
-    isFromGreaterCairo: boolean;
-    isFromDelta: boolean;
-    isFromSinai: boolean;
-    isBornAbroad: boolean;
-    birthYear: number;
-    birthMonth: number;
-    birthDay: number;
   };
 }
 
@@ -109,7 +78,7 @@ export class EmployeeService {
   // ── Get All Employees (GraphQL) ───────────────────────────────────────────
   getEmployees(): Observable<EmployeeNode[]> {
     const query = `
-    query {
+        query {
       employees {
         nodes {
           id
@@ -119,36 +88,7 @@ export class EmployeeService {
           roleId
           managerId
           name
-          nationalID {
-            value
-            governorateNameEn
-            serialNumber
-            gender
-            genderAr
-            birthRegion
-            birthRegionNameAr
-            birthRegionNameEn
-            isFromUpperEgypt
-            isFromLowerEgypt
-            isFromCoastalRegion
-            birthDate
-            isFromGreaterCairo
-            isFromDelta
-            isFromSinai
-            isBornAbroad
-            generation
-            generationAr
-            generationEn
-            isDigitalNative
-            birthYear
-            birthMonth
-            birthDay
-            age
-            isAdult
-            governorateCode
-            governorate
-            governorateNameAr
-          }
+          nationalID
           phoneNumber
           address {
             street
@@ -179,57 +119,28 @@ export class EmployeeService {
   getEmployeeById(nationalId: string): Observable<EmployeeNode> {
     const query = `
     query {
-      employee(nationalId: "${nationalId}") {
-        id
-        hiredate
-        employeeType
-        status
-        roleId
-        managerId
-        name
-        nationalID {
-          value
-          governorateNameEn
-          serialNumber
-          gender
-          genderAr
-          birthRegion
-          birthRegionNameAr
-          birthRegionNameEn
-          isFromUpperEgypt
-          isFromLowerEgypt
-          isFromCoastalRegion
-          birthDate
-          isFromGreaterCairo
-          isFromDelta
-          isFromSinai
-          isBornAbroad
-          generation
-          generationAr
-          generationEn
-          isDigitalNative
-          birthYear
-          birthMonth
-          birthDay
-          age
-          isAdult
-          governorateCode
-          governorate
-          governorateNameAr
-        }
-        phoneNumber
-        address {
-          street
-          city
-          state
-          postalCode
-          country
-        }
-        email
-        salary
-        currency
-        employeeLevel
-        departmentId
+        employee(nationalId: "${nationalId}") {
+            id
+            hiredate
+            employeeType
+            status
+            roleId
+            managerId
+            name
+            nationalID
+            phoneNumber
+            address {
+              street
+              city
+              state
+              postalCode
+              country
+            }
+            email
+            salary
+            currency
+            employeeLevel
+            departmentId
       }
     }
   `;

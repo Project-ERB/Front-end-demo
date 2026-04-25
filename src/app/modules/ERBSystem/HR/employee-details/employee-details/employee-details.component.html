@@ -180,9 +180,7 @@
 
                         <!-- National ID Details -->
                         <section *ngIf="nationalInfo"
-                            class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md overflow-hidden">
-
-                            <!-- Header -->
+                            class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md overflow-hidden md:col-span-2">
                             <div
                                 class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900">
                                 <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-lg">
@@ -190,64 +188,14 @@
                                     National ID Information
                                 </h3>
                             </div>
-
-                            <!-- Content -->
-                            <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
-                                <!-- Item -->
+                            <div class="p-6">
                                 <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 uppercase tracking-wide">National ID</span>
+                                    <span class="text-xs text-slate-400 uppercase tracking-wide">National ID
+                                        Number</span>
                                     <p class="font-mono text-slate-900 dark:text-white font-semibold text-sm">
                                         {{ nationalInfo.value }}
                                     </p>
                                 </div>
-
-                                <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 uppercase tracking-wide">Gender</span>
-                                    <p class="text-slate-800 dark:text-slate-200 font-medium">
-                                        {{ nationalInfo.gender }}
-                                    </p>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 uppercase tracking-wide">Governorate</span>
-                                    <p class="text-slate-800 dark:text-slate-200 font-medium">
-                                        {{ nationalInfo.governorate }}
-                                    </p>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 uppercase tracking-wide">Birth Region</span>
-                                    <p class="text-slate-800 dark:text-slate-200 font-medium">
-                                        {{ nationalInfo.birthRegion }}
-                                    </p>
-                                </div>
-
-                                <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 uppercase tracking-wide">Generation</span>
-                                    <p class="text-slate-800 dark:text-slate-200 font-medium">
-                                        {{ nationalInfo.generation }}
-                                    </p>
-                                </div>
-
-                                <!-- Status -->
-                                <!-- <div class="space-y-1">
-                                    <span class="text-xs text-slate-400 uppercase tracking-wide">Status</span>
-
-                                    <span
-                                        class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold"
-                                        [ngClass]="nationalInfo.isAdult 
-          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
-          : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'">
-
-                                        <span class="material-symbols-outlined text-sm">
-                                            {{ nationalInfo.isAdult ? 'check_circle' : 'schedule' }}
-                                        </span>
-
-                                        {{ nationalInfo.isAdult ? 'Adult' : 'Minor' }}
-                                    </span>
-                                </div> -->
-
                             </div>
                         </section>
 

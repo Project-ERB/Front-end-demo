@@ -11,6 +11,7 @@ import { forkJoin } from 'rxjs';
 
 export type EmployeeStatus = 'Active' | 'On Leave' | 'Probation' | 'Terminated';
 
+// 1. Fix the interface — nationalID is now a plain string
 export interface EmployeeNode {
   id: string;
   name: string;
@@ -22,6 +23,7 @@ export interface EmployeeNode {
   employeeType: string;
   status: string;
   managerId: string;
+  nationalID?: string;        // ← plain string, not nested object
   hiredate?: string;
   roleId?: string;
   email?: string;
@@ -32,19 +34,7 @@ export interface EmployeeNode {
     postalCode: string;
     country: string;
   };
-  nationalID?: {
-    value: string;
-    birthDate: string;
-    age: number;
-    gender: string;
-    governorateNameEn: string;
-    birthRegionNameEn: string;
-    generation: string;
-    isAdult: boolean;
-  };
-
 }
-
 interface StatCard {
   icon: string; label: string; value: string; sub?: string;
   iconBg: string; iconColor: string;
@@ -183,20 +173,52 @@ export class EmployeeManagementComponent implements OnInit {
   clearAllPermissions(): void { this.selectedPermissions.clear(); }
 
   // ── Open / Close Modal ──────────────────────────────
+  // 2. Replace openEditModal with this fully-populated version
   openEditModal(emp: EmployeeNode): void {
     this.editingEmployee = emp;
 
-    // Pre-fill the form with existing employee data
+    // Parse phone: stored as "+201012345678" or "01012345678"
+    let countryCode = '+20';
+    let phoneNumber = emp.phoneNumber ?? '';
+    const phoneMatch = phoneNumber.match(/^(\+\d{1,3})(\d+)$/);
+    if (phoneMatch) {
+      countryCode = phoneMatch[1];
+      phoneNumber = phoneMatch[2];
+    }
+
+    // Map status string → numeric value
+    const statusStrToNum: Record<string, number> = {
+      Active: 1, Inactive: 2, Suspended: 3, Terminated: 4, None: 5,
+    };
+
     this.editForm.patchValue({
-      fullName: emp.name,
+      // Personal
+      fullName: emp.name ?? '',
+      nationalId: emp.nationalID ?? '',
+      email: emp.email ?? '',
+      countryCode: countryCode,
+      phoneNumber: phoneNumber,
+
+      // Address
+      street: emp.address?.street ?? '',
+      city: emp.address?.city ?? '',
+      state: emp.address?.state ?? '',
+      postalCode: emp.address?.postalCode ?? '',
+      country: emp.address?.country ?? '',
+
+      // Job
       jobLevel: Number(emp.employeeLevel) || 1,
       employeeType: Number(emp.employeeType) || 1,
       salaryAmount: emp.salary,
       salaryCurrency: emp.currency || 'USD',
-      status: 1,
+      hireDate: emp.hiredate
+        ? new Date(emp.hiredate).toISOString().split('T')[0]
+        : new Date().toISOString().split('T')[0],
+      status: statusStrToNum[emp.status] ?? 1,
+      roleId: emp.roleId ?? '',
     });
 
-    // Select all permissions by default
+    // Reset & select all permissions by default
     this.selectedPermissions.clear();
     this.permissions.forEach(p => this.selectedPermissions.add(p.id));
 

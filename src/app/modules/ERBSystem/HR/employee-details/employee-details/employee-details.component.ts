@@ -30,15 +30,12 @@ export class EmployeeDetailsComponent implements OnInit {
   // ── Personal ────────────────────────────────────────
   get personal() {
     const addr = this.employee?.address;
-    const nat = this.employee?.nationalID;
 
     return {
       fullName: this.employee?.name ?? '—',
       email: this.employee?.email ?? '—',
       phone: this.employee?.phoneNumber ?? '—',
-      birthDate: nat?.birthDate
-        ? `${nat.birthDate} (${nat.age} years)`
-        : '—',
+      birthDate: '—',   // no longer available from nationalID string
       address: addr
         ? `${addr.street}, ${addr.city}, ${addr.state} ${addr.postalCode}, ${addr.country}`
         : '—',
@@ -70,15 +67,12 @@ export class EmployeeDetailsComponent implements OnInit {
 
   // ── National ID Info (extra card) ───────────────────
   get nationalInfo() {
-    const n = this.employee?.nationalID;
-    if (!n) return null;
+    const natId = this.employee?.nationalID;
+    if (!natId) return null;
+
+    // nationalID is now just the raw ID string e.g. "29901011234567"
     return {
-      value: n.value ?? '—',
-      gender: n.gender ?? '—',
-      governorate: n.governorateNameEn ?? '—',
-      birthRegion: n.birthRegionNameEn ?? '—',
-      generation: n.generation ?? '—',
-      isAdult: n.isAdult,
+      value: natId,
     };
   }
 
@@ -156,11 +150,10 @@ export class EmployeeDetailsComponent implements OnInit {
   }
 
   private fetchByNationalId(emp: EmployeeNode): void {
-    // لو مفيش nationalId في الـ emp، عرض البيانات المتاحة بس
-    const natIdValue = (emp as any).nationalID?.value;
+    // nationalID is now a plain string, not a nested object
+    const natIdValue = emp.nationalID;   // ← was (emp as any).nationalID?.value
 
     if (!natIdValue) {
-      // عرض البيانات الجاية من الـ list مباشرة بدون query
       this.employee = emp;
       this.isLoading = false;
       return;
@@ -170,7 +163,6 @@ export class EmployeeDetailsComponent implements OnInit {
       next: (data) => { this.employee = data; this.isLoading = false; },
       error: (err) => {
         console.error(err);
-        // fallback — عرض بيانات الـ list
         this.employee = emp;
         this.isLoading = false;
       },
