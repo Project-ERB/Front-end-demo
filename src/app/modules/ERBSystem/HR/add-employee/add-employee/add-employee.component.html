@@ -2,49 +2,7 @@
     class="flex min-h-screen font-[Public_Sans,sans-serif] bg-[#f8f6f6] dark:bg-[#221610] text-slate-900 dark:text-slate-100">
 
     <!-- ── Sidebar ── -->
-    <aside
-        class="w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col hidden md:flex">
-
-        <!-- Brand -->
-        <div class="p-6 flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white">
-                <span class="material-symbols-outlined">corporate_fare</span>
-            </div>
-            <div>
-                <h1 class="font-bold text-lg leading-none">HR Portal</h1>
-                <p class="text-xs text-slate-500 dark:text-slate-400">Admin Management</p>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 py-4 space-y-1">
-            <ng-container *ngFor="let item of navItems">
-                <!-- Optional section label -->
-                <div *ngIf="item.section" class="pt-4 pb-2 px-3">
-                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">{{ item.section }}</p>
-                </div>
-                <a href="#"
-                    [class]="item.active
-            ? 'flex items-center gap-3 px-3 py-2 bg-blue-600/10 text-blue-600 rounded-lg transition-colors'
-            : 'flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors'">
-                    <span class="material-symbols-outlined">{{ item.icon }}</span>
-                    <span class="text-sm font-medium">{{ item.label }}</span>
-                </a>
-            </ng-container>
-        </nav>
-
-        <!-- User -->
-        <div class="p-4 border-t border-slate-200 dark:border-slate-800">
-            <div class="flex items-center gap-3 p-2">
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWXB1bxWoIWC1U4yxla1jLmgTooC-sFgEe0iH-B5-5xIwchgTFUu_NDfECeZy3x_4V_5wH2e6fQTR4CsrbX5p-f1QqwnY1vjE5qxZsMjfMXxf-k4oo1D_K6GGCln4JVcRCEo50_btVna-niw9LRC7Z69xeinWyjnuHn-QQFx6piNwZFeKnekx--QT7HMFWaxmi8NDTcSAQEgE4Orf_qHYOmsUa4MMkx8baQ39cpIbwPK6h_ZtYk19GbIx2jZ9hQczcFeVfkACR9T53"
-                    alt="Alex Rivera" class="w-8 h-8 rounded-full object-cover" />
-                <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold truncate">Alex Rivera</p>
-                    <p class="text-xs text-slate-500 truncate">HR Director</p>
-                </div>
-            </div>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ── Main Content ── -->
     <main class="flex-1 flex flex-col overflow-hidden">
@@ -52,13 +10,11 @@
         <!-- Header -->
         <header
             class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8">
-            <!-- Breadcrumb -->
             <div class="flex items-center gap-2 text-slate-500">
                 <span class="text-sm">Employees</span>
                 <span class="material-symbols-outlined text-sm">chevron_right</span>
                 <span class="text-sm font-semibold text-slate-900 dark:text-white">Add New</span>
             </div>
-            <!-- Actions -->
             <div class="flex items-center gap-4">
                 <button
                     class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative">
@@ -91,10 +47,19 @@
                     <span class="text-sm font-semibold">Employee created successfully!</span>
                 </div>
 
+                <!-- Error Banner -->
+                <div *ngIf="errorMessage"
+                    class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700">
+                    <span class="material-symbols-outlined">error</span>
+                    <span class="text-sm font-semibold">{{ errorMessage }}</span>
+                </div>
+
                 <!-- ── Form ── -->
                 <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" novalidate class="space-y-8">
 
-                    <!-- Section: Personal Details -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- Section: Personal Details                          -->
+                    <!-- ══════════════════════════════════════════════════ -->
                     <section
                         class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
@@ -108,11 +73,25 @@
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                     Full Name <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="fullName" placeholder="e.g. Jane Smith" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('fullName') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="fullName" placeholder="e.g. Jane Smith"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('fullName') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
                                 <p *ngIf="isFieldInvalid('fullName')" class="text-xs text-red-500">
                                     <span *ngIf="f['fullName'].errors?.['required']">Full name is required.</span>
                                     <span *ngIf="f['fullName'].errors?.['minlength']">Minimum 2 characters.</span>
+                                </p>
+                            </div>
+
+                            <!-- National ID -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    National ID <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="nationalId" placeholder="e.g. 29901011234567"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('nationalId') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('nationalId')" class="text-xs text-red-500">
+                                    National ID is required.
                                 </p>
                             </div>
 
@@ -123,51 +102,120 @@
                                 </label>
                                 <input type="email" formControlName="email" placeholder="jane.smith@company.com"
                                     [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('email') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                    (isFieldInvalid('email') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
                                 <p *ngIf="isFieldInvalid('email')" class="text-xs text-red-500">
                                     <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
                                     <span *ngIf="f['email'].errors?.['email']">Enter a valid email address.</span>
                                 </p>
                             </div>
 
-                            <!-- Phone -->
+                            <!-- Phone Number (countryCode + number) -->
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                     Phone Number <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="tel" formControlName="phone" placeholder="+1 (555) 000-0000" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('phone') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
-                                <p *ngIf="isFieldInvalid('phone')" class="text-xs text-red-500">Phone number is
-                                    required.</p>
+                                <div class="flex gap-2">
+                                    <input type="text" formControlName="countryCode" placeholder="+20"
+                                        class="w-20 px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all text-center" />
+                                    <input type="tel" formControlName="phoneNumber" placeholder="1012345678"
+                                        [class]="'flex-1 px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                        (isFieldInvalid('phoneNumber') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                </div>
+                                <p *ngIf="isFieldInvalid('phoneNumber')" class="text-xs text-red-500">
+                                    Phone number is required.
+                                </p>
                             </div>
 
                             <!-- Birth Date -->
-                            <div class="space-y-2">
+                            <!-- <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                     Birth Date <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="date" formControlName="birthDate" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('birthDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
-                                <p *ngIf="isFieldInvalid('birthDate')" class="text-xs text-red-500">Birth date is
+                                <input type="date" formControlName="birthDate"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('birthDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('birthDate')" class="text-xs text-red-500">
+                                    Birth date is required.
+                                </p>
+                            </div> -->
+
+                        </div>
+                    </section>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- Section: Address                                   -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <section
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-blue-600">location_on</span>
+                            <h3 class="text-lg font-semibold">Residential Address</h3>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                            <!-- Street -->
+                            <div class="md:col-span-2 space-y-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Street <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="street" placeholder="123 Main St"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('street') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('street')" class="text-xs text-red-500">Street is required.</p>
+                            </div>
+
+                            <!-- City -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    City <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="city" placeholder="Cairo"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('city') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('city')" class="text-xs text-red-500">City is required.</p>
+                            </div>
+
+                            <!-- State -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    State / Governorate <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="state" placeholder="Cairo Governorate"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('state') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('state')" class="text-xs text-red-500">State is required.</p>
+                            </div>
+
+                            <!-- Postal Code -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Postal Code <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="postalCode" placeholder="11511"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('postalCode') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('postalCode')" class="text-xs text-red-500">Postal code is
                                     required.</p>
                             </div>
 
-                            <!-- Residential Address -->
-                            <div class="md:col-span-2 space-y-2">
+                            <!-- Country -->
+                            <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Residential Address <span class="text-blue-600">*</span>
+                                    Country <span class="text-blue-600">*</span>
                                 </label>
-                                <textarea formControlName="address" rows="2" placeholder="Street, City, State, ZIP"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all resize-none ' +
-                    (isFieldInvalid('address') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')"></textarea>
-                                <p *ngIf="isFieldInvalid('address')" class="text-xs text-red-500">Address is required.
+                                <input type="text" formControlName="country" placeholder="Egypt"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('country') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('country')" class="text-xs text-red-500">Country is required.
                                 </p>
                             </div>
 
                         </div>
                     </section>
 
-                    <!-- Section: Job Information -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- Section: Job Information                           -->
+                    <!-- ══════════════════════════════════════════════════ -->
                     <section
                         class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
                         <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
@@ -175,20 +223,6 @@
                             <h3 class="text-lg font-semibold">Job Information</h3>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                            <!-- Department -->
-                            <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Department <span class="text-blue-600">*</span>
-                                </label>
-                                <select formControlName="department" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('department') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')">
-                                    <option value="">Select Department</option>
-                                    <option *ngFor="let d of departments" [value]="d.value">{{ d.label }}</option>
-                                </select>
-                                <p *ngIf="isFieldInvalid('department')" class="text-xs text-red-500">Department is
-                                    required.</p>
-                            </div>
 
                             <!-- Job Level -->
                             <div class="space-y-2">
@@ -209,31 +243,41 @@
                                 </select>
                             </div>
 
-                            <!-- Annual Salary -->
+                            <!-- Role (from API) -->
                             <div class="space-y-2">
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Annual Salary ($) <span class="text-blue-600">*</span>
+                                    Role <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="number" formControlName="salary" placeholder="85000" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('salary') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
-                                <p *ngIf="isFieldInvalid('salary')" class="text-xs text-red-500">
-                                    <span *ngIf="f['salary'].errors?.['required']">Salary is required.</span>
-                                    <span *ngIf="f['salary'].errors?.['min']">Must be greater than 0.</span>
+                                <select formControlName="roleId"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('roleId') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')">
+                                    <option value="">Select Role</option>
+                                    <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
+                                </select>
+                                <p *ngIf="isFieldInvalid('roleId')" class="text-xs text-red-500">Role is required.</p>
+                            </div>
+
+                            <!-- Salary Amount -->
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Annual Salary <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="number" formControlName="salaryAmount" placeholder="85000"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('salaryAmount') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isFieldInvalid('salaryAmount')" class="text-xs text-red-500">
+                                    <span *ngIf="f['salaryAmount'].errors?.['required']">Salary is required.</span>
+                                    <span *ngIf="f['salaryAmount'].errors?.['min']">Must be greater than 0.</span>
                                 </p>
                             </div>
 
-                            <!-- Manager -->
+                            <!-- Salary Currency -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Manager <span class="text-blue-600">*</span>
-                                </label>
-                                <select formControlName="manager" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('manager') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')">
-                                    <option value="">Select Manager</option>
-                                    <option *ngFor="let m of managers" [value]="m.value">{{ m.label }}</option>
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Currency</label>
+                                <select formControlName="salaryCurrency"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
                                 </select>
-                                <p *ngIf="isFieldInvalid('manager')" class="text-xs text-red-500">Manager is required.
-                                </p>
                             </div>
 
                             <!-- Hire Date -->
@@ -241,8 +285,9 @@
                                 <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
                                     Hire Date <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="date" formControlName="hireDate" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                    (isFieldInvalid('hireDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="date" formControlName="hireDate"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('hireDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
                                 <p *ngIf="isFieldInvalid('hireDate')" class="text-xs text-red-500">Hire date is
                                     required.</p>
                             </div>
@@ -264,6 +309,45 @@
                                 </div>
                             </div>
 
+                        </div>
+                    </section>
+
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <!-- Section: Permissions                               -->
+                    <!-- ══════════════════════════════════════════════════ -->
+                    <section
+                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-blue-600">lock</span>
+                            <h3 class="text-lg font-semibold">Permissions</h3>
+                            <span class="ml-auto text-xs text-slate-400">{{ selectedPermissions.size }} selected</span>
+                        </div>
+
+                        <div *ngIf="permissions.length === 0" class="text-sm text-slate-400 italic">
+                            Loading permissions...
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label *ngFor="let p of permissions" [class]="'flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ' +
+            (selectedPermissions.has(p.id)
+                ? 'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-600'
+                : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800')">
+                                <input type="checkbox" [checked]="selectedPermissions.has(p.id)"
+                                    (change)="togglePermission(p.id)" class="mt-0.5 w-4 h-4 rounded accent-blue-600" />
+                                <div class="min-w-0">
+                                    <p class="text-sm font-medium text-slate-800 dark:text-slate-100">{{ p.name }}</p>
+                                    <p *ngIf="p.description" class="text-xs text-slate-400 truncate">{{ p.description }}
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="flex gap-3 mt-4">
+                            <button type="button" (click)="selectAllPermissions()"
+                                class="text-xs text-blue-600 hover:underline font-medium">Select All</button>
+                            <span class="text-slate-300">|</span>
+                            <button type="button" (click)="clearAllPermissions()"
+                                class="text-xs text-slate-500 hover:underline font-medium">Clear All</button>
                         </div>
                     </section>
 

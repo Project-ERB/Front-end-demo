@@ -1,47 +1,32 @@
-import { Component, computed, signal } from '@angular/core';
+import { DepartmentService, DepartmentNode } from './../../../../../core/services/Auth/department/department.service';
+import { Component, computed, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { Router, RouterLink } from "@angular/router";
+import { ToastrService } from 'ngx-toastr';
 
 export type DeptStatus = 'Active' | 'Inactive';
 
-export interface Department {
-  id: number;
-  name: string;
-  icon: string;
-  iconBg: string;
-  iconColor: string;
-  head: string | null;
-  headAvatar: string | null;
-  employees: number;
-  status: DeptStatus;
-}
-
-export interface NavItem {
-  icon: string;
-  label: string;
-  active?: boolean;
-}
-
+export interface NavItem { icon: string; label: string; active?: boolean; }
 export interface StatCard {
-  label: string;
-  icon: string;
-  value: string;
-  sub: string;
-  subIcon?: string;
-  subColor?: string;
-  progress?: number;
+  label: string; icon: string; value: string; sub: string;
+  subIcon?: string; subColor?: string; progress?: number;
 }
-
 
 @Component({
   selector: 'app-hr-department',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, HrSidebarComponent, RouterLink],
   templateUrl: './hr-department.component.html',
   styleUrl: './hr-department.component.scss',
 })
-export class HrDepartmentComponent {
+export class HrDepartmentComponent implements OnInit {
 
-  // ── Nav ──────────────────────────────────────────────────────────────────
+  private readonly _DepartmentService = inject(DepartmentService);
+  private readonly _ToastrService = inject(ToastrService)
+
+  isLoading = false;
+
   navItems: NavItem[] = [
     { icon: 'dashboard', label: 'Dashboard' },
     { icon: 'group', label: 'Employees' },
@@ -50,91 +35,29 @@ export class HrDepartmentComponent {
     { icon: 'description', label: 'Reports' },
   ];
 
-  // ── Table data ────────────────────────────────────────────────────────────
-  allDepartments: Department[] = [
-    {
-      id: 1,
-      name: 'Marketing & Communications',
-      icon: 'campaign',
-      iconBg: 'bg-blue-100',
-      iconColor: 'text-blue-600',
-      head: 'Sarah Jenkins',
-      headAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD42qdQcuvLyxqyMfA93MDEAWciWdDZZfzxVnQC-Q_J3XTVyfcWSvXaL7yLbJhIRrskWPNSV2GJxbcd4E4Z3FaYsJu70Dvck0MHIGQ133ALf9F4Wjc7WrshfYldnUlFhWAzW1_yMspfht-jGVezJxTGBD7kVG3OfvAxwsoz9IkDobU7hgyuypB5xciMfmgqPPm_KtuXEWukovZfuFlNhhaRFjS0ce7ny5rRaKu6tSi2ObRhUzC15xVatNul3V-WK1HMWcGa8LJqxR8h',
-      employees: 42,
-      status: 'Active',
-    },
-    {
-      id: 2,
-      name: 'Engineering',
-      icon: 'terminal',
-      iconBg: 'bg-indigo-100',
-      iconColor: 'text-indigo-600',
-      head: 'David Chen',
-      headAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAiWz7sOKzsbUJaJzQlvMr4b_nMeqnVoV2ORk_399HwQ1KNaynYYjfLoqmIKXrVYSyYGPqJyob4GDDS0LNfK6OpU-ln2ZWud7wRNHsmmWNU9NkoRoKzMYJH8PLZykAWRiNvJUgSOCbCfp0RmvJahVdBvg8DasYkILckP6_YECqcjvKHxWctHfduHknyR4C_Md96xaUXyinqgie3LO7A0KagkWcXX99akvxeL_Xu-sGN088PoU9R-JQnV4OqgGTKtVBSwmDi6jzV35to',
-      employees: 128,
-      status: 'Active',
-    },
-    {
-      id: 3,
-      name: 'Finance & Accounting',
-      icon: 'payments',
-      iconBg: 'bg-orange-100',
-      iconColor: 'text-orange-600',
-      head: 'Michelle Wong',
-      headAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB09qXMOkIZn87ReuXFNrfSHiEeuMQV63TNM5JeVVfQP6CKXb3hTASkxZFxfjAOsxFJUBPlVm5H4aRk2USQS0vitqEB1yLz-iPY7fvYV-Yso4CA7rvQbJuDDPY4gdzeMpDGJposRO439iRB1RWijRsWt0q9-xUPCA80Crp_i9ZW-HuvB-Gztd0QQ6UYaXGKJ5fI7aMvtEFfEv6499gmnxykjJ0i58fNOjkIPDZCki216Af2QXJJrgkY-BqEfRZ9dgxDYRMv3OwSCuqJ',
-      employees: 15,
-      status: 'Active',
-    },
-    {
-      id: 4,
-      name: 'Legal & Compliance',
-      icon: 'history_edu',
-      iconBg: 'bg-slate-100',
-      iconColor: 'text-slate-500',
-      head: null,
-      headAvatar: null,
-      employees: 8,
-      status: 'Inactive',
-    },
-    {
-      id: 5,
-      name: 'Human Resources',
-      icon: 'person_search',
-      iconBg: 'bg-purple-100',
-      iconColor: 'text-purple-600',
-      head: 'Elena Rodriguez',
-      headAvatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDV-55mKXEaH-W8wA2oM9beI-GIu04AVuYwUZyOS2212UruMwPFUYghBLwNCNQ3kayWor0ESU-RjViee2R_HUlx-HZEm5AdhSkP9UNGrtHGNx6pIPPS8FAbylPYCG87-_D2pzJk3ShdWuY2lca00ifrv2Mi5kYIVlrouJ5E2g7CtcUN5ZLTLhFdzTrqR37E8RA1BLY0wAJEuIrPlPaKFPmdmuFWmBRscGoApNkp3Z_vHnV5B9NN63piguvFdspYiOWzjOyo1KVs4xwT',
-      employees: 22,
-      status: 'Active',
-    },
-  ];
+  allDepartments = signal<DepartmentNode[]>([]);
 
-  // ── Search / filter signals ───────────────────────────────────────────────
   searchQuery = signal('');
-  statusFilter = signal<'All' | DeptStatus>('All');
+  statusFilter = signal<'All' | 'Active' | 'Inactive'>('All');
   sortBy = signal<'Name' | 'Employees'>('Name');
 
   filteredDepartments = computed(() => {
     const q = this.searchQuery().toLowerCase();
     const s = this.statusFilter();
-    const sort = this.sortBy();
 
-    return [...this.allDepartments]
+    return [...this.allDepartments()]
       .filter(d => {
-        const matchesQuery =
-          d.name.toLowerCase().includes(q) ||
-          (d.head?.toLowerCase().includes(q) ?? false);
-        const matchesStatus = s === 'All' || d.status === s;
+        const matchesQuery = !q || d.name.toLowerCase().includes(q);
+        const deptStatus = d.isActive ? 'Active' : 'Inactive';
+        const matchesStatus = s === 'All' || deptStatus === s;
         return matchesQuery && matchesStatus;
       })
       .sort((a, b) =>
-        sort === 'Name'
-          ? a.name.localeCompare(b.name)
-          : b.employees - a.employees
+        this.sortBy() === 'Name' ? a.name.localeCompare(b.name) : 0
       );
   });
 
-  // ── Pagination ────────────────────────────────────────────────────────────
+  // ── Pagination ────────────────────────────────────────
   pageSize = 5;
   currentPage = signal(1);
 
@@ -151,51 +74,155 @@ export class HrDepartmentComponent {
     Array.from({ length: this.totalPages() }, (_, i) => i + 1)
   );
 
+  statCards: StatCard[] = [
+    {
+      label: 'Total Departments', icon: 'corporate_fare', value: '0',
+      sub: '', subIcon: 'trending_up', subColor: 'text-emerald-600',
+    },
+    {
+      label: 'Active Departments', icon: 'groups', value: '0',
+      sub: '', subColor: 'text-slate-500',
+    },
+    // {
+    //   label: 'Inactive Departments', icon: 'pie_chart', value: '0',
+    //   sub: '', progress: 0,
+    // },
+  ];
+
+  // ── Lifecycle ─────────────────────────────────────────
+  ngOnInit(): void {
+    this.getDepartments();
+  }
+
+  getDepartments(): void {
+    this.isLoading = true;
+    this._DepartmentService.getDepartments().subscribe({
+      next: (data) => {
+        this.allDepartments.set(data);
+        this.isLoading = false;
+        this.updateStatCards(data);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  private updateStatCards(data: DepartmentNode[]): void {
+    const active = data.filter(d => d.isActive).length;
+    const inactive = data.length - active;
+    this.statCards[0].value = data.length.toString();
+    this.statCards[1].value = active.toString();
+    this.statCards[2].value = inactive.toString();
+    this.statCards[2].progress = data.length
+      ? Math.round((inactive / data.length) * 100)
+      : 0;
+  }
+
+  // ── Helpers ───────────────────────────────────────────
+  setSearch(val: string): void { this.searchQuery.set(val); this.currentPage.set(1); }
+  setStatus(val: 'All' | 'Active' | 'Inactive'): void { this.statusFilter.set(val); this.currentPage.set(1); }
+  setSort(val: 'Name' | 'Employees'): void { this.sortBy.set(val); }
   goToPage(p: number): void {
     if (p >= 1 && p <= this.totalPages()) this.currentPage.set(p);
   }
-
-  // ── Stats cards ──────────────────────────────────────────────────────────
-  statCards: StatCard[] = [
-    {
-      label: 'Total Departments',
-      icon: 'corporate_fare',
-      value: '12',
-      sub: '+2 since last quarter',
-      subIcon: 'trending_up',
-      subColor: 'text-emerald-600',
-    },
-    {
-      label: 'Active Employees',
-      icon: 'groups',
-      value: '223',
-      sub: 'Across all 12 units',
-      subColor: 'text-slate-500',
-    },
-    {
-      label: 'Budget Utilization',
-      icon: 'pie_chart',
-      value: '84%',
-      sub: '',
-      progress: 84,
-    },
-  ];
-
-  // ── Helpers ──────────────────────────────────────────────────────────────
-  setSearch(val: string): void { this.searchQuery.set(val); this.currentPage.set(1); }
-  setStatus(val: 'All' | DeptStatus): void { this.statusFilter.set(val); this.currentPage.set(1); }
-  setSort(val: 'Name' | 'Employees'): void { this.sortBy.set(val); }
-
   minVal(a: number, b: number): number { return Math.min(a, b); }
 
-  iconClasses(dept: Department): string {
-    return `${dept.iconBg} ${dept.iconColor}`;
-  }
-
-  statusClass(status: DeptStatus): string {
-    return status === 'Active'
+  statusClass(isActive: boolean): string {
+    return isActive
       ? 'bg-emerald-100 text-emerald-800'
       : 'bg-slate-100 text-slate-600';
+  }
+
+  // ── Edit Modal State ─────────────────────────────────
+  showEditModal = false;
+  isUpdating = false;
+  editingDepartment: DepartmentNode | null = null;
+
+  editData = {
+    name: '',
+    description: '',
+    isActive: true,
+  };
+
+  // ── Open / Close ─────────────────────────────────────
+  onEdit(dept: DepartmentNode): void {
+    this.editingDepartment = dept;
+
+    // pre-fill بالبيانات الحالية
+    this.editData = {
+      name: dept.name,
+      description: dept.description ?? '',
+      isActive: dept.isActive,
+    };
+
+    this.showEditModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeEditModal(): void {
+    this.showEditModal = false;
+    this.editingDepartment = null;
+    document.body.style.overflow = '';
+  }
+
+  // ── Submit Update ─────────────────────────────────────
+  onUpdateSubmit(): void {
+    if (!this.editingDepartment) return;
+    if (!this.editData.name.trim()) return;
+
+    this.isUpdating = true;
+
+    const payload = {
+      departmentId: this.editingDepartment.id,
+      name: this.editData.name,
+      description: this.editData.description,
+      managerId: this.editingDepartment.managerId,
+      isActive: this.editData.isActive,
+    };
+
+    this._DepartmentService.updateDepartment(payload).subscribe({
+      next: () => {
+        this.isUpdating = false;
+        // إضافة ToastrService لو موجود
+        this._ToastrService.success('Department updated successfully!');
+        this.closeEditModal();
+        this.getDepartments();   // refresh الجدول
+      },
+      error: (err) => {
+        this.isUpdating = false;
+        console.error('Update failed', err);
+        this._ToastrService.error('Failed to update department.');
+      },
+    });
+  }
+
+  deletingDepartmentId: string | null = null;
+
+  onDelete(dept: DepartmentNode): void {
+    if (!confirm(`Are you sure you want to delete "${dept.name}"?`)) return;
+
+    this.deletingDepartmentId = dept.id;
+
+    this._DepartmentService.deleteDepartment(dept.id).subscribe({
+      next: () => {
+        this.deletingDepartmentId = null;
+        this.getDepartments(); // refresh الجدول
+        this._ToastrService.success('Department deleted successfully!');
+      },
+      error: (err) => {
+        this.deletingDepartmentId = null;
+        console.error('Delete failed', err);
+        this._ToastrService.error('Failed to delete department.');
+      },
+    });
+  }
+
+  private readonly _router = inject(Router);
+
+  onView(dept: DepartmentNode): void {
+    this._router.navigate(['/department-details', dept.id]);
   }
 
 }

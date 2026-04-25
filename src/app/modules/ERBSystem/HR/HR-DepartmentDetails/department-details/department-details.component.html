@@ -1,55 +1,32 @@
+<!-- Loading -->
+<div *ngIf="isLoading" class="h-screen flex items-center justify-center">
+    <div class="flex flex-col items-center gap-3 text-slate-400">
+        <svg class="animate-spin h-10 w-10 text-[#0052CC]" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+        </svg>
+        <p class="text-sm font-medium">Loading department details...</p>
+    </div>
+</div>
+
+<!-- Error -->
+<div *ngIf="!isLoading && error" class="h-screen flex items-center justify-center">
+    <div class="text-center">
+        <span class="material-symbols-outlined text-5xl text-red-400 block mb-3">error</span>
+        <p class="text-slate-600">{{ error }}</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<ng-container *ngIf="!isLoading && !error">
+    <!-- لف كل الـ HTML الموجود هنا -->
+</ng-container>
+
 <div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
 
     <!-- Sidebar -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
-        <div class="p-6 flex items-center gap-3">
-            <div class="bg-[#0052CC] p-2 rounded-lg text-white">
-                <span class="material-symbols-outlined">corporate_fare</span>
-            </div>
-            <h2 class="text-xl font-bold tracking-tight text-[#0052CC]">HR Master</h2>
-        </div>
-
-        <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-xl">dashboard</span>
-                <span class="font-medium text-sm">Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 bg-blue-50 text-[#0052CC] rounded-lg">
-                <span class="material-symbols-outlined text-xl">account_tree</span>
-                <span class="font-medium text-sm">Departments</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-xl">group</span>
-                <span class="font-medium text-sm">Employees</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-xl">payments</span>
-                <span class="font-medium text-sm">Payroll</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-xl">assessment</span>
-                <span class="font-medium text-sm">Reports</span>
-            </a>
-        </nav>
-
-        <!-- User Profile -->
-        <div class="p-4 border-t border-slate-200">
-            <div class="flex items-center gap-3 p-2">
-                <div class="size-10 rounded-full bg-slate-200 bg-cover bg-center"
-                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDufkHzVRx9_o8QI2LgH6vPnfPi_0jgHcySTPnTlZ66HiPiHc8rlDtkBKNcZEMXmaPM4yWKUP0vTwZvUgtpraYk_nmi6wjYGK6A76qRgdb4T-sSy2m_dwDe6tjk62rco-9oyF3mGgBUqvUNTi2vGLTRYRK9y2wybsEXvhTxDPL8vuqzPDITeNrKUUEidDIEjEfHVzYFEY11fe0JTN_clK62egv4RIeQHxrmW8orbA6njwnV3vBDssLWeFRG0WM5ZbRnIjWPYzMWLojQ')">
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-xs font-bold truncate">Alex Thompson</p>
-                    <p class="text-[10px] text-slate-500">System Admin</p>
-                </div>
-                <span class="material-symbols-outlined text-slate-400 text-lg">logout</span>
-            </div>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col overflow-hidden">
@@ -89,12 +66,12 @@
                     <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Engineering Department</h1>
                 </div>
                 <div class="flex gap-3">
-                    <button
+                    <!-- <button
                         class="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-lg text-slate-500">download</span>
                         Export
-                    </button>
-                    <button
+                    </button> -->
+                    <button routerLink="/hr-department"
                         class="px-4 py-2 bg-[#0052CC] text-white rounded-xl text-sm font-semibold hover:bg-blue-700 transition-all shadow-md shadow-blue-200 flex items-center gap-2">
                         <span class="material-symbols-outlined text-lg">edit</span>
                         Edit Department
@@ -105,156 +82,136 @@
             <!-- Master Data Cards -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
 
-                <!-- Master Information -->
-                <div class="lg:col-span-3 bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-                    <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[#0052CC]">info</span>
-                        Master Information
-                    </h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4">
-                        <div class="space-y-1">
-                            <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Department Name</p>
-                            <p class="text-sm font-semibold text-slate-900">{{ department.name }}</p>
-                        </div>
-                        <div class="space-y-1">
-                            <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Department Code</p>
-                            <p class="text-sm font-semibold text-slate-900">{{ department.code }}</p>
-                        </div>
-                        <div class="space-y-1">
-                            <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Department Head</p>
-                            <div class="flex items-center gap-2">
-                                <div class="size-6 rounded-full bg-blue-100 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-xs text-[#0052CC]">person</span>
-                                </div>
-                                <p class="text-sm font-semibold text-slate-900">{{ department.head }}</p>
-                            </div>
-                        </div>
-                        <div class="space-y-1">
-                            <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Location</p>
-                            <p class="text-sm font-semibold text-slate-900">{{ department.location }}</p>
-                        </div>
-                        <div class="md:col-span-2 lg:col-span-4 space-y-1 pt-4 border-t border-slate-50">
-                            <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Description</p>
-                            <p class="text-sm text-slate-600 leading-relaxed max-w-3xl">{{ department.description }}</p>
-                        </div>
-                    </div>
+                <div class="space-y-1">
+                    <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Department Name</p>
+                    <p class="text-sm font-semibold text-slate-900">{{ department?.name ?? '—' }}</p>
                 </div>
 
-                <!-- Stats Card -->
-                <div
-                    class="bg-[#0052CC] text-white rounded-xl p-6 flex flex-col justify-between shadow-lg shadow-blue-200">
-                    <div>
-                        <h4 class="text-sm font-medium opacity-80">Total Strength</h4>
-                        <p class="text-4xl font-black mt-2">{{ department.totalStrength }}</p>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-white/20 flex items-center justify-between">
-                        <div class="text-[10px] font-bold uppercase tracking-widest opacity-80">Current Budget</div>
-                        <div class="text-sm font-bold">{{ department.budget }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Employee Table -->
-            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-
-                <!-- Table Header -->
-                <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-                    <h3 class="text-lg font-bold flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[#0052CC]">groups</span>
-                        Assigned Employees
-                    </h3>
-                    <div class="relative">
-                        <input type="text" placeholder="Filter team..." [(ngModel)]="filterQuery"
-                            class="text-xs bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 focus:ring-2 focus:ring-blue-100 outline-none" />
-                        <span
-                            class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-sm">filter_alt</span>
-                    </div>
+                <div class="space-y-1">
+                    <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Manager ID</p>
+                    <p class="text-sm font-semibold text-slate-900">{{ department?.managerId ?? '—' }}</p>
                 </div>
 
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-slate-50">
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Employee
-                                </th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                    Designation</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Email
-                                </th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status
-                                </th>
-                                <th
-                                    class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
-                            <tr *ngFor="let employee of filteredEmployees"
-                                class="hover:bg-slate-50/50 transition-colors group">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="size-10 rounded-full bg-slate-200 bg-cover bg-center shrink-0"
-                                            [style.background-image]="'url(' + employee.avatar + ')'"></div>
-                                        <div>
-                                            <p class="text-sm font-bold text-slate-900">{{ employee.name }}</p>
-                                            <p class="text-xs text-slate-500">{{ employee.id }}</p>
+                <div class="space-y-1">
+                    <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Status</p>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                        [class]="department?.isActive ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'">
+                        {{ department?.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                </div>
+
+                <div class="md:col-span-2 lg:col-span-4 space-y-1 pt-4 border-t border-slate-50">
+                    <p class="text-xs uppercase font-bold text-slate-400 tracking-wider">Description</p>
+                    <p class="text-sm text-slate-600 leading-relaxed max-w-3xl">{{ department?.description ?? '—' }}</p>
+                </div>
+
+
+
+                <!-- Employee Table -->
+                <!-- <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+
+                    
+                    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                        <h3 class="text-lg font-bold flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#0052CC]">groups</span>
+                            Assigned Employees
+                        </h3>
+                        <div class="relative">
+                            <input type="text" placeholder="Filter team..." [(ngModel)]="filterQuery"
+                                class="text-xs bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 focus:ring-2 focus:ring-blue-100 outline-none" />
+                            <span
+                                class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-sm">filter_alt</span>
+                        </div>
+                    </div>
+
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                        Employee
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                        Designation</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                        Email
+                                    </th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr *ngFor="let employee of filteredEmployees"
+                                    class="hover:bg-slate-50/50 transition-colors group">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div class="size-10 rounded-full bg-slate-200 bg-cover bg-center shrink-0"
+                                                [style.background-image]="'url(' + employee.avatar + ')'"></div>
+                                            <div>
+                                                <p class="text-sm font-bold text-slate-900">{{ employee.name }}</p>
+                                                <p class="text-xs text-slate-500">{{ employee.id }}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm font-medium text-slate-600">{{ employee.designation }}</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <p class="text-sm text-slate-600">{{ employee.email }}</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase"
-                                        [ngClass]="getStatusClasses(employee.status)">
-                                        {{ employee.status }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-right">
-                                    <button class="p-1 hover:text-[#0052CC] transition-colors">
-                                        <span class="material-symbols-outlined text-xl">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-sm font-medium text-slate-600">{{ employee.designation }}</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-sm text-slate-600">{{ employee.email }}</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-2 py-1 rounded-full text-[10px] font-bold uppercase"
+                                            [ngClass]="getStatusClasses(employee.status)">
+                                            {{ employee.status }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="p-1 hover:text-[#0052CC] transition-colors">
+                                            <span class="material-symbols-outlined text-xl">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
 
-                            <!-- Empty state -->
-                            <tr *ngIf="filteredEmployees.length === 0">
-                                <td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400">
-                                    No employees match your filter.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                                
+                                <tr *ngIf="filteredEmployees.length === 0">
+                                    <td colspan="5" class="px-6 py-12 text-center text-sm text-slate-400">
+                                        No employees match your filter.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-                <!-- Pagination -->
-                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-                    <p class="text-xs text-slate-500">
+                    
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                        <p class="text-xs text-slate-500">
                         Showing <span class="font-bold">{{ filteredEmployees.length }}</span> of
                         <span class="font-bold">{{ department.totalStrength }}</span> employees
                     </p>
-                    <div class="flex gap-2">
-                        <button class="p-1 rounded border border-slate-200 disabled:opacity-50"
-                            [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
-                            <span class="material-symbols-outlined text-lg">chevron_left</span>
-                        </button>
-                        <button *ngFor="let page of totalPages"
-                            class="px-3 py-1 text-xs font-bold rounded transition-colors"
-                            [ngClass]="currentPage === page ? 'bg-[#0052CC] text-white' : 'hover:bg-slate-100 text-slate-700'"
-                            (click)="setPage(page)">
-                            {{ page }}
-                        </button>
-                        <button class="p-1 rounded border border-slate-200 disabled:opacity-50"
-                            [disabled]="currentPage === totalPages.length" (click)="setPage(currentPage + 1)">
-                            <span class="material-symbols-outlined text-lg">chevron_right</span>
-                        </button>
+                        <div class="flex gap-2">
+                            <button class="p-1 rounded border border-slate-200 disabled:opacity-50"
+                                [disabled]="currentPage === 1" (click)="setPage(currentPage - 1)">
+                                <span class="material-symbols-outlined text-lg">chevron_left</span>
+                            </button>
+                            <button *ngFor="let page of totalPages"
+                                class="px-3 py-1 text-xs font-bold rounded transition-colors"
+                                [ngClass]="currentPage === page ? 'bg-[#0052CC] text-white' : 'hover:bg-slate-100 text-slate-700'"
+                                (click)="setPage(page)">
+                                {{ page }}
+                            </button>
+                            <button class="p-1 rounded border border-slate-200 disabled:opacity-50"
+                                [disabled]="currentPage === totalPages.length" (click)="setPage(currentPage + 1)">
+                                <span class="material-symbols-outlined text-lg">chevron_right</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
+                </div> -->
             </div>
         </div>
     </main>

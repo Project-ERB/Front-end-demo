@@ -5,7 +5,7 @@
     <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ── Main Content ── -->
-    <main class="flex-1 overflow-y-auto flex flex-col ml-64">
+    <main class="flex-1 overflow-y-auto flex flex-col">
 
         <!-- Header -->
         <header
@@ -59,8 +59,8 @@
                 </div>
 
                 <!-- Add Employee -->
-                <button
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20">
+                <button (click)="gotoaddempoyee()"
+                    class="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl font-semibold flex items-center gap-2 transition-all shadow-lg shadow-blue-500/20">
                     <span class="material-symbols-outlined">add</span>
                     Add New Employee
                 </button>
@@ -73,10 +73,13 @@
                     <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
                         <tr>
                             <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Name</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Department
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">employeeType
                             </th>
                             <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Level</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">Status</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">salary</th>
+                            <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider">currency
+                            </th>
                             <th class="px-6 py-4 text-xs font-bold uppercase text-slate-500 tracking-wider text-right">
                                 Actions</th>
                         </tr>
@@ -97,27 +100,34 @@
                             <!-- Name + Avatar -->
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <img [src]="emp.avatar" [alt]="emp.name"
-                                        class="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                                    <!-- <img [src]="emp.avatar" [alt]="emp.name"
+                                        class="w-10 h-10 rounded-full object-cover flex-shrink-0" /> -->
                                     <div>
                                         <p class="font-semibold text-sm">{{ emp.name }}</p>
-                                        <p class="text-xs text-slate-500">{{ emp.email }}</p>
+                                        <p class="text-xs text-slate-500">{{ emp.phoneNumber }}</p>
                                     </div>
                                 </div>
                             </td>
 
-                            <!-- Department -->
-                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.department }}</td>
+                            <!-- employeeType -->
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.employeeType }}</td>
 
                             <!-- Level -->
-                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.level }}</td>
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.employeeLevel }}
+                            </td>
 
                             <!-- Status Badge -->
                             <td class="px-6 py-4">
                                 <span
-                                    [class]="'px-2.5 py-1 text-xs font-medium rounded-full ' + statusBadgeClass(emp.status)">
+                                    [class]="'px-2.5 py-1 text-xs font-medium rounded-full ' + getStatusClass(emp.status)">
                                     {{ emp.status }}
                                 </span>
+                            </td>
+
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.salary }}
+                            </td>
+
+                            <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-400">{{ emp.currency }}
                             </td>
 
                             <!-- Actions -->
@@ -127,13 +137,26 @@
                                         class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors">
                                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                                     </button>
-                                    <button (click)="onEdit(emp)"
+                                    <button (click)="openEditModal(emp)"
                                         class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors">
                                         <span class="material-symbols-outlined text-[20px]">edit</span>
                                     </button>
-                                    <button (click)="onDelete(emp)"
-                                        class="p-1.5 text-slate-400 hover:text-red-500 transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    <button (click)="onDelete(emp)" [disabled]="deletingEmployeeId === emp.id"
+                                        class="p-1.5 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+
+                                        <!-- Spinner لو بيتحذف دلوقتي -->
+                                        <svg *ngIf="deletingEmployeeId === emp.id"
+                                            class="animate-spin h-5 w-5 text-red-500" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+                                            </path>
+                                        </svg>
+
+                                        <!-- أيقون الحذف العادي -->
+                                        <span *ngIf="deletingEmployeeId !== emp.id"
+                                            class="material-symbols-outlined text-[20px]">delete</span>
                                     </button>
                                 </div>
                             </td>
@@ -160,7 +183,7 @@
                         <!-- Page numbers -->
                         <ng-container *ngFor="let p of visiblePages">
                             <button (click)="goToPage(p)" [class]="p === currentPage
-                  ? 'px-4 py-2 rounded-lg bg-[#ec5b13] text-white font-medium text-sm'
+                  ? 'px-4 py-2 rounded-lg bg-blue-500 text-white font-medium text-sm'
                   : 'px-4 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium'">{{ p
                                 }}</button>
                         </ng-container>
@@ -168,7 +191,7 @@
                         <span class="text-slate-400">...</span>
 
                         <button (click)="goToPage(totalPages)" [class]="totalPages === currentPage
-                ? 'px-4 py-2 rounded-lg bg-[#ec5b13] text-white font-medium text-sm'
+                ? 'px-4 py-2 rounded-lg bg-blue-500 text-white font-medium text-sm'
                 : 'px-4 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 text-sm font-medium'">{{ totalPages
                             }}</button>
 
@@ -202,5 +225,291 @@
 
         </div>
     </main>
+
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <!-- Edit Employee Modal                                        -->
+    <!-- ══════════════════════════════════════════════════════════ -->
+    <div *ngIf="showEditModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+
+        <!-- Modal Panel -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-blue-600/10 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-600">edit</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Edit Employee</h3>
+                        <p class="text-sm text-slate-500">{{ editingEmployee?.name }}</p>
+                    </div>
+                </div>
+                <button (click)="closeEditModal()"
+                    class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="overflow-y-auto flex-1 p-6">
+                <form [formGroup]="editForm" (ngSubmit)="onUpdateSubmit()" novalidate class="space-y-6">
+
+                    <!-- Personal Details -->
+                    <section class="space-y-4">
+                        <div class="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-blue-600 text-lg">person</span>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200">Personal Details</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <!-- Full Name -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Full Name <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="fullName" placeholder="Jane Smith"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('fullName') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('fullName')" class="text-xs text-red-500">Full name is
+                                    required.</p>
+                            </div>
+
+                            <!-- National ID -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    National ID <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="text" formControlName="nationalId" placeholder="29901011234567"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('nationalId') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('nationalId')" class="text-xs text-red-500">National ID is
+                                    required.</p>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Email <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="email" formControlName="email" placeholder="jane@company.com"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('email') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('email')" class="text-xs text-red-500">Valid email is
+                                    required.</p>
+                            </div>
+
+                            <!-- Phone -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Phone <span class="text-blue-600">*</span>
+                                </label>
+                                <div class="flex gap-2">
+                                    <input type="text" formControlName="countryCode" placeholder="+20"
+                                        class="w-20 px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all text-center" />
+                                    <input type="tel" formControlName="phoneNumber" placeholder="1012345678"
+                                        [class]="'flex-1 px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isEditFieldInvalid('phoneNumber') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                </div>
+                                <p *ngIf="isEditFieldInvalid('phoneNumber')" class="text-xs text-red-500">Phone is
+                                    required.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Address -->
+                    <section class="space-y-4">
+                        <div class="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-blue-600 text-lg">location_on</span>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200">Address</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2 space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Street <span
+                                        class="text-blue-600">*</span></label>
+                                <input type="text" formControlName="street" placeholder="123 Main St"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('street') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('street')" class="text-xs text-red-500">Street is required.
+                                </p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">City <span
+                                        class="text-blue-600">*</span></label>
+                                <input type="text" formControlName="city" placeholder="Cairo"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('city') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('city')" class="text-xs text-red-500">City is required.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">State <span
+                                        class="text-blue-600">*</span></label>
+                                <input type="text" formControlName="state" placeholder="Cairo Governorate"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('state') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('state')" class="text-xs text-red-500">State is required.
+                                </p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Postal Code <span
+                                        class="text-blue-600">*</span></label>
+                                <input type="text" formControlName="postalCode" placeholder="11511"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('postalCode') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('postalCode')" class="text-xs text-red-500">Postal code is
+                                    required.</p>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Country <span
+                                        class="text-blue-600">*</span></label>
+                                <input type="text" formControlName="country" placeholder="Egypt"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('country') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('country')" class="text-xs text-red-500">Country is
+                                    required.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Job Information -->
+                    <section class="space-y-4">
+                        <div class="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-blue-600 text-lg">work</span>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200">Job Information</h4>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                            <!-- Job Level -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Job Level</label>
+                                <select formControlName="jobLevel"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    <option *ngFor="let l of jobLevels" [value]="l.value">{{ l.label }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Employee Type -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Employee
+                                    Type</label>
+                                <select formControlName="employeeType"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    <option *ngFor="let t of employeeTypes" [value]="t.value">{{ t.label }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Role -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Role <span class="text-blue-600">*</span>
+                                </label>
+                                <select formControlName="roleId"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('roleId') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')">
+                                    <option value="">Select Role</option>
+                                    <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
+                                </select>
+                                <p *ngIf="isEditFieldInvalid('roleId')" class="text-xs text-red-500">Role is required.
+                                </p>
+                            </div>
+
+                            <!-- Salary Amount -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                    Salary <span class="text-blue-600">*</span>
+                                </label>
+                                <input type="number" formControlName="salaryAmount"
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                (isEditFieldInvalid('salaryAmount') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <p *ngIf="isEditFieldInvalid('salaryAmount')" class="text-xs text-red-500">Valid salary
+                                    is required.</p>
+                            </div>
+
+                            <!-- Currency -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Currency</label>
+                                <select formControlName="salaryCurrency"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
+                                </select>
+                            </div>
+
+                            <!-- Hire Date -->
+                            <div class="space-y-1">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Hire Date</label>
+                                <input type="date" formControlName="hireDate"
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all" />
+                            </div>
+
+                            <!-- Status -->
+                            <div class="space-y-2 md:col-span-3">
+                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
+                                <div class="flex gap-6 mt-1">
+                                    <label *ngFor="let s of statusOptions"
+                                        class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" [value]="s.value" formControlName="status"
+                                            class="w-4 h-4 accent-blue-600" />
+                                        <span class="text-sm text-slate-600 dark:text-slate-400">{{ s.label }}</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Permissions -->
+                    <section class="space-y-4">
+                        <div class="flex items-center gap-2 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="material-symbols-outlined text-blue-600 text-lg">lock</span>
+                            <h4 class="font-semibold text-slate-800 dark:text-slate-200">Permissions</h4>
+                            <span class="ml-auto text-xs text-slate-400">{{ selectedPermissions.size }} selected</span>
+                        </div>
+                        <div *ngIf="permissions.length === 0" class="text-sm text-slate-400 italic">Loading
+                            permissions...</div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <label *ngFor="let p of permissions" [class]="'flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ' +
+                            (selectedPermissions.has(p.id)
+                                ? 'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-600'
+                                : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800')">
+                                <input type="checkbox" [checked]="selectedPermissions.has(p.id)"
+                                    (change)="togglePermission(p.id)" class="mt-0.5 w-4 h-4 rounded accent-blue-600" />
+                                <div>
+                                    <p class="text-sm font-medium text-slate-800 dark:text-slate-100">{{ p.name }}</p>
+                                    <p *ngIf="p.description" class="text-xs text-slate-400">{{ p.description }}</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="flex gap-3 mt-2">
+                            <button type="button" (click)="selectAllPermissions()"
+                                class="text-xs text-blue-600 hover:underline font-medium">Select All</button>
+                            <span class="text-slate-300">|</span>
+                            <button type="button" (click)="clearAllPermissions()"
+                                class="text-xs text-slate-500 hover:underline font-medium">Clear All</button>
+                        </div>
+                    </section>
+
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-200 dark:border-slate-800">
+                <button type="button" (click)="closeEditModal()"
+                    class="px-6 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    Cancel
+                </button>
+                <button type="button" (click)="onUpdateSubmit()" [disabled]="isUpdating"
+                    class="px-8 py-2.5 rounded-xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                    <svg *ngIf="isUpdating" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    <span *ngIf="!isUpdating" class="material-symbols-outlined text-[20px]">save</span>
+                    {{ isUpdating ? 'Saving...' : 'Save Changes' }}
+                </button>
+            </div>
+        </div>
+    </div>
 
 </div>

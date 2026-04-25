@@ -1,68 +1,181 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/Auth/employee/employee.service';
 
-interface TabItem {
-  label: string;
-  active: boolean;
-}
+interface TabItem { label: string; active: boolean; }
+interface TimeOffBand { label: string; used: number; total: number; color: string; }
 
-interface TimeOffBand {
-  label: string;
-  used: number;
-  total: number;
-  color: string;
-}
 @Component({
   selector: 'app-employee-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './employee-details.component.html',
   styleUrl: './employee-details.component.scss',
 })
-export class EmployeeDetailsComponent {
+export class EmployeeDetailsComponent implements OnInit {
+
+  employee: EmployeeNode | null = null;
+  isLoading = true;
+  error = '';
 
   activeTab = 'Overview';
-
   tabs: TabItem[] = [
     { label: 'Overview', active: true },
-    { label: 'Employment', active: false },
-    { label: 'Documents', active: false },
-    { label: 'Performance', active: false },
-    { label: 'Assets', active: false },
+    // { label: 'Employment', active: false },
+    // { label: 'Documents', active: false },
+    // { label: 'Performance', active: false },
+    // { label: 'Assets', active: false },
   ];
 
-  /** Personal information */
-  personal = {
-    fullName: 'Johnathan Doe',
-    email: 'john.doe@company.com',
-    phone: '+1 (555) 123-4567',
-    birthDate: 'May 12, 1990 (34 years)',
-    address: '123 Tech Lane, Apt 4B, San Francisco, CA 94105, United States',
-  };
+  // ── Personal ────────────────────────────────────────
+  get personal() {
+    const addr = this.employee?.address;
+    const nat = this.employee?.nationalID;
 
-  /** Employment details */
-  employment = {
-    department: 'Product Engineering',
-    level: 'L4 - Senior',
-    type: 'Regular Full-time',
-    hireDate: 'January 15, 2021 (3.4 Years)',
-    managerName: 'Sarah Chen',
-    managerTitle: 'VP of Engineering',
-    managerImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCgfrq1OChqTcZ7cmO88-kyHpc5EodvygVLrJlgxRaNfNgV7taQ88Gri-q0dlMR0L0J4Gd6TBW_1tOBixM-kDfJqgK0gx-w2HEenGxegtdBxggGWSabNBEHvcsUmDQ2bDu63NzzhVvFQBoS7L6Z98Dj7Gpm2EGCw52zkwdbvFWGAlbLsIT55RDxWEwMfe6VB_ff2A6ZiYku62QV6OgvMYRXfL48R9bDyBFX-Xw3JrSprtsGZL_w3CFvd8mznHL5d00lLg5CvcG4AXNa',
-  };
+    return {
+      fullName: this.employee?.name ?? '—',
+      email: this.employee?.email ?? '—',
+      phone: this.employee?.phoneNumber ?? '—',
+      birthDate: nat?.birthDate
+        ? `${nat.birthDate} (${nat.age} years)`
+        : '—',
+      address: addr
+        ? `${addr.street}, ${addr.city}, ${addr.state} ${addr.postalCode}, ${addr.country}`
+        : '—',
+    };
+  }
 
-  /** Financials */
-  financials = {
-    salary: '$145,000',
-    currency: 'USD',
-    bankName: 'Chase Bank **** 4291',
-    bankType: 'Checking Account',
-  };
+  // ── Employment ──────────────────────────────────────
+  get employment() {
+    return {
+      department: this.employee?.departmentId ?? '—',
+      level: this.levelLabel(this.employee?.employeeLevel),
+      type: this.typeLabel(this.employee?.employeeType),
+      hireDate: this.employee?.hiredate ?? '—',
+      managerName: this.employee?.managerId ?? '—',
+      managerTitle: '—',
+      managerImg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCgfrq1OChqTcZ7cmO88-kyHpc5EodvygVLrJlgxRaNfNgV7taQ88Gri-q0dlMR0L0J4Gd6TBW_1tOBixM-kDfJqgK0gx-w2HEenGxegtdBxggGWSabNBEHvcsUmDQ2bDu63NzzhVvFQBoS7L6Z98Dj7Gpm2EGCw52zkwdbvFWGAlbLsIT55RDxWEwMfe6VB_ff2A6ZiYku62QV6OgvMYRXfL48R9bDyBFX-Xw3JrSprtsGZL_w3CFvd8mznHL5d00lLg5CvcG4AXNa',
+    };
+  }
 
-  /** Time-off bands */
+  // ── Financials ──────────────────────────────────────
+  get financials() {
+    return {
+      salary: this.employee?.salary?.toString() ?? '—',
+      currency: this.employee?.currency ?? '—',
+      bankName: '—',
+      bankType: '—',
+    };
+  }
+
+  // ── National ID Info (extra card) ───────────────────
+  get nationalInfo() {
+    const n = this.employee?.nationalID;
+    if (!n) return null;
+    return {
+      value: n.value ?? '—',
+      gender: n.gender ?? '—',
+      governorate: n.governorateNameEn ?? '—',
+      birthRegion: n.birthRegionNameEn ?? '—',
+      generation: n.generation ?? '—',
+      isAdult: n.isAdult,
+    };
+  }
+
   timeOff: TimeOffBand[] = [
     { label: 'Paid Time Off (PTO)', used: 12, total: 20, color: 'bg-[#ec5b13]' },
     { label: 'Sick Leave', used: 8, total: 10, color: 'bg-blue-500' },
   ];
+
+  departments: { id: string; name: string }[] = [];
+
+  getDepartmentName(id?: string): string {
+    if (!id) return '—';
+    return this.departments.find(d => d.id === id)?.name ?? id;
+  }
+
+  constructor(
+    private _route: ActivatedRoute,
+    private _EmployeeService: EmployeeService,
+    private _router: Router
+  ) { }
+
+  ngOnInit(): void {
+    const nav = this._router.getCurrentNavigation();
+    const stateEmp = nav?.extras?.state?.['employee'] as EmployeeNode | undefined;
+    const routeId = this._route.snapshot.paramMap.get('id');
+
+    // جيب الـ departments أولاً، وبعدين جيب الـ employee
+    this._EmployeeService.getDepartments().subscribe({
+      next: (deps) => {
+        this.departments = deps;
+
+        if (stateEmp) {
+          this.fetchByNationalId(stateEmp);
+        } else if (routeId) {
+          this.fetchById(routeId);
+        } else {
+          this.error = 'No employee ID provided.';
+          this.isLoading = false;
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        // حتى لو الـ departments فشلت، كمّل وجيب الـ employee
+        if (stateEmp) {
+          this.fetchByNationalId(stateEmp);
+        } else if (routeId) {
+          this.fetchById(routeId);
+        } else {
+          this.error = 'No employee ID provided.';
+          this.isLoading = false;
+        }
+      }
+    });
+  }
+
+  private fetchById(id: string): void {
+    // بنستخدم getEmployees ونفلتر بالـ id
+    this._EmployeeService.getEmployees().subscribe({
+      next: (employees) => {
+        const found = employees.find(e => e.id === id);
+        if (!found) {
+          this.error = 'Employee not found.';
+          this.isLoading = false;
+          return;
+        }
+        // لو لقيناه، نجيب التفاصيل الكاملة
+        this.fetchByNationalId(found);
+      },
+      error: (err) => {
+        console.error(err);
+        this.error = 'Failed to load employee.';
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private fetchByNationalId(emp: EmployeeNode): void {
+    // لو مفيش nationalId في الـ emp، عرض البيانات المتاحة بس
+    const natIdValue = (emp as any).nationalID?.value;
+
+    if (!natIdValue) {
+      // عرض البيانات الجاية من الـ list مباشرة بدون query
+      this.employee = emp;
+      this.isLoading = false;
+      return;
+    }
+
+    this._EmployeeService.getEmployeeById(natIdValue).subscribe({
+      next: (data) => { this.employee = data; this.isLoading = false; },
+      error: (err) => {
+        console.error(err);
+        // fallback — عرض بيانات الـ list
+        this.employee = emp;
+        this.isLoading = false;
+      },
+    });
+  }
 
   bandPercent(band: TimeOffBand): number {
     return Math.round((band.used / band.total) * 100);
@@ -71,5 +184,20 @@ export class EmployeeDetailsComponent {
   selectTab(label: string): void {
     this.activeTab = label;
     this.tabs = this.tabs.map(t => ({ ...t, active: t.label === label }));
+  }
+
+  // ── Label Helpers ───────────────────────────────────
+  private levelLabel(val?: string): string {
+    const map: Record<string, string> = {
+      '1': 'Junior', '2': 'Intermediate', '3': 'Senior', '4': 'Lead', '5': 'Chief',
+    };
+    return val ? (map[val] ?? val) : '—';
+  }
+
+  private typeLabel(val?: string): string {
+    const map: Record<string, string> = {
+      '1': 'Full-time', '2': 'Part-time', '3': 'Contractor', '4': 'Intern', '5': 'Temporary',
+    };
+    return val ? (map[val] ?? val) : '—';
   }
 }

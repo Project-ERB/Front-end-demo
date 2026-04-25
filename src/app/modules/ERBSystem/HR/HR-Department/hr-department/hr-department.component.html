@@ -1,40 +1,7 @@
 <div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
 
     <!-- ─── Sidebar ─── -->
-    <aside style="min-width:256px; width:256px;" class="flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
-
-        <!-- Logo -->
-        <div class="px-6 py-5 flex items-center gap-3">
-            <div class="rounded-lg p-1.5 text-white" style="background:#2563EB;">
-                <span class="material-symbols-outlined" style="font-size:24px;">corporate_fare</span>
-            </div>
-            <div>
-                <h1 class="text-base font-bold leading-tight">HR ERP</h1>
-                <p class="text-[11px] text-slate-500">Admin Panel</p>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 space-y-1">
-            <a *ngFor="let item of navItems" href="#"
-                class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors" [ngClass]="item.active
-          ? 'bg-blue-50 text-blue-600'
-          : 'text-slate-600 hover:bg-slate-100'">
-                <span class="material-symbols-outlined" [ngClass]="item.active ? 'text-blue-600' : ''"
-                    style="font-size:22px;">{{ item.icon }}</span>
-                <span>{{ item.label }}</span>
-            </a>
-        </nav>
-
-        <!-- Settings -->
-        <div class="p-4 border-t border-slate-200">
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition-colors">
-                <span class="material-symbols-outlined" style="font-size:22px;">settings</span>
-                <span>Settings</span>
-            </a>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ─── Main ─── -->
     <main class="flex-1 flex flex-col overflow-hidden min-w-0">
@@ -72,8 +39,8 @@
                         <h3 class="text-2xl font-bold tracking-tight text-slate-900">Organization Overview</h3>
                         <p class="text-slate-500 text-sm mt-1">Manage your company's departments and structure.</p>
                     </div>
-                    <button
-                        class="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all shadow-lg"
+                    <button routerLink="/add-department"
+                        class="flex items-center gap-2 px-5 py-2.5 cursor-pointer rounded-xl text-white text-sm font-semibold transition-all shadow-lg"
                         style="background:#2563EB; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
                         <span class="material-symbols-outlined" style="font-size:20px;">add</span>
                         Create New Department
@@ -117,61 +84,82 @@
                             <tr class="bg-slate-50 text-slate-500 text-[11px] font-semibold uppercase tracking-wider">
                                 <th class="px-6 py-4">Department Name</th>
                                 <th class="px-6 py-4">Department Head</th>
-                                <th class="px-6 py-4">Total Employees</th>
+                                <!-- <th class="px-6 py-4">Total Employees</th> -->
                                 <th class="px-6 py-4">Status</th>
                                 <th class="px-6 py-4 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
                             <tr *ngFor="let dept of pagedDepartments()" class="hover:bg-slate-50 transition-colors">
+
                                 <!-- Name -->
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                                            [ngClass]="iconClasses(dept)">
-                                            <span class="material-symbols-outlined" style="font-size:20px;">{{ dept.icon
-                                                }}</span>
+                                        <div
+                                            class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-blue-100 text-blue-600">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size:20px;">corporate_fare</span>
                                         </div>
                                         <span class="font-semibold text-sm text-slate-800">{{ dept.name }}</span>
                                     </div>
                                 </td>
 
-                                <!-- Head -->
-                                <td class="px-6 py-4">
-                                    <div *ngIf="dept.head; else vacantTpl" class="flex items-center gap-2">
-                                        <div class="w-7 h-7 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
-                                            <img [src]="dept.headAvatar" [alt]="dept.head"
-                                                class="w-full h-full object-cover" />
-                                        </div>
-                                        <span class="text-sm text-slate-700">{{ dept.head }}</span>
-                                    </div>
-                                    <ng-template #vacantTpl>
-                                        <div class="flex items-center gap-2 text-slate-400 italic">
-                                            <div
-                                                class="w-7 h-7 rounded-full bg-slate-100 border border-dashed border-slate-300 flex items-center justify-center">
-                                                <span class="material-symbols-outlined"
-                                                    style="font-size:14px;">person_off</span>
-                                            </div>
-                                            <span class="text-sm">Vacant</span>
-                                        </div>
-                                    </ng-template>
-                                </td>
+                                <!-- Head (managerId فقط متاح حالياً) -->
+                                <td class="px-6 py-4 text-sm text-slate-600">{{ dept.description || '—' }}</td>
 
-                                <!-- Employees -->
-                                <td class="px-6 py-4 text-sm text-slate-700">{{ dept.employees }}</td>
+                                <!-- Employees (مش في الـ query حالياً) -->
+                                <!-- <td class="px-6 py-4 text-sm text-slate-600">—</td> -->
 
                                 <!-- Status -->
                                 <td class="px-6 py-4">
                                     <span
                                         class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                        [ngClass]="statusClass(dept.status)">{{ dept.status }}</span>
+                                        [ngClass]="statusClass(dept.isActive)">
+                                        {{ dept.isActive ? 'Active' : 'Inactive' }}
+                                    </span>
                                 </td>
 
                                 <!-- Actions -->
                                 <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 hover:text-blue-600 transition-colors">
-                                        <span class="material-symbols-outlined" style="font-size:22px;">more_vert</span>
-                                    </button>
+                                    <div class="flex items-center justify-end gap-1">
+
+                                        <!-- View -->
+                                        <button (click)="onView(dept)"
+                                            class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                            title="View Details">
+                                            <span class="material-symbols-outlined"
+                                                style="font-size:20px;">visibility</span>
+                                        </button>
+
+                                        <!-- Edit -->
+                                        <button (click)="onEdit(dept)"
+                                            class="p-1.5 text-slate-400 hover:text-[#ec5b13] hover:bg-orange-50 rounded-lg transition-colors"
+                                            title="Edit">
+                                            <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
+                                        </button>
+
+
+                                        <!-- Delete -->
+                                        <button (click)="onDelete(dept)" [disabled]="deletingDepartmentId === dept.id"
+                                            class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            title="Delete">
+
+                                            <!-- Spinner أثناء الحذف -->
+                                            <svg *ngIf="deletingDepartmentId === dept.id"
+                                                class="animate-spin h-5 w-5 text-red-500"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+                                                </path>
+                                            </svg>
+
+                                            <!-- أيقون الحذف -->
+                                            <span *ngIf="deletingDepartmentId !== dept.id"
+                                                class="material-symbols-outlined" style="font-size:20px;">delete</span>
+                                        </button>
+
+                                    </div>
                                 </td>
                             </tr>
 
@@ -237,4 +225,98 @@
             </div>
         </div>
     </main>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Edit Department Modal                              -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div *ngIf="showEditModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+
+        <!-- Panel -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg flex flex-col">
+
+            <!-- Header -->
+            <div class="flex items-center justify-between p-6 border-b border-slate-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-500">edit</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Edit Department</h3>
+                        <p class="text-sm text-slate-500">{{ editingDepartment?.name }}</p>
+                    </div>
+                </div>
+                <button (click)="closeEditModal()"
+                    class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="p-6 space-y-5">
+
+                <!-- Name -->
+                <div class="space-y-1.5">
+                    <label class="text-sm font-semibold text-slate-700">
+                        Department Name <span class="text-[#ec5b13]">*</span>
+                    </label>
+                    <input type="text" [(ngModel)]="editData.name" placeholder="e.g. Engineering"
+                        class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] outline-none transition-all text-sm" />
+                    <p *ngIf="!editData.name.trim()" class="text-xs text-red-500">Name is required.</p>
+                </div>
+
+                <!-- Description -->
+                <div class="space-y-1.5">
+                    <label class="text-sm font-semibold text-slate-700">Description</label>
+                    <textarea [(ngModel)]="editData.description" rows="3"
+                        placeholder="Briefly describe the department..."
+                        class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-[#ec5b13] outline-none transition-all text-sm resize-none"></textarea>
+                    <p class="text-xs text-slate-400 text-right">{{ editData.description.length }} / 500</p>
+                </div>
+
+                <!-- Status Toggle -->
+                <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-700">Active Status</p>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                            Department is currently
+                            <span
+                                [class]="editData.isActive ? 'text-emerald-600 font-medium' : 'text-slate-500 font-medium'">
+                                {{ editData.isActive ? 'Active' : 'Inactive' }}
+                            </span>
+                        </p>
+                    </div>
+                    <!-- Toggle Switch -->
+                    <button type="button" (click)="editData.isActive = !editData.isActive" [class]="'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ' +
+                    (editData.isActive ? 'bg-emerald-500' : 'bg-slate-300')">
+                        <span [class]="'inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ' +
+                        (editData.isActive ? 'translate-x-6' : 'translate-x-1')">
+                        </span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="flex items-center justify-end gap-3 p-6 border-t border-slate-200">
+                <button type="button" (click)="closeEditModal()"
+                    class="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-colors text-sm">
+                    Cancel
+                </button>
+                <button type="button" (click)="onUpdateSubmit()" [disabled]="isUpdating || !editData.name.trim()"
+                    class="px-8 py-2.5 rounded-xl bg-blue-500 text-white font-semibold hover:bg-blue-600 transition-all flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed text-sm shadow-lg shadow-blue-500/20">
+                    <svg *ngIf="isUpdating" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    <span *ngIf="!isUpdating" class="material-symbols-outlined text-[20px]">save</span>
+                    {{ isUpdating ? 'Saving...' : 'Save Changes' }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
 </div>
