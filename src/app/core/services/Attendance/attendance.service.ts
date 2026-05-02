@@ -122,4 +122,20 @@ export class AttendanceService {
     );
   }
 
+  insertQrCode(imageFile: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('image', imageFile);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${this.getToken()}`,
+      // مش بنحط Content-Type هنا عشان الـ browser يحطها تلقائي مع الـ boundary
+    });
+
+    return this._http.post(
+      `${Environment.baseUrl}/api/attendance/InsertQrCode`,
+      formData,
+      { headers }
+    );
+  }
+
 }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Environment } from '../../../shared/UI/environment/env';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 
 export interface AddToCartPayload {
@@ -23,6 +23,17 @@ export class ECommerceService {
 
   private readonly _HttpClient = inject(HttpClient);
   private readonly platformId = inject(PLATFORM_ID);
+
+  private cartCountSubject = new BehaviorSubject<number>(0);
+  cartCount$ = this.cartCountSubject.asObservable();
+
+  updateCartCount(count: number) {
+    this.cartCountSubject.next(count);
+  }
+
+  getCartCount(): number {
+    return this.cartCountSubject.getValue();
+  }
 
   private getToken(): string | null {
     if (isPlatformBrowser(this.platformId)) {

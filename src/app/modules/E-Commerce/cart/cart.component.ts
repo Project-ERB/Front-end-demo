@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { NavbarECommerceComponent } from "../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 import { ToastrService } from 'ngx-toastr';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ECommerceSidebarComponent } from "../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component";
 
 export enum PaymentMethod {
   Cash = 1,
@@ -39,7 +40,7 @@ interface Cart {
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NavbarECommerceComponent],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule, NavbarECommerceComponent, ECommerceSidebarComponent],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss',
   animations: [
@@ -137,7 +138,10 @@ export class CartComponent implements OnInit {
 
   increaseQuantity(item: CartItem) {
     this._eCommerceService.updateQuantity(item.id, item.quantity + 1).subscribe({
-      next: () => { this.loadCart(); this._toastr.success('Quantity updated.'); },
+      next: () => {
+        this.loadCart(); // ← loadCart بالفعل بتحدث الـ count جوّاها
+        this._toastr.success('Quantity updated.');
+      },
       error: () => this._toastr.error('Failed to update quantity.')
     });
   }
@@ -145,7 +149,10 @@ export class CartComponent implements OnInit {
   decreaseQuantity(item: CartItem) {
     if (item.quantity <= 1) return;
     this._eCommerceService.updateQuantity(item.id, item.quantity - 1).subscribe({
-      next: () => { this.loadCart(); this._toastr.success('Quantity updated.'); },
+      next: () => {
+        this.loadCart(); // ← نفس الكلام
+        this._toastr.success('Quantity updated.');
+      },
       error: () => this._toastr.error('Failed to update quantity.')
     });
   }

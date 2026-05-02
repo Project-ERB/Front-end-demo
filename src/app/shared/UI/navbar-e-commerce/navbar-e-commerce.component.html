@@ -27,20 +27,22 @@
       </div>
     </label>
     <div class="flex items-center gap-2">
-      <!-- <button
+      <button
         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300">
         <span class="material-symbols-outlined">notifications</span>
-      </button> -->
-      <!-- <button
+      </button>
+      <button
         class="relative flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300"
         (click)="navigateToShopCart()">
         <span class="material-symbols-outlined">shopping_cart</span>
-        <div
+
+        <!-- ← اعرض الـ badge بس لو عنده items -->
+        <div *ngIf="cartCount > 0"
           class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-main text-xs font-bold text-white">
-          3
+          {{ cartCount > 99 ? '99+' : cartCount }}
         </div>
-      </button> -->
-      <!-- <div class="flex items-center gap-3 pl-2">
+      </button>
+      <div class="flex items-center gap-3 pl-2">
         <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image"
           style="
             background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCyxdXnHnIwwbZvmMS-UV01cTx5EcX0-W-wLa5uP0xGQ8EKo0VXKLsNCPbgYwjdfGvYmcNPFDzFjbiHrRseG_NB05F_yb2R8scb54YE1cQzqVBJZCAw3tkTaxxIbUI82yr8kQT5NmdsZksQE9wpBddkRh-oW1-qtIVe3KpaMrQBV9LdLZG26M3CDoF9FPMavkL22HZV5QQfm6_XUqjSWOzgG-5YcluiTRp8LPF_NXP6WwtJ4PkiVVkf3YyZUf3FwaUELCR-ciT5Yykp');
@@ -49,7 +51,7 @@
           <span class="font-semibold text-gray-800 dark:text-gray-200">Alex Thompson</span>
           <span class="text-gray-500 dark:text-gray-400">Admin</span>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </nav>

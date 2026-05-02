@@ -9,6 +9,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { NavbarECommerceComponent } from "../../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 import { ToastrService } from 'ngx-toastr';
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ECommerceSidebarComponent } from "../../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component";
 
 interface ProductImage { url: string; alt: string; }
 interface ColorOption { name: string; value: string; hex: string; }
@@ -16,7 +17,7 @@ interface RelatedProduct { id: string; name: string; price: number; imageUrl: st
 
 @Component({
   selector: 'app-cart-details',
-  imports: [CommonModule, RouterModule, NavbarECommerceComponent],
+  imports: [CommonModule, RouterModule, NavbarECommerceComponent, ECommerceSidebarComponent],
   templateUrl: './cart-details.component.html',
   styleUrl: './cart-details.component.scss',
   animations: [
@@ -301,15 +302,18 @@ export class CartDetailsComponent implements OnInit {
     this.addingToCartSku = sku;
     this._eCommerceService.addToCart({ sku, quantity }).subscribe({
       next: (res) => {
+        // ← جيب العدد الحقيقي وحدّث الـ badge
         this._eCommerceService.getCart().subscribe({
           next: (cartRes) => {
             const items = cartRes?.data?.cart?.items ?? [];
             const item = items.find((i: any) => i.sku === sku);
-            if (item) {
-              this.cartItemId = item.id;
-            }
+            if (item) this.cartItemId = item.id;
+
+            // ← أضف السطر ده
+            const totalItems = items.reduce((sum: number, i: any) => sum + i.quantity, 0);
+            this._eCommerceService.updateCartCount(totalItems);
           },
-          error: (err) => console.error('❌ getCart error:', err)
+          error: (err) => console.error('getCart error:', err)
         });
         this.cartSuccessMessage = `"${this.product.name}" added to cart!`;
         this.addingToCartSku = null;
@@ -332,6 +336,8 @@ export class CartDetailsComponent implements OnInit {
       next: () => {
         this._ToastrService.success('Cart quantity updated!');
         this.quantity.update(q => q + 1);
+        // ← أضف السطر ده
+        this._eCommerceService.updateCartCount(this._eCommerceService.getCartCount() + 1);
       },
       error: () => this._ToastrService.error('Failed to update quantity.')
     });
@@ -347,6 +353,8 @@ export class CartDetailsComponent implements OnInit {
       next: () => {
         this._ToastrService.success('Cart quantity updated!');
         this.quantity.update(q => q - 1);
+        // ← أضف السطر ده
+        this._eCommerceService.updateCartCount(this._eCommerceService.getCartCount() - 1);
       },
       error: () => this._ToastrService.error('Failed to update quantity.')
     });

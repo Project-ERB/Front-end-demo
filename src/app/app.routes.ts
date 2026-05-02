@@ -120,6 +120,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/E-Commerce/help-support/help-support.component').then((m) => m.HelpSupportComponent),
         title: 'Help-Support',
       },
+      {
+        path: 'my-orders',
+        loadComponent: () => import('./modules/E-Commerce/myorders/myorders.component').then((M) => M.MyordersComponent)
+      }
     ],
   },
   // HR Layout
@@ -479,6 +483,10 @@ export const routes: Routes = [
       {
         path: 'access-camera',
         loadComponent: () => import('./modules/ERBSystem/HR/AllowAccessCamer/access-camera/access-camera.component').then((A) => A.AccessCameraComponent)
+      },
+      {
+        path: 'insertqr',
+        loadComponent: () => import('./modules/ERBSystem/HR/insertqr/insertqr.component').then((I) => I.InsertqrComponent)
       }
     ]
   }

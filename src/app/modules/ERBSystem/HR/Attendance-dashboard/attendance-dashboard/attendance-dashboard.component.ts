@@ -216,8 +216,8 @@ export class AttendanceDashboardComponent implements OnInit {
         this.submitting = false;
         this.submitSuccess = true;
         setTimeout(() => {
-          this._Router.navigate(['/access-camera']);
-          this.closeCheckinModal()
+          this.closeCheckinModal();
+          this.showRedirectModal = true;  // ← افتح مودال الاختيار
         }, 1800);
       },
       error: (err) => {
@@ -225,6 +225,11 @@ export class AttendanceDashboardComponent implements OnInit {
         this.submitError = err?.error?.message ?? 'Check-in failed. Please try again.';
       },
     });
+  }
+
+  navigateTo(route: string): void {
+    this.showRedirectModal = false;
+    this._Router.navigate([`/${route}`]);
   }
 
   // ── Table helpers ──────────────────────────────────────────────────────────
@@ -356,4 +361,6 @@ export class AttendanceDashboardComponent implements OnInit {
   viewRecord(emp: Employee): void {
     this._Router.navigate(['/attendance-detail', emp.id]);
   }
+
+  showRedirectModal = false;
 }

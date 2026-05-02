@@ -7,6 +7,7 @@ import { animate, query, stagger, style, transition, trigger } from '@angular/an
 
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
 import { ToastrService } from 'ngx-toastr';
+import { CategoriesService } from '../../../core/services/categories/categories.service';
 
 @Component({
   selector: 'app-home',
@@ -41,21 +42,26 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class HomeComponent implements OnInit {
   private readonly productService = inject(ProductService);
-  private readonly _ECommerceService = inject(ECommerceService)
-  private readonly _ToastrService = inject(ToastrService)
+  private readonly _ECommerceService = inject(ECommerceService);
+  private readonly _CategoriesService = inject(CategoriesService); // ← أضف هذا
+  private readonly _ToastrService = inject(ToastrService);
   private readonly _Router = inject(Router);
 
   products: any[] = [];
+  categories: any[] = [];  // parents مع children مدموجين محلياً
+  selectedCategoryId: string | null = null;
+  expandedCategoryId: string | null = null;
+  isCategoriesLoading = true;
   isLoading = false;
   errorMessage = '';
-
-  // Track which product is being added (to show loading on button)
   addingToCartSku: string | null = null;
   cartSuccessMessage = '';
   isMobileSidebarOpen = false;
 
+
   ngOnInit(): void {
     this.loadProducts();
+    this.loadCategories()
   }
 
   loadProducts(): void {
@@ -117,5 +123,72 @@ export class HomeComponent implements OnInit {
 
   closeMobileSidebar(): void {
     this.isMobileSidebarOpen = false;
+  }
+
+  loadCategories(): void {
+    this.isCategoriesLoading = true;
+    this._CategoriesService.getCategories().subscribe({
+      next: (parents) => {
+        // حمّل children لكل parent بالتوازي
+        if (parents.length === 0) {
+          this.categories = [];
+          this.isCategoriesLoading = false;
+          return;
+        }
+
+        let loaded = 0;
+        this.categories = parents.map(p => ({ ...p, children: [], loadingChildren: true }));
+
+        parents.forEach((parent, index) => {
+          this._CategoriesService.getChildCategories(parent.id).subscribe({
+            next: (children) => {
+              this.categories[index] = { ...this.categories[index], children, loadingChildren: false };
+              loaded++;
+              if (loaded === parents.length) this.isCategoriesLoading = false;
+            },
+            error: () => {
+              this.categories[index] = { ...this.categories[index], children: [], loadingChildren: false };
+              loaded++;
+              if (loaded === parents.length) this.isCategoriesLoading = false;
+            }
+          });
+        });
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.isCategoriesLoading = false;
+      }
+    });
+  }
+
+  selectCategory(categoryId: string | null): void {
+    this.selectedCategoryId = categoryId;
+    this.closeMobileSidebar();
+    if (categoryId === null) {
+      this.loadProducts(); // كل المنتجات
+    } else {
+      this.loadProductsByCategory(categoryId);
+    }
+  }
+
+  loadProductsByCategory(categoryId: string): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this._CategoriesService.getProductsByCategory(categoryId).subscribe({
+      next: (products) => {
+        this.products = products;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading products by category:', err);
+        this.errorMessage = 'Failed to load products. Please try again.';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  toggleExpand(categoryId: string, event: Event): void {
+    event.stopPropagation();
+    this.expandedCategoryId = this.expandedCategoryId === categoryId ? null : categoryId;
   }
 }
