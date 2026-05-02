@@ -108,20 +108,16 @@
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                         style="font-size:18px;">person_search</span>
                     <input type="text" [value]="searchEmployeeName"
-                        (input)="onSearchEmployeeName($any($event.target).value)" placeholder="Type employee name…"
+                        (input)="onSearchEmployeeName($any($event.target).value)" placeholder="Type National ID…"
                         class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
 
                     <!-- Dropdown -->
                     <div *ngIf="showDropdown"
                         class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-52 overflow-y-auto">
-                        <button *ngFor="let emp of searchResults" (click)="selectEmployee(emp)"
-                            class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 transition-colors text-left">
-                            <div class="size-7 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                                <span class="text-xs font-bold text-blue-600">{{ emp.name.charAt(0) }}</span>
-                            </div>
+                        <button *ngFor="let emp of searchResults" (click)="selectEmployee(emp)" ...>
                             <div>
-                                <p class="text-sm font-semibold text-slate-800">{{ emp.name }}</p>
-                                <p class="text-xs text-slate-400">{{ emp.employeeLevel }} · {{ emp.employeeType }}</p>
+                                <p class="text-sm font-semibold text-slate-800">{{ emp.nationalID }}</p> <!-- ← -->
+                                <p class="text-xs text-slate-400">{{ emp.name }} · {{ emp.employeeLevel }}</p>
                             </div>
                         </button>
                     </div>

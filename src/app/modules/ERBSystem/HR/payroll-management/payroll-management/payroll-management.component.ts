@@ -212,7 +212,7 @@ export class PayrollManagementComponent {
 
     const q = value.toLowerCase();
     this.searchResults = this.modalEmployees.filter(e =>
-      e.name.toLowerCase().includes(q)
+      e.nationalID?.toLowerCase().includes(q)  // ← nationalID بدل name
     );
     this.showDropdown = this.searchResults.length > 0;
   }
@@ -221,15 +221,15 @@ export class PayrollManagementComponent {
     this.selectedEmployee.set(emp);
     this.searchEmployeeName = emp.name;
     this.showDropdown = false;
-    this.loadPayrollByEmployee(emp.id);
+    this.loadPayrollByEmployee(emp.nationalID!); // ← nationalID بدل id
   }
 
-  loadPayrollByEmployee(employeeId: string): void {
+  loadPayrollByEmployee(nationalId: string): void {
     this.searchingPayroll = true;
     this.payrollError = '';
     this.payrollRecords.set([]);
 
-    this._payrollService.getPayrollsByEmployeeId(employeeId).subscribe({
+    this._payrollService.getPayrollsByNationalId(nationalId).subscribe({
       next: (res) => {
         const nodes = res?.data?.payrollsByEmployeeId?.nodes ?? [];
         this.payrollRecords.set(nodes);
@@ -298,7 +298,7 @@ export class PayrollManagementComponent {
         this.editSuccess = true;
         // refresh records
         if (this.selectedEmployee()) {
-          this.loadPayrollByEmployee(this.selectedEmployee()!.id);
+          this.loadPayrollByEmployee(this.selectedEmployee()!.nationalID!);
         }
         setTimeout(() => this.closeEditModal(), 1800);
       },
@@ -321,7 +321,7 @@ export class PayrollManagementComponent {
       next: () => {
         // refresh data بعد الحذف
         if (this.selectedEmployee()) {
-          this.loadPayrollByEmployee(this.selectedEmployee()!.id);
+          this.loadPayrollByEmployee(this.selectedEmployee()!.nationalID!);
         }
       },
       error: (err) => {

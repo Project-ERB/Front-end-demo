@@ -56,19 +56,22 @@ export class PayrollService {
   }
 
 
-  getPayrollsByEmployeeId(employeeId: string): Observable<any> {
+  getPayrollsByNationalId(nationalId: string): Observable<any> {
     const query = `
     query {
-      payrollsByEmployeeId(employeeId: "${employeeId}") {
+      payrollsByNationalId(nationalId: "${nationalId}") {
         nodes {
           id
+          totalLateHours
           periodStart
           periodEnd
           basicSalary
           bonus
           netSalary
           paymentDate
-          employeeId
+          nationalId
+          totalWorkingHours
+          totalOvertimeHours
         }
       }
     }
@@ -80,7 +83,6 @@ export class PayrollService {
       { headers: this.headers }
     );
   }
-
 
   getPayrollById(id: string): Observable<any> {
     const query = `
