@@ -23,22 +23,21 @@
         <!-- Body -->
         <div class="px-6 py-6 space-y-5">
 
-            <!-- ✅ SUCCESS -->
-            <div *ngIf="step === 'success'" class="flex flex-col items-center gap-3 py-8 text-center">
+            <!-- Success State -->
+            <div *ngIf="success" class="flex flex-col items-center gap-3 py-8">
                 <div class="size-20 rounded-full bg-emerald-100 flex items-center justify-center">
                     <span class="material-symbols-outlined text-emerald-600" style="font-size:42px;">check_circle</span>
                 </div>
-                <p class="text-lg font-bold text-slate-900 dark:text-white">Attendance Recorded!</p>
-                <p class="text-sm text-slate-500">
-                    {{ matchedEmployee?.name }} has been checked in successfully.
-                </p>
-                <button (click)="reset()" class="mt-2 px-6 py-2.5 rounded-xl text-white text-sm font-bold"
+                <p class="text-lg font-bold text-slate-900 dark:text-white">QR Code Processed!</p>
+                <p class="text-sm text-slate-500">Attendance recorded successfully.</p>
+                <button (click)="clearFile()"
+                    class="mt-2 px-6 py-2.5 rounded-xl text-white text-sm font-bold transition-all"
                     style="background-color:#7c3aed;">
-                    Scan Another
+                    Upload Another
                 </button>
             </div>
 
-            <ng-container *ngIf="step !== 'success'">
+            <ng-container *ngIf="!success">
 
                 <!-- Upload Area -->
                 <div *ngIf="!previewUrl"
@@ -56,89 +55,41 @@
                 <!-- Preview -->
                 <div *ngIf="previewUrl"
                     class="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700">
-                    <img [src]="previewUrl" alt="QR Preview" class="w-full object-contain max-h-56" />
-                    <button (click)="reset()"
+                    <img [src]="previewUrl" alt="QR Preview" class="w-full object-contain max-h-64" />
+                    <button (click)="clearFile()"
                         class="absolute top-2 right-2 size-8 bg-white dark:bg-slate-800 rounded-full shadow flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors">
                         <span class="material-symbols-outlined" style="font-size:18px;">close</span>
                     </button>
                 </div>
 
-                <!-- Validating spinner -->
-                <div *ngIf="step === 'validating'"
-                    class="flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100">
-                    <div
-                        class="size-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin flex-shrink-0">
-                    </div>
-                    <p class="text-sm text-blue-600 dark:text-blue-400 font-medium">Validating employee identity…</p>
+                <!-- File name -->
+                <div *ngIf="selectedFile"
+                    class="flex items-center gap-3 px-4 py-3 bg-violet-50 dark:bg-violet-900/20 rounded-xl border border-violet-100 dark:border-violet-800">
+                    <span class="material-symbols-outlined text-violet-500" style="font-size:20px;">image</span>
+                    <p class="text-sm font-medium text-violet-700 dark:text-violet-300 truncate">{{ selectedFile.name }}
+                    </p>
                 </div>
 
-                <!-- ✅ Employee Confirmed Card -->
-                <div *ngIf="step === 'confirmed' && matchedEmployee"
-                    class="flex items-center gap-4 px-4 py-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-200 dark:border-emerald-800">
-                    <div class="size-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                        <span class="material-symbols-outlined text-emerald-600"
-                            style="font-size:20px;">verified_user</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-bold text-emerald-800 dark:text-emerald-300">Employee Verified ✓</p>
-                        <p class="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{{ matchedEmployee.name }}
-                        </p>
-                        <p class="text-xs text-emerald-500 opacity-75">{{ matchedEmployee.employeeLevel }} · ID: {{
-                            extractedNationalId }}</p>
-                    </div>
+                <!-- Error -->
+                <div *ngIf="errorMsg"
+                    class="flex items-center gap-2 px-4 py-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                    <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                    {{ errorMsg }}
                 </div>
 
-                <!-- ❌ Error -->
-                <div *ngIf="step === 'error' || errorMsg"
-                    class="flex items-start gap-3 px-4 py-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 text-rose-600 text-sm">
-                    <span class="material-symbols-outlined flex-shrink-0 mt-0.5"
-                        style="font-size:18px;">person_off</span>
-                    <div>
-                        <p class="font-bold">Validation Failed</p>
-                        <p class="text-xs mt-0.5 opacity-80">{{ errorMsg }}</p>
-                    </div>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="flex gap-3">
-
-                    <!-- Upload & Validate -->
-                    <button *ngIf="step === 'upload'" (click)="submitQr()" [disabled]="!selectedFile || uploadLoading"
-                        class="flex-1 py-3 rounded-xl text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                        style="background-color:#7c3aed;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">qr_code_scanner</span>
-                        Validate QR
-                    </button>
-
-                    <!-- Confirm Scan (بعد التحقق) -->
-                    <ng-container *ngIf="step === 'confirmed'">
-                        <button (click)="reset()"
-                            class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors">
-                            Cancel
-                        </button>
-                        <button (click)="confirmScan()" [disabled]="scanLoading"
-                            class="flex-1 py-3 rounded-xl text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-                            style="background-color:#2563EB;">
-                            <div *ngIf="scanLoading"
-                                class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin">
-                            </div>
-                            <span class="material-symbols-outlined" *ngIf="!scanLoading"
-                                style="font-size:18px;">how_to_reg</span>
-                            {{ scanLoading ? 'Recording…' : 'Confirm Check-in' }}
-                        </button>
-                    </ng-container>
-
-                    <!-- Try Again -->
-                    <button *ngIf="step === 'error'" (click)="reset()"
-                        class="flex-1 py-3 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2"
-                        style="background-color:#7c3aed;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">refresh</span>
-                        Try Again
-                    </button>
-
-                </div>
+                <!-- Submit Button -->
+                <button (click)="submit()" [disabled]="!selectedFile || loading"
+                    class="w-full py-3 rounded-xl text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="background-color:#7c3aed;">
+                    <div *ngIf="loading"
+                        class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span class="material-symbols-outlined" *ngIf="!loading"
+                        style="font-size:18px;">qr_code_scanner</span>
+                    {{ loading ? 'Processing…' : 'Submit QR Code' }}
+                </button>
 
             </ng-container>
+
         </div>
     </div>
 </div>

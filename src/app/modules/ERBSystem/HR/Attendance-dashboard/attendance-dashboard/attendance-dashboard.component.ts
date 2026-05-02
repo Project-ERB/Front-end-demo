@@ -6,6 +6,7 @@ import { AttendanceService, CheckInRequest, COMPANIES } from '../../../../../cor
 import { EmployeeNode } from '../../employee-management/employee-management/employee-management.component';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 
 export type AttendanceStatus = 'present' | 'late' | 'absent';
@@ -198,6 +199,8 @@ export class AttendanceDashboardComponent implements OnInit {
     return !!this.selectedEmployeeId && !!this.selectedCompanyId;
   }
 
+  private readonly _ToastrService = inject(ToastrService)
+
   submitCheckin(): void {
     if (!this.isModalValid || this.submitting) return;
 
@@ -212,12 +215,22 @@ export class AttendanceDashboardComponent implements OnInit {
     this.submitError = '';
 
     this._attendanceService.checkIn(payload).subscribe({
-      next: () => {
+      next: (res) => {
         this.submitting = false;
         this.submitSuccess = true;
+
+        const type = res?.Type;
+        const message = res?.Message ?? 'Operation successful';
+
+        if (type === 'CheckIn') {
+          this._ToastrService.success(message, 'Check-in ✅');
+        } else {
+          this._ToastrService.info(message, 'Check-out 👋');
+        }
+
         setTimeout(() => {
           this.closeCheckinModal();
-          this.showRedirectModal = true;  // ← افتح مودال الاختيار
+          this.showRedirectModal = true;
         }, 1800);
       },
       error: (err) => {
