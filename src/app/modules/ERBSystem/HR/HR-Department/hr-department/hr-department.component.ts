@@ -1,4 +1,4 @@
-import { DepartmentService, DepartmentNode } from './../../../../../core/services/Auth/department/department.service';
+import { DepartmentService, DepartmentNode } from '../../../../../core/services/department/department.service';
 import { Component, computed, signal, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

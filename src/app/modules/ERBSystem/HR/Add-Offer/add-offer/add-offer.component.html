@@ -1,42 +1,7 @@
 <div class="flex h-screen overflow-hidden bg-[#f8f6f6] font-sans text-slate-900">
 
     <!-- ── Sidebar ── -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col flex-shrink-0">
-
-        <!-- Logo -->
-        <div class="p-6 flex items-center gap-3">
-            <div class="bg-[#2563EB] p-1.5 rounded-lg text-white">
-                <span class="material-symbols-outlined block">rocket_launch</span>
-            </div>
-            <h2 class="text-xl font-bold tracking-tight">HR Portal</h2>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
-            @for (link of navLinks; track link.label) {
-            <a href="#" [class]="link.active
-            ? 'flex items-center gap-3 px-3 py-2 bg-[#2563EB]/10 text-[#2563EB] rounded-lg'
-            : 'flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors'">
-                <span class="material-symbols-outlined">{{ link.icon }}</span>
-                <span class="text-sm font-medium">{{ link.label }}</span>
-            </a>
-            }
-        </nav>
-
-        <!-- User footer -->
-        <div class="p-4 border-t border-slate-200">
-            <div class="flex items-center gap-3 p-2">
-                <div class="size-10 rounded-full bg-slate-200 overflow-hidden">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_PHG8-TQSC6pTfaTTB63zhAigcTdFn5SIm_kHyQqsLimzV22QGXW0Ip7Qs-taMNonUmpkE9ybUANGvHpIMYjsSlMLw6TJ5wifzoaqDWKVVf2sytM0wOVXlr6j40h_pWhA6bZmmf0b5PEXeKI4xLaOXN8CwjWabrpOzezk-S8RehJNrDo_bKcW2Zd2U9FvwnBbTbFMl2FFlW3prLQNv90a-YzBPWHFLm3U0jofTFXiNL4q82oFBLXGWm-nllj5DsoGKRDznSOssuNA"
-                        alt="Profile" class="w-full h-full object-cover" />
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-xs font-semibold truncate">Alex Rivera</p>
-                    <p class="text-[10px] text-slate-500 truncate">HR Administrator</p>
-                </div>
-            </div>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ── Main Content ── -->
     <main class="flex-1 flex flex-col overflow-y-auto">
@@ -82,21 +47,28 @@
                 <form (ngSubmit)="onSubmit()" #offerForm="ngForm" class="p-8 space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                        <!-- Related Interview (full width) -->
+                        <!-- Related Interview -->
                         <div class="md:col-span-2 space-y-2">
                             <label class="text-sm font-semibold text-slate-700">Related Interview</label>
                             <div class="relative">
                                 <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">person_check</span>
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                    person_check
+                                </span>
                                 <select name="interviewId" [(ngModel)]="form.interviewId"
                                     class="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10 transition-all appearance-none outline-none">
-                                    <option value="">Search or select an interview record...</option>
-                                    @for (opt of interviewOptions; track opt.value) {
-                                    <option [value]="opt.value">{{ opt.label }}</option>
+                                    <option value="">Select an interview...</option>
+                                    @for (interview of allInterviews; track interview.id) {
+                                    <option [value]="interview.id">
+                                        {{ interview.interviewerName }} — Stage {{ interview.stage }} ({{
+                                        interview.interviewDate | date:'mediumDate' }})
+                                    </option>
                                     }
                                 </select>
                                 <span
-                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                                    expand_more
+                                </span>
                             </div>
                         </div>
 
@@ -161,13 +133,13 @@
                         </div>
 
                         <!-- Notes & Terms (full width) -->
-                        <div class="md:col-span-2 space-y-2">
+                        <!-- <div class="md:col-span-2 space-y-2">
                             <label class="text-sm font-semibold text-slate-700">Notes &amp; Terms</label>
                             <textarea name="notes" [(ngModel)]="form.notes" rows="4"
                                 placeholder="Enter special conditions, relocation bonuses, or internal notes..."
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10 transition-all outline-none resize-none">
               </textarea>
-                        </div>
+                        </div> -->
 
                     </div>
 

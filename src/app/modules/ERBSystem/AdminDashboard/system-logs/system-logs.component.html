@@ -7,59 +7,59 @@
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
 
         <!-- Top header bar -->
-        <header class="bg-white border-b border-[#e5e7eb] h-16 flex items-center justify-between px-6 shrink-0">
-            <div class="flex items-center gap-4">
-                <button class="md:hidden text-[#616e89]">
+        <header class="bg-white border-b border-[#e5e7eb] h-16 flex items-center justify-between px-4 sm:px-6 shrink-0">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button class="md:hidden text-[#616e89] hover:bg-gray-100 p-2 rounded-md transition-colors">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
-                <nav class="flex text-sm text-[#616e89]">
-                    <a class="hover:text-[#2563EB] transition-colors" href="#">Admin</a>
-                    <span class="mx-2">/</span>
-                    <a class="hover:text-[#2563EB] transition-colors" href="#">Monitoring</a>
-                    <span class="mx-2">/</span>
-                    <span class="text-[#111318] font-medium">System Logs</span>
+                <nav class="flex text-xs sm:text-sm text-[#616e89] overflow-hidden">
+                    <a class="hover:text-[#2563EB] transition-colors truncate" href="#">Admin</a>
+                    <span class="mx-1 sm:mx-2">/</span>
+                    <a class="hover:text-[#2563EB] transition-colors truncate" href="#">Monitoring</a>
+                    <span class="mx-1 sm:mx-2">/</span>
+                    <span class="text-[#111318] font-medium truncate">System Logs</span>
                 </nav>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 sm:gap-3">
                 <button class="relative p-2 rounded-full text-[#616e89] hover:bg-[#f0f1f4] transition-colors">
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 border border-white"></span>
                 </button>
-                <div class="h-8 w-8 rounded-full bg-cover bg-center bg-gray-200"
+                <div class="h-8 w-8 rounded-full bg-cover bg-center bg-gray-200 hover:ring-2 hover:ring-[#2563EB] transition-all"
                     style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDH0_btsPi_LK7kRrIQNzcq5n-3OUi3esfafoThm4E2R6Z2Vz2xGXT6SwcTT1_n6YaCO8FlX4QkUwSKbJQgMFrTvnHbMhYJGrp7Cj3bCffjEGLSI4cdGJ6EGB3eowC7DkRbiW5i7fV-fgaWDGtF01hxg2Kbxzl_Dou2yU0SvXIeRFVKOMrGPBpjUFhYLFPY-8fk2v52LqThr73LokJRVGUX4XWFKChH2s67ssYBp3wb4n6LkYSNZVhMWcwOeA5EZxXrc9cu5vuhkfKS')">
                 </div>
             </div>
         </header>
 
         <!-- Scrollable body -->
-        <div class="flex-1 overflow-auto bg-[#f6f6f8] p-6">
-            <div class="max-w-full w-full flex flex-col gap-6">
+        <div class="flex-1 overflow-auto bg-[#f6f6f8] p-4 sm:p-6 animate-fade-in">
+            <div class="max-w-full w-full flex flex-col gap-4 sm:gap-6">
 
                 <!-- Page title + actions -->
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-slide-in">
                     <div>
-                        <h2 class="text-2xl font-bold text-[#111318]">System Logs</h2>
+                        <h2 class="text-xl sm:text-2xl font-bold text-[#111318]">System Logs</h2>
                         <p class="text-[#616e89] text-sm mt-1">
                             Detailed audit trail of all administrative actions and system events.
                         </p>
                     </div>
 
-                    <div class="flex gap-3">
+                    <div class="flex flex-wrap gap-2 sm:gap-3">
                         <span *ngIf="selectedCount > 0"
-                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#2563EB]/10 text-[#2563EB] text-sm font-semibold">
+                            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#2563EB]/10 text-[#2563EB] text-sm font-semibold animate-bounce-subtle">
                             <span class="material-symbols-outlined text-[18px]">checklist</span>
                             {{ selectedCount }} selected
                         </span>
 
                         <button (click)="exportCsv()"
-                            class="px-4 py-2 bg-white border border-[#e5e7eb] rounded-lg text-sm font-medium text-[#111318] hover:bg-gray-50 transition flex items-center gap-2 shadow-sm">
+                            class="px-3 sm:px-4 py-2 bg-white border border-[#e5e7eb] rounded-lg text-sm font-medium text-[#111318] hover:bg-gray-50 hover:shadow-md transition-all duration-200 flex items-center gap-2 shadow-sm hover:animate-bounce-subtle">
                             <span class="material-symbols-outlined text-[18px]">download</span>
                             Export CSV
                         </button>
 
                         <button (click)="refreshLogs()"
-                            class="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition shadow-lg shadow-blue-500/30 flex items-center gap-2">
+                            class="px-3 sm:px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-all duration-200 shadow-lg shadow-blue-500/30 flex items-center gap-2 hover:shadow-xl hover:animate-bounce-subtle">
                             <span class="material-symbols-outlined text-[18px]"
                                 [class.animate-spin]="isLoading">refresh</span>
                             Refresh
@@ -68,80 +68,82 @@
                 </div>
 
                 <!-- Filter bar -->
-                <div class="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-sm">
-                    <div class="flex flex-col md:flex-row gap-4 items-end md:items-center">
+                <div
+                    class="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-sm hover:shadow-md transition-shadow duration-200 animate-slide-in">
+                    <div class="flex flex-col lg:flex-row gap-4 items-end lg:items-center">
 
                         <div class="flex-1 w-full relative">
                             <span
-                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af] text-[20px]">search</span>
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#9ca3af] text-[20px] transition-colors">search</span>
                             <input [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()" type="text"
                                 placeholder="Search by User, IP, or Action ID..."
-                                class="w-full pl-10 pr-4 py-2.5 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent placeholder-[#9ca3af] transition-all" />
+                                class="w-full pl-10 pr-4 py-2.5 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent placeholder-[#9ca3af] transition-all duration-200 hover:border-[#2563EB]/50" />
                         </div>
 
-                        <div class="min-w-[160px]">
+                        <div class="min-w-[140px] sm:min-w-[160px]">
                             <label class="block text-xs font-medium text-[#616e89] mb-1">Date Range</label>
                             <select [(ngModel)]="selectedDate" (ngModelChange)="onFilterChange()"
-                                class="w-full py-2 pl-3 pr-8 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-all appearance-none">
+                                class="w-full py-2 pl-3 pr-8 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-all duration-200 appearance-none hover:border-[#2563EB]/50">
                                 <option *ngFor="let d of dateRanges" [value]="d">{{ d }}</option>
                             </select>
                         </div>
 
-                        <div class="min-w-[160px]">
+                        <div class="min-w-[140px] sm:min-w-[160px]">
                             <label class="block text-xs font-medium text-[#616e89] mb-1">Module</label>
                             <select [(ngModel)]="selectedMod" (ngModelChange)="onFilterChange()"
-                                class="w-full py-2 pl-3 pr-8 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-all appearance-none">
+                                class="w-full py-2 pl-3 pr-8 bg-[#f9fafb] border border-[#e5e7eb] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#2563EB] transition-all duration-200 appearance-none hover:border-[#2563EB]/50">
                                 <option *ngFor="let m of moduleOptions" [value]="m">{{ m }}</option>
                             </select>
                         </div>
 
                         <button (click)="clearFilters()"
-                            class="mb-0.5 text-[#2563EB] hover:text-blue-700 text-sm font-medium whitespace-nowrap transition-colors">
+                            class="mb-0.5 text-[#2563EB] hover:text-blue-700 text-sm font-medium whitespace-nowrap transition-all duration-200 hover:scale-105">
                             Clear Filters
                         </button>
                     </div>
                 </div>
 
                 <!-- ══ Loading Skeleton ══ -->
-                <div *ngIf="isLoading" class="bg-white rounded-xl border border-[#e5e7eb] shadow-sm overflow-hidden">
+                <div *ngIf="isLoading"
+                    class="bg-white rounded-xl border border-[#e5e7eb] shadow-sm overflow-hidden animate-pulse">
                     <div class="divide-y divide-[#e5e7eb]">
-                        <div *ngFor="let i of [1,2,3,4,5]" class="px-6 py-4 flex items-center gap-4 animate-pulse">
-                            <div class="h-4 w-4 bg-gray-200 rounded"></div>
-                            <div class="h-4 w-32 bg-gray-200 rounded"></div>
+                        <div *ngFor="let i of [1,2,3,4,5]" class="px-4 sm:px-6 py-4 flex items-center gap-4">
+                            <div class="h-4 w-4 bg-gray-200 rounded animate-pulse"></div>
+                            <div class="h-4 w-24 sm:w-32 bg-gray-200 rounded animate-pulse"></div>
                             <div class="flex items-center gap-3 flex-1">
-                                <div class="h-8 w-8 bg-gray-200 rounded-full"></div>
-                                <div class="h-4 w-24 bg-gray-200 rounded"></div>
+                                <div class="h-8 w-8 bg-gray-200 rounded-full animate-pulse"></div>
+                                <div class="h-4 w-20 sm:w-24 bg-gray-200 rounded animate-pulse"></div>
                             </div>
-                            <div class="h-5 w-20 bg-gray-200 rounded-full"></div>
-                            <div class="h-4 w-48 bg-gray-200 rounded flex-1"></div>
-                            <div class="h-5 w-16 bg-gray-200 rounded-full"></div>
-                            <div class="h-4 w-6 bg-gray-200 rounded ml-auto"></div>
+                            <div class="h-5 w-16 sm:w-20 bg-gray-200 rounded-full animate-pulse"></div>
+                            <div class="h-4 w-32 sm:w-48 bg-gray-200 rounded flex-1 animate-pulse"></div>
+                            <div class="h-5 w-12 sm:w-16 bg-gray-200 rounded-full animate-pulse"></div>
+                            <div class="h-4 w-6 bg-gray-200 rounded ml-auto animate-pulse"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ══ Table card ══ -->
                 <div *ngIf="!isLoading"
-                    class="bg-white rounded-xl border border-[#e5e7eb] shadow-sm overflow-hidden flex flex-col">
+                    class="bg-white rounded-xl border border-[#e5e7eb] shadow-sm overflow-hidden flex flex-col hover:shadow-lg transition-shadow duration-300 animate-fade-in">
 
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
+                        <table class="w-full text-left border-collapse min-w-[800px]">
 
                             <thead>
                                 <tr class="border-b border-[#e5e7eb] bg-[#f9fafb]">
 
-                                    <th class="px-6 py-4 w-12">
+                                    <th class="px-4 sm:px-6 py-4 w-12">
                                         <input type="checkbox"
-                                            class="rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB]"
+                                            class="rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB] transition-all"
                                             [checked]="allSelected"
                                             (change)="toggleSelectAll($any($event.target).checked)" />
                                     </th>
 
-                                    <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer group select-none"
+                                    <th class="px-4 sm:px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer group select-none hover:bg-gray-100 transition-colors"
                                         (click)="setSort('timestamp')">
                                         <div class="flex items-center gap-1">
                                             Timestamp
-                                            <span class="material-symbols-outlined text-base"
+                                            <span class="material-symbols-outlined text-base transition-colors"
                                                 [class.text-[#2563EB]]="sortField === 'timestamp'"
                                                 [class.text-gray-400]="sortField !== 'timestamp'">
                                                 {{ sortIcon('timestamp') }}
@@ -149,11 +151,11 @@
                                         </div>
                                     </th>
 
-                                    <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer group select-none"
+                                    <th class="px-4 sm:px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer group select-none hover:bg-gray-100 transition-colors"
                                         (click)="setSort('user')">
                                         <div class="flex items-center gap-1">
                                             User / IP
-                                            <span class="material-symbols-outlined text-base"
+                                            <span class="material-symbols-outlined text-base transition-colors"
                                                 [class.text-[#2563EB]]="sortField === 'user'"
                                                 [class.text-gray-400]="sortField !== 'user'">
                                                 {{ sortIcon('user') }}
@@ -161,11 +163,11 @@
                                         </div>
                                     </th>
 
-                                    <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer select-none"
+                                    <th class="px-4 sm:px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer select-none hover:bg-gray-100 transition-colors"
                                         (click)="setSort('module')">
                                         <div class="flex items-center gap-1">
                                             Module
-                                            <span class="material-symbols-outlined text-base"
+                                            <span class="material-symbols-outlined text-base transition-colors"
                                                 [class.text-[#2563EB]]="sortField === 'module'"
                                                 [class.text-gray-400]="sortField !== 'module'">
                                                 {{ sortIcon('module') }}
@@ -173,11 +175,11 @@
                                         </div>
                                     </th>
 
-                                    <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer select-none"
+                                    <th class="px-4 sm:px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer select-none hover:bg-gray-100 transition-colors"
                                         (click)="setSort('action')">
                                         <div class="flex items-center gap-1">
                                             Action
-                                            <span class="material-symbols-outlined text-base"
+                                            <span class="material-symbols-outlined text-base transition-colors"
                                                 [class.text-[#2563EB]]="sortField === 'action'"
                                                 [class.text-gray-400]="sortField !== 'action'">
                                                 {{ sortIcon('action') }}
@@ -185,11 +187,11 @@
                                         </div>
                                     </th>
 
-                                    <th class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer select-none"
+                                    <th class="px-4 sm:px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider cursor-pointer select-none hover:bg-gray-100 transition-colors"
                                         (click)="setSort('status')">
                                         <div class="flex items-center gap-1">
                                             Security Status
-                                            <span class="material-symbols-outlined text-base"
+                                            <span class="material-symbols-outlined text-base transition-colors"
                                                 [class.text-[#2563EB]]="sortField === 'status'"
                                                 [class.text-gray-400]="sortField !== 'status'">
                                                 {{ sortIcon('status') }}
@@ -198,7 +200,7 @@
                                     </th>
 
                                     <th
-                                        class="px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider text-right">
+                                        class="px-4 sm:px-6 py-4 text-xs font-semibold text-[#616e89] uppercase tracking-wider text-right">
                                         Details
                                     </th>
                                 </tr>
@@ -206,26 +208,27 @@
 
                             <tbody class="divide-y divide-[#e5e7eb] bg-white">
 
-                                <tr *ngFor="let log of pagedLogs"
-                                    [class]="'transition-colors group ' + getStatusRowHover(log.status)"
+                                <tr *ngFor="let log of pagedLogs; let i = index"
+                                    [class]="'transition-all duration-200 hover:shadow-sm hover:bg-gray-50 group animate-fade-in ' + getStatusRowHover(log.status)"
                                     [class.bg-red-50]="log.status === 'Critical' && log.selected"
-                                    [class.bg-blue-50]="log.selected && log.status !== 'Critical'">
+                                    [class.bg-blue-50]="log.selected && log.status !== 'Critical'"
+                                    [style.animation-delay.ms]="i * 50">
 
-                                    <td class="px-6 py-4">
+                                    <td class="px-4 sm:px-6 py-4">
                                         <input type="checkbox"
-                                            class="rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB]"
+                                            class="rounded border-gray-300 text-[#2563EB] focus:ring-[#2563EB] transition-all"
                                             [(ngModel)]="log.selected" />
                                     </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm font-mono text-[#111318]">{{ log.timestamp }}</div>
 
                                     </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center gap-3">
                                             <div
-                                                [class]="'h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs ' + log.userBg + ' ' + log.userText">
+                                                [class]="'h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs transition-all group-hover:scale-110 ' + log.userBg + ' ' + log.userText">
                                                 {{ log.userInitials }}
                                             </div>
                                             <div>
@@ -235,14 +238,14 @@
                                         </div>
                                     </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                         <span
-                                            [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ' + getModuleBadge(log.module)">
+                                            [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-all hover:scale-105 ' + getModuleBadge(log.module)">
                                             {{ log.module }}
                                         </span>
                                     </td>
 
-                                    <td class="px-6 py-4 max-w-xs">
+                                    <td class="px-4 sm:px-6 py-4 max-w-xs">
                                         <div class="text-sm text-[#111318]">
                                             <ng-container *ngIf="!log.actionHighlight">{{ log.action }}</ng-container>
                                             <ng-container *ngIf="log.actionHighlight">
@@ -254,18 +257,18 @@
                                         </div>
                                     </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                                         <span
-                                            [class]="'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ' + getStatusBadge(log.status)">
+                                            [class]="'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border transition-all hover:scale-105 ' + getStatusBadge(log.status)">
                                             <span
                                                 [class]="'w-1.5 h-1.5 rounded-full ' + getStatusDot(log.status)"></span>
                                             {{ log.status }}
                                         </span>
                                     </td>
 
-                                    <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-right">
                                         <a routerLink="/log-detail/{{ log.id }}" (click)="viewDetails(log)"
-                                            class="text-[#616e89] hover:text-[#2563EB] transition-colors p-1 rounded-md hover:bg-blue-50">
+                                            class="text-[#616e89] hover:text-[#2563EB] transition-all duration-200 p-1 rounded-md hover:bg-blue-50 hover:scale-110 inline-block">
                                             <span class="material-symbols-outlined text-[22px]">visibility</span>
                                         </a>
                                     </td>
@@ -273,12 +276,13 @@
 
                                 <!-- Empty state -->
                                 <tr *ngIf="filteredLogs.length === 0">
-                                    <td colspan="7" class="px-6 py-16 text-center text-[#616e89]">
+                                    <td colspan="7"
+                                        class="px-4 sm:px-6 py-12 sm:py-16 text-center text-[#616e89] animate-fade-in">
                                         <span
-                                            class="material-symbols-outlined text-[48px] block mb-2 text-slate-300">manage_search</span>
+                                            class="material-symbols-outlined text-[36px] sm:text-[48px] block mb-2 text-slate-300">manage_search</span>
                                         <p class="text-sm font-medium">No log entries match your filters.</p>
                                         <button (click)="clearFilters()"
-                                            class="mt-3 text-sm text-[#2563EB] hover:underline font-medium">
+                                            class="mt-3 text-sm text-[#2563EB] hover:underline font-medium transition-all hover:scale-105">
                                             Clear all filters
                                         </button>
                                     </td>
@@ -289,7 +293,7 @@
 
                     <!-- ── Pagination footer ── -->
                     <div
-                        class="px-6 py-4 border-t border-[#e5e7eb] flex flex-col sm:flex-row items-center justify-between gap-3">
+                        class="px-4 sm:px-6 py-4 border-t border-[#e5e7eb] flex flex-col sm:flex-row items-center justify-between gap-3">
 
                         <div class="text-sm text-[#616e89]">
                             <ng-container *ngIf="filteredLogs.length > 0">
@@ -306,11 +310,11 @@
 
                         <div class="flex items-center gap-1">
                             <button (click)="goToPage(1)" [disabled]="currentPage === 1"
-                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:scale-110 hover:bg-gray-100">
                                 <span class="material-symbols-outlined">first_page</span>
                             </button>
                             <button (click)="prevPage()" [disabled]="currentPage === 1"
-                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:scale-110 hover:bg-gray-100">
                                 <span class="material-symbols-outlined">chevron_left</span>
                             </button>
 
@@ -318,8 +322,8 @@
 
                             <button *ngFor="let p of pageNumbers" (click)="goToPage(p)"
                                 [class]="p === currentPage
-                                    ? 'w-8 h-8 flex items-center justify-center rounded-lg bg-[#2563EB] text-white text-sm font-bold shadow-md shadow-blue-500/20'
-                                    : 'w-8 h-8 flex items-center justify-center rounded-lg text-[#616e89] hover:bg-[#f0f1f4] text-sm font-medium transition-colors'">
+                                    ? 'w-8 h-8 flex items-center justify-center rounded-lg bg-[#2563EB] text-white text-sm font-bold shadow-md shadow-blue-500/20 transition-all hover:scale-110'
+                                    : 'w-8 h-8 flex items-center justify-center rounded-lg text-[#616e89] hover:bg-[#f0f1f4] text-sm font-medium transition-all hover:scale-110 hover:shadow-sm'">
                                 {{ p }}
                             </button>
 
@@ -327,11 +331,11 @@
                                 class="px-1 text-[#616e89] text-sm select-none">…</span>
 
                             <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:scale-110 hover:bg-gray-100">
                                 <span class="material-symbols-outlined">chevron_right</span>
                             </button>
                             <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
-                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                class="p-1 rounded-md text-[#616e89] hover:text-[#111318] disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:scale-110 hover:bg-gray-100">
                                 <span class="material-symbols-outlined">last_page</span>
                             </button>
                         </div>

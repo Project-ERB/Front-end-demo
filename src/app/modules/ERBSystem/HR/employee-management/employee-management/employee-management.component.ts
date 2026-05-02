@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 import { Router, RouterLink } from '@angular/router';
-import { EmployeeService } from '../../../../../core/services/Auth/employee/employee.service';
+import { EmployeeService } from '../../../../../core/services/employee/employee.service';
 import { ToastrService } from 'ngx-toastr';
 import { AdminService } from '../../../../../core/services/Admin-service/admin.service';
 import { PermissionService, PermissionNode } from '../../../../../core/services/permission/permission.service';
@@ -177,7 +177,7 @@ export class EmployeeManagementComponent implements OnInit {
   openEditModal(emp: EmployeeNode): void {
     this.editingEmployee = emp;
 
-    // Parse phone: stored as "+201012345678" or "01012345678"
+    // Parse phone
     let countryCode = '+20';
     let phoneNumber = emp.phoneNumber ?? '';
     const phoneMatch = phoneNumber.match(/^(\+\d{1,3})(\d+)$/);
@@ -191,34 +191,41 @@ export class EmployeeManagementComponent implements OnInit {
       Active: 1, Inactive: 2, Suspended: 3, Terminated: 4, None: 5,
     };
 
+    // Map employeeLevel string → numeric value
+    const levelStrToNum: Record<string, number> = {
+      Junior: 1, Intermediate: 2, Senior: 3, Lead: 4, Chief: 5,
+    };
+
+    // Map employeeType string → numeric value
+    const typeStrToNum: Record<string, number> = {
+      'Full-time': 1, 'Part-time': 2, Contractor: 3, Intern: 4, Temporary: 5,
+    };
+
     this.editForm.patchValue({
-      // Personal
       fullName: emp.name ?? '',
       nationalId: emp.nationalID ?? '',
       email: emp.email ?? '',
       countryCode: countryCode,
       phoneNumber: phoneNumber,
 
-      // Address
       street: emp.address?.street ?? '',
       city: emp.address?.city ?? '',
       state: emp.address?.state ?? '',
       postalCode: emp.address?.postalCode ?? '',
       country: emp.address?.country ?? '',
 
-      // Job
-      jobLevel: Number(emp.employeeLevel) || 1,
-      employeeType: Number(emp.employeeType) || 1,
+      // ✅ convert string → number using map, fallback to Number() if already numeric
+      jobLevel: levelStrToNum[emp.employeeLevel] ?? Number(emp.employeeLevel) ?? 1,
+      employeeType: typeStrToNum[emp.employeeType] ?? Number(emp.employeeType) ?? 1,
       salaryAmount: emp.salary,
       salaryCurrency: emp.currency || 'USD',
       hireDate: emp.hiredate
         ? new Date(emp.hiredate).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0],
-      status: statusStrToNum[emp.status] ?? 1,
+      status: statusStrToNum[emp.status] ?? Number(emp.status) ?? 1,
       roleId: emp.roleId ?? '',
     });
 
-    // Reset & select all permissions by default
     this.selectedPermissions.clear();
     this.permissions.forEach(p => this.selectedPermissions.add(p.id));
 

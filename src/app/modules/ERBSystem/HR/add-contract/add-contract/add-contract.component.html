@@ -74,9 +74,9 @@
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#2563EB] transition-colors">search</span>
                                 <select [(ngModel)]="form.employeeId" name="employeeId"
                                     class="pl-10 w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:border-[#2563EB] focus:ring-[#2563EB] h-12 appearance-none pr-4">
-                                    <option value="" disabled>Search by name or ID</option>
+                                    <option value="" disabled>Search by name</option>
                                     <option *ngFor="let emp of employees" [value]="emp.id">
-                                        {{ emp.name }} ({{ emp.empId }})
+                                        {{ emp.name }}
                                     </option>
                                 </select>
                             </div>
@@ -151,9 +151,8 @@
                             <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Contract
                                 Status</label>
                             <div class="flex gap-4">
-                                <label
-                                    *ngFor="let option of [{value: 'draft', label: 'Draft'}, {value: 'active', label: 'Active'}]"
-                                    class="flex-1 flex items-center justify-center gap-2 p-4 border rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                                <label *ngFor="let option of statusOptions"
+                                    class="flex-1 flex items-center justify-center gap-2 p-4 border rounded-xl cursor-pointer hover:bg-slate-50 transition-colors"
                                     [ngClass]="getStatusBorderClass(option.value)">
                                     <input type="radio" [value]="option.value" [(ngModel)]="form.status" name="status"
                                         class="text-[#2563EB] focus:ring-[#2563EB]" />
@@ -162,8 +161,19 @@
                             </div>
                         </div>
 
-                        <!-- Department Manager -->
                         <div class="flex flex-col gap-2">
+                            <label class="text-slate-700 text-sm font-semibold">Currency</label>
+                            <select [(ngModel)]="form.currency" name="currency"
+                                class="w-full rounded-xl border border-slate-200 bg-slate-50 h-12 px-4 appearance-none focus:border-[#2563EB]">
+                                <option value="USD">USD - US Dollar</option>
+                                <option value="EUR">EUR - Euro</option>
+                                <option value="GBP">GBP - British Pound</option>
+                                <option value="EGP">EGP - Egyptian Pound</option>
+                            </select>
+                        </div>
+
+                        <!-- Department Manager -->
+                        <!-- <div class="flex flex-col gap-2">
                             <label class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Department
                                 Manager</label>
                             <select [(ngModel)]="form.managerId" name="managerId"
@@ -171,7 +181,7 @@
                                 <option *ngFor="let manager of managers" [value]="manager.value">{{ manager.label }}
                                 </option>
                             </select>
-                        </div>
+                        </div> -->
                     </div>
                 </section>
 
@@ -182,10 +192,10 @@
                         class="px-8 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                         Cancel
                     </button>
-                    <button type="submit"
-                        class="px-10 py-3 rounded-xl bg-[#2563EB] text-white font-bold hover:bg-blue-700 shadow-lg shadow-[#2563EB]/20 transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined">save</span>
-                        Save Contract
+                    <button type="submit" [disabled]="isLoading"
+                        class="px-10 py-3 rounded-xl bg-[#2563EB] text-white font-bold hover:bg-blue-700 shadow-lg shadow-[#2563EB]/20 transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
+                        <span class="material-symbols-outlined">{{ isLoading ? 'hourglass_empty' : 'save' }}</span>
+                        {{ isLoading ? 'Saving...' : 'Save Contract' }}
                     </button>
                 </div>
 

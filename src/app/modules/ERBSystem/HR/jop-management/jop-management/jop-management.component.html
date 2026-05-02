@@ -1,9 +1,9 @@
 <!-- job-requirements.component.html -->
-<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f6] text-slate-900">
+<div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
     <app-hr-sidebar></app-hr-sidebar>
 
     <!-- Main Content -->
-    <main class="flex-1 ml-64 px-6 py-8 max-w-[1400px] mx-auto w-full">
+    <main class="flex-1 flex flex-col overflow-hidden min-w-0">
 
         <!-- Top Navigation Bar -->
         <header
@@ -87,8 +87,8 @@
                                 Description</th>
                             <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Department
                             </th>
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Hiring
-                                Manager</th>
+                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Currency
+                            </th>
                             <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Salary Range
                             </th>
                             <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider text-center">
@@ -98,7 +98,9 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        <tr *ngFor="let req of filteredRequirements" class="hover:bg-slate-50/50 transition-colors">
+                        <!-- بدّل *ngFor دي -->
+                        <tr *ngFor="let req of paginatedRequirements" class="hover:bg-slate-50/50 transition-colors">
+
                             <!-- Title & Description -->
                             <td class="px-6 py-5">
                                 <div class="flex flex-col">
@@ -107,34 +109,32 @@
                                 </div>
                             </td>
 
-                            <!-- Department -->
+                            <!-- Department  -->
                             <td class="px-6 py-5">
-                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">{{
-                                    req.department }}</span>
+                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">
+                                    {{ getDepartmentName(req.departmentId) }}
+                                </span>
                             </td>
 
-                            <!-- Hiring Manager -->
+                            <!-- Currency -->
                             <td class="px-6 py-5">
-                                <div class="flex items-center gap-2">
-                                    <div class="size-6 rounded-full flex items-center justify-center text-[10px] font-bold"
-                                        [ngClass]="req.hiringManager.colorClass">{{ req.hiringManager.initials }}</div>
-                                    <span class="text-slate-700 text-sm">{{ req.hiringManager.name }}</span>
-                                </div>
+                                <span class="text-slate-700 text-sm">{{ req.minSalaryCurrency }}</span>
                             </td>
 
                             <!-- Salary -->
                             <td class="px-6 py-5">
                                 <span class="text-slate-900 text-sm font-medium">
-                                    {{ formatSalary(req.salaryMin) }} – {{ formatSalary(req.salaryMax) }}
+                                    {{ formatSalary(req.minSalaryAmount) }} – {{ formatSalary(req.maxSalaryAmount) }}
                                 </span>
-                                <span class="text-slate-400 text-xs ml-1 uppercase">{{ req.currency }}</span>
+                                <span class="text-slate-400 text-xs ml-1 uppercase">{{ req.minSalaryCurrency }}</span>
                             </td>
 
                             <!-- Experience Badge -->
                             <td class="px-6 py-5 text-center">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                    [ngClass]="experienceBadgeClass(req.experienceLevel)">{{ req.experienceLevel
-                                    }}</span>
+                                    [ngClass]="experienceBadgeClass(req.experienceLevel)">
+                                    {{ req.experienceLevel }}
+                                </span>
                             </td>
 
                             <!-- Actions -->
@@ -144,15 +144,30 @@
                                         class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors rounded-lg hover:bg-slate-100">
                                         <span class="material-symbols-outlined text-xl">visibility</span>
                                     </button>
-                                    <button (click)="onEditSalary(req)" title="Edit Salary"
-                                        class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors rounded-lg hover:bg-slate-100">
-                                        <span class="material-symbols-outlined text-xl">payments</span>
+                                    <!-- ✏️ Edit Salary -->
+                                    <button (click)="openEditSalary(req)" title="Edit Salary"
+                                        class="p-2 text-slate-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-50">
+                                        <span class="material-symbols-outlined text-xl">edit</span>
                                     </button>
                                     <button (click)="onDelete(req)" title="Delete"
                                         class="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
                                         <span class="material-symbols-outlined text-xl">delete</span>
                                     </button>
                                 </div>
+                            </td>
+                        </tr>
+
+                        <!-- Loading state -->
+                        <tr *ngIf="isLoading">
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                Loading requirements...
+                            </td>
+                        </tr>
+
+                        <!-- Empty state -->
+                        <tr *ngIf="!isLoading && filteredRequirements.length === 0">
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                No requirements found.
                             </td>
                         </tr>
 
@@ -200,4 +215,80 @@
         </div>
 
     </main>
+
+    <!-- ══════════ Edit Salary Modal ══════════ -->
+    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        (click)="closeModal()">
+
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            (click)="$event.stopPropagation()">
+
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="size-9 rounded-xl bg-blue-50 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-blue-500 text-xl">payments</span>
+                    </div>
+                    <div>
+                        <h3 class="text-slate-900 font-bold text-base">Edit Salary</h3>
+                        <p class="text-slate-400 text-xs mt-0.5 line-clamp-1">{{ selectedReq?.title }}</p>
+                    </div>
+                </div>
+                <button (click)="closeModal()"
+                    class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined text-xl">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <form [formGroup]="salaryForm" class="px-6 py-6 space-y-5">
+
+                <!-- Currency -->
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-2">Currency</label>
+                    <div class="relative">
+                        <select formControlName="salaryCurrency"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 appearance-none pr-10 text-sm">
+                            <option *ngFor="let c of currencies" [value]="c.value">{{ c.label }}</option>
+                        </select>
+                        <span
+                            class="material-symbols-outlined absolute right-3 top-3.5 text-slate-400 pointer-events-none text-[18px]">expand_more</span>
+                    </div>
+                </div>
+
+                <!-- Min & Max -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Min Salary</label>
+                        <input type="number" formControlName="minSalaryAmount" placeholder="0" min="0"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm"
+                            [ngClass]="salaryForm.get('minSalaryAmount')?.invalid && salaryForm.get('minSalaryAmount')?.touched ? 'border-red-400' : 'border-slate-200'" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-2">Max Salary</label>
+                        <input type="number" formControlName="maxSalaryAmount" placeholder="0" min="0"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm"
+                            [ngClass]="salaryForm.get('maxSalaryAmount')?.invalid && salaryForm.get('maxSalaryAmount')?.touched ? 'border-red-400' : 'border-slate-200'" />
+                    </div>
+                </div>
+
+            </form>
+
+            <!-- Modal Footer -->
+            <div class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100">
+                <button (click)="closeModal()"
+                    class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-xl transition-colors">
+                    Cancel
+                </button>
+                <button (click)="onSaveSalary()" [disabled]="salaryForm.invalid || isSaving"
+                    class="px-6 py-2.5 bg-blue-500 text-white text-sm font-bold rounded-xl hover:bg-blue-600 transition-all disabled:opacity-60 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">{{ isSaving ? 'hourglass_empty' : 'save'
+                        }}</span>
+                    {{ isSaving ? 'Saving…' : 'Save Changes' }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
 </div>

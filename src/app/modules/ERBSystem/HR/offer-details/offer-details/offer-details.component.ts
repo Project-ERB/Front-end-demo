@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ApplicationOffer, ApplicationsService } from '../../../../../core/services/Applications/applications.service';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 export interface FinancialTerm {
   label: string;
@@ -27,11 +29,14 @@ export interface Document {
 
 @Component({
   selector: 'app-offer-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './offer-details.component.html',
   styleUrl: './offer-details.component.scss',
 })
-export class OfferDetailsComponent {
+export class OfferDetailsComponent implements OnInit {
+
+  private route = inject(ActivatedRoute);
+  private appService = inject(ApplicationsService);
 
   // ── Sidebar nav ───────────────────────────────────────────
   readonly navLinks = [
@@ -134,4 +139,51 @@ export class OfferDetailsComponent {
     console.log('Downloading:', doc.name);
   }
 
+  offer = signal<ApplicationOffer | null>(null);
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+      this.appService.getOfferById(id).subscribe({
+        next: (res) => {
+          this.offer.set(res);
+          console.log(res);
+        }
+      });
+    }
+
+    this.appService.getInterviews().subscribe(res => {
+      this.interviews.set(res);
+    });
+  }
+
+  getStatus(status: number | string): string {
+    if (typeof status === 'string') {
+      return status; // Accepted / Pending / Rejected
+    }
+
+    switch (status) {
+      case 0: return 'Pending';
+      case 1: return 'Accepted';
+      case 2: return 'Rejected';
+      default: return 'Unknown';
+    }
+  }
+
+  getExpireDays(date: string): number {
+    const now = new Date();
+    const expire = new Date(date);
+
+    const diff = expire.getTime() - now.getTime();
+
+    return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  }
+
+  interviews = signal<any[]>([]);
+
+  getInterviewName(id: string): string {
+    const interview = this.interviews().find(i => i.id === id);
+    return interview ? interview.interviewerName : 'Loading...';
+  }
 }

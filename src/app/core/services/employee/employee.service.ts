@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { Environment } from '../../../../shared/UI/environment/env';
+import { Environment } from '../../../shared/UI/environment/env';
 import { isPlatformBrowser } from '@angular/common';
 
 export interface EmployeeNode {

@@ -2,44 +2,7 @@
     class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
 
     <!-- ── Sidebar ── -->
-    <aside class="w-64 flex-shrink-0 bg-slate-900 text-white flex flex-col">
-
-        <!-- Logo -->
-        <div class="p-6 flex items-center gap-3">
-            <div class="size-8 rounded-lg flex items-center justify-center text-white"
-                style="background-color:#2563EB;">
-                <span class="material-symbols-outlined" style="font-size:20px;line-height:1;">corporate_fare</span>
-            </div>
-            <h1 class="text-xl font-bold tracking-tight">Enterprise ERP</h1>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 space-y-2 mt-4">
-            <div *ngFor="let item of navItems"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors" [ngClass]="item.active
-          ? 'bg-primary text-white shadow-lg shadow-primary/20'
-          : 'text-slate-400 hover:text-white'" [style.backgroundColor]="item.active ? '#2563EB' : ''">
-                <span class="material-symbols-outlined">{{ item.icon }}</span>
-                <span class="text-sm font-medium">{{ item.label }}</span>
-            </div>
-        </nav>
-
-        <!-- User Info -->
-        <div class="p-4 mt-auto border-t border-slate-800">
-            <div class="flex items-center gap-3 p-2 bg-slate-800/50 rounded-xl">
-                <div
-                    class="size-10 rounded-full bg-slate-700 flex items-center justify-center overflow-hidden border border-slate-600 flex-shrink-0">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrc3HdaDe4DfUrOiGulZhNu6KtQnMU4klW-YOsoHrRzt1g8SIyTu0wZ7RvjQaYKh36X2QklSBMhZ-PDNqopqNGYbIsQy4JefdLpgJn8bY-y9Vi3lJowrZxNdm-EGCA0TbSnOd3Vd4WeMHTsqtNyK9Ku7XNF-zCkIyM_6CSrpTkaU53FGtoPSoY-fj-Bpgq4uvjA6rmJDH3vIDHs7QyygV07XPaCpvHcHK2Xzz__YkTkFO_Jm7Jn_7WYWVxMzy1pwYxD4qWTZ5943Ab"
-                        alt="Receptionist Profile" class="w-full h-full object-cover" />
-                </div>
-                <div class="flex flex-col min-w-0">
-                    <span class="text-xs font-bold text-white truncate">Sarah Jenkins</span>
-                    <span class="text-[10px] text-slate-400 uppercase tracking-wider">Reception Desk</span>
-                </div>
-            </div>
-        </div>
-
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ── Main Content ── -->
     <main class="flex-1 flex flex-col overflow-hidden">
@@ -61,6 +24,7 @@
 
             <!-- Header Actions -->
             <div class="flex items-center gap-4">
+
                 <button
                     class="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
                     <span class="material-symbols-outlined">notifications</span>
@@ -117,18 +81,13 @@
                             check-in/out.</p>
                     </div>
                 </div>
-                <div class="flex w-full md:w-auto gap-3">
-                    <input [(ngModel)]="employeeIdInput" type="text" placeholder="Enter Employee ID..."
-                        class="flex-1 md:w-64 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary" />
-                    <button (click)="onCheckInOut()"
-                        class="text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg"
-                        style="background-color:#2563EB; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
-                        <span>Check In / Out</span>
-                        <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
-                    </button>
-                </div>
+                <button (click)="openCheckinModal()"
+                    class="text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg"
+                    style="background-color:#2563EB; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
+                    <span>Check In / Out</span>
+                    <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+                </button>
             </div>
-
             <!-- Stats Row -->
             <div class="flex flex-wrap gap-4">
                 <div *ngFor="let stat of stats"
@@ -149,18 +108,60 @@
                 class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
 
                 <!-- Table Header -->
-                <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <h3 class="font-bold text-lg">Daily Attendance Logs</h3>
-                    <div class="flex gap-2">
-                        <button (click)="setActiveTab('today')"
-                            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'today'
-                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Today</button>
-                        <button (click)="setActiveTab('yesterday')"
-                            class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'yesterday'
-                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Yesterday</button>
+                <div class="p-6 border-b border-slate-100 dark:border-slate-800 space-y-4">
+
+                    <!-- Row 1: Title + Tabs -->
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg">Daily Attendance Logs</h3>
+                        <div class="flex gap-2">
+                            <button (click)="setActiveTab('today')"
+                                class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'today'
+            ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+            : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Today</button>
+                            <button (click)="setActiveTab('yesterday')"
+                                class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'yesterday'
+            ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+            : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Yesterday</button>
+                        </div>
                     </div>
+
+                    <!-- Row 2: Search by National ID -->
+                    <div class="flex gap-3 items-center">
+                        <div class="relative flex-1 max-w-sm">
+                            <span
+                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                style="font-size:18px;">badge</span>
+                            <input [(ngModel)]="searchNationalId" (keyup.enter)="searchByNationalId()" type="text"
+                                placeholder="Search by National ID…"
+                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                        </div>
+
+                        <button (click)="searchByNationalId()" [disabled]="!searchNationalId.trim() || searchLoading"
+                            class="flex items-center gap-2 px-4 py-2 text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            style="background-color:#2563EB;">
+                            <div *ngIf="searchLoading"
+                                class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin">
+                            </div>
+                            <span class="material-symbols-outlined" *ngIf="!searchLoading"
+                                style="font-size:18px;">search</span>
+                            {{ searchLoading ? 'Searching…' : 'Search' }}
+                        </button>
+
+                        <!-- Clear button — يظهر بس لو فيه نتائج -->
+                        <button *ngIf="attendanceRecords.length > 0 || searchNationalId" (click)="clearSearch()"
+                            class="flex items-center gap-1.5 px-4 py-2 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-500 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+                            Clear
+                        </button>
+                    </div>
+
+                    <!-- Error message -->
+                    <div *ngIf="searchError"
+                        class="flex items-center gap-2 px-4 py-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                        <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                        {{ searchError }}
+                    </div>
+
                 </div>
 
                 <!-- Table -->
@@ -187,10 +188,10 @@
                                 <!-- Employee Name -->
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
+                                        <!-- <div class="size-8 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
                                             <img [src]="emp.avatar" [alt]="emp.name"
                                                 class="w-full h-full rounded-full object-cover" />
-                                        </div>
+                                        </div> -->
                                         <div>
                                             <p class="text-sm font-bold">{{ emp.name }}</p>
                                             <p class="text-xs text-slate-400">{{ emp.role }} • {{ emp.empCode }}</p>
@@ -241,16 +242,26 @@
 
                                 <!-- Action -->
                                 <td class="px-6 py-4 text-right">
-                                    <button class="p-2 text-slate-400 hover:text-primary transition-colors">
-                                        <span class="material-symbols-outlined">more_vert</span>
+
+                                    <button (click)="viewRecord(emp)"
+                                        class="p-2 text-slate-400 hover:text-blue-500 transition-colors"
+                                        title="View details">
+                                        <span class="material-symbols-outlined"
+                                            style="font-size:20px;">visibility</span>
+                                    </button>
+
+                                    <button (click)="deleteAttendanceRecord(emp.id)"
+                                        class="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                                        title="Delete record">
+                                        <span class="material-symbols-outlined" style="font-size:20px;">delete</span>
                                     </button>
                                 </td>
                             </tr>
 
                             <!-- Empty state -->
-                            <tr *ngIf="filteredEmployees.length === 0">
+                            <tr *ngIf="filteredEmployees.length === 0 && !loadingRecords">
                                 <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-sm">
-                                    No employees match your search.
+                                    Search by National ID above to view attendance records.
                                 </td>
                             </tr>
 
@@ -299,4 +310,181 @@
             </div>
         </div>
     </main>
+
+    <!-- ── Check-in Modal ── -->
+    <div *ngIf="showCheckinModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        (click)="closeCheckinModal()">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+        <!-- Card -->
+        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden"
+            style="animation: modalEnter 0.25s cubic-bezier(0.34,1.56,0.64,1) both;" (click)="$event.stopPropagation()">
+            <!-- Accent bar -->
+            <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
+
+            <!-- Header -->
+            <div
+                class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl flex items-center justify-center text-white"
+                        style="background-color:#2563EB;">
+                        <span class="material-symbols-outlined" style="font-size:22px;">swipe_vertical</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white">Check In / Out</h2>
+                        <p class="text-xs text-slate-400">Select employee and company to proceed</p>
+                    </div>
+                </div>
+                <button (click)="closeCheckinModal()"
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-5 space-y-4">
+
+                <!-- Success -->
+                <div *ngIf="submitSuccess" class="flex flex-col items-center gap-3 py-6">
+                    <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-emerald-600"
+                            style="font-size:36px;">check_circle</span>
+                    </div>
+                    <p class="text-base font-bold text-slate-900 dark:text-white">Check-in recorded!</p>
+                    <p class="text-sm text-slate-500">Closing automatically…</p>
+                </div>
+
+                <ng-container *ngIf="!submitSuccess">
+
+                    <!-- Loading -->
+                    <div *ngIf="modalLoading" class="flex items-center gap-3 py-4">
+                        <div class="size-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin">
+                        </div>
+                        <span class="text-sm text-slate-500">Loading employees…</span>
+                    </div>
+
+                    <ng-container *ngIf="!modalLoading">
+
+                        <!-- Employee Select -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                    style="font-size:18px;">person</span>
+                                <select [(ngModel)]="selectedEmployeeId"
+                                    class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer">
+                                    <option value="" disabled>Select an employee…</option>
+                                    <option *ngFor="let emp of modalEmployees" [value]="emp.id">
+                                        {{ emp.name }} — {{ emp.nationalID ?? 'No ID' }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                                    style="font-size:18px;">expand_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Employee preview -->
+                        <div *ngIf="selectedEmployee"
+                            class="flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                            <span class="material-symbols-outlined text-blue-500" style="font-size:20px;">badge</span>
+                            <div class="text-xs text-blue-700 dark:text-blue-300">
+                                <p class="font-bold">{{ selectedEmployee.name }}</p>
+                                <p class="opacity-70">{{ selectedEmployee.employeeLevel }} · {{
+                                    selectedEmployee.employeeType }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Company Select -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Company</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                    style="font-size:18px;">corporate_fare</span>
+                                <select [(ngModel)]="selectedCompanyId"
+                                    class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer">
+                                    <option value="" disabled>Select a company…</option>
+                                    <option *ngFor="let c of companies" [value]="c.id">
+                                        {{ c.name }} — {{ c.branch }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                                    style="font-size:18px;">expand_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Location note -->
+                        <p class="text-xs text-slate-400 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined" style="font-size:14px;">my_location</span>
+                            Location captured automatically from your device
+                        </p>
+
+                        <!-- Error -->
+                        <div *ngIf="submitError || modalError"
+                            class="flex items-center gap-2 px-4 py-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                            <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                            {{ submitError || modalError }}
+                        </div>
+
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <!-- Footer -->
+            <div *ngIf="!submitSuccess && !modalLoading" class="px-6 pb-6 flex gap-3">
+                <button (click)="closeCheckinModal()"
+                    class="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    Cancel
+                </button>
+                <button (click)="submitCheckin()" [disabled]="!isModalValid || submitting"
+                    class="flex-1 py-2.5 rounded-xl text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="background-color:#2563EB;">
+                    <div *ngIf="submitting"
+                        class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span class="material-symbols-outlined" *ngIf="!submitting" style="font-size:18px;">logout</span>
+                    {{ submitting ? 'Processing…' : 'Check In / Out' }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ── Search by National ID Modal ── -->
+    <div *ngIf="showSearchModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        (click)="closeSearchModal()">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+        <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden"
+            (click)="$event.stopPropagation()">
+            <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
+
+            <!-- Header -->
+            <div
+                class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl flex items-center justify-center text-white"
+                        style="background-color:#2563EB;">
+                        <span class="material-symbols-outlined" style="font-size:22px;">manage_search</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white">Search Attendance by National ID
+                        </h2>
+                        <p class="text-xs text-slate-400">Enter the employee's National ID to view their records</p>
+                    </div>
+                </div>
+                <button (click)="closeSearchModal()"
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
 </div>

@@ -1,0 +1,101 @@
+<div class="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6">
+
+    <!-- Header -->
+    <div class="w-full max-w-md mb-6 flex items-center justify-between">
+        <button (click)="goBack()"
+            class="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+            <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span>
+            Back to Dashboard
+        </button>
+        <div class="flex items-center gap-2" *ngIf="scanning">
+            <div class="size-2 rounded-full bg-emerald-400 animate-pulse"></div>
+            <span class="text-xs text-slate-400">Camera active</span>
+        </div>
+    </div>
+
+    <!-- Card -->
+    <div class="w-full max-w-md bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 shadow-2xl">
+
+        <!-- Accent bar -->
+        <div class="h-1" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
+
+        <!-- Title -->
+        <div class="px-6 pt-6 pb-4 text-center">
+            <div class="size-14 rounded-2xl mx-auto mb-4 flex items-center justify-center"
+                style="background-color:#2563EB;">
+                <span class="material-symbols-outlined text-white" style="font-size:28px;">qr_code_scanner</span>
+            </div>
+            <h1 class="text-xl font-bold text-white">QR Code Scanner</h1>
+            <p class="text-slate-400 text-sm mt-1">Point your camera at the employee QR code</p>
+        </div>
+
+        <!-- Viewport -->
+        <div class="relative mx-6 mb-6 rounded-2xl overflow-hidden bg-slate-800" style="aspect-ratio:1;">
+
+            <!-- Video feed -->
+            <video id="qr-video" class="w-full h-full object-cover" [class.invisible]="!scanning" playsinline muted
+                autoplay>
+            </video>
+
+            <!-- Scanning overlay -->
+            <div *ngIf="scanning" class="absolute inset-0 flex items-center justify-center">
+                <div class="relative w-56 h-56">
+                    <!-- Corners -->
+                    <div class="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-blue-400 rounded-tl-xl">
+                    </div>
+                    <div class="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-blue-400 rounded-tr-xl">
+                    </div>
+                    <div class="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-blue-400 rounded-bl-xl">
+                    </div>
+                    <div class="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-blue-400 rounded-br-xl">
+                    </div>
+                    <!-- Scan line -->
+                    <div class="scan-line absolute left-2 right-2 h-0.5 bg-blue-400 rounded-full"></div>
+                </div>
+            </div>
+
+            <!-- Processing overlay -->
+            <div *ngIf="processing"
+                class="absolute inset-0 bg-slate-900/95 flex flex-col items-center justify-center gap-4">
+                <div class="size-12 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
+                <div class="text-center">
+                    <p class="text-white text-sm font-bold">Processing scan…</p>
+                    <p class="text-slate-400 text-xs mt-1 font-mono">{{ scannedId }}</p>
+                </div>
+            </div>
+
+            <!-- Success overlay -->
+            <div *ngIf="success"
+                class="absolute inset-0 bg-slate-900/95 flex flex-col items-center justify-center gap-4">
+                <div class="size-16 rounded-full bg-emerald-500/20 flex items-center justify-center
+                    ring-4 ring-emerald-500/30">
+                    <span class="material-symbols-outlined text-emerald-400" style="font-size:36px;">check_circle</span>
+                </div>
+                <div class="text-center">
+                    <p class="text-white font-bold">Attendance Recorded!</p>
+                    <p class="text-slate-400 text-xs mt-1">Redirecting to dashboard…</p>
+                </div>
+            </div>
+
+            <!-- Error overlay -->
+            <div *ngIf="errorMsg && !scanning && !processing && !success"
+                class="absolute inset-0 bg-slate-800 flex flex-col items-center justify-center gap-4 p-6">
+                <div class="size-14 rounded-full bg-rose-500/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-rose-400" style="font-size:32px;">videocam_off</span>
+                </div>
+                <p class="text-rose-400 text-sm text-center font-medium">{{ errorMsg }}</p>
+                <button (click)="retry()" class="px-6 py-2.5 rounded-xl text-white text-sm font-bold"
+                    style="background-color:#2563EB;">
+                    Try Again
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Hint -->
+        <p *ngIf="scanning" class="px-6 pb-6 text-center text-xs text-slate-500">
+            Make sure the QR code is well-lit and centered in the frame
+        </p>
+
+    </div>
+</div>

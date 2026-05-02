@@ -384,7 +384,7 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/HR/payroll-details/payroll-details/payroll-details.component').then((P) => P.PayrollDetailsComponent)
       },
       {
-        path: 'job-requierments-management',
+        path: 'requierments-management',
         loadComponent: () => import('./modules/ERBSystem/HR/jop-management/jop-management/jop-management.component').then((J) => J.JopManagementComponent),
         title: 'job-management'
       },
@@ -471,6 +471,14 @@ export const routes: Routes = [
       {
         path: 'attendance-dashboard',
         loadComponent: () => import('./modules/ERBSystem/HR/Attendance-dashboard/attendance-dashboard/attendance-dashboard.component').then((A) => A.AttendanceDashboardComponent)
+      },
+      {
+        path: 'attendance-detail/:id',
+        loadComponent: () => import('./modules/ERBSystem//HR/attendance-detail/attendance-detail.component').then((A) => A.AttendanceDetailComponent)
+      },
+      {
+        path: 'access-camera',
+        loadComponent: () => import('./modules/ERBSystem/HR/AllowAccessCamer/access-camera/access-camera.component').then((A) => A.AccessCameraComponent)
       }
     ]
   }

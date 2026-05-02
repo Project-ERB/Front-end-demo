@@ -1,116 +1,150 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
-
-export interface JobRequirement {
-  id: number;
-  title: string;
-  description: string;
-  department: string;
-  hiringManager: { initials: string; name: string; colorClass: string };
-  salaryMin: number;
-  salaryMax: number;
-  currency: string;
-  experienceLevel: 'Junior' | 'Mid-Level' | 'Senior';
-}
+import { JopService } from '../../../../../core/services/jop/jop.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-jop-management',
-  imports: [CommonModule, FormsModule, HrSidebarComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HrSidebarComponent],
   templateUrl: './jop-management.component.html',
   styleUrl: './jop-management.component.scss',
 })
-export class JopManagementComponent {
-
+export class JopManagementComponent implements OnInit {
   private readonly _Router = inject(Router);
+  private readonly _JopService = inject(JopService);
+  private readonly _ToastrService = inject(ToastrService);
+  private readonly _fb = inject(FormBuilder);
 
   searchQuery = '';
+  allRequirements: any[] = [];
+  departmentMap: Record<string, string> = {};
+  isLoading = true;
 
-  allRequirements: JobRequirement[] = [
-    {
-      id: 1,
-      title: 'Senior Frontend Engineer',
-      description: 'Specialized in React, Tailwind and modern UI patterns.',
-      department: 'Engineering',
-      hiringManager: { initials: 'JD', name: 'Jane Doe', colorClass: 'bg-primary/10 text-primary' },
-      salaryMin: 120000,
-      salaryMax: 165000,
-      currency: 'USD',
-      experienceLevel: 'Senior',
-    },
-    {
-      id: 2,
-      title: 'Product Marketing Manager',
-      description: 'Driving GTM strategies for the SaaS expansion.',
-      department: 'Marketing',
-      hiringManager: { initials: 'MR', name: 'Marcus Reed', colorClass: 'bg-blue-100 text-blue-600' },
-      salaryMin: 95000,
-      salaryMax: 130000,
-      currency: 'USD',
-      experienceLevel: 'Mid-Level',
-    },
-    {
-      id: 3,
-      title: 'Junior UX Designer',
-      description: 'Assisting the design team with wireframes and prototyping.',
-      department: 'Design',
-      hiringManager: { initials: 'SL', name: 'Sarah Lee', colorClass: 'bg-purple-100 text-purple-600' },
-      salaryMin: 60000,
-      salaryMax: 85000,
-      currency: 'USD',
-      experienceLevel: 'Junior',
-    },
-    {
-      id: 4,
-      title: 'DevOps Specialist',
-      description: 'AWS infrastructure management and CI/CD pipelines.',
-      department: 'Engineering',
-      hiringManager: { initials: 'TK', name: 'Tom Klein', colorClass: 'bg-slate-200 text-slate-600' },
-      salaryMin: 140000,
-      salaryMax: 190000,
-      currency: 'USD',
-      experienceLevel: 'Senior',
-    },
+  // Modal
+  showModal = false;
+  selectedReq: any = null;
+  isSaving = false;
+
+  salaryForm: FormGroup = this._fb.group({
+    minSalaryAmount: [null, [Validators.required, Validators.min(0)]],
+    maxSalaryAmount: [null, [Validators.required, Validators.min(0)]],
+    salaryCurrency: ['USD', Validators.required],
+  });
+
+  readonly currencies = [
+    { value: 'USD', label: 'USD ($)' },
+    { value: 'EUR', label: 'EUR (€)' },
+    { value: 'GBP', label: 'GBP (£)' },
+    { value: 'EGP', label: 'EGP (ج.م)' },
   ];
 
-  // Pagination
   currentPage = 1;
-  pageSize = 4;
-  totalRequirements = 24;
+  pageSize = 10;
 
-  get totalPages(): number {
-    return Math.ceil(this.totalRequirements / this.pageSize);
+  ngOnInit(): void {
+    forkJoin({
+      recruitments: this._JopService.getRecruitments(),
+      departments: this._JopService.getDepartments(),
+    }).subscribe({
+      next: ({ recruitments, departments }) => {
+        this.departmentMap = Object.fromEntries(departments.map((d: any) => [d.id, d.name]));
+        this.allRequirements = recruitments;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+      },
+    });
   }
 
-  get pages(): number[] {
-    return [1, 2, 3];
+  // ── Modal ──────────────────────────────────────────
+  openEditSalary(req: any): void {
+    this.selectedReq = req;
+    this.salaryForm.patchValue({
+      minSalaryAmount: req.minSalaryAmount,
+      maxSalaryAmount: req.maxSalaryAmount,
+      salaryCurrency: req.minSalaryCurrency ?? 'USD',
+    });
+    this.showModal = true;
   }
 
-  get filteredRequirements(): JobRequirement[] {
+  closeModal(): void {
+    this.showModal = false;
+    this.selectedReq = null;
+  }
+
+  onSaveSalary(): void {
+    if (this.salaryForm.invalid) return;
+    this.isSaving = true;
+
+    const payload = {
+      recrumentId: this.selectedReq.id,
+      minSalaryAmount: this.salaryForm.value.minSalaryAmount,
+      maxSalaryAmount: this.salaryForm.value.maxSalaryAmount,
+      salaryCurrency: this.salaryForm.value.salaryCurrency,
+    };
+
+    this._JopService.updateSalary(payload).subscribe({
+      next: () => {
+        // Update local data
+        const idx = this.allRequirements.findIndex(r => r.id === this.selectedReq.id);
+        if (idx !== -1) {
+          this.allRequirements[idx] = {
+            ...this.allRequirements[idx],
+            minSalaryAmount: payload.minSalaryAmount,
+            maxSalaryAmount: payload.maxSalaryAmount,
+            minSalaryCurrency: payload.salaryCurrency,
+            maxSalaryCurrency: payload.salaryCurrency,
+          };
+        }
+        this._ToastrService.success('Salary updated successfully!', 'Success');
+        this.isSaving = false;
+        this.closeModal();
+      },
+      error: (err) => {
+        console.error(err);
+        this._ToastrService.error('Failed to update salary.', 'Error');
+        this.isSaving = false;
+      },
+    });
+  }
+
+  // ── Helpers ────────────────────────────────────────
+  getDepartmentName(id: string): string { return this.departmentMap[id] ?? '—'; }
+
+  get totalRequirements(): number { return this.filteredRequirements.length; }
+  get totalPages(): number { return Math.ceil(this.totalRequirements / this.pageSize); }
+  get pages(): number[] { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+
+  get filteredRequirements(): any[] {
     if (!this.searchQuery.trim()) return this.allRequirements;
     const q = this.searchQuery.toLowerCase();
-    return this.allRequirements.filter(
-      (r) =>
-        r.title.toLowerCase().includes(q) ||
-        r.department.toLowerCase().includes(q) ||
-        r.hiringManager.name.toLowerCase().includes(q)
+    return this.allRequirements.filter(r =>
+      r.title.toLowerCase().includes(q) ||
+      this.getDepartmentName(r.departmentId).toLowerCase().includes(q)
     );
   }
 
-  formatSalary(value: number): string {
-    return '$' + value.toLocaleString('en-US');
+  get paginatedRequirements(): any[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredRequirements.slice(start, start + this.pageSize);
   }
 
-  experienceBadgeClass(level: JobRequirement['experienceLevel']): string {
-    switch (level) {
-      case 'Senior':
-        return 'bg-orange-100 text-orange-700';
-      case 'Mid-Level':
-        return 'bg-blue-100 text-blue-700';
-      case 'Junior':
-        return 'bg-green-100 text-green-700';
+  formatSalary(value: number): string { return value?.toLocaleString('en-US') ?? '0'; }
+
+  experienceBadgeClass(level: string): string {
+    switch (level?.toLowerCase()) {
+      case 'senior': return 'bg-orange-100 text-orange-700';
+      case 'mid':
+      case 'mid-level': return 'bg-blue-100 text-blue-700';
+      case 'junior': return 'bg-green-100 text-green-700';
+      case 'expert': return 'bg-purple-100 text-purple-700';
+      default: return 'bg-slate-100 text-slate-700';
     }
   }
 
@@ -118,21 +152,24 @@ export class JopManagementComponent {
     if (page >= 1 && page <= this.totalPages) this.currentPage = page;
   }
 
-  onView(req: JobRequirement): void {
-    alert(`View: ${req.title}`);
+  onView(req: any): void {
+    this._Router.navigate(['/jop-details', req.id]);
   }
 
-  onEditSalary(req: JobRequirement): void {
-    alert(`Edit Salary: ${req.title}`);
-  }
 
-  onDelete(req: JobRequirement): void {
-    if (confirm(`Delete "${req.title}"?`)) {
-      this.allRequirements = this.allRequirements.filter((r) => r.id !== req.id);
-    }
-  }
+  onDelete(req: any): void {
+    if (!confirm(`Delete "${req.title}"?`)) return;
 
-  onAddNew(): void {
-    this._Router.navigate(['/add-jop-requierments']);
+    this._JopService.deleteRecruitment(req.id).subscribe({
+      next: () => {
+        this.allRequirements = this.allRequirements.filter(r => r.id !== req.id);
+        this._ToastrService.success('Requirement deleted successfully!', 'Success');
+      },
+      error: (err) => {
+        console.error(err);
+        this._ToastrService.error('Failed to delete requirement.', 'Error');
+      },
+    });
   }
+  onAddNew(): void { this._Router.navigate(['/add-jop-requierments']); }
 }

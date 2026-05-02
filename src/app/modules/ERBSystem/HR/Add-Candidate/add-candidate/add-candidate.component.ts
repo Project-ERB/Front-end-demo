@@ -1,6 +1,9 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CandidateService } from '../../../../../core/services/candidate/candidate.service';
+import { ToastrService } from 'ngx-toastr';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 export interface NavItem {
   icon: string;
@@ -11,14 +14,17 @@ export interface NavItem {
 
 @Component({
   selector: 'app-add-candidate',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HrSidebarComponent],
   templateUrl: './add-candidate.component.html',
   styleUrl: './add-candidate.component.scss',
 })
 export class AddCandidateComponent {
-  // ── State ──────────────────────────────────────────────────────────────────
+  private readonly _CandidateService = inject(CandidateService);
+  private readonly _ToastrService = inject(ToastrService);
+
   uploadedFileName = signal<string | null>(null);
   submitted = signal(false);
+  isSaving = signal(false);
 
   readonly fillStyle = "'FILL' 1";
   readonly outlineStyle = "'FILL' 0";
@@ -44,7 +50,6 @@ export class AddCandidateComponent {
 
   currencies = ['USD', 'EUR', 'GBP', 'INR'];
 
-  // ── Form ───────────────────────────────────────────────────────────────────
   form: FormGroup;
 
   constructor(private fb: FormBuilder) {
@@ -52,17 +57,23 @@ export class AddCandidateComponent {
       // Personal
       fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
+      countryCode: ['', Validators.required],
       phone: ['', Validators.required],
-      address: [''],
+      // Address
+      addressStreet: [''],
+      addressCity: ['', Validators.required],
+      addressState: [''],
+      addressPostalCode: [''],
+      addressCountry: ['', Validators.required],
       // Professional
       jobTitle: ['', Validators.required],
       expYears: [null, [Validators.required, Validators.min(0), Validators.max(50)]],
       currency: ['USD'],
       salary: [''],
+      resumeUrl: ['', [Validators.pattern('https?://.+')]],
     });
   }
 
-  // ── Helpers ────────────────────────────────────────────────────────────────
   get f() { return this.form.controls; }
 
   isInvalid(field: string): boolean {
@@ -86,9 +97,39 @@ export class AddCandidateComponent {
   onSubmit(): void {
     this.submitted.set(true);
     if (this.form.invalid) return;
-    // TODO: wire to service
-    console.log('Candidate payload:', this.form.value);
-    alert(`Candidate "${this.form.value.fullName}" created successfully!`);
-    this.onReset();
+
+    this.isSaving.set(true);
+
+    const v = this.form.value;
+
+    const payload = {
+      fullName: v.fullName,
+      email: v.email,
+      countryCode: v.countryCode,
+      phoneNumber: v.phone,
+      addressCountry: v.addressCountry,
+      addressCity: v.addressCity,
+      addressStreet: v.addressStreet ?? '',
+      addressPostalCode: v.addressPostalCode ?? '',
+      addressState: v.addressState ?? '',
+      jobTitle: v.jobTitle,
+      expectedSalaryAmount: v.salary ? Number(v.salary.toString().replace(/,/g, '')) : 0,
+      expectedSalaryCurrency: v.currency,
+      resumeUrl: v.resumeUrl?.trim() ? v.resumeUrl : 'https://placeholder.com/resume.pdf',
+      experienceInYears: v.expYears,
+    };
+
+    this._CandidateService.addCandidate(payload).subscribe({
+      next: () => {
+        this._ToastrService.success('Candidate created successfully!', 'Success');
+        this.isSaving.set(false);
+        this.onReset();
+      },
+      error: (err) => {
+        console.error(err);
+        this._ToastrService.error('Failed to create candidate. Please try again.', 'Error');
+        this.isSaving.set(false);
+      },
+    });
   }
 }

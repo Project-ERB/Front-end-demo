@@ -1,185 +1,175 @@
-<div
-    class="relative flex min-h-screen w-full flex-col overflow-x-hidden bg-[#f8f6f6] font-['Public_Sans',sans-serif] text-slate-900">
+<div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
 
-    <!-- ── Header ── -->
-    <header
-        class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 bg-white px-6 py-3 lg:px-20">
-        <!-- Left: Logo + Nav -->
-        <div class="flex items-center gap-8">
-            <div class="flex items-center gap-3 text-blue-600">
-                <div class="flex size-8 items-center justify-center rounded-lg bg-blue-600/10">
-                    <span class="material-symbols-outlined">corporate_fare</span>
-                </div>
-                <h2 class="text-lg font-bold leading-tight tracking-tight text-slate-900">HR ERP</h2>
-            </div>
+    <!-- Sidebar -->
+    <app-hr-sidebar></app-hr-sidebar>
 
-            <nav class="hidden items-center gap-6 md:flex">
-                <a *ngFor="let link of navLinks" href="#" [ngClass]="link.active
-            ? 'border-b-2 border-blue-600 py-1 text-sm font-semibold text-blue-600'
-            : 'text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors'">{{ link.label }}</a>
-            </nav>
-        </div>
+    <!-- Right Side -->
+    <div class="flex flex-1 flex-col overflow-hidden min-w-0">
 
-        <!-- Right: Search + Notif + Avatar -->
-        <div class="flex items-center gap-4">
-            <div class="relative hidden sm:block">
-                <span
-                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-xl text-slate-400">search</span>
-                <input type="text" placeholder="Search anything..."
-                    class="w-64 rounded-xl border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600" />
-            </div>
-
-            <button class="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors">
-                <span class="material-symbols-outlined">notifications</span>
-                <span class="absolute right-2 top-2 size-2 rounded-full border-2 border-white bg-red-500"></span>
-            </button>
-
-            <div class="size-10 rounded-full border border-slate-200 bg-cover bg-center bg-no-repeat"
-                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC0cZx_1T1mDRYtFhSkG5eJuwpKM2gQ1ffiDfotO4ytyIbJlXeQfVdCrEp5iml8EbJpoPps2bVoyuZDnjznniaETydIJerFH2p-gTy_Yf9udbDd6WMYeJIJ4xuSMVIsaeIXhZY4KfOs0Hbg3lAkX2olmz5pMy-YV7OogiYhPdY0H6yP25I_hEV5Ty-cg8Y5aoa5z8Egl3bwq9ynDrQwI33m3MoSl0W84ZMTs-aAGV_je8NOOgrX4jxS6UAd8FkeIOOJr5AR0S9m4mRE')"
-                aria-label="User profile"></div>
-        </div>
-    </header>
-
-    <!-- ── Main ── -->
-    <main class="flex flex-1 justify-center px-4 py-8 lg:px-20">
-        <div class="flex w-full max-w-[1200px] flex-col gap-6">
-
-            <!-- Page Title Row -->
-            <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight text-slate-900">Candidate Management</h1>
-                    <p class="mt-1 text-slate-500">Manage and track all job applicants across your organization.</p>
-                </div>
-                <button
-                    class="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700">
-                    <span class="material-symbols-outlined text-lg">person_add</span>
-                    <span>Add Candidate</span>
-                </button>
-            </div>
-
-            <!-- Table Card -->
-            <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-
-                <!-- Toolbar -->
-                <div class="flex flex-col items-center justify-between gap-4 border-b border-slate-100 p-4 md:flex-row">
-                    <!-- Tab Filters -->
-                    <div class="no-scrollbar flex w-full gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
-                        <button *ngFor="let tab of tabs" (click)="setTab(tab)" [ngClass]="activeTab() === tab
-                ? 'bg-blue-600/10 text-blue-600 font-semibold'
-                : 'text-slate-600 hover:bg-slate-50 font-medium'"
-                            class="whitespace-nowrap rounded-lg px-4 py-2 text-sm transition-colors">{{ tab }}</button>
+        <!-- ── Header ── -->
+        <header
+            class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 px-6 py-3 bg-white sticky top-0 z-50 shrink-0">
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-3">
+                    <div class="size-8 flex items-center justify-center rounded-lg bg-blue-500">
+                        <span class="material-symbols-outlined text-white text-2xl">work_history</span>
                     </div>
+                    <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">HR Core</h2>
+                </div>
 
-                    <!-- Filter + Sort -->
-                    <div class="flex w-full items-center gap-3 md:w-auto">
-                        <div class="relative flex-1 md:w-64">
-                            <span
-                                class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400">filter_alt</span>
-                            <input type="text" placeholder="Filter by name..." [ngModel]="filterText()"
-                                (ngModelChange)="onFilterChange($event)"
-                                class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600" />
+                <label class="flex flex-col min-w-64 h-10">
+                    <div class="flex w-full flex-1 items-stretch rounded-xl h-full border border-slate-200 bg-slate-50">
+                        <div class="text-slate-400 flex items-center justify-center pl-4">
+                            <span class="material-symbols-outlined text-xl">search</span>
                         </div>
-                        <button
-                            class="flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
-                            <span class="material-symbols-outlined text-lg">sort</span>
-                            <span>Sort</span>
-                        </button>
+                        <input
+                            class="flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-none focus:ring-0 text-sm px-3 placeholder:text-slate-400"
+                            placeholder="Search candidates..." />
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 border-l border-slate-200 ml-2 pl-4">
+                    <div class="size-9 rounded-full border-2 border-[#ec5b13]/20 bg-cover bg-center bg-no-repeat"
+                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCb5e19MTOTHpsj8V_ErHiUsTXvqHVAFUIMml5XUkzg4vJC9nro8mZxmlYjME6hU5_Z_4HQ5g75l6mube95MG-hnqueSVQF1FzQ5uJJL3inMkninmC6JrVisgtMb8e323LBOhHNYmx9aIoX0EgcEBt6ezcT48zk-gE4EPRZtzGqMzKh5oGWkqvDYPYFokf0YLTl_sQ6XXQvxjSvKne55wsvrAZuFCpGPxt9sriXBjrzNjQdRpRmFY7_ZxPfPWG3AxVRcTwbnid0dheF')">
                     </div>
                 </div>
+            </div>
+        </header>
 
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse text-left">
-                        <thead>
-                            <tr class="bg-slate-50">
-                                <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">Full
-                                    Name</th>
-                                <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">Job
-                                    Title</th>
-                                <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">Exp.
-                                    Years</th>
-                                <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
-                                    Email</th>
-                                <th
-                                    class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-700">
-                                    Status</th>
-                                <th
-                                    class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-700">
-                                    Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100">
+        <!-- ── Main ── -->
+        <main class="flex-1 overflow-y-auto p-8">
+            <div class="max-w-6xl mx-auto flex flex-col gap-6">
 
-                            <!-- Empty state -->
-                            <tr *ngIf="pagedCandidates().length === 0">
-                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
-                                    <span class="material-symbols-outlined text-4xl block mb-2">search_off</span>
-                                    No candidates match your filter.
-                                </td>
-                            </tr>
-
-                            <!-- Rows -->
-                            <tr *ngFor="let c of pagedCandidates()" class="transition-colors hover:bg-slate-50">
-                                <!-- Name -->
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div [ngClass]="c.initialsColor"
-                                            class="flex size-8 items-center justify-center rounded-full text-xs font-bold">
-                                            {{ c.initials }}</div>
-                                        <span class="text-sm font-medium text-slate-900">{{ c.name }}</span>
-                                    </div>
-                                </td>
-
-                                <!-- Job Title -->
-                                <td class="px-6 py-4 text-sm text-slate-600">{{ c.jobTitle }}</td>
-
-                                <!-- Exp -->
-                                <td class="px-6 py-4 text-sm text-slate-600">{{ c.expYears }} years</td>
-
-                                <!-- Email -->
-                                <td class="px-6 py-4 text-sm text-slate-600">{{ c.email }}</td>
-
-                                <!-- Status Badge -->
-                                <td class="px-6 py-4">
-                                    <div class="flex justify-center">
-                                        <span [ngClass]="statusClasses(c.status)"
-                                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">{{
-                                            c.status }}</span>
-                                    </div>
-                                </td>
-
-                                <!-- Actions -->
-                                <td class="px-6 py-4 text-right">
-                                    <button class="text-slate-400 transition-colors hover:text-blue-600">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="flex items-center justify-between border-t border-slate-100 p-4">
-                    <span class="text-sm text-slate-500">
-                        Showing {{ showingFrom() }} to {{ showingTo() }} of {{ totalCount() }} candidates
-                    </span>
-                    <div class="flex gap-2">
-                        <button (click)="prevPage()" [disabled]="currentPage() === 1"
-                            class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Previous</button>
-                        <button (click)="nextPage()" [disabled]="currentPage() >= totalPages()"
-                            class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Next</button>
+                <!-- Page Title Row -->
+                <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tight text-slate-900">Candidate Management</h1>
+                        <p class="mt-1 text-slate-500">Manage and track all job applicants across your organization.</p>
                     </div>
+                    <button (click)="GoToAddCandidate()"
+                        class="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700">
+                        <span class="material-symbols-outlined text-lg">person_add</span>
+                        <span>Add Candidate</span>
+                    </button>
                 </div>
 
-            </div><!-- /Table Card -->
-        </div>
-    </main>
+                <!-- Table Card -->
+                <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 
-    <!-- ── Footer ── -->
-    <footer class="mt-auto border-t border-slate-100 py-8 text-center text-xs text-slate-500">
-        © 2024 HR ERP Candidate Management System. All rights reserved.
-    </footer>
+                    <!-- Toolbar -->
+                    <div
+                        class="flex flex-col items-center justify-between gap-4 border-b border-slate-100 p-4 md:flex-row">
+                        <div class="no-scrollbar flex w-full gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
+                            <button *ngFor="let tab of tabs" (click)="setTab(tab)"
+                                [ngClass]="activeTab() === tab ? 'bg-blue-600/10 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50 font-medium'"
+                                class="whitespace-nowrap rounded-lg px-4 py-2 text-sm transition-colors">{{ tab
+                                }}</button>
+                        </div>
 
+                        <div class="flex w-full items-center gap-3 md:w-auto">
+                            <div class="relative flex-1 md:w-64">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400">filter_alt</span>
+                                <input type="text" placeholder="Filter by name..." [ngModel]="filterText()"
+                                    (ngModelChange)="onFilterChange($event)"
+                                    class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600" />
+                            </div>
+                            <button
+                                class="flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                                <span class="material-symbols-outlined text-lg">sort</span>
+                                <span>Sort</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-left">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        Full Name</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        Job Title</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        Exp. Years</th>
+                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        Email</th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+
+                                <tr *ngIf="pagedCandidates().length === 0">
+                                    <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                                        <span class="material-symbols-outlined text-4xl block mb-2">search_off</span>
+                                        No candidates match your filter.
+                                    </td>
+                                </tr>
+
+                                <tr *ngFor="let c of pagedCandidates()" class="transition-colors hover:bg-slate-50">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div [ngClass]="c.initialsColor"
+                                                class="flex size-8 items-center justify-center rounded-full text-xs font-bold">
+                                                {{ c.initials }}</div>
+                                            <span class="text-sm font-medium text-slate-900">{{ c.name }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">{{ c.jobTitle }}</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">{{ c.expYears }} years</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">{{ c.email }}</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex justify-center">
+                                            <span [ngClass]="statusClasses(c.status)"
+                                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium">
+                                                {{ c.status }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <button (click)="viewCandidate(c.id)"
+                                                class="text-slate-400 transition-colors hover:text-blue-500"
+                                                title="View candidate">
+                                                <span class="material-symbols-outlined">visibility</span>
+                                            </button>
+                                            <button (click)="deleteCandidate(c.id)"
+                                                class="text-slate-400 transition-colors hover:text-red-500"
+                                                title="Delete candidate">
+                                                <span class="material-symbols-outlined">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between border-t border-slate-100 p-4">
+                        <span class="text-sm text-slate-500">
+                            Showing {{ showingFrom() }} to {{ showingTo() }} of {{ totalCount() }} candidates
+                        </span>
+                        <div class="flex gap-2">
+                            <button (click)="prevPage()" [disabled]="currentPage() === 1"
+                                class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Previous</button>
+                            <button (click)="nextPage()" [disabled]="currentPage() >= totalPages()"
+                                class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Next</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+
+    </div>
 </div>

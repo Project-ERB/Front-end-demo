@@ -49,14 +49,14 @@
                 <span class="material-symbols-outlined text-xs">chevron_right</span>
                 <a href="#" class="hover:text-[#ec5b13]">Interviews</a>
                 <span class="material-symbols-outlined text-xs">chevron_right</span>
-                <span class="text-slate-900 font-medium">Interview ID {{ interview.id }}</span>
+                <span class="text-slate-900 font-medium">Interview ID {{ interviewData()?.id }}</span>
             </nav>
 
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Interview Assessment</h1>
                     <p class="mt-1 text-slate-500">
-                        Review candidate performance and log final results for {{ interview.role }} role.
+                        Review candidate performance and log final results for {{ interviewData()?.stage }} stage.
                     </p>
                 </div>
                 <div class="flex items-center gap-3">
@@ -74,6 +74,7 @@
             </div>
         </div>
 
+        @if (interviewData()) {
         <!-- Grid Layout -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
@@ -95,9 +96,8 @@
                             </div>
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Interviewer</p>
-                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.interviewer.name }}
-                                </p>
-                                <p class="text-xs text-slate-500">{{ interview.interviewer.title }}</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interviewData()?.interviewerName
+                                    }}</p>
                             </div>
                         </div>
 
@@ -109,8 +109,10 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Date &amp; Time
                                 </p>
-                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.dateLabel }}</p>
-                                <p class="text-xs text-slate-500">{{ interview.timeLabel }}</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interviewData()?.interviewDate |
+                                    date:'MMM dd, yyyy' }}</p>
+                                <p class="text-xs text-slate-500">{{ interviewData()?.interviewDate | date:'hh:mm a' }}
+                                </p>
                             </div>
                         </div>
 
@@ -121,8 +123,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Location</p>
-                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.location }}</p>
-                                <p class="text-xs text-slate-500">{{ interview.locationSub }}</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interviewData()?.location }}</p>
                             </div>
                         </div>
 
@@ -134,15 +135,11 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Stage &amp;
                                     Type</p>
-                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interview.stage }}</p>
+                                <p class="text-sm font-medium text-slate-900 mt-0.5">{{ interviewData()?.stage }}</p>
                                 <div class="mt-1 flex gap-2">
                                     <span
                                         class="px-2 py-0.5 bg-slate-100 rounded text-[10px] font-bold text-slate-600 uppercase">
-                                        {{ interview.type }}
-                                    </span>
-                                    <span
-                                        class="px-2 py-0.5 bg-[#ec5b13]/10 rounded text-[10px] font-bold text-[#ec5b13] uppercase tracking-tight">
-                                        Stage {{ interview.stageNumber }}
+                                        {{ interviewData()?.interviewType }}
                                     </span>
                                 </div>
                             </div>
@@ -187,7 +184,7 @@
                                 @for (outcome of outcomes; track outcome.value) {
                                 <button type="button" (click)="setOutcome(outcome.value)"
                                     [class]="'relative flex cursor-pointer rounded-xl border p-4 shadow-sm text-left transition-all bg-slate-50 ' +
-                      (selectedOutcome() === outcome.value ? outcome.activeRing : 'border-slate-200 hover:border-slate-300')">
+                                    (selectedOutcome() === outcome.value ? outcome.activeRing : 'border-slate-200 hover:border-slate-300')">
                                     <span class="flex flex-1 items-center gap-3">
                                         <span [class]="'material-symbols-outlined ' + outcome.iconColor">{{ outcome.icon
                                             }}</span>
@@ -210,7 +207,7 @@
                             <textarea id="feedback" name="feedback" [(ngModel)]="feedback" rows="8"
                                 placeholder="Detail the candidate's strengths, weaknesses, and your overall impression..."
                                 class="block w-full rounded-xl border border-slate-200 bg-white text-slate-900 text-sm p-3 focus:border-[#ec5b13] focus:ring-[#ec5b13] focus:outline-none focus:ring-1 transition-all resize-none">
-              </textarea>
+                            </textarea>
                             <p class="mt-2 text-xs text-slate-500 italic">
                                 This feedback will be shared with the hiring committee but not the candidate.
                             </p>
@@ -225,8 +222,9 @@
                                     <span class="text-sm text-slate-600">{{ skill.label }}</span>
                                     <div class="flex gap-1">
                                         @for (n of [1,2,3,4,5]; track n) {
-                                        <button type="button" (click)="setRating(i, n)" [class]="'material-symbols-outlined text-xl transition-colors ' +
-                            (n <= skill.rating ? 'text-[#ec5b13]' : 'text-slate-300 hover:text-[#ec5b13]/50')">
+                                        <button type="button" (click)="setRating(i, n)"
+                                            [class]="'material-symbols-outlined text-xl transition-colors ' +
+                                            (n <= skill.rating ? 'text-[#ec5b13]' : 'text-slate-300 hover:text-[#ec5b13]/50')">
                                             star
                                         </button>
                                         }
@@ -253,6 +251,12 @@
             </div>
 
         </div>
+        } @else {
+        <div class="flex items-center justify-center py-20">
+            <span class="text-slate-400 text-sm">Loading interview data...</span>
+        </div>
+        }
+
     </main>
 
     <!-- ── Deactivate Confirmation Modal ── -->
@@ -268,8 +272,7 @@
                 <h3 class="text-xl font-bold text-slate-900 mb-2">Deactivate Interview Record?</h3>
                 <p class="text-slate-500 text-sm leading-relaxed">
                     This action will mark the interview record as inactive. The data will remain in history but will no
-                    longer
-                    appear in active candidate workflows. This action cannot be undone easily.
+                    longer appear in active candidate workflows. This action cannot be undone easily.
                 </p>
             </div>
             <div class="bg-slate-50 p-6 flex items-center justify-end gap-3">

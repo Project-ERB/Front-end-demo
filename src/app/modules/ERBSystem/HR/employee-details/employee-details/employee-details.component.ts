@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { EmployeeService, EmployeeNode } from '../../../../../core/services/Auth/employee/employee.service';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/employee/employee.service';
 
 interface TabItem { label: string; active: boolean; }
 interface TimeOffBand { label: string; used: number; total: number; color: string; }

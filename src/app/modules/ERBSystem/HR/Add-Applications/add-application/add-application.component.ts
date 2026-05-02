@@ -1,52 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface Candidate {
-  id: number;
-  name: string;
-  role: string;
-}
-
-interface JobReq {
-  id: number;
-  code: string;
-  title: string;
-}
+import { ApplicationsService, CreateProcessPayload } from '../../../../../core/services/Applications/applications.service';
+import { CandidateService } from '../../../../../core/services/candidate/candidate.service';
+import { JopService } from '../../../../../core/services/jop/jop.service';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 interface ProcessForm {
-  candidateId: number | null;
-  jobId: number | null;
+  candidateId: string | null;
+  recrutmentId: string | null;
+  currentStage: number;
+  appStatus: number;
   startDate: string;
-  initialStage: string;
-  notes: string;
 }
 
 @Component({
   selector: 'app-add-application',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HrSidebarComponent],
   templateUrl: './add-application.component.html',
   styleUrl: './add-application.component.scss',
 })
-export class AddApplicationComponent {
+export class AddApplicationComponent implements OnInit {
+  private readonly _applicationsService = inject(ApplicationsService);
+  private readonly _candidateService = inject(CandidateService);
+  private readonly _jobService = inject(JopService);
+  private readonly _router = inject(Router);
+  private readonly _toastr = inject(ToastrService);
 
-  candidates: Candidate[] = [
-    { id: 1, name: 'Jordan Smith', role: 'Senior Developer' },
-    { id: 2, name: 'Sarah Chen', role: 'UI Designer' },
-    { id: 3, name: 'Marcus Miller', role: 'Project Manager' },
-  ];
-
-  jobs: JobReq[] = [
-    { id: 1, code: 'REQ-001', title: 'Backend Engineer (Java)' },
-    { id: 2, code: 'REQ-002', title: 'Product Designer' },
-    { id: 3, code: 'REQ-003', title: 'DevOps Architect' },
-  ];
+  candidates: any[] = [];
+  jobs: any[] = [];
+  isSubmitting = false;
+  errorMessage = '';
+  successMessage = '';
 
   stages = [
-    { value: 'screening', label: 'Initial Screening' },
-    { value: 'technical', label: 'Technical Assessment' },
-    { value: 'interview', label: 'Culture Fit Interview' },
-    { value: 'offer', label: 'Offer Preparation' },
+    { value: 0, label: 'Initial Screening' },
+    { value: 1, label: 'Technical Assessment' },
+    { value: 2, label: 'Culture Fit Interview' },
+    { value: 3, label: 'Offer Preparation' },
+  ];
+
+  appStatuses = [
+    { value: 0, label: 'Pending' },
+    { value: 1, label: 'Active' },
+    { value: 2, label: 'Rejected' },
+    { value: 3, label: 'Hired' },
   ];
 
   navItems = [
@@ -59,25 +59,70 @@ export class AddApplicationComponent {
 
   form: ProcessForm = {
     candidateId: null,
-    jobId: null,
+    recrutmentId: null,
+    currentStage: 0,
+    appStatus: 0,
     startDate: '',
-    initialStage: 'screening',
-    notes: '',
   };
 
+  ngOnInit(): void {
+    // ← getCandidates بترجع nodes مباشرة مش res
+    this._candidateService.getCandidates().subscribe({
+      next: (nodes) => {
+        this.candidates = nodes;
+      },
+    });
+
+    this._jobService.getRecruitments().subscribe({
+      next: (jobs) => {
+        this.jobs = jobs;
+      },
+    });
+  }
+
   onSubmit(): void {
-    console.log('Form submitted:', this.form);
-    // handle submission logic
+    if (!this.form.candidateId || !this.form.recrutmentId || !this.form.startDate) {
+      this.errorMessage = 'Please fill in all required fields.';
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    const payload: CreateProcessPayload = {
+      candidateId: this.form.candidateId!,
+      recrutmentId: this.form.recrutmentId!,
+      currentStage: this.form.currentStage,
+      appStatus: this.form.appStatus,
+      startDate: this.form.startDate,
+    };
+
+    this._applicationsService.addInterviewProcess(payload).subscribe({
+      next: (res) => {
+        this._toastr.success('Process created successfully!', 'Success');
+        this.isSubmitting = false;
+        this.onCancel();
+        console.log('Process created:', res);
+        setTimeout(() => {
+          this._router.navigate(['/application-management']);
+        }, 1000);
+      },
+      error: (err) => {
+        this._toastr.error('Failed to create process. Please try again.', 'Error');
+        console.error('Error creating process:', err);
+        this.isSubmitting = false;
+      },
+    });
   }
 
   onCancel(): void {
     this.form = {
       candidateId: null,
-      jobId: null,
+      recrutmentId: null,
+      currentStage: 0,
+      appStatus: 0,
       startDate: '',
-      initialStage: 'screening',
-      notes: '',
     };
   }
-
 }

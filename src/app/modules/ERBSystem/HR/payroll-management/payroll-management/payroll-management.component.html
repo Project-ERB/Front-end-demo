@@ -1,38 +1,7 @@
 <div class="flex min-h-screen bg-[#f8f6f6] text-slate-900 font-sans antialiased">
 
     <!-- ───────────────────── Sidebar ───────────────────── -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
-
-        <!-- Logo -->
-        <div class="p-6 flex items-center gap-3">
-            <div class="bg-[#ec5b13] rounded-xl p-2 flex items-center justify-center text-white">
-                <span class="material-symbols-outlined">corporate_fare</span>
-            </div>
-            <div>
-                <h1 class="text-lg font-bold leading-tight">HR ERP</h1>
-                <p class="text-xs text-slate-500">Enterprise Edition</p>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 space-y-1">
-            <a *ngFor="let item of navItems" href="#" [ngClass]="item.active
-          ? 'flex items-center gap-3 px-3 py-2 bg-orange-50 text-[#ec5b13] rounded-xl transition-colors'
-          : 'flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-xl transition-colors'">
-                <span class="material-symbols-outlined text-[22px]">{{ item.icon }}</span>
-                <span [class]="item.active ? 'text-sm font-semibold' : 'text-sm font-medium'">{{ item.label }}</span>
-            </a>
-        </nav>
-
-        <!-- New Record Button -->
-        <div class="p-4 border-t border-slate-200">
-            <button (click)="onNewRecord()"
-                class="w-full flex items-center justify-center gap-2 bg-[#ec5b13] text-white py-2.5 rounded-xl font-bold text-sm shadow-sm hover:shadow-md active:scale-[0.98] transition-all">
-                <span class="material-symbols-outlined text-[20px]">add</span>
-                <span>New Record</span>
-            </button>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ───────────────────── Main ───────────────────── -->
     <main class="flex-1 flex flex-col min-w-0">
@@ -54,6 +23,7 @@
 
             <!-- User / Actions -->
             <div class="flex items-center gap-4">
+
                 <button class="p-2 text-slate-500 hover:bg-slate-50 rounded-lg relative">
                     <span class="material-symbols-outlined">notifications</span>
                     <span
@@ -83,7 +53,7 @@
                         fiscal year.</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button (click)="onExportCSV()"
+                    <!-- <button (click)="onExportCSV()"
                         class="flex items-center gap-2 px-4 py-2 border border-slate-200 bg-white rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
                         <span class="material-symbols-outlined text-[18px]">download</span>
                         Export CSV
@@ -92,7 +62,16 @@
                         class="flex items-center gap-2 px-4 py-2 border border-slate-200 bg-white rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
                         <span class="material-symbols-outlined text-[18px]">print</span>
                         Print All
-                    </button>
+                    </button> -->
+                    <!-- New Record Button -->
+                    <div class="p-4 border-t border-slate-200">
+                        <button (click)="onNewRecord()"
+                            class="flex items-center gap-2 px-5 py-2.5 cursor-pointer rounded-xl text-white text-sm font-semibold transition-all shadow-lg"
+                            style="background:#2563EB; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                            <span>New Record</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -116,9 +95,64 @@
                         <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                     </button>
                 </div>
-                <button (click)="clearFilters()" class="text-[#ec5b13] text-sm font-semibold hover:underline">
+                <button (click)="clearFilters()" class="text-blue-500 text-sm font-semibold hover:underline">
                     Clear all filters
                 </button>
+            </div>
+
+            <!-- Employee Search -->
+            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-4 flex items-center gap-4">
+                <span class="text-sm font-bold text-slate-500 whitespace-nowrap">Search Employee:</span>
+
+                <div class="relative flex-1 max-w-sm">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                        style="font-size:18px;">person_search</span>
+                    <input type="text" [value]="searchEmployeeName"
+                        (input)="onSearchEmployeeName($any($event.target).value)" placeholder="Type employee name…"
+                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
+
+                    <!-- Dropdown -->
+                    <div *ngIf="showDropdown"
+                        class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-52 overflow-y-auto">
+                        <button *ngFor="let emp of searchResults" (click)="selectEmployee(emp)"
+                            class="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 transition-colors text-left">
+                            <div class="size-7 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <span class="text-xs font-bold text-blue-600">{{ emp.name.charAt(0) }}</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-800">{{ emp.name }}</p>
+                                <p class="text-xs text-slate-400">{{ emp.employeeLevel }} · {{ emp.employeeType }}</p>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selected badge -->
+                <div *ngIf="selectedEmployee()"
+                    class="flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-700 font-semibold">
+                    <span class="material-symbols-outlined" style="font-size:16px;">badge</span>
+                    {{ selectedEmployee.name }}
+                </div>
+
+                <!-- Loading -->
+                <div *ngIf="searchingPayroll" class="flex items-center gap-2 text-slate-400 text-sm">
+                    <div class="size-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                    Loading…
+                </div>
+
+                <!-- Clear -->
+                <button *ngIf="selectedEmployee || searchEmployeeName" (click)="clearEmployeeSearch()"
+                    class="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+                    Clear
+                </button>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="payrollError"
+                class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm mb-4">
+                <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                {{ payrollError }}
             </div>
 
             <!-- Payroll Table -->
@@ -146,50 +180,98 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr *ngFor="let record of filteredRecords()" class="hover:bg-slate-50 transition-colors">
+                            @for (record of filteredRecords(); track record.id ?? $index) {
+                            <tr class="hover:bg-slate-50 transition-colors">
+
                                 <!-- Name + Avatar -->
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs"
-                                            [ngClass]="record.highlightInitials
-                        ? 'bg-orange-50 text-[#ec5b13]'
-                        : 'bg-slate-100 text-slate-600'">
-                                            {{ record.initials }}
+                                        <div
+                                            class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-orange-50 text-[#ec5b13]">
+                                            {{ selectedEmployee() ? selectedEmployee()!.name.charAt(0).toUpperCase() :
+                                            record.initials }}
                                         </div>
                                         <div>
-                                            <p class="text-sm font-semibold">{{ record.name }}</p>
-                                            <p class="text-xs text-slate-500">{{ record.department }}</p>
+                                            <p class="text-sm font-semibold">
+                                                {{ selectedEmployee() ? selectedEmployee()!.name : record.name }}
+                                            </p>
+                                            <p class="text-xs text-slate-500">
+                                                {{ selectedEmployee()
+                                                ? selectedEmployee()!.employeeLevel + ' · ' +
+                                                selectedEmployee()!.employeeType
+                                                : record.department }}
+                                            </p>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm">{{ record.paymentDate }}</td>
-                                <td class="px-6 py-4 text-sm">{{ record.periodStart }}</td>
-                                <td class="px-6 py-4 text-sm">{{ record.periodEnd }}</td>
-                                <td class="px-6 py-4 text-sm font-medium">{{ formatCurrency(record.basicSalary) }}</td>
+
+                                <!-- Payment Date -->
+                                <td class="px-6 py-4 text-sm">
+                                    {{ record.paymentDate | date:'MMM dd, yyyy' }}
+                                </td>
+
+                                <!-- Period Start -->
+                                <td class="px-6 py-4 text-sm">
+                                    {{ record.periodStart | date:'MMM dd, yyyy' }}
+                                </td>
+
+                                <!-- Period End -->
+                                <td class="px-6 py-4 text-sm">
+                                    {{ record.periodEnd | date:'MMM dd, yyyy' }}
+                                </td>
+
+                                <!-- Basic Salary -->
+                                <td class="px-6 py-4 text-sm font-medium">
+                                    {{ formatCurrency(record.basicSalary) }}
+                                </td>
+
                                 <!-- Bonus -->
                                 <td class="px-6 py-4 text-sm font-medium"
                                     [ngClass]="record.bonus > 0 ? 'text-green-600' : 'text-slate-400'">
                                     {{ formatBonus(record.bonus) }}
                                 </td>
+
                                 <!-- Net Salary -->
                                 <td class="px-6 py-4 text-sm font-bold text-slate-900 text-right">
-                                    {{ formatCurrency(record.basicSalary + record.bonus) }}
+                                    {{ formatCurrency(record.netSalary ?? (record.basicSalary + record.bonus)) }}
                                 </td>
+
                                 <!-- Actions -->
                                 <td class="px-6 py-4 text-right">
-                                    <button (click)="onMoreOptions(record)"
-                                        class="p-1 hover:bg-slate-100 rounded transition-colors text-slate-400">
-                                        <span class="material-symbols-outlined text-[20px]">more_vert</span>
-                                    </button>
+                                    <div class="flex items-center justify-end gap-1">
+                                        <!-- View -->
+                                        <button (click)="viewPayrollDetails(record.id)"
+                                            class="p-1.5 hover:bg-blue-50 rounded-lg transition-colors text-slate-400 hover:text-blue-500">
+                                            <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                        </button>
+                                        <!-- Edit -->
+                                        <!-- Edit -->
+                                        <button (click)="openEditModal(record)"
+                                            class="p-1.5 hover:bg-amber-50 rounded-lg transition-colors text-slate-400 hover:text-amber-500">
+                                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                                        </button>
+                                        <!-- Delete -->
+                                        <button (click)="onDeleteRecord(record)"
+                                            class="p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-slate-400 hover:text-rose-500">
+                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
+                            }
 
                             <!-- Empty state -->
-                            <tr *ngIf="filteredRecords().length === 0">
+                            @if (filteredRecords().length === 0) {
+                            <tr>
                                 <td colspan="8" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    @if (selectedEmployee()) {
+                                    No payroll records found for <strong>{{ selectedEmployee.name }}</strong>.
+                                    } @else {
                                     No records match your search.
+                                    }
                                 </td>
                             </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -208,7 +290,7 @@
                         <ng-container *ngFor="let page of pages; let i = index">
                             <span *ngIf="i === 3" class="text-slate-400">...</span>
                             <button (click)="setPage(page)" [ngClass]="currentPage() === page
-                  ? 'w-8 h-8 rounded-lg bg-[#ec5b13] text-white text-xs font-bold'
+                  ? 'w-8 h-8 rounded-lg bg-blue-500 text-white text-xs font-bold'
                   : 'w-8 h-8 rounded-lg hover:bg-slate-200 text-xs font-medium'">
                                 {{ page }}
                             </button>
@@ -224,35 +306,242 @@
             </div>
 
             <!-- Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <div *ngFor="let card of summaryCards"
-                    class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">{{ card.label }}</p>
-                    <div class="flex items-end justify-between">
-                        <h3 class="text-2xl font-black">{{ card.value }}</h3>
 
-                        <!-- Green badge -->
-                        <span *ngIf="card.badge && card.badgeColor === 'green'"
-                            class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">
-                            {{ card.badge }}
-                        </span>
-
-                        <!-- Neutral badge -->
-                        <span *ngIf="card.badge && card.badgeColor === 'neutral'"
-                            class="text-xs font-bold text-slate-400 px-2 py-1">
-                            {{ card.badge }}
-                        </span>
-
-                        <!-- Progress bar -->
-                        <div *ngIf="card.showBar" class="flex flex-col items-end gap-1 mb-1">
-                            <div class="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
-                                <div class="bg-[#ec5b13] h-full rounded-full" [style.width.%]="card.barPercent"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div><!-- /content -->
     </main>
+
+    <!-- ── New Record Modal ── -->
+    <div *ngIf="showNewRecordModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        (click)="closeNewRecordModal()">
+
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+        <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+            (click)="$event.stopPropagation()">
+
+            <!-- Accent bar -->
+            <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
+
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl flex items-center justify-center text-white"
+                        style="background-color:#2563EB;">
+                        <span class="material-symbols-outlined" style="font-size:22px;">payments</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">New Payroll Record</h2>
+                        <p class="text-xs text-slate-400">Fill in the details to add a new record</p>
+                    </div>
+                </div>
+                <button (click)="closeNewRecordModal()"
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-5 space-y-4">
+
+                <!-- Success -->
+                <div *ngIf="submitSuccess" class="flex flex-col items-center gap-3 py-6">
+                    <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-emerald-600"
+                            style="font-size:36px;">check_circle</span>
+                    </div>
+                    <p class="text-base font-bold text-slate-900">Payroll record added!</p>
+                    <p class="text-sm text-slate-500">Closing automatically…</p>
+                </div>
+
+                <ng-container *ngIf="!submitSuccess">
+
+                    <!-- Loading employees -->
+                    <div *ngIf="loadingEmployees" class="flex items-center gap-3 py-4">
+                        <div class="size-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin">
+                        </div>
+                        <span class="text-sm text-slate-500">Loading employees…</span>
+                    </div>
+
+                    <ng-container *ngIf="!loadingEmployees">
+
+                        <!-- Employee -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</label>
+                            <div class="relative">
+                                <span
+                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                    style="font-size:18px;">person</span>
+                                <select [(ngModel)]="form.employeeId"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer">
+                                    <option value="" disabled>Select an employee…</option>
+                                    <option *ngFor="let emp of modalEmployees" [value]="emp.id">
+                                        {{ emp.name }} — {{ emp.nationalID ?? 'No ID' }}
+                                    </option>
+                                </select>
+                                <span
+                                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+                                    style="font-size:18px;">expand_more</span>
+                            </div>
+                        </div>
+
+                        <!-- Period Start & End -->
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Period
+                                    Start</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                        style="font-size:18px;">calendar_today</span>
+                                    <input type="date" [(ngModel)]="form.periodStart"
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Period
+                                    End</label>
+                                <div class="relative">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                                        style="font-size:18px;">calendar_today</span>
+                                    <input type="date" [(ngModel)]="form.periodEnd" [min]="form.periodStart"
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bonus Amount -->
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                Bonus Amount <span class="normal-case text-slate-400 font-normal">(optional)</span>
+                            </label>
+                            <div class="relative">
+                                <span
+                                    class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">$</span>
+                                <input type="number" [(ngModel)]="form.bonusAmount" min="0" placeholder="0"
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
+                            </div>
+                        </div>
+
+                        <!-- Error -->
+                        <div *ngIf="submitError"
+                            class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                            <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                            {{ submitError }}
+                        </div>
+
+                    </ng-container>
+                </ng-container>
+            </div>
+
+            <!-- Footer -->
+            <div *ngIf="!submitSuccess && !loadingEmployees" class="px-6 pb-6 flex gap-3">
+                <button (click)="closeNewRecordModal()"
+                    class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button (click)="submitNewRecord()" [disabled]="!isFormValid || submitting"
+                    class="flex-1 py-2.5 rounded-xl text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style="background-color:#2563EB;">
+                    <div *ngIf="submitting"
+                        class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span class="material-symbols-outlined" *ngIf="!submitting" style="font-size:18px;">add</span>
+                    {{ submitting ? 'Saving…' : 'Add Record' }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- Edit Modal -->
+    <div *ngIf="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        (click)="closeEditModal()">
+
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+            (click)="$event.stopPropagation()">
+
+            <!-- Accent bar -->
+            <div class="h-1 w-full" style="background:linear-gradient(90deg,#F59E0B,#FCD34D)"></div>
+
+            <!-- Header -->
+            <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="size-10 rounded-xl flex items-center justify-center text-white bg-amber-500">
+                        <span class="material-symbols-outlined" style="font-size:22px;">edit</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900">Edit Payroll Record</h2>
+                        <p class="text-xs text-slate-400">Update bonus for this record</p>
+                    </div>
+                </div>
+                <button (click)="closeEditModal()"
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
+                </button>
+            </div>
+
+            <!-- Body -->
+            <div class="px-6 py-5 space-y-4">
+
+                <!-- Success -->
+                <div *ngIf="editSuccess" class="flex flex-col items-center gap-3 py-6">
+                    <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-emerald-600"
+                            style="font-size:36px;">check_circle</span>
+                    </div>
+                    <p class="text-base font-bold text-slate-900">Record updated!</p>
+                    <p class="text-sm text-slate-500">Closing automatically…</p>
+                </div>
+
+                <ng-container *ngIf="!editSuccess">
+
+                    <!-- Payroll ID (readonly) -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Payroll ID</label>
+                        <input type="text" [value]="editForm.payrollId" readonly
+                            class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed" />
+                    </div>
+
+                    <!-- Bonus -->
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bonus Amount</label>
+                        <div class="relative">
+                            <span
+                                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">$</span>
+                            <input type="number" [(ngModel)]="editForm.bonus" min="0"
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-8 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-amber-400" />
+                        </div>
+                    </div>
+
+                    <!-- Error -->
+                    <div *ngIf="editError"
+                        class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                        <span class="material-symbols-outlined" style="font-size:18px;">error</span>
+                        {{ editError }}
+                    </div>
+
+                </ng-container>
+            </div>
+
+            <!-- Footer -->
+            <div *ngIf="!editSuccess" class="px-6 pb-6 flex gap-3">
+                <button (click)="closeEditModal()"
+                    class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                    Cancel
+                </button>
+                <button (click)="submitEditRecord()" [disabled]="editSubmitting"
+                    class="flex-1 py-2.5 rounded-xl text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-amber-500">
+                    <div *ngIf="editSubmitting"
+                        class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span class="material-symbols-outlined" *ngIf="!editSubmitting" style="font-size:18px;">save</span>
+                    {{ editSubmitting ? 'Saving…' : 'Save Changes' }}
+                </button>
+            </div>
+
+        </div>
+    </div>
 </div>

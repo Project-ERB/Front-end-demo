@@ -1,153 +1,185 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { Router, RouterLink } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
+import { Environment } from '../../../../../shared/UI/environment/env';
+import { forkJoin, map } from 'rxjs';
+import { ApplicationsService } from '../../../../../core/services/Applications/applications.service';
+import { CandidateService } from '../../../../../core/services/candidate/candidate.service';
+import { JopService } from '../../../../../core/services/jop/jop.service';
 
 export interface Application {
-  id: number;
-  initials: string;
-  avatarColor: string;
-  name: string;
-  email: string;
+  id: string;
+  candidateId: string;
+  recruitmentId: string;
+  currentStage: string; // ← string بدل number
+  appStatus: string;    // ← string بدل number
+  candidateName: string;
   jobTitle: string;
-  department: string;
-  startDate: string;
-  stage: 'Initial Screen' | 'Interview' | 'Offer' | 'Assessment';
-  stageColor: 'blue' | 'slate' | 'indigo' | 'violet';
-  status: 'Pending' | 'Accepted' | 'Rejected';
 }
 
 @Component({
   selector: 'app-application-management',
-  imports: [CommonModule],
+  imports: [CommonModule, HrSidebarComponent, RouterLink],
   templateUrl: './application-management.component.html',
   styleUrl: './application-management.component.scss',
 })
-export class ApplicationManagementComponent {
+export class ApplicationManagementComponent implements OnInit {
+  private readonly _http = inject(HttpClient);
+  private readonly _applicationsService = inject(ApplicationsService);
+  private readonly _candidateService = inject(CandidateService);
+  private readonly _jobService = inject(JopService);
 
   activeFilter = 'all';
+  applications: Application[] = [];
 
   filters = [
-    { key: 'all', label: 'All Apps', count: 124 },
-    { key: 'screening', label: 'Screening', count: 42 },
-    { key: 'interviews', label: 'Interviews', count: 18 },
-    { key: 'offers', label: 'Offers', count: 5 },
+    { key: 'all', label: 'All Apps', count: 0 },
+    { key: '0', label: 'Screening', count: 0 },
+    { key: '1', label: 'Interviews', count: 0 },
+    { key: '2', label: 'Offers', count: 0 },
   ];
 
-  applications: Application[] = [
-    {
-      id: 1,
-      initials: 'JD',
-      avatarColor: 'blue',
-      name: 'Johnathan Doe',
-      email: 'j.doe@example.com',
-      jobTitle: 'Senior Software Engineer',
-      department: 'Engineering Department',
-      startDate: 'Oct 12, 2023',
-      stage: 'Interview',
-      stageColor: 'blue',
-      status: 'Pending',
-    },
-    {
-      id: 2,
-      initials: 'AS',
-      avatarColor: 'purple',
-      name: 'Alice Smith',
-      email: 'alice.s@cloudnet.io',
-      jobTitle: 'Product Manager',
-      department: 'Product Team',
-      startDate: 'Oct 14, 2023',
-      stage: 'Initial Screen',
-      stageColor: 'slate',
-      status: 'Accepted',
-    },
-    {
-      id: 3,
-      initials: 'RB',
-      avatarColor: 'orange',
-      name: 'Robert Brown',
-      email: 'robert.b@design.com',
-      jobTitle: 'UX Designer',
-      department: 'Design Studio',
-      startDate: 'Sep 28, 2023',
-      stage: 'Offer',
-      stageColor: 'indigo',
-      status: 'Pending',
-    },
-    {
-      id: 4,
-      initials: 'MW',
-      avatarColor: 'rose',
-      name: 'Alice White',
-      email: 'awhite@analytics.net',
-      jobTitle: 'Data Analyst',
-      department: 'Business Intelligence',
-      startDate: 'Oct 05, 2023',
-      stage: 'Initial Screen',
-      stageColor: 'slate',
-      status: 'Rejected',
-    },
-  ];
+  stageLabels: Record<string, string> = {
+    'Applied': 'Applied',
+    'Screening': 'Screening',
+    'Interview': 'Interview',
+    'Offer': 'Offer',
+    'Hired': 'Hired',
+    'Rejected': 'Rejected',
+  };
+
+  stageColors: Record<string, string> = {
+    'Applied': 'slate',
+    'Screening': 'blue',
+    'Interview': 'indigo',
+    'Offer': 'violet',
+    'Hired': 'green',
+    'Rejected': 'rose',
+  };
+
+  statusLabels: Record<string, string> = {
+    'Pending': 'Pending',
+    'Active': 'Active',
+    'Rejected': 'Rejected',
+    'Hired': 'Hired',
+  };
+
+  ngOnInit(): void {
+    this.loadApplications();
+  }
+
+  loadApplications(): void {
+    const query = `
+      query {
+        applicationProccessQuery {
+          nodes {
+            id
+            candidateId
+            recruitmentId
+            currentStage
+            appStatus
+          }
+        }
+      }
+    `;
+
+    // ← forkJoin عشان نجيب الـ 3 في نفس الوقت
+    forkJoin({
+      apps: this._http
+        .post<any>(`${Environment.baseUrl}/graphql`, { query })
+        .pipe(map((res) => res.data.applicationProccessQuery.nodes)),
+      candidates: this._candidateService.getCandidates(),
+      jobs: this._jobService.getRecruitments(),
+    }).subscribe({
+      next: ({ apps, candidates, jobs }) => {
+        // ← Map الأسماء بسرعة
+        const candidateMap = new Map(candidates.map((c: any) => [c.id, c.fullName]));
+        const jobMap = new Map(jobs.map((j: any) => [j.id, j.title]));
+
+        this.applications = apps.map((app: any) => ({
+          ...app,
+          candidateName: candidateMap.get(app.candidateId) ?? app.candidateId.slice(0, 8) + '...',
+          jobTitle: jobMap.get(app.recruitmentId) ?? app.recruitmentId.slice(0, 8) + '...',
+        }));
+
+        this.updateFilterCounts();
+      },
+    });
+  }
+
+  updateFilterCounts(): void {
+    this.filters[0].count = this.applications.length;
+    this.filters[1].count = this.applications.filter(a => a.currentStage === 'Applied').length;
+    this.filters[2].count = this.applications.filter(a => a.currentStage === 'Interview').length;
+    this.filters[3].count = this.applications.filter(a => a.currentStage === 'Offer').length;
+  }
+
+
+  get filteredApplications(): Application[] {
+    if (this.activeFilter === 'all') return this.applications;
+    const stageMap: Record<string, string> = {
+      '0': 'Applied',
+      '1': 'Interview',
+      '2': 'Offer',
+    };
+    return this.applications.filter(a => a.currentStage === stageMap[this.activeFilter]);
+  }
+
+  getStageClasses(stage: string): string {
+    const map: Record<string, string> = {
+      slate: 'bg-slate-100 text-slate-700',
+      blue: 'bg-blue-50 text-blue-700',
+      indigo: 'bg-indigo-50 text-indigo-700',
+      violet: 'bg-violet-50 text-violet-700',
+      green: 'bg-green-50 text-green-700',
+      rose: 'bg-rose-50 text-rose-700',
+    };
+    return map[this.stageColors[stage]] ?? 'bg-slate-100 text-slate-700';
+  }
+
+  getStageDotClasses(stage: string): string {
+    const map: Record<string, string> = {
+      slate: 'bg-slate-400',
+      blue: 'bg-blue-500',
+      indigo: 'bg-indigo-500',
+      violet: 'bg-violet-500',
+      green: 'bg-green-500',
+      rose: 'bg-rose-500',
+    };
+    return map[this.stageColors[stage]] ?? 'bg-slate-400';
+  }
+
+  getStatusClasses(status: string): string {
+    const map: Record<string, string> = {
+      'Pending': 'bg-amber-50 text-amber-700',
+      'Active': 'bg-emerald-50 text-emerald-700',
+      'Rejected': 'bg-rose-50 text-rose-700',
+      'Hired': 'bg-blue-50 text-blue-700',
+    };
+    return map[status] ?? 'bg-slate-100 text-slate-700';
+  }
+
+  onDelete(app: Application): void {
+    if (!confirm('Are you sure you want to delete this application?')) return;
+
+    this._applicationsService.deleteInterviewProcess(app.id).subscribe({
+      next: () => {
+        this.applications = this.applications.filter(a => a.id !== app.id);
+        this.updateFilterCounts();
+      },
+      error: (err) => console.error('Delete failed:', err),
+    });
+  }
 
   setFilter(key: string): void {
     this.activeFilter = key;
   }
 
-  getFilterLabel(key: string): string {
-    return this.filters.find(f => f.key === key)?.label ?? '';
-  }
-
-  getFilterCount(key: string): number {
-    return this.filters.find(f => f.key === key)?.count ?? 0;
-  }
-
-  getAvatarClasses(color: string): string {
-    const map: Record<string, string> = {
-      blue: 'bg-blue-100 text-blue-700',
-      purple: 'bg-purple-100 text-purple-700',
-      orange: 'bg-orange-100 text-orange-700',
-      rose: 'bg-rose-100 text-rose-700',
-    };
-    return map[color] ?? 'bg-slate-100 text-slate-700';
-  }
-
-  getStageClasses(color: string): string {
-    const map: Record<string, string> = {
-      blue: 'bg-blue-50 text-blue-700',
-      slate: 'bg-slate-100 text-slate-700',
-      indigo: 'bg-indigo-50 text-indigo-700',
-      violet: 'bg-violet-50 text-violet-700',
-    };
-    return map[color] ?? 'bg-slate-100 text-slate-700';
-  }
-
-  getStageDotClasses(color: string): string {
-    const map: Record<string, string> = {
-      blue: 'bg-blue-500',
-      slate: 'bg-slate-400',
-      indigo: 'bg-indigo-500',
-      violet: 'bg-violet-500',
-    };
-    return map[color] ?? 'bg-slate-400';
-  }
-
-  getStatusClasses(status: string): string {
-    const map: Record<string, string> = {
-      Pending: 'bg-amber-50 text-amber-700',
-      Accepted: 'bg-emerald-50 text-emerald-700',
-      Rejected: 'bg-rose-50 text-rose-700',
-    };
-    return map[status] ?? 'bg-slate-100 text-slate-700';
-  }
+  private readonly _Router = inject(Router);
 
   onView(app: Application): void {
-    console.log('Viewing application:', app.name);
+    this._Router.navigate(['/application-details', app.id]);
   }
-
-  onAccept(app: Application): void {
-    console.log('Accepting application:', app.name);
-  }
-
-  onReject(app: Application): void {
-    console.log('Rejecting application:', app.name);
-  }
-
 }

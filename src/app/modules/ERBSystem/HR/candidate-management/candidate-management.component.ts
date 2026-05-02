@@ -1,11 +1,16 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { HRComponent } from "../../../../core/layout/hr/hr.component";
+import { HrSidebarComponent } from "../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { CandidateService } from '../../../../core/services/candidate/candidate.service';
+import { ToastrService } from 'ngx-toastr';
 
 export type CandidateStatus = 'Hired' | 'Interviewing' | 'New' | 'Rejected';
 
 export interface Candidate {
-  id: number;
+  id: string; // ← string بدل number
   initials: string;
   initialsColor: string;
   name: string;
@@ -19,11 +24,15 @@ export type TabFilter = 'All Candidates' | 'New Application' | 'Interviewing' | 
 
 @Component({
   selector: 'app-candidate-management',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HRComponent, HrSidebarComponent],
   templateUrl: './candidate-management.component.html',
   styleUrl: './candidate-management.component.scss',
 })
 export class CandidateManagementComponent {
+
+  private readonly _Router = inject(Router);
+  private readonly _CandidateService = inject(CandidateService);
+  private readonly _ToastrService = inject(ToastrService)
 
   // ── State ──────────────────────────────────────────────────────────────────
   activeTab = signal<TabFilter>('All Candidates');
@@ -41,20 +50,7 @@ export class CandidateManagementComponent {
   ];
 
   // ── Data ───────────────────────────────────────────────────────────────────
-  allCandidates: Candidate[] = [
-    { id: 1, initials: 'JD', initialsColor: 'bg-blue-100 text-blue-600', name: 'John Doe', jobTitle: 'Senior Software Engineer', expYears: 8, email: 'john.doe@example.com', status: 'Hired' },
-    { id: 2, initials: 'JS', initialsColor: 'bg-orange-100 text-orange-600', name: 'Jane Smith', jobTitle: 'Product Designer', expYears: 4, email: 'jane.smith@design.co', status: 'Interviewing' },
-    { id: 3, initials: 'RB', initialsColor: 'bg-slate-100 text-slate-600', name: 'Robert Brown', jobTitle: 'QA Engineer', expYears: 2, email: 'robert.b@testit.io', status: 'New' },
-    { id: 4, initials: 'ED', initialsColor: 'bg-red-100 text-red-600', name: 'Emily Davis', jobTitle: 'Marketing Manager', expYears: 6, email: 'emily.d@brand.com', status: 'Rejected' },
-    { id: 5, initials: 'MW', initialsColor: 'bg-purple-100 text-purple-600', name: 'Michael Wilson', jobTitle: 'Data Analyst', expYears: 3, email: 'm.wilson@data.net', status: 'New' },
-    { id: 6, initials: 'AL', initialsColor: 'bg-teal-100 text-teal-600', name: 'Alice Lee', jobTitle: 'DevOps Engineer', expYears: 5, email: 'alice.lee@infra.io', status: 'Interviewing' },
-    { id: 7, initials: 'TK', initialsColor: 'bg-green-100 text-green-600', name: 'Tom King', jobTitle: 'Backend Developer', expYears: 7, email: 'tom.k@server.dev', status: 'New' },
-    { id: 8, initials: 'SP', initialsColor: 'bg-pink-100 text-pink-600', name: 'Sara Park', jobTitle: 'UX Researcher', expYears: 3, email: 'sara.p@ux.co', status: 'Hired' },
-    { id: 9, initials: 'CN', initialsColor: 'bg-yellow-100 text-yellow-600', name: 'Carlos Nava', jobTitle: 'Mobile Developer', expYears: 4, email: 'c.nava@mobile.io', status: 'New' },
-    { id: 10, initials: 'LW', initialsColor: 'bg-indigo-100 text-indigo-600', name: 'Laura White', jobTitle: 'Scrum Master', expYears: 6, email: 'l.white@agile.com', status: 'Interviewing' },
-    { id: 11, initials: 'BJ', initialsColor: 'bg-rose-100 text-rose-600', name: 'Ben Johnson', jobTitle: 'Security Analyst', expYears: 9, email: 'b.johnson@sec.io', status: 'New' },
-    { id: 12, initials: 'NA', initialsColor: 'bg-cyan-100 text-cyan-600', name: 'Nina Adams', jobTitle: 'Cloud Architect', expYears: 11, email: 'n.adams@cloud.net', status: 'Hired' },
-  ];
+  allCandidates = signal<Candidate[]>([]);
 
   // ── Derived ────────────────────────────────────────────────────────────────
   filteredCandidates = computed(() => {
@@ -62,8 +58,8 @@ export class CandidateManagementComponent {
     const text = this.filterText().toLowerCase();
 
     const tabFiltered = tab === 'All Candidates'
-      ? this.allCandidates
-      : this.allCandidates.filter(c => {
+      ? this.allCandidates()
+      : this.allCandidates().filter(c => {
         if (tab === 'New Application') return c.status === 'New';
         if (tab === 'Interviewing') return c.status === 'Interviewing';
         if (tab === 'Hired') return c.status === 'Hired';
@@ -117,4 +113,48 @@ export class CandidateManagementComponent {
     return map[status];
   }
 
+  GoToAddCandidate(): void {
+    this._Router.navigate(['/add-candidate']);
+  }
+
+  // ── Delete ─────────────────────────────────────────────────────────────────
+  deleteCandidate(id: string): void {
+    if (!confirm('Are you sure you want to delete this candidate?')) return;
+
+    this._CandidateService.deleteCandidate(id).subscribe({
+      next: () => {
+        this._ToastrService.success('Candidate Delete successfully', 'Success !')
+        this.allCandidates.update(list => list.filter(c => c.id !== id));
+      },
+      error: (err) => {
+        this._ToastrService.error('Candidate Delete Failed', 'Failed !')
+      },
+    });
+  }
+
+  constructor() {
+    this.loadCandidates();
+  }
+
+  loadCandidates(): void {
+    this._CandidateService.getCandidates().subscribe({
+      next: (nodes) => {
+        this.allCandidates.set(nodes.map((c) => ({
+          id: c.id,
+          name: c.fullName,
+          email: c.email,
+          jobTitle: c.jobTitle,
+          expYears: c.experienceInYears,
+          status: 'New' as CandidateStatus,
+          initials: c.fullName.split(' ').map((n: string) => n[0]).join('').toUpperCase(),
+          initialsColor: 'bg-blue-100 text-blue-600',
+        })));
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  viewCandidate(id: string): void {
+    this._Router.navigate(['/candidate-details', id]);
+  }
 }

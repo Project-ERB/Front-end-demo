@@ -1,15 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { JopService } from '../../../../../core/services/Auth/jop/jop.service';
-import { Toast, ToastrService } from 'ngx-toastr';
+import { JopService } from '../../../../../core/services/jop/jop.service';
+import { ToastrService } from 'ngx-toastr';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
-export interface NavItem {
-  icon: string;
-  label: string;
-  active: boolean;
-}
+const HIRING_MANAGER_ID = '6730cfb3-8a7f-4b5e-9b8f-884dddfa01e0';
 
 export interface SelectOption {
   value: string;
@@ -22,33 +18,19 @@ export interface SelectOption {
   templateUrl: './add-jop.component.html',
   styleUrl: './add-jop.component.scss',
 })
-export class AddJopComponent {
+export class AddJopComponent implements OnInit {
   readonly _JopService = inject(JopService);
   private readonly _ToastrService = inject(ToastrService);
   form: FormGroup;
   isSaving = signal(false);
 
-  readonly navItems: NavItem[] = [
-    { icon: 'dashboard', label: 'Dashboard', active: false },
-    { icon: 'work', label: 'Jobs', active: false },
-    { icon: 'group', label: 'Candidates', active: false },
-    { icon: 'description', label: 'Requirements', active: true },
-    { icon: 'settings', label: 'Settings', active: false },
-  ];
-
-  readonly departments: SelectOption[] = [
-    { value: '', label: 'Select Department' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'product', label: 'Product Management' },
-    { value: 'design', label: 'Design' },
-    { value: 'marketing', label: 'Marketing' },
-    { value: 'sales', label: 'Sales' },
-  ];
+  // Loaded dynamically from GraphQL
+  departments: SelectOption[] = [{ value: '', label: 'Select Department' }];
 
   readonly currencies: SelectOption[] = [
     { value: 'USD', label: 'USD ($)' },
     { value: 'EUR', label: 'EUR (€)' },
-    { value: 'GBP', label: 'GBP (£)' },
+    { value: 'EGP', label: 'EGP (LE)' },
     { value: 'JPY', label: 'JPY (¥)' },
   ];
 
@@ -64,11 +46,25 @@ export class AddJopComponent {
       jobTitle: ['', [Validators.required, Validators.minLength(3)]],
       jobDescription: ['', [Validators.required, Validators.minLength(20)]],
       department: ['', Validators.required],
-      hiringManager: [''],
       currency: ['USD'],
       minSalary: [null, [Validators.min(0)]],
       maxSalary: [null, [Validators.min(0)]],
       experienceLevel: ['junior'],
+    });
+  }
+
+  ngOnInit(): void {
+    this._JopService.getDepartments().subscribe({
+      next: (data) => {
+        this.departments = [
+          { value: '', label: 'Select Department' },
+          ...data.map((d) => ({ value: d.id, label: d.name })),
+        ];
+      },
+      error: (err) => {
+        console.error('Failed to load departments:', err);
+        this._ToastrService.error('Failed to load departments.', 'Error');
+      },
     });
   }
 
@@ -90,27 +86,25 @@ export class AddJopComponent {
       maxSalaryAmount: this.form.value.maxSalary ?? 0,
       salaryCurrency: this.form.value.currency,
       experienceLevel: this.form.value.experienceLevel,
-      departmentsId: this.form.value.department,
-      hiringManagerId: this.form.value.hiringManager ?? null,
+      departmentsId: this.form.value.department,   // ← the selected department ID (UUID)
+      hiringManagerId: HIRING_MANAGER_ID,           // ← fixed manager ID
     };
 
     this._JopService.addrequirements(payload).subscribe({
       next: (res) => {
-        console.log('Saved successfully:', res);
         this._ToastrService.success('Job requirements added successfully!', 'Success');
+        this.form.reset({ currency: 'USD', experienceLevel: 'junior' });
         this.isSaving.set(false);
       },
       error: (err) => {
         console.error('Error saving:', err);
         this._ToastrService.error('Failed to add job requirements. Please try again.', 'Error');
         this.isSaving.set(false);
-      }
+      },
     });
   }
 
-  onCancel(): void {
-    console.log('Cancelled');
-  }
+  onCancel(): void { }
 
   onDiscard(): void {
     this.form.reset({ currency: 'USD', experienceLevel: 'junior' });
@@ -119,5 +113,4 @@ export class AddJopComponent {
   onSubmit(): void {
     this.onSave();
   }
-
 }

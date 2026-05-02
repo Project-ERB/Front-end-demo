@@ -9,7 +9,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { forkJoin } from 'rxjs';
-import { EmployeeService } from '../../../../../core/services/Auth/employee/employee.service';
+import { EmployeeService } from '../../../../../core/services/employee/employee.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";

@@ -1,4 +1,4 @@
-import { DepartmentService } from './../../../../../core/services/Auth/department/department.service';
+import { DepartmentService } from '../../../../../core/services/department/department.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {

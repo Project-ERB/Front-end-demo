@@ -1,66 +1,7 @@
 <div class="flex h-screen overflow-hidden bg-[#f8f6f6]">
 
     <!-- Sidebar Navigation -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
-        <!-- Logo -->
-        <div class="p-6 flex items-center gap-3">
-            <div class="bg-blue-600 rounded-lg p-1.5 flex items-center justify-center">
-                <span class="material-symbols-outlined text-white text-2xl">corporate_fare</span>
-            </div>
-            <div>
-                <h1 class="text-slate-900 text-lg font-bold leading-tight">HR Cloud</h1>
-                <p class="text-slate-500 text-xs font-medium">ERP Administration</p>
-            </div>
-        </div>
-
-        <!-- Nav Links -->
-        <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[22px]">dashboard</span>
-                <span class="text-sm font-medium">Dashboard</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 bg-blue-600/10 text-blue-600 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[22px]">description</span>
-                <span class="text-sm font-semibold">Applications</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[22px]">work</span>
-                <span class="text-sm font-medium">Requirements</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[22px]">group</span>
-                <span class="text-sm font-medium">Candidates</span>
-            </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[22px]">event</span>
-                <span class="text-sm font-medium">Schedule</span>
-            </a>
-        </nav>
-
-        <!-- Sidebar Footer -->
-        <div class="p-4 border-t border-slate-200">
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
-                <span class="material-symbols-outlined text-[22px]">settings</span>
-                <span class="text-sm font-medium">Settings</span>
-            </a>
-            <div class="mt-4 flex items-center gap-3 px-3 py-2">
-                <div class="size-8 rounded-full bg-slate-200 overflow-hidden shrink-0">
-                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjjIKDXhmvdSlTtiCC5cAcVbWCD7g0C_qtRg8_X8Tyi0Sz3jMBJgKV-NpFok-WzNG4hjRRq1RnWdjcyXVYG27b7IftcwO3zTvECYPTa7N6iCwBaur7m50oLFAQ5sn-pzlNmFuQzNAL-MHz_VzQi5t_7Ddse5qhRfe1Wr0tL2qOYE-KAe_pqnGvJPWPuaX91DDZJsnQkWC3LhdOGy1a1ccILw1NLS0l7dw3a5kPbOPZk15PJNTzXLVBZqcw8_RElAXmtdVg_f4HiUbH"
-                        alt="HR manager avatar" class="w-full h-full object-cover" />
-                </div>
-                <div class="min-w-0">
-                    <p class="text-sm font-semibold truncate">Marcus Chen</p>
-                    <p class="text-xs text-slate-500 truncate">HR Director</p>
-                </div>
-            </div>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#f8f6f6]">
@@ -84,8 +25,8 @@
                     <span class="material-symbols-outlined">help</span>
                 </button>
                 <div class="h-6 w-px bg-slate-200 mx-2"></div>
-                <button
-                    class="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+                <button routerLink="/add-application"
+                    class="flex items-center gap-2 cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
                     <span class="material-symbols-outlined text-sm">add</span>
                     New Application
                 </button>
@@ -136,8 +77,8 @@
                                 Name</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Job Title
                             </th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Start Date
-                            </th>
+                            <!-- <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Start Date
+                            </th> -->
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
                                 Current Stage</th>
                             <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
@@ -147,45 +88,36 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        <tr *ngFor="let app of applications" class="hover:bg-slate-50/50 transition-colors">
-                            <!-- Candidate -->
+                        <tr *ngFor="let app of filteredApplications" class="hover:bg-slate-50/50 transition-colors">
+
+                            <!-- Candidate ID -->
                             <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="size-9 rounded-full flex items-center justify-center font-bold text-xs"
-                                        [ngClass]="getAvatarClasses(app.avatarColor)">
-                                        {{ app.initials }}
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-semibold text-slate-900">{{ app.name }}</p>
-                                        <p class="text-xs text-slate-500">{{ app.email }}</p>
-                                    </div>
-                                </div>
+                                <p class="text-sm font-semibold text-slate-900">{{ app.candidateName }}</p>
+                                <!-- <p class="text-xs text-slate-400 font-mono">{{ app.id | slice:0:8 }}...</p> -->
                             </td>
 
-                            <!-- Job Title -->
                             <td class="px-6 py-4">
-                                <p class="text-sm text-slate-700 font-medium">{{ app.jobTitle }}</p>
-                                <p class="text-xs text-slate-500">{{ app.department }}</p>
+                                <p class="text-sm text-slate-700">{{ app.jobTitle }}</p>
                             </td>
 
-                            <!-- Start Date -->
-                            <td class="px-6 py-4 text-sm text-slate-600">{{ app.startDate }}</td>
+                            <!-- Start Date — مش في الـ query، شيلها أو خليها فاضية -->
+                            <!-- <td class="px-6 py-4 text-sm text-slate-600">—</td> -->
 
-                            <!-- Stage -->
+                            <!-- Current Stage -->
                             <td class="px-6 py-4 text-center">
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-                                    [ngClass]="getStageClasses(app.stageColor)">
+                                    [ngClass]="getStageClasses(app.currentStage)">
                                     <span class="size-1.5 rounded-full mr-2"
-                                        [ngClass]="getStageDotClasses(app.stageColor)"></span>
-                                    {{ app.stage }}
+                                        [ngClass]="getStageDotClasses(app.currentStage)"></span>
+                                    {{ stageLabels[app.currentStage] ?? 'Unknown' }}
                                 </span>
                             </td>
 
                             <!-- Status -->
                             <td class="px-6 py-4 text-center">
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-                                    [ngClass]="getStatusClasses(app.status)">
-                                    {{ app.status }}
+                                    [ngClass]="getStatusClasses(app.appStatus)">
+                                    {{ statusLabels[app.appStatus] ?? 'Unknown' }}
                                 </span>
                             </td>
 
@@ -196,16 +128,13 @@
                                         class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-600/10 rounded-lg transition-colors">
                                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                                     </button>
-                                    <button (click)="onAccept(app)" title="Accept for Next Step"
-                                        class="p-1.5 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                                    </button>
-                                    <button (click)="onReject(app)" title="Reject"
+                                    <button (click)="onDelete(app)" title="Delete"
                                         class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">cancel</span>
+                                        <span class="material-symbols-outlined text-[20px]">delete</span>
                                     </button>
                                 </div>
                             </td>
+
                         </tr>
                     </tbody>
                 </table>

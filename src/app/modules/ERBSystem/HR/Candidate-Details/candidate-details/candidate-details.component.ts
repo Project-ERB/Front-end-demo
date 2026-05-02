@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CandidateService } from '../../../../../core/services/candidate/candidate.service';
+
 
 export interface InfoField {
   icon: string;
@@ -27,11 +30,16 @@ export interface Candidate {
 
 @Component({
   selector: 'app-candidate-details',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './candidate-details.component.html',
   styleUrl: './candidate-details.component.scss',
 })
-export class CandidateDetailsComponent {
+export class CandidateDetailsComponent implements OnInit {
+
+  private readonly _Route = inject(ActivatedRoute);
+  private readonly _CandidateService = inject(CandidateService);
+
+  isLoading = signal(true);
 
   navLinks = [
     { label: 'Candidates', active: false },
@@ -41,27 +49,21 @@ export class CandidateDetailsComponent {
   ];
 
   breadcrumbs = [
-    { label: 'Recruitment', link: '#' },
-    { label: 'Candidates', link: '#' },
+    { label: 'Recruitment', link: '/requierments-management' },
+    { label: 'Candidates', link: '/Candidate-Management' },
     { label: 'Candidate Profile', link: null },
   ];
 
   candidate: Candidate = {
-    name: 'Alexander Thompson',
-    jobTitle: 'Senior UX Designer',
-    experience: '8.5 Years',
-    appliedAgo: '2 Days Ago',
-    isOnline: true,
-    resumeFileName: 'Resume_Alexander_T.pdf',
-    infoFields: [
-      { icon: 'mail', label: 'Email Address', value: 'a.thompson.designer@gmail.com' },
-      { icon: 'call', label: 'Phone Number', value: '+1 (555) 012-3456' },
-      { icon: 'work', label: 'Job Title', value: 'Senior UX/UI Designer' },
-      { icon: 'history_edu', label: 'Total Experience', value: '8 Years, 6 Months' },
-      { icon: 'location_on', label: 'Current Address', value: '742 Evergreen Terrace, Suite 10, Los Angeles, CA 90210, USA', spanFull: true },
-    ],
-    currency: 'USD ($)',
-    salary: '$125,000',
+    name: '',
+    jobTitle: '',
+    experience: '',
+    appliedAgo: '—',
+    isOnline: false,
+    resumeFileName: '',
+    infoFields: [],
+    currency: '',
+    salary: '',
   };
 
   quickActions: QuickAction[] = [
@@ -70,10 +72,37 @@ export class CandidateDetailsComponent {
     { icon: 'calendar_month', label: 'Schedule' },
   ];
 
-  headerActions = [
-    { icon: 'edit', label: 'Edit', primary: false },
-    { icon: 'chat', label: 'Contact', primary: false },
-    { icon: 'delete', label: 'Delete', primary: true },
-  ];
 
+
+  ngOnInit(): void {
+    const id = this._Route.snapshot.paramMap.get('id');
+    if (!id) return;
+
+    this._CandidateService.getCandidateById(id).subscribe({
+      next: (c) => {
+        this.candidate = {
+          name: c.fullName,
+          jobTitle: c.jobTitle,
+          experience: `${c.experienceInYears} Years`,
+          appliedAgo: '—',
+          isOnline: false,
+          resumeFileName: c.resumeUrl ? c.resumeUrl.split('/').pop() ?? 'Resume.pdf' : 'No Resume',
+          infoFields: [
+            { icon: 'mail', label: 'Email Address', value: c.email },
+            { icon: 'call', label: 'Phone Number', value: c.phone },
+            { icon: 'work', label: 'Job Title', value: c.jobTitle },
+            { icon: 'history_edu', label: 'Total Experience', value: `${c.experienceInYears} Years` },
+            { icon: 'location_on', label: 'Current Address', value: `${c.city}, ${c.country}`, spanFull: true },
+          ],
+          currency: c.expectedSalaryCurrency,
+          salary: `${c.expectedSalaryAmount.toLocaleString()} ${c.expectedSalaryCurrency}`,
+        };
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading.set(false);
+      },
+    });
+  }
 }

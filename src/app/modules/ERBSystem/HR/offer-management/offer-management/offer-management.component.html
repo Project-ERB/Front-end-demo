@@ -1,63 +1,7 @@
 <div class="flex h-screen overflow-hidden bg-[#f8fafd] font-sans text-slate-900">
 
     <!-- Sidebar -->
-    <aside class="w-64 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col">
-
-        <!-- Logo -->
-        <div class="p-6 flex items-center gap-3">
-            <div class="size-8 bg-[#2563EB] rounded-lg flex items-center justify-center text-white">
-                <span class="material-symbols-outlined text-lg">corporate_fare</span>
-            </div>
-            <div>
-                <h1 class="text-sm font-bold tracking-tight text-slate-900 uppercase">Enterprise HR</h1>
-                <p class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider leading-none">Admin Portal
-                </p>
-            </div>
-        </div>
-
-        <!-- Nav -->
-        <nav class="flex-1 px-4 space-y-1 overflow-y-auto">
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-                <span class="material-symbols-outlined text-xl">dashboard</span>
-                <span class="text-sm font-medium">Dashboard</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-                <span class="material-symbols-outlined text-xl">group</span>
-                <span class="text-sm font-medium">Candidates</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-                <span class="material-symbols-outlined text-xl">work</span>
-                <span class="text-sm font-medium">Job Openings</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 bg-blue-50 text-[#2563EB] rounded-lg">
-                <span class="material-symbols-outlined text-xl">contract</span>
-                <span class="text-sm font-semibold">Offers</span>
-            </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-                <span class="material-symbols-outlined text-xl">badge</span>
-                <span class="text-sm font-medium">Employees</span>
-            </a>
-            <div class="pt-4 pb-2 px-3 text-[10px] font-bold text-slate-400 uppercase tracking-widest">System</div>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-                <span class="material-symbols-outlined text-xl">settings</span>
-                <span class="text-sm font-medium">Settings</span>
-            </a>
-        </nav>
-
-        <!-- Upgrade box -->
-        <div class="p-4 border-t border-slate-200">
-            <div class="bg-blue-50 rounded-xl p-4">
-                <p class="text-xs font-semibold text-slate-600 mb-2">Enterprise Plan</p>
-                <div class="w-full bg-slate-200 h-1.5 rounded-full mb-3">
-                    <div class="bg-[#2563EB] h-1.5 rounded-full w-[75%]"></div>
-                </div>
-                <button
-                    class="w-full py-2 bg-[#2563EB] text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition-colors">
-                    Upgrade Storage
-                </button>
-            </div>
-        </div>
-    </aside>
+    <app-hr-sidebar></app-hr-sidebar>
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -101,13 +45,13 @@
                     <p class="text-slate-500 text-sm mt-1">Review, manage and track employee offer lifecycles.</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button (click)="exportCSV()"
+                    <!-- <button (click)="exportCSV()"
                         class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
                         <span class="material-symbols-outlined text-lg">download</span>
                         Export CSV
-                    </button>
-                    <button
-                        class="flex items-center gap-2 px-5 py-2.5 bg-[#2563EB] text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:scale-[1.02] transition-transform">
+                    </button> -->
+                    <button routerLink="/add-offer"
+                        class="cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-[#2563EB] text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-200 hover:scale-[1.02] transition-transform">
                         <span class="material-symbols-outlined text-lg">add_circle</span>
                         Create New Offer
                     </button>
@@ -139,10 +83,10 @@
                 <!-- Table Controls -->
                 <div class="p-5 border-b border-slate-100 flex flex-wrap gap-4 items-center justify-between">
                     <div class="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0">
-                        <button *ngFor="let f of statusFilters" (click)="setFilter(f)" [class]="activeFilter === f
-                ? 'px-4 py-1.5 bg-slate-100 text-slate-900 text-xs font-bold rounded-full'
-                : 'px-4 py-1.5 text-slate-500 hover:bg-slate-50 text-xs font-semibold rounded-full'">
-                            {{ f }}
+                        <button *ngFor="let f of statusFilters" (click)="setFilter(f.value)" [class]="activeFilter === f.value
+    ? 'px-4 py-1.5 bg-slate-100 text-slate-900 text-xs font-bold rounded-full'
+    : 'px-4 py-1.5 text-slate-500 hover:bg-slate-50 text-xs font-semibold rounded-full'">
+                            {{ f.label }}
                         </button>
                     </div>
                     <div class="flex items-center gap-3">
@@ -166,11 +110,9 @@
                         <thead>
                             <tr class="bg-slate-50">
                                 <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Candidate Name</th>
-                                <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Job
-                                    Title</th>
+                                    Salary</th>
                                 <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                                    Salary (Annual)</th>
+                                    Currency</th>
                                 <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                     Expiration</th>
                                 <th class="px-6 py-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -181,68 +123,69 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100">
-                            <tr *ngFor="let offer of filteredOffers" class="hover:bg-slate-50 transition-colors">
-                                <!-- Candidate -->
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            [class]="'size-8 rounded-full flex items-center justify-center font-bold text-xs ' + getInitialsClasses(offer.initials)">
-                                            {{ offer.initials }}
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-bold text-slate-900">{{ offer.candidateName }}</p>
-                                            <p class="text-[10px] text-slate-500 font-medium">Interviewed on {{
-                                                offer.interviewDate }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-
-                                <!-- Job -->
-                                <td class="px-6 py-4">
-                                    <p class="text-sm text-slate-700 font-medium">{{ offer.jobTitle }}</p>
-                                    <p class="text-[10px] text-slate-500">{{ offer.workType }} • {{ offer.location }}
-                                    </p>
-                                </td>
+                            <tr *ngFor="let offer of filteredOffers">
 
                                 <!-- Salary -->
                                 <td class="px-6 py-4">
-                                    <p class="text-sm font-bold text-slate-900">{{ offer.salary }}</p>
-                                    <p class="text-[10px] text-slate-500 uppercase">{{ offer.currency }}</p>
+                                    <p class="text-sm font-bold text-slate-900">{{ offer.salaryAmount | number }}</p>
+                                </td>
+
+                                <!-- Currency -->
+                                <td class="px-6 py-4">
+                                    <p class="text-sm text-slate-600 uppercase font-semibold">{{ offer.currencyCode }}
+                                    </p>
                                 </td>
 
                                 <!-- Expiration -->
-                                <td class="px-6 py-4 text-sm text-slate-600">{{ offer.expiration }}</td>
+                                <td class="px-6 py-4 text-sm text-slate-600">
+                                    {{ offer.expireDate | date:'mediumDate' }}
+                                </td>
 
                                 <!-- Status -->
                                 <td class="px-6 py-4">
                                     <span
-                                        [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ' + getStatusClasses(offer.status)">
-                                        {{ offer.status }}
+                                        [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ' + getStatusClasses(offer.offerStatus)">
+                                        {{ getStatusLabel(offer.offerStatus) }}
                                     </span>
                                 </td>
 
-                                <!-- Toggle -->
+                                <!-- Is Active -->
                                 <td class="px-6 py-4">
                                     <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" class="sr-only peer" [checked]="offer.isActive"
+                                        <input type="checkbox" class="sr-only peer" [checked]="offer.isAvailable"
                                             (change)="toggleActive(offer)" />
-                                        <div
-                                            class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#2563EB]">
+                                        <div class="w-9 h-5 bg-slate-200 rounded-full peer peer-checked:after:translate-x-full
+          peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px]
+          after:left-[2px] after:bg-white after:border after:rounded-full after:h-4
+          after:w-4 after:transition-all peer-checked:bg-[#2563EB]">
                                         </div>
                                     </label>
                                 </td>
 
                                 <!-- Actions -->
                                 <td class="px-6 py-4 text-right">
-                                    <button class="p-1 text-slate-400 hover:text-slate-600">
-                                        <span class="material-symbols-outlined">more_vert</span>
-                                    </button>
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button [routerLink]="['/offer-details', offer.id]" title="View"
+                                            class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                            <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                        </button>
+                                        <button (click)="acceptOffer(offer)"
+                                            [disabled]="offer.offerStatus === 2 || offer.offerStatus === 3"
+                                            class="p-1.5 rounded-lg transition-colors text-emerald-500 hover:bg-emerald-50 disabled:opacity-30 disabled:cursor-not-allowed">
+                                            <span class="material-symbols-outlined text-lg">check_circle</span>
+                                        </button>
+                                        <button (click)="rejectOffer(offer)"
+                                            [disabled]="offer.offerStatus === 2 || offer.offerStatus === 3"
+                                            class="p-1.5 rounded-lg transition-colors text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:cursor-not-allowed">
+                                            <span class="material-symbols-outlined text-lg">cancel</span>
+                                        </button>
+                                    </div>
                                 </td>
+
                             </tr>
 
-                            <!-- Empty state -->
                             <tr *ngIf="filteredOffers.length === 0">
-                                <td colspan="7" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
                                     No offers match the current filter.
                                 </td>
                             </tr>

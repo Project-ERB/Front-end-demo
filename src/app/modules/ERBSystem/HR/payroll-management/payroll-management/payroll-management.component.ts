@@ -1,9 +1,14 @@
-import { Component, computed, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { AddPayrollRequest, PayrollService } from '../../../../../core/services/payroll/payroll.service';
+import { EmployeeService } from '../../../../../core/services/employee/employee.service';
+import { EmployeeNode } from '../../employee-management/employee-management/employee-management.component';
 
 export interface PayrollRecord {
-  id: number;
+  id: string;
   initials: string;
   highlightInitials: boolean;
   name: string;
@@ -13,6 +18,7 @@ export interface PayrollRecord {
   periodEnd: string;
   basicSalary: number;
   bonus: number;
+  netSalary?: number;
 }
 
 export interface SummaryCard {
@@ -26,17 +32,86 @@ export interface SummaryCard {
 
 @Component({
   selector: 'app-payroll-management',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HrSidebarComponent],
   templateUrl: './payroll-management.component.html',
   styleUrl: './payroll-management.component.scss',
 })
 export class PayrollManagementComponent {
+
+  private readonly _payrollService = inject(PayrollService);
+  private readonly _employeeService = inject(EmployeeService);
 
   searchQuery = signal('');
 
   currentPage = signal(1);
   readonly pageSize = 5;
   readonly totalRecords = 42;
+
+  showNewRecordModal = false;
+  modalEmployees: EmployeeNode[] = [];
+  loadingEmployees = false;
+
+  form = {
+    employeeId: '',
+    periodStart: '',
+    periodEnd: '',
+    bonusAmount: 0,
+  };
+
+  submitting = false;
+  submitSuccess = false;
+  submitError = '';
+
+  get isFormValid(): boolean {
+    return !!this.form.employeeId
+      && !!this.form.periodStart
+      && !!this.form.periodEnd
+      && new Date(this.form.periodEnd) >= new Date(this.form.periodStart);
+  }
+
+  openNewRecordModal(): void {
+    this.showNewRecordModal = true;
+    this.submitSuccess = false;
+    this.submitError = '';
+    this.form = { employeeId: '', periodStart: '', periodEnd: '', bonusAmount: 0 };
+    this.loadingEmployees = true;
+
+    this._employeeService.getEmployees().subscribe({
+      next: (data) => { this.modalEmployees = data; this.loadingEmployees = false; },
+      error: () => { this.loadingEmployees = false; },
+    });
+  }
+
+  closeNewRecordModal(): void {
+    if (this.submitting) return;
+    this.showNewRecordModal = false;
+  }
+
+  submitNewRecord(): void {
+    if (!this.isFormValid || this.submitting) return;
+
+    const payload: AddPayrollRequest = {
+      employeeId: this.form.employeeId,
+      periodStart: new Date(this.form.periodStart).toISOString(),
+      periodEnd: new Date(this.form.periodEnd).toISOString(),
+      bonusAmount: this.form.bonusAmount ?? 0,
+    };
+
+    this.submitting = true;
+    this.submitError = '';
+
+    this._payrollService.addPayroll(payload).subscribe({
+      next: () => {
+        this.submitting = false;
+        this.submitSuccess = true;
+        setTimeout(() => this.closeNewRecordModal(), 1800);
+      },
+      error: (err) => {
+        this.submitting = false;
+        this.submitError = err?.error?.message ?? 'Failed to add payroll record.';
+      },
+    });
+  }
 
   readonly navItems = [
     { icon: 'dashboard', label: 'Dashboard', active: false },
@@ -47,13 +122,6 @@ export class PayrollManagementComponent {
     { icon: 'settings', label: 'Settings', active: false },
   ];
 
-  readonly allRecords: PayrollRecord[] = [
-    { id: 1, initials: 'JS', highlightInitials: true, name: 'Jordan Smith', department: 'Engineering', paymentDate: 'Oct 28, 2023', periodStart: 'Oct 01, 2023', periodEnd: 'Oct 31, 2023', basicSalary: 8500, bonus: 1200 },
-    { id: 2, initials: 'AA', highlightInitials: false, name: 'Amara Akintola', department: 'Marketing', paymentDate: 'Oct 28, 2023', periodStart: 'Oct 01, 2023', periodEnd: 'Oct 31, 2023', basicSalary: 7200, bonus: 0 },
-    { id: 3, initials: 'MK', highlightInitials: true, name: 'Marcus Kane', department: 'Sales', paymentDate: 'Oct 28, 2023', periodStart: 'Oct 01, 2023', periodEnd: 'Oct 31, 2023', basicSalary: 6800, bonus: 2450 },
-    { id: 4, initials: 'EY', highlightInitials: false, name: 'Elena Yang', department: 'Product', paymentDate: 'Oct 28, 2023', periodStart: 'Oct 01, 2023', periodEnd: 'Oct 31, 2023', basicSalary: 9100, bonus: 500 },
-    { id: 5, initials: 'DH', highlightInitials: true, name: 'David Hong', department: 'Engineering', paymentDate: 'Oct 28, 2023', periodStart: 'Oct 01, 2023', periodEnd: 'Oct 31, 2023', basicSalary: 7900, bonus: 0 },
-  ];
 
   readonly summaryCards: SummaryCard[] = [
     { label: 'Total Monthly Payout', value: '$452,890.00', badge: '+4.2% vs last mo', badgeColor: 'green' },
@@ -63,15 +131,11 @@ export class PayrollManagementComponent {
 
   readonly pages = [1, 2, 3, 9];
 
-  filteredRecords = computed(() => {
-    const q = this.searchQuery().toLowerCase();
-    if (!q) return this.allRecords;
-    return this.allRecords.filter(
-      (r) =>
-        r.name.toLowerCase().includes(q) ||
-        r.department.toLowerCase().includes(q) ||
-        r.id.toString().includes(q)
-    );
+  filteredRecords = computed<PayrollRecord[]>(() => {
+    if (this.selectedEmployee()) {
+      return this.payrollRecords() as PayrollRecord[];
+    }
+    return [];
   });
 
   get netSalary(): (record: PayrollRecord) => number {
@@ -112,7 +176,7 @@ export class PayrollManagementComponent {
   }
 
   onNewRecord(): void {
-    console.log('New record clicked');
+    this.openNewRecordModal();
   }
 
   clearFilters(): void {
@@ -123,5 +187,155 @@ export class PayrollManagementComponent {
     const start = (this.currentPage() - 1) * this.pageSize + 1;
     const end = Math.min(this.currentPage() * this.pageSize, this.totalRecords);
     return `Showing ${start} to ${end} of ${this.totalRecords} records`;
+  }
+
+  // Search state
+  searchEmployeeName = '';
+  searchResults: EmployeeNode[] = [];
+  showDropdown = false;
+  selectedEmployee = signal<EmployeeNode | null>(null);
+
+  payrollRecords = signal<any[]>([]);
+  searchingPayroll = false;
+  payrollError = '';
+
+  onSearchEmployeeName(value: string): void {
+    this.searchEmployeeName = value;
+    this.selectedEmployee.set(null);
+    this.payrollRecords.set([]);
+
+    if (!value.trim()) {
+      this.searchResults = [];
+      this.showDropdown = false;
+      return;
+    }
+
+    const q = value.toLowerCase();
+    this.searchResults = this.modalEmployees.filter(e =>
+      e.name.toLowerCase().includes(q)
+    );
+    this.showDropdown = this.searchResults.length > 0;
+  }
+
+  selectEmployee(emp: EmployeeNode): void {
+    this.selectedEmployee.set(emp);
+    this.searchEmployeeName = emp.name;
+    this.showDropdown = false;
+    this.loadPayrollByEmployee(emp.id);
+  }
+
+  loadPayrollByEmployee(employeeId: string): void {
+    this.searchingPayroll = true;
+    this.payrollError = '';
+    this.payrollRecords.set([]);
+
+    this._payrollService.getPayrollsByEmployeeId(employeeId).subscribe({
+      next: (res) => {
+        const nodes = res?.data?.payrollsByEmployeeId?.nodes ?? [];
+        this.payrollRecords.set(nodes);
+        this.searchingPayroll = false;
+        if (nodes.length === 0) {
+          this.payrollError = 'No payroll records found for this employee.';
+        }
+      },
+      error: () => {
+        this.payrollError = 'Failed to load payroll records.';
+        this.searchingPayroll = false;
+      }
+    });
+  }
+
+  clearEmployeeSearch(): void {
+    this.searchEmployeeName = '';
+    this.selectedEmployee.set(null);
+    this.searchResults = [];
+    this.showDropdown = false;
+    this.payrollRecords.set([]); // ← set مش =
+    this.payrollError = '';
+  }
+
+  // أضف في الـ class
+  constructor() {
+    this._employeeService.getEmployees().subscribe({
+      next: (data) => { this.modalEmployees = data; },
+      error: () => { }
+    });
+  }
+
+  // Edit Modal
+  showEditModal = false;
+  editingRecord: any = null;
+  editForm = { payrollId: '', bonus: 0 };
+  editSubmitting = false;
+  editSuccess = false;
+  editError = '';
+
+  openEditModal(record: any): void {
+    this.editingRecord = record;
+    this.editForm = {
+      payrollId: record.id ?? record.payrollId ?? '',
+      bonus: record.bonus ?? 0,
+    };
+    this.editSuccess = false;
+    this.editError = '';
+    this.showEditModal = true;
+  }
+
+  closeEditModal(): void {
+    if (this.editSubmitting) return;
+    this.showEditModal = false;
+    this.editingRecord = null;
+  }
+
+  submitEditRecord(): void {
+    if (this.editSubmitting) return;
+    this.editSubmitting = true;
+    this.editError = '';
+
+    this._payrollService.updatePayroll(this.editForm.payrollId, this.editForm.bonus).subscribe({
+      next: () => {
+        this.editSubmitting = false;
+        this.editSuccess = true;
+        // refresh records
+        if (this.selectedEmployee()) {
+          this.loadPayrollByEmployee(this.selectedEmployee()!.id);
+        }
+        setTimeout(() => this.closeEditModal(), 1800);
+      },
+      error: (err) => {
+        this.editSubmitting = false;
+        this.editError = err?.error?.message ?? 'Failed to update payroll record.';
+      },
+    });
+  }
+
+  onDeleteRecord(record: any): void {
+    const id = record.id ?? record.payrollId;
+
+    if (!id) return;
+
+    const confirmDelete = confirm('Are you sure you want to delete this payroll?');
+    if (!confirmDelete) return;
+
+    this._payrollService.deletePayroll(id).subscribe({
+      next: () => {
+        // refresh data بعد الحذف
+        if (this.selectedEmployee()) {
+          this.loadPayrollByEmployee(this.selectedEmployee()!.id);
+        }
+      },
+      error: (err) => {
+        console.error(err);
+        alert('Failed to delete payroll record');
+      }
+    });
+  }
+
+  private readonly _router = inject(Router);
+
+  viewPayrollDetails(payrollId: string): void {
+    this._router.navigate(['/payroll-details', payrollId], {
+      state: { employee: this.selectedEmployee() }  // ✅ مرر الـ employee
+    });
   }
 }

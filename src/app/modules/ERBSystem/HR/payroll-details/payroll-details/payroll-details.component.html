@@ -4,13 +4,13 @@
         <!-- Top Navigation Bar -->
         <header class="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3 lg:px-20">
             <div class="flex items-center gap-4 text-[#ec5b13]">
-                <div class="size-8 flex items-center justify-center bg-orange-50 rounded-lg">
+                <div class="size-8 flex items-center justify-center bg-blue-500 text-white rounded-lg">
                     <span class="material-symbols-outlined">payments</span>
                 </div>
                 <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">HR Portal</h2>
             </div>
 
-            <div class="flex flex-1 justify-end gap-6 items-center">
+            <!-- <div class="flex flex-1 justify-end gap-6 items-center">
                 <nav class="hidden md:flex items-center gap-8">
                     <a href="#"
                         class="text-slate-600 text-sm font-medium hover:text-[#ec5b13] transition-colors">Dashboard</a>
@@ -37,7 +37,7 @@
                     class="bg-orange-100 aspect-square rounded-full size-10 flex items-center justify-center overflow-hidden border border-orange-200">
                     <span class="material-symbols-outlined text-[#ec5b13]">person</span>
                 </div>
-            </div>
+            </div> -->
         </header>
 
         <!-- Main Content -->
@@ -59,15 +59,10 @@
                     <p class="text-slate-500">Reviewing payment cycle for October 2023</p>
                 </div>
                 <div class="flex flex-wrap gap-3">
-                    <button (click)="onDownloadPDF()"
-                        class="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all">
-                        <span class="material-symbols-outlined text-lg">download</span>
-                        Download PDF
-                    </button>
-                    <button (click)="onPrintPayslip()"
-                        class="flex items-center justify-center gap-2 px-5 py-2 bg-[#ec5b13] text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-200 hover:opacity-90 transition-all">
-                        <span class="material-symbols-outlined text-lg">print</span>
-                        Print Payslip
+                    <button routerLink="/payroll-management"
+                        class="flex items-center justify-center gap-2 px-5 py-2 bg-blue-500 text-white rounded-xl text-sm font-bold shadow-lg shadow-blue-500 cursor-pointer hover:opacity-90 transition-all">
+                        <span class="material-symbols-outlined">arrow_back</span>
+                        Back
                     </button>
                 </div>
             </div>
@@ -75,27 +70,35 @@
             <!-- Profile Overview Card -->
             <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm mb-8">
                 <div class="flex flex-col md:flex-row items-center gap-6">
-                    <div
+                    <!-- <div
                         class="size-24 rounded-full bg-slate-100 flex items-center justify-center border-4 border-orange-50 overflow-hidden">
                         <img [src]="employee.photoUrl" [alt]="employee.name" class="w-full h-full object-cover" />
-                    </div>
+                    </div> -->
 
                     <div class="flex-1 text-center md:text-left">
                         <h2 class="text-slate-900 text-2xl font-bold">{{ employee.name }}</h2>
-                        <p class="text-[#ec5b13] font-medium">{{ employee.title }}</p>
+                        <span class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-base">military_tech</span>
+                            {{ employee.title }}
+                        </span>
                         <div
                             class="mt-2 flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm text-slate-500">
-                            <span class="flex items-center gap-1.5">
+                            <!-- <span class="flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-base">id_card</span>
                                 {{ employee.id }}
-                            </span>
-                            <span class="flex items-center gap-1.5">
+                            </span> -->
+                            <!-- <span class="flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-base">corporate_fare</span>
                                 {{ employee.department }}
-                            </span>
-                            <span class="flex items-center gap-1.5">
+                            </span> -->
+                            <!-- <span class="flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-base">location_on</span>
                                 {{ employee.location }}
+                            </span> -->
+
+                            <span class="flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-base">mail</span>
+                                {{ employee.email }}
                             </span>
                         </div>
                     </div>
@@ -180,7 +183,7 @@
 
                     <!-- Net Pay Card -->
                     <div
-                        class="bg-[#ec5b13] rounded-xl p-8 text-white shadow-xl shadow-orange-200 flex flex-col items-center text-center relative overflow-hidden">
+                        class="bg-blue-500 rounded-xl p-8 text-white shadow-xl shadow-blue-500 flex flex-col items-center text-center relative overflow-hidden">
                         <div class="absolute top-0 right-0 p-4 opacity-10">
                             <span class="material-symbols-outlined text-9xl">receipt_long</span>
                         </div>
@@ -241,12 +244,12 @@
                     <!-- Help Card -->
                     <div class="bg-orange-50 border border-orange-100 rounded-xl p-4">
                         <div class="flex gap-3">
-                            <span class="material-symbols-outlined text-[#ec5b13]">info</span>
+                            <span class="material-symbols-outlined text-blue-500">info</span>
                             <div>
-                                <p class="text-sm font-bold text-[#ec5b13] mb-1">Need help?</p>
+                                <p class="text-sm font-bold text-blue-500 mb-1">Need help?</p>
                                 <p class="text-xs text-slate-600">
                                     If you have questions about your bonuses or deductions, please contact the
-                                    <a href="#" class="underline font-medium text-[#ec5b13]">Payroll Department</a>.
+                                    <a href="#" class="underline font-medium text-blue-500">Payroll Department</a>.
                                 </p>
                             </div>
                         </div>
