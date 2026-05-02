@@ -127,6 +127,13 @@ export class CartComponent implements OnInit {
     this._eCommerceService.getCart().subscribe({
       next: (res) => {
         this.cart.set(res.data.cart);
+
+        // ✅ حدّث العداد
+        const total = res.data.cart?.items?.reduce(
+          (sum: number, item: any) => sum + item.quantity, 0
+        ) ?? 0;
+        this._eCommerceService.updateCartCount(total);
+
         this.isLoading.set(false);
       },
       error: () => {
@@ -135,7 +142,6 @@ export class CartComponent implements OnInit {
       }
     });
   }
-
   increaseQuantity(item: CartItem) {
     this._eCommerceService.updateQuantity(item.id, item.quantity + 1).subscribe({
       next: () => {
@@ -186,11 +192,17 @@ export class CartComponent implements OnInit {
     };
 
     this._eCommerceService.createOrder(payload).subscribe({
-      next: () => {
+      next: (res) => {
         this.isSubmittingOrder.set(false);
         this.showCheckoutModal.set(false);
         this._toastr.success('Order placed successfully!');
-        this.loadCart();
+
+        const paymentUrl = res?.data?.value;
+        if (paymentUrl) {
+          window.location.href = paymentUrl; // نفس الـ tab
+        } else {
+          this.loadCart();
+        }
       },
       error: (err) => {
         this.isSubmittingOrder.set(false);

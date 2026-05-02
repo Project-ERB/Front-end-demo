@@ -52,7 +52,7 @@ export class PayrollManagementComponent {
   loadingEmployees = false;
 
   form = {
-    employeeId: '',
+    nationalId: '',
     periodStart: '',
     periodEnd: '',
     bonusAmount: 0,
@@ -63,7 +63,7 @@ export class PayrollManagementComponent {
   submitError = '';
 
   get isFormValid(): boolean {
-    return !!this.form.employeeId
+    return !!this.form.nationalId
       && !!this.form.periodStart
       && !!this.form.periodEnd
       && new Date(this.form.periodEnd) >= new Date(this.form.periodStart);
@@ -73,11 +73,15 @@ export class PayrollManagementComponent {
     this.showNewRecordModal = true;
     this.submitSuccess = false;
     this.submitError = '';
-    this.form = { employeeId: '', periodStart: '', periodEnd: '', bonusAmount: 0 };
+    this.form = { nationalId: '', periodStart: '', periodEnd: '', bonusAmount: 0 };
     this.loadingEmployees = true;
 
     this._employeeService.getEmployees().subscribe({
-      next: (data) => { this.modalEmployees = data; this.loadingEmployees = false; },
+      next: (data) => {
+        console.log('employees:', data.map(e => ({ id: e.id, nationalID: e.nationalID, name: e.name })));
+        this.modalEmployees = data;
+        this.loadingEmployees = false;
+      },
       error: () => { this.loadingEmployees = false; },
     });
   }
@@ -91,7 +95,7 @@ export class PayrollManagementComponent {
     if (!this.isFormValid || this.submitting) return;
 
     const payload: AddPayrollRequest = {
-      employeeId: this.form.employeeId,
+      nationalId: this.form.nationalId,
       periodStart: new Date(this.form.periodStart).toISOString(),
       periodEnd: new Date(this.form.periodEnd).toISOString(),
       bonusAmount: this.form.bonusAmount ?? 0,
@@ -231,7 +235,7 @@ export class PayrollManagementComponent {
 
     this._payrollService.getPayrollsByNationalId(nationalId).subscribe({
       next: (res) => {
-        const nodes = res?.data?.payrollsByEmployeeId?.nodes ?? [];
+        const nodes = res?.data?.payrollsByNationalId?.nodes ?? [];
         this.payrollRecords.set(nodes);
         this.searchingPayroll = false;
         if (nodes.length === 0) {

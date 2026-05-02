@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { CandidateService } from '../../../../../core/services/candidate/candidate.service';
 import { ToastrService } from 'ngx-toastr';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { Router } from '@angular/router';
 
 export interface NavItem {
   icon: string;
@@ -94,6 +95,8 @@ export class AddCandidateComponent {
     this.submitted.set(false);
   }
 
+  private readonly _Router = inject(Router)
+
   onSubmit(): void {
     this.submitted.set(true);
     if (this.form.invalid) return;
@@ -124,6 +127,9 @@ export class AddCandidateComponent {
         this._ToastrService.success('Candidate created successfully!', 'Success');
         this.isSaving.set(false);
         this.onReset();
+        setTimeout(() => {
+          this._Router.navigate(['/Candidate-Management'])
+        }, 2000);
       },
       error: (err) => {
         console.error(err);

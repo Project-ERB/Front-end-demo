@@ -98,11 +98,20 @@ export class HomeComponent implements OnInit {
 
     this._ECommerceService.addToCart({ sku, quantity }).subscribe({
       next: (res) => {
-        console.log('Added to cart:', res);
         this.cartSuccessMessage = `"${product.name}" added to cart!`;
         this.addingToCartSku = null;
         this._ToastrService.success(this.cartSuccessMessage);
-        // Auto-hide success message after 3s
+
+        // ✅ هنا المشكلة - لازم تاخد الداتا من GraphQL response
+        this._ECommerceService.getCart().subscribe({
+          next: (cartRes) => {
+            const total = cartRes?.data?.cart?.items?.reduce(
+              (sum: number, item: any) => sum + item.quantity, 0
+            ) ?? 0;
+            this._ECommerceService.updateCartCount(total);
+          }
+        });
+
         setTimeout(() => (this.cartSuccessMessage = ''), 3000);
       },
       error: (err) => {

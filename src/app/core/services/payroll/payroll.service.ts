@@ -5,10 +5,10 @@ import { Environment } from '../../../shared/UI/environment/env';
 import { isPlatformBrowser } from '@angular/common';
 
 export interface AddPayrollRequest {
+  nationalId: string;  // ← بدل employeeId
   periodStart: string;
   periodEnd: string;
   bonusAmount: number;
-  employeeId: string;
 }
 
 @Injectable({

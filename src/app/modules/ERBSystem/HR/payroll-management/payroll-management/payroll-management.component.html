@@ -368,10 +368,10 @@
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                                     style="font-size:18px;">person</span>
-                                <select [(ngModel)]="form.employeeId"
+                                <select [(ngModel)]="form.nationalId"
                                     class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 appearance-none cursor-pointer">
                                     <option value="" disabled>Select an employee…</option>
-                                    <option *ngFor="let emp of modalEmployees" [value]="emp.id">
+                                    <option *ngFor="let emp of modalEmployees" [value]="emp.nationalID ?? ''">
                                         {{ emp.name }} — {{ emp.nationalID ?? 'No ID' }}
                                     </option>
                                 </select>

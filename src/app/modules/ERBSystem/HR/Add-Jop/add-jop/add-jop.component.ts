@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { JopService } from '../../../../../core/services/jop/jop.service';
 import { ToastrService } from 'ngx-toastr';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import { Router } from '@angular/router';
 
 const HIRING_MANAGER_ID = '6730cfb3-8a7f-4b5e-9b8f-884dddfa01e0';
 
@@ -73,6 +74,8 @@ export class AddJopComponent implements OnInit {
     return !!(control && control.invalid && control.touched);
   }
 
+  private readonly _Router = inject(Router)
+
   onSave(): void {
     this.form.markAllAsTouched();
     if (this.form.invalid) return;
@@ -95,6 +98,9 @@ export class AddJopComponent implements OnInit {
         this._ToastrService.success('Job requirements added successfully!', 'Success');
         this.form.reset({ currency: 'USD', experienceLevel: 'junior' });
         this.isSaving.set(false);
+        setTimeout(() => {
+          this._Router.navigate(['/requierments-management']);
+        }, 2000);
       },
       error: (err) => {
         console.error('Error saving:', err);

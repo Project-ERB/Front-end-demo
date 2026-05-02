@@ -140,4 +140,8 @@ export class ScheduleInterviewComponent implements OnInit {
     };
     this.workPreference.set('OFFICE');
   }
+
+  isSaving = signal(false);
+
+
 }

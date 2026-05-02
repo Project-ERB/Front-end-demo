@@ -169,9 +169,12 @@
                             class="px-6 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-100 transition-all">
                             Cancel
                         </button>
-                        <button type="submit"
-                            class="px-10 py-3 rounded-lg bg-[#0066FF] text-white font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all">
-                            Schedule Interview
+                        <button type="submit" [disabled]="isSubmitting"
+                            class="flex items-center gap-2 px-10 py-3 rounded-lg bg-[#0066FF] text-white font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60">
+                            <span class="material-symbols-outlined" [class.animate-spin]="isSubmitting">
+                                {{ isSubmitting ? 'progress_activity' : 'event' }}
+                            </span>
+                            {{ isSubmitting ? 'Saving…' : 'Schedule Interview' }}
                         </button>
                     </div>
 
