@@ -107,8 +107,90 @@ export interface AdjustmentNode {
   adjustmentDate: string;
 }
 
+export interface DashboardKpis {
+  totalProducts: number;
+  totalWarehouses: number;
+  totalQuantityOnHand: number;
+  totalReserved: number;
+  totalAvailable: number;
+  totalInventoryValue: number;
+  lowStockItems: number;
+  outOfStockItems: number;
+}
+
+export interface StockByWarehouseNode {
+  warehouseName: string;
+  totalProducts: number;
+  totalQuantity: number;
+  inventoryValue: number;
+}
+
+export interface LowStockItemNode {
+  productName: string;
+  warehouseName: string;
+  quantityAvailable: number;
+  lastStockDate: string;
+}
+
+export interface TopMovingProductNode {
+  productName: string;
+  totalIn: number;
+  totalOut: number;
+}
+
+export interface MovementTrendNode {
+  date: string;
+  totalIn: number;
+  totalOut: number;
+}
+
+export interface InventoryDashboardData {
+  kpis: DashboardKpis;
+  stockByWarehouse: StockByWarehouseNode[];
+  lowStockItems: LowStockItemNode[];
+  topMovingProducts: TopMovingProductNode[];
+  movementTrend: MovementTrendNode[];
+}
+
+export interface PredictedProduct {
+  productId: string;
+  productName?: string;
+  sku?: string;
+  currentStock?: number;
+  predictedDemand?: number;
+  daysUntilStockout?: number;
+  shortage?: number;
+  riskLevel?: string;
+  quantityAvailable?: number;      // ← Add this
+  estimatedDaysLeft?: number;      // ← Add this
+  [key: string]: unknown; // flexible for any extra fields from the API
+}
+
+export interface WarehousePrediction {
+  warehouseId: string;
+  warehouseName?: string;
+  productsAtRisk: PredictedProduct[];
+  [key: string]: unknown;
+}
+
 @Injectable({ providedIn: 'root' })
 export class WarehouseService {
+
+  // ─── Add this method inside the WarehouseService class ───
+
+  getInventoryPrediction(days: number): Observable<WarehousePrediction[]> {
+    const token = this.getToken();
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    });
+    return this.http.get<WarehousePrediction[]>(
+      `${Environment.baseUrl}/api/Inventory/predict/${days}`,
+      { headers }
+    );
+  }
+
   private readonly platformId = inject(PLATFORM_ID);
   constructor(private http: HttpClient) { }
 
@@ -280,5 +362,51 @@ query {
     return this.http
       .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders() })
       .pipe(map((res) => res?.data?.stockMovements?.nodes ?? []));
+  }
+
+
+  getInventoryDashboard(movementDays: number = 2): Observable<InventoryDashboardData> {
+    const body = {
+      query: `
+      query {
+        inventoryDashboard(movementDays: ${movementDays}) {
+          kpis {
+            totalProducts
+            totalWarehouses
+            totalQuantityOnHand
+            totalReserved
+            totalAvailable
+            totalInventoryValue
+            lowStockItems
+            outOfStockItems
+          }
+          stockByWarehouse {
+            warehouseName
+            totalProducts
+            totalQuantity
+            inventoryValue
+          }
+          lowStockItems {
+            productName
+            warehouseName
+            quantityAvailable
+            lastStockDate
+          }
+          topMovingProducts {
+            productName
+            totalIn
+            totalOut
+          }
+          movementTrend {
+            date
+            totalIn
+            totalOut
+          }
+        }
+      }`,
+    };
+    return this.http
+      .post<any>(`${Environment.baseUrl}/graphql`, body, { headers: this.getHeaders() })
+      .pipe(map((res) => res?.data?.inventoryDashboard));
   }
 }

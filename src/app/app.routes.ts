@@ -335,6 +335,14 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/Sales/orders/orders.component').then((O) => O.OrdersComponent)
       },
       {
+        path: 'warehouse-dashboard',
+        loadComponent: () => import('./modules/ERBSystem/HR/warehouse-dashboard/warehouse-dashboard.component').then((W) => W.WarehouseDashboardComponent)
+      },
+      {
+        path: 'inventory-prediction',
+        loadComponent: () => import('./modules/ERBSystem/HR/inventory-prediction/inventory-prediction.component').then((I) => I.InventoryPredictionComponent)
+      },
+      {
         path: 'warehouse-management',
         loadComponent: () => import('./modules/ERBSystem/HR/warehouse-managment/warehouse-managment/warehouse-managment.component').then((W) => W.WarehouseManagmentComponent)
       },

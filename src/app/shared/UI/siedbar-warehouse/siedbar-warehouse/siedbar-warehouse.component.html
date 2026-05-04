@@ -1,4 +1,4 @@
-<aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex">
+<aside class="hidden w-64 flex-col border-r border-[#e2e8f0] bg-white lg:flex min-h-screen">
     <div class="flex h-16 items-center border-b border-[#e2e8f0] px-6">
         <div class="flex items-center gap-2">
             <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
@@ -14,6 +14,12 @@
                 Main Menu
             </p>
 
+            <a routerLink="/warehouse-dashboard" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">warehouse</span>
+                warehouse-dashboard
+            </a>
+
             <a routerLink="/warehouse-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
                 class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
                 <span class="material-symbols-outlined text-[20px]">warehouse</span>
@@ -28,7 +34,12 @@
                 Inventories
             </a>
 
-
+            <!-- Inventory Prediction -->
+            <a routerLink="/inventory-prediction" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]">
+                <span class="material-symbols-outlined text-[20px]">query_stats</span>
+                Inventory Prediction
+            </a>
             <!-- لينك 6: Settings -->
             <!-- <a routerLink="/warehouse-details" [queryParams]="{tab: 'settings'}"
                 routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
