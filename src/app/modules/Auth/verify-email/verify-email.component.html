@@ -45,86 +45,39 @@
 
             <form [formGroup]="verifyForm" (ngSubmit)="onVerifyEmail()" class="flex w-full flex-col gap-6">
 
-                <!-- Email Field -->
+                <!-- Email Field بس -->
                 <label class="flex flex-col gap-2">
-
                     <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
                         Email Address
                     </span>
-
                     <div class="relative flex items-center">
-
                         <span class="material-symbols-outlined text-slate-400 absolute left-3 pointer-events-none">
                             alternate_email
                         </span>
-
                         <input formControlName="email" type="email" placeholder="you@example.com"
                             class="w-full rounded-xl border border-slate-300 bg-white/90 px-10 py-3 text-base text-slate-900 outline-none focus:border-[#2463eb] focus:ring-4 focus:ring-[#2463eb]/20 transition-all duration-300 hover:border-[#2463eb]/60 hover:-translate-y-0.5 dark:bg-slate-900/70 dark:text-white dark:border-slate-700"
                             [class.border-red-500]="verifyForm.get('email')?.invalid && verifyForm.get('email')?.touched" />
-
                     </div>
-
                     @if (verifyForm.get('email')?.invalid && verifyForm.get('email')?.touched) {
-                    <p class="text-xs text-red-500">
-                        Please enter a valid email address.
-                    </p>
+                    <p class="text-xs text-red-500">Please enter a valid email address.</p>
                     }
-
-                </label>
-
-                <!-- Token Field -->
-                <label class="flex flex-col gap-2">
-
-                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Verification Token
-                    </span>
-
-                    <div class="relative flex items-center">
-
-                        <span class="material-symbols-outlined text-slate-400 absolute left-3 pointer-events-none">
-                            key
-                        </span>
-
-                        <input formControlName="token" type="text" placeholder="Enter verification token"
-                            class="w-full rounded-xl border border-slate-300 bg-white/90 px-10 py-3 text-base text-slate-900 outline-none focus:border-[#2463eb] focus:ring-4 focus:ring-[#2463eb]/20 transition-all duration-300 hover:border-[#2463eb]/60 hover:-translate-y-0.5 dark:bg-slate-900/70 dark:text-white dark:border-slate-700"
-                            [class.border-red-500]="verifyForm.get('token')?.invalid && verifyForm.get('token')?.touched" />
-
-                    </div>
-
-                    @if (verifyForm.get('token')?.invalid && verifyForm.get('token')?.touched) {
-                    <p class="text-xs text-red-500">
-                        Please enter the verification token.
-                    </p>
-                    }
-
                 </label>
 
                 <button type="submit" [disabled]="verifyForm.invalid || isLoading()"
                     class="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#2463eb] to-indigo-500 text-base font-bold text-white transition-all duration-300 hover:from-[#1f58d1] hover:to-indigo-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#2463eb]/30 disabled:opacity-50 disabled:cursor-not-allowed">
-
                     @if (isLoading()) {
-
                     <svg class="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
                         </circle>
-
                         <path class="opacity-75" fill="currentColor"
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                         </path>
                     </svg>
-
-                    Verifying...
-
+                    Sending...
                     } @else {
-
-                    Verify Email
-
-                    <span class="material-symbols-outlined text-sm">
-                        check_circle
-                    </span>
-
+                    Send Reset Link
+                    <span class="material-symbols-outlined text-sm">send</span>
                     }
-
                 </button>
 
             </form>

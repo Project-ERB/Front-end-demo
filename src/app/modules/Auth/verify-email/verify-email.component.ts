@@ -1,11 +1,9 @@
-//verify-email.component.ts
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../../app/core/services/Auth/auth.service';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-verify-email',
@@ -27,51 +25,31 @@ export class VerifyEmailComponent {
   private readonly _router = inject(Router);
   private readonly _authService = inject(AuthService);
   private readonly _toastr = inject(ToastrService);
-  private readonly _activatedRoute = inject(ActivatedRoute);
 
   isLoading: WritableSignal<boolean> = signal(false);
 
   verifyForm: FormGroup = this._fb.group({
     email: ['', [Validators.required, Validators.email]],
-    token: ['', [Validators.required]],
   });
 
-  ngOnInit() {
-    this._activatedRoute.queryParams.subscribe(params => {
-      if (params['token'] && params['email']) {
-        this.verifyForm.patchValue({
-          token: params['token'],
-          email: params['email']
-        });
-        this.onVerifyEmail(); // ✅ بيتعمل verify تلقائي
+  onVerifyEmail() {
+    if (this.verifyForm.invalid) return;
+
+    this.isLoading.set(true);
+
+    const { email } = this.verifyForm.value;
+
+    this._authService.ForgotPassword(email).subscribe({
+      next: () => {
+        this.isLoading.set(false);
+        this._toastr.success('Reset link sent to your email!', 'Success');
+        this._router.navigate(['/reset-password']);
+      },
+      error: (err) => {
+        this.isLoading.set(false);
+        this._toastr.error(err.error?.message || 'Something went wrong', 'Error');
       }
     });
-  }
-
-  onVerifyEmail() {
-    if (this.verifyForm.valid) {
-
-      this.isLoading.set(true);
-
-      const { email, token } = this.verifyForm.value;
-
-      this._authService.ConfirmEmail(token, email).subscribe({
-        next: () => {
-
-          this._toastr.success('Email verified successfully!', 'Success');
-
-          this.isLoading.set(false);
-
-          this._router.navigate(['/login']);
-        },
-
-        error: (err) => {
-          this._toastr.error(err.error?.message || 'Verification failed', 'Error');
-          console.log(err);
-          this.isLoading.set(false);
-        }
-      });
-    }
   }
 
   ToLogin() {
