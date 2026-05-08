@@ -27,15 +27,24 @@ export const routes: Routes = [
         title: 'Register',
       },
       {
+        path: 'verify-email',
+        loadComponent: () => import('./modules/Auth/verify-email/verify-email.component').then((V) => V.VerifyEmailComponent)
+      },
+      {
         path: 'forget-password',
         loadComponent: () => import('./modules/Auth/forget-password/forget-password.component').then((c) => c.ForgetPasswordComponent),
         title: 'Forget Password',
       },
+
       {
         path: 'verification',
         loadComponent: () => import('./modules/Auth/otp/otp.component').then((c) => c.OTPComponent),
         title: 'Verification',
       },
+      {
+        path: 'email-confirmed',
+        loadComponent: () => import('./modules/Auth/email-confirmed/email-confirmed.component').then((E) => E.EmailConfirmedComponent)
+      }
     ],
   },
 

@@ -1,8 +1,7 @@
 <div class="flex min-h-screen flex-col bg-[#f6f6f8] font-sans lg:flex-row">
 
     <!-- ═══ LEFT PANEL — Branding ══════════════════════════════════════ -->
-    <div
-        @panelReveal
+    <div @panelReveal
         class="relative hidden overflow-hidden bg-[#2463eb] lg:flex lg:w-1/2 lg:items-center lg:justify-center xl:w-7/12">
 
         <!-- Background photo -->
@@ -72,7 +71,8 @@
     <div class="relative auth-login-shell flex flex-1 flex-col items-center justify-center bg-white p-5 sm:p-8 lg:p-16">
         <div class="auth-glow auth-glow-top"></div>
         <div class="auth-glow auth-glow-bottom"></div>
-        <div @formReveal class="w-full max-w-md rounded-2xl border border-slate-200/80 bg-white/85 backdrop-blur-xl p-5 sm:p-7 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
+        <div @formReveal
+            class="w-full max-w-md rounded-2xl border border-slate-200/80 bg-white/85 backdrop-blur-xl p-5 sm:p-7 shadow-[0_20px_60px_rgba(15,23,42,0.08)]">
 
             <!-- Mobile logo -->
             <div class="mb-8 sm:mb-10 flex items-center gap-2 lg:hidden">
@@ -122,7 +122,7 @@
                 <div>
                     <div class="mb-2 flex items-center justify-between">
                         <label for="password" class="block text-sm font-semibold text-slate-700">Password</label>
-                        <a routerLink="/forget-password"
+                        <a routerLink="/verify-email"
                             class="text-sm font-bold text-[#2463eb] transition-colors hover:text-[#2463eb]/80">Forgot
                             Password?</a>
                     </div>

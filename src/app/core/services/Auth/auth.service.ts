@@ -1,3 +1,4 @@
+//auth.service.ts
 import { HttpClient } from '@angular/common/http';
 import { Injectable, signal, WritableSignal } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -54,13 +55,21 @@ export class AuthService {
     return this._http.post(`${Environment.baseUrl}/api/User/VerifyResetOtp`, data);
   }
 
-  // ✅ الجديدة
   RegisterCustomer(data: object): Observable<any> {
     return this._http.post(`${Environment.baseUrl}/api/Customer/register`, data);
   }
 
+  // للـ OTP بعد الـ register
   VerifyCustomerEmail(data: { otp: number; email: string }): Observable<any> {
     return this._http.post(`${Environment.baseUrl}/api/Auth/ConfirmEmail`, data);
+  }
+
+  // للـ token بييجي من الـ email link - Path Parameters
+  ConfirmEmail(token: string, email: string): Observable<any> {
+    return this._http.post(
+      `${Environment.baseUrl}/api/Auth/confirmemail/${token}/${email}`,
+      {}
+    );
   }
 
   ResendVerificationCode(email: string): Observable<any> {

@@ -83,8 +83,7 @@ export class RegisterComponent {
     this._authService.RegisterCustomer({ name, email, password, phoneNumber }).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.currentStep.set(2);
-        this.startResendCooldown();
+        this._router.navigate(['/email-confirmed']);
       },
       error: (err) => {
         this.isLoading.set(false);
