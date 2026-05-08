@@ -75,4 +75,11 @@ export class AuthService {
   ResendVerificationCode(email: string): Observable<any> {
     return this._http.post(`${Environment.baseUrl}/api/Auth/SendOTP`, { email });
   }
+
+  VerifyPassword(email: string, token: string, newPassword: string): Observable<any> {
+    return this._http.post(
+      `${Environment.baseUrl}/api/User/VerifyPassword/${email}/${token}`,
+      { newPassword }
+    );
+  }
 }
