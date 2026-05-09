@@ -35,16 +35,19 @@ export class EmailConfirmedComponent implements OnInit {
     });
   }
 
+  successMessage: WritableSignal<string> = signal('');
+
   confirmEmail() {
     this.isLoading.set(true);
     this.isError.set(false);
 
     this._AuthService.ConfirmEmail(this.token, this.email).subscribe({
-      next: () => {
+      next: (res) => {
         this.isLoading.set(false);
         this.isVerified.set(true);
+        // عرض الرسالة الجاية من الـ response
+        this.successMessage.set(res?.message || 'Email verified successfully!');
 
-        // Navigate to login after 3 seconds
         setTimeout(() => {
           this._Router.navigate(['/login']);
         }, 3000);

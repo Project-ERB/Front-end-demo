@@ -14,22 +14,18 @@
             <div class="flex h-24 w-24 items-center justify-center rounded-full bg-main/10 ring-8 ring-main/5">
 
                 @if (isLoading()) {
-                <!-- Loading spinner -->
                 <span class="material-symbols-outlined text-5xl text-main animate-spin">
                     progress_activity
                 </span>
                 } @else if (isError()) {
-                <!-- Error icon -->
                 <span class="material-symbols-outlined text-5xl text-red-500">
                     error
                 </span>
                 } @else if (isVerified()) {
-                <!-- Success icon -->
                 <span class="material-symbols-outlined text-5xl text-green-500">
                     task_alt
                 </span>
                 } @else {
-                <!-- Default: waiting for link -->
                 <span class="material-symbols-outlined text-5xl text-main">
                     mark_email_unread
                 </span>
@@ -47,7 +43,7 @@
             } @else if (isVerified()) {
             Email Confirmed
             } @else {
-            Verify Your Email
+            Check Your Email
             }
         </h1>
 
@@ -60,17 +56,18 @@
             } @else if (isVerified()) {
             Your email has been successfully verified. Redirecting to login...
             } @else {
-            Please click the confirmation link sent to your email inbox to verify your account.
+            We've sent a verification link to your email address. Please click the link to verify your account.
             }
         </p>
 
-        <!-- States -->
+        <!-- Success Message -->
         @if (isVerified()) {
         <div class="mt-8 rounded-2xl border border-green-200 bg-green-50 px-4 py-4 text-sm font-medium text-green-700">
-            Your email is now verified successfully 🎉
+            {{ successMessage() || 'Your email is now verified successfully 🎉' }}
         </div>
         }
 
+        <!-- ✅ زرار واحد فقط للـ Error -->
         @if (isError()) {
         <button (click)="confirmEmail()"
             class="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-main to-indigo-500 font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-main/30">

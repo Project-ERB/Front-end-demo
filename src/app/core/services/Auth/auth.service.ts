@@ -63,12 +63,18 @@ export class AuthService {
   VerifyCustomerEmail(data: { otp: number; email: string }): Observable<any> {
     return this._http.post(`${Environment.baseUrl}/api/Auth/ConfirmEmail`, data);
   }
-
-  // للـ token بييجي من الـ email link - Path Parameters
+  // للـ token بييجي من الـ email link
+  // للـ token بييجي من الـ email link
   ConfirmEmail(token: string, email: string): Observable<any> {
-    return this._http.post(
-      `${Environment.baseUrl}/api/Auth/confirmemail/${token}/${email}`,
-      {}
+    // ✅ GET request مع Query Parameters
+    return this._http.get(
+      `${Environment.baseUrl}/api/Auth/confirmemail`,
+      {
+        params: {
+          email: email,
+          token: token
+        }
+      }
     );
   }
 
@@ -78,8 +84,14 @@ export class AuthService {
 
   VerifyPassword(email: string, token: string, newPassword: string): Observable<any> {
     return this._http.post(
-      `${Environment.baseUrl}/api/User/VerifyPassword/${email}/${token}`,
-      { newPassword }
+      `${Environment.baseUrl}/api/User/VerifyPassword`,
+      { newPassword },  // Body
+      {
+        params: {
+          email: email,
+          token: token
+        }
+      }
     );
   }
 }

@@ -31,6 +31,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/Auth/verify-email/verify-email.component').then((V) => V.VerifyEmailComponent)
       },
       {
+        path: 'request-reset',
+        loadComponent: () => import('./modules/Auth/request-reset/request-reset.component').then((R) => R.RequestResetComponent)
+      },
+      {
         path: 'forget-password',
         loadComponent: () => import('./modules/Auth/forget-password/forget-password.component').then((c) => c.ForgetPasswordComponent),
         title: 'Forget Password',
