@@ -6,97 +6,153 @@
 
             <!-- Header -->
             <header
-                class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shrink-0 sticky top-0 z-10">
-                <div class="flex items-center gap-2 text-sm">
+                class="h-14 sm:h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 shrink-0 sticky top-0 z-10">
+                <div class="flex items-center gap-2 text-xs sm:text-sm min-w-0">
                     <a routerLink="/permissions"
-                        class="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer">
+                        class="text-slate-400 hover:text-blue-600 transition-colors cursor-pointer shrink-0">
                         Permissions
                     </a>
-                    <span class="text-slate-300">/</span>
-                    <span class="font-semibold text-slate-700">{{ permission?.name ?? '...' }}</span>
+                    <span class="text-slate-300 shrink-0">/</span>
+                    <span class="font-semibold text-slate-700 truncate max-w-[120px] sm:max-w-none">{{ permission?.name
+                        ?? '...' }}</span>
                 </div>
-                <div class="flex items-center gap-4">
-                    <div class="relative">
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <!-- Mobile Search Toggle -->
+                    <button (click)="toggleMobileSearch()"
+                        class="sm:hidden size-9 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 transition-all active:scale-90">
+                        <span class="material-symbols-outlined text-[20px]">search</span>
+                    </button>
+                    <!-- Desktop Search -->
+                    <div class="relative hidden sm:block">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
                         <input type="text" placeholder="Search resources..."
-                            class="pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-blue-600 w-64 transition-all outline-none" />
+                            class="pl-10 pr-4 py-2 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-blue-600 focus:bg-white w-64 transition-all outline-none" />
                     </div>
-                    <div class="h-8 w-px bg-slate-200"></div>
-                    <button
-                        class="size-10 flex items-center justify-center rounded-lg hover:bg-slate-50 text-slate-600 transition-colors">
+                    <div class="h-6 sm:h-8 w-px bg-slate-200"></div>
+                    <button (click)="onNotificationClick()"
+                        class="relative size-9 sm:size-10 flex items-center justify-center rounded-lg hover:bg-slate-50 text-slate-600 transition-all active:scale-90">
                         <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <span
+                            class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full notification-dot"></span>
                     </button>
                 </div>
             </header>
 
-            <div class="max-w-6xl mx-auto flex flex-col gap-6 px-6 py-6">
+            <!-- Mobile Search Bar (Slide Down) -->
+            <div class="mobile-search-bar overflow-hidden transition-all duration-300"
+                [class]="isMobileSearchOpen ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'">
+                <div class="px-4 py-3 bg-white border-b border-slate-200">
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                        <input type="text" placeholder="Search resources..."
+                            class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-none rounded-lg text-sm focus:ring-2 focus:ring-blue-600 transition-all outline-none" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div class="fixed top-20 right-4 sm:right-6 z-50 transition-all duration-500"
+                [class]="showToast ? 'translate-x-0 opacity-100' : 'translate-x-[120%] opacity-0'">
+                <div
+                    class="flex items-center gap-3 px-4 py-3 bg-slate-900 text-white rounded-xl shadow-2xl text-sm font-medium">
+                    <span class="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
+                    <span>{{ toastMessage }}</span>
+                </div>
+            </div>
+
+            <div class="max-w-6xl mx-auto flex flex-col gap-4 sm:gap-6 px-4 sm:px-6 py-4 sm:py-6">
 
                 <!-- Loading -->
-                <div *ngIf="isLoading" class="flex items-center justify-center py-20 text-slate-400">
-                    <span class="material-symbols-outlined animate-spin text-3xl mr-3">progress_activity</span>
+                <div *ngIf="isLoading"
+                    class="flex flex-col items-center justify-center py-20 text-slate-400 loading-pulse">
+                    <span
+                        class="material-symbols-outlined animate-spin text-4xl mb-4 text-blue-500">progress_activity</span>
                     <span class="text-sm font-medium">Loading permission details...</span>
                 </div>
 
                 <!-- Error -->
                 <div *ngIf="errorMessage && !isLoading"
-                    class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                    class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 error-shake">
                     <span class="material-symbols-outlined">error</span>
                     <span class="text-sm font-medium">{{ errorMessage }}</span>
+                    <button (click)="retryLoad()" class="ml-auto text-xs underline hover:no-underline">Retry</button>
                 </div>
 
                 <ng-container *ngIf="permission && !isLoading">
 
                     <!-- Page Title & Actions -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 fade-in-up"
+                        [style.animationDelay]="'0ms'">
                         <div>
-                            <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Permission
+                            <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">
+                                Permission
                                 Details</h1>
-                            <p class="text-slate-500 text-sm mt-1">Manage and audit access controls for this permission.
+                            <p class="text-slate-500 text-xs sm:text-sm mt-1">Manage and audit access controls for this
+                                permission.
                             </p>
                         </div>
                         <div class="flex gap-3">
                             <button (click)="onBack()"
-                                class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors text-slate-700">
+                                class="flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border border-slate-200 rounded-lg text-xs sm:text-sm font-semibold hover:bg-slate-50 hover:border-slate-300 transition-all text-slate-700 active:scale-95 hover:shadow-sm">
                                 <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-                                Back to List
+                                <span class="hidden sm:inline">Back to List</span>
+                                <span class="sm:hidden">Back</span>
                             </button>
                         </div>
                     </div>
 
                     <!-- Grid -->
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
                         <!-- ── LEFT COLUMN ── -->
-                        <div class="lg:col-span-2 flex flex-col gap-6">
+                        <div class="lg:col-span-2 flex flex-col gap-4 sm:gap-6">
 
                             <!-- Overview Card -->
-                            <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-6">Permission
+                            <section
+                                class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm fade-in-up card-hover"
+                                [style.animationDelay]="'100ms'">
+                                <h3
+                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 sm:mb-6">
+                                    Permission
                                     Overview</h3>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
 
                                     <div>
                                         <label
-                                            class="block text-xs font-semibold text-slate-500 uppercase mb-1">Permission
+                                            class="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase mb-1">Permission
                                             Name</label>
-                                        <p class="text-lg font-mono font-bold text-blue-600">{{ permission.name }}</p>
+                                        <p class="text-base sm:text-lg font-mono font-bold text-blue-600">{{
+                                            permission.name }}
+                                        </p>
                                     </div>
 
                                     <div>
                                         <label
-                                            class="block text-xs font-semibold text-slate-500 uppercase mb-1">Permission
+                                            class="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase mb-1">Permission
                                             ID</label>
-                                        <p class="text-sm font-mono text-slate-500 break-all">{{ permission.id }}</p>
+                                        <div class="flex items-center gap-2 group cursor-pointer"
+                                            (click)="copyToClipboard(permission.id)">
+                                            <p class="text-xs sm:text-sm font-mono text-slate-500 break-all flex-1">{{
+                                                permission.id }}</p>
+                                            <span
+                                                class="material-symbols-outlined text-sm text-slate-300 group-hover:text-blue-500 transition-colors copy-icon"
+                                                [class]="copiedId === permission.id ? 'text-emerald-500 !scale-110' : ''">
+                                                {{ copiedId === permission.id ? 'check' : 'content_copy' }}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     <!-- Status badge -->
                                     <div>
                                         <label
-                                            class="block text-xs font-semibold text-slate-500 uppercase mb-1">Status</label>
-                                        <div class="flex items-center gap-2" [class]="getStatusColorClass()">
-                                            <span [class]="getStatusDotClass()" class="w-2 h-2 rounded-full"></span>
-                                            <span class="text-sm font-bold">{{ getStatusLabel() }}</span>
+                                            class="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase mb-1">Status</label>
+                                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border"
+                                            [class]="getStatusBadgeClass()">
+                                            <span [class]="getStatusDotClass()"
+                                                class="w-2 h-2 rounded-full status-dot"></span>
+                                            <span class="text-xs font-bold">{{ getStatusLabel() }}</span>
                                         </div>
                                     </div>
 
@@ -104,84 +160,114 @@
                             </section>
 
                             <!-- Resources Card -->
-                            <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Resources</h3>
-                                    <span class="text-xs text-slate-400 font-medium">{{ permission.resources?.length ??
+                            <section
+                                class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden fade-in-up card-hover"
+                                [style.animationDelay]="'200ms'">
+                                <div
+                                    class="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100 flex items-center justify-between">
+                                    <h3
+                                        class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                                        Resources</h3>
+                                    <span class="text-[10px] sm:text-xs text-slate-400 font-medium">{{
+                                        permission.resources?.length ??
                                         0 }} assigned</span>
                                 </div>
-                                <div class="p-6">
+                                <div class="p-4 sm:p-6">
                                     <div *ngIf="permission.resources?.length; else noResources"
-                                        class="flex flex-wrap gap-2">
-                                        <span *ngFor="let r of permission.resources"
-                                            class="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-lg border border-slate-200">
+                                        class="flex flex-wrap gap-1.5 sm:gap-2">
+                                        <span *ngFor="let r of permission.resources; let i = index"
+                                            class="resource-tag px-2.5 sm:px-3 py-1 sm:py-1.5 bg-slate-50 text-slate-600 text-[10px] sm:text-xs font-semibold rounded-lg border border-slate-200 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-all active:scale-95"
+                                            [style.animationDelay]="(i * 50) + 'ms'" (click)="onResourceClick(r)">
                                             {{ r }}
                                         </span>
                                     </div>
                                     <ng-template #noResources>
-                                        <p class="text-sm text-slate-400 italic">No resources assigned.</p>
+                                        <div class="flex flex-col items-center py-6 text-slate-400">
+                                            <span
+                                                class="material-symbols-outlined text-3xl mb-2 text-slate-300">folder_off</span>
+                                            <p class="text-xs sm:text-sm italic">No resources assigned.</p>
+                                        </div>
                                     </ng-template>
                                 </div>
                             </section>
 
                             <!-- Allow Access Card -->
-                            <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                                <div class="px-6 py-4 border-b border-slate-100">
-                                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Allow Access
+                            <section
+                                class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden fade-in-up card-hover"
+                                [style.animationDelay]="'300ms'">
+                                <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-100">
+                                    <h3
+                                        class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400">
+                                        Allow Access
                                     </h3>
                                 </div>
-                                <div class="p-6">
+                                <div class="p-4 sm:p-6">
                                     <ng-container *ngIf="getAllowAccess() as access; else noAccess">
-                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
 
                                             <!-- Create -->
-                                            <div [class]="access.allowCreate
-                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                          : 'bg-slate-50 border-slate-200 text-slate-400'"
-                                                class="flex flex-col items-center gap-2 p-4 rounded-xl border">
-                                                <span class="material-symbols-outlined text-2xl">add_circle</span>
-                                                <span class="text-xs font-bold uppercase tracking-wide">Create</span>
-                                                <span class="text-[10px] font-semibold">{{ access.allowCreate ?
+                                            <div (click)="onAccessCardClick('Create', access.allowCreate)" [class]="access.allowCreate
+                          ? 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100'
+                          : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'"
+                                                class="access-card flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 rounded-xl border cursor-pointer transition-all active:scale-95">
+                                                <span
+                                                    class="material-symbols-outlined text-xl sm:text-2xl">add_circle</span>
+                                                <span
+                                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wide">Create</span>
+                                                <span class="text-[9px] sm:text-[10px] font-semibold">{{
+                                                    access.allowCreate ?
                                                     'Allowed' : 'Denied' }}</span>
                                             </div>
 
                                             <!-- Delete -->
-                                            <div [class]="access.allowDelete
-                          ? 'bg-red-50 border-red-200 text-red-600'
-                          : 'bg-slate-50 border-slate-200 text-slate-400'"
-                                                class="flex flex-col items-center gap-2 p-4 rounded-xl border">
-                                                <span class="material-symbols-outlined text-2xl">delete</span>
-                                                <span class="text-xs font-bold uppercase tracking-wide">Delete</span>
-                                                <span class="text-[10px] font-semibold">{{ access.allowDelete ?
+                                            <div (click)="onAccessCardClick('Delete', access.allowDelete)" [class]="access.allowDelete
+                          ? 'bg-red-50 border-red-200 text-red-600 hover:bg-red-100'
+                          : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'"
+                                                class="access-card flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 rounded-xl border cursor-pointer transition-all active:scale-95">
+                                                <span
+                                                    class="material-symbols-outlined text-xl sm:text-2xl">delete</span>
+                                                <span
+                                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wide">Delete</span>
+                                                <span class="text-[9px] sm:text-[10px] font-semibold">{{
+                                                    access.allowDelete ?
                                                     'Allowed' : 'Denied' }}</span>
                                             </div>
 
                                             <!-- Update -->
-                                            <div [class]="access.allowUpdate
-                          ? 'bg-blue-50 border-blue-200 text-blue-600'
-                          : 'bg-slate-50 border-slate-200 text-slate-400'"
-                                                class="flex flex-col items-center gap-2 p-4 rounded-xl border">
-                                                <span class="material-symbols-outlined text-2xl">edit</span>
-                                                <span class="text-xs font-bold uppercase tracking-wide">Update</span>
-                                                <span class="text-[10px] font-semibold">{{ access.allowUpdate ?
+                                            <div (click)="onAccessCardClick('Update', access.allowUpdate)" [class]="access.allowUpdate
+                          ? 'bg-blue-50 border-blue-200 text-blue-600 hover:bg-blue-100'
+                          : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'"
+                                                class="access-card flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 rounded-xl border cursor-pointer transition-all active:scale-95">
+                                                <span class="material-symbols-outlined text-xl sm:text-2xl">edit</span>
+                                                <span
+                                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wide">Update</span>
+                                                <span class="text-[9px] sm:text-[10px] font-semibold">{{
+                                                    access.allowUpdate ?
                                                     'Allowed' : 'Denied' }}</span>
                                             </div>
 
                                             <!-- View -->
-                                            <div [class]="access.allowView
-                          ? 'bg-violet-50 border-violet-200 text-violet-600'
-                          : 'bg-slate-50 border-slate-200 text-slate-400'"
-                                                class="flex flex-col items-center gap-2 p-4 rounded-xl border">
-                                                <span class="material-symbols-outlined text-2xl">visibility</span>
-                                                <span class="text-xs font-bold uppercase tracking-wide">View</span>
-                                                <span class="text-[10px] font-semibold">{{ access.allowView ? 'Allowed'
+                                            <div (click)="onAccessCardClick('View', access.allowView)" [class]="access.allowView
+                          ? 'bg-violet-50 border-violet-200 text-violet-600 hover:bg-violet-100'
+                          : 'bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100'"
+                                                class="access-card flex flex-col items-center gap-1.5 sm:gap-2 p-3 sm:p-4 rounded-xl border cursor-pointer transition-all active:scale-95">
+                                                <span
+                                                    class="material-symbols-outlined text-xl sm:text-2xl">visibility</span>
+                                                <span
+                                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wide">View</span>
+                                                <span class="text-[9px] sm:text-[10px] font-semibold">{{
+                                                    access.allowView ? 'Allowed'
                                                     : 'Denied' }}</span>
                                             </div>
 
                                         </div>
                                     </ng-container>
                                     <ng-template #noAccess>
-                                        <p class="text-sm text-slate-400 italic">No access configuration found.</p>
+                                        <div class="flex flex-col items-center py-6 text-slate-400">
+                                            <span
+                                                class="material-symbols-outlined text-3xl mb-2 text-slate-300">lock</span>
+                                            <p class="text-xs sm:text-sm italic">No access configuration found.</p>
+                                        </div>
                                     </ng-template>
                                 </div>
                             </section>
@@ -189,59 +275,139 @@
                         </div>
 
                         <!-- ── RIGHT SIDEBAR ── -->
-                        <div class="flex flex-col gap-6">
+                        <div class="flex flex-col gap-4 sm:gap-6">
 
                             <!-- Risk Assessment -->
-                            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-5">Risk
+                            <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm fade-in-up card-hover"
+                                [style.animationDelay]="'400ms'">
+                                <h3
+                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mb-4 sm:mb-5">
+                                    Risk
                                     Assessment</h3>
 
                                 <ng-container *ngIf="getRiskLevel() as risk">
-                                    <div class="flex items-center gap-4 mb-5">
+                                    <div class="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
                                         <div
-                                            [class]="risk.bg + ' w-12 h-12 rounded-full flex items-center justify-center'">
-                                            <span [class]="risk.color" class="material-symbols-outlined text-2xl">{{
+                                            [class]="risk.bg + ' w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center risk-icon'">
+                                            <span [class]="risk.color"
+                                                class="material-symbols-outlined text-xl sm:text-2xl">{{
                                                 risk.icon }}</span>
                                         </div>
                                         <div>
-                                            <p [class]="risk.color" class="text-lg font-bold">{{ risk.label }}</p>
-                                            <p class="text-xs text-slate-500 font-medium">{{ risk.note }}</p>
+                                            <p [class]="risk.color" class="text-base sm:text-lg font-bold">{{ risk.label
+                                                }}</p>
+                                            <p class="text-[10px] sm:text-xs text-slate-500 font-medium">{{ risk.note }}
+                                            </p>
                                         </div>
                                     </div>
                                 </ng-container>
 
-                                <div class="pt-4 border-t border-slate-100 space-y-4">
+                                <div class="pt-3 sm:pt-4 border-t border-slate-100 space-y-3 sm:space-y-4">
                                     <div>
                                         <label
-                                            class="block text-xs font-semibold text-slate-500 uppercase mb-1">Permission
+                                            class="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase mb-1">Permission
                                             ID</label>
-                                        <p class="text-xs font-mono text-slate-600 break-all">{{ permission.id }}</p>
+                                        <div class="flex items-center gap-2 group cursor-pointer"
+                                            (click)="copyToClipboard(permission.id)">
+                                            <p class="text-[10px] sm:text-xs font-mono text-slate-600 break-all flex-1">
+                                                {{ permission.id }}</p>
+                                            <span
+                                                class="material-symbols-outlined text-xs text-slate-300 group-hover:text-blue-500 transition-colors">content_copy</span>
+                                        </div>
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Total
+                                        <label
+                                            class="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase mb-1">Total
                                             Resources</label>
                                         <p class="text-sm font-bold">{{ permission.resources?.length ?? 0 }}</p>
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-[10px] sm:text-xs font-semibold text-slate-500 uppercase mb-1">Access
+                                            Level</label>
+                                        <div class="flex gap-1">
+                                            <div class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                                                [class]="getAccessBarClass(1)"></div>
+                                            <div class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                                                [class]="getAccessBarClass(2)"></div>
+                                            <div class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                                                [class]="getAccessBarClass(3)"></div>
+                                            <div class="h-1.5 flex-1 rounded-full transition-all duration-500"
+                                                [class]="getAccessBarClass(4)"></div>
+                                        </div>
+                                        <p class="text-[10px] text-slate-400 mt-1">{{ getAccessLevelText() }}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Security Insight -->
-                            <div class="bg-slate-900 p-6 rounded-xl border border-slate-800">
-                                <h4 class="text-white font-bold text-sm mb-3 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-lg">verified_user</span>
+                            <div class="bg-slate-900 p-4 sm:p-6 rounded-xl border border-slate-800 fade-in-up"
+                                [style.animationDelay]="'500ms'">
+                                <h4
+                                    class="text-white font-bold text-xs sm:text-sm mb-2 sm:mb-3 flex items-center gap-2">
+                                    <span
+                                        class="material-symbols-outlined text-base sm:text-lg shield-pulse">verified_user</span>
                                     Security Insight
                                 </h4>
-                                <p class="text-slate-400 text-xs leading-relaxed">
+                                <p class="text-slate-400 text-[10px] sm:text-xs leading-relaxed">
                                     This permission allows data modification. Ensure MFA is enabled for all roles
                                     assigned to
                                     this permission to comply with internal security policy SP-204.
                                 </p>
+                                <button (click)="onSecurityClick()"
+                                    class="mt-3 sm:mt-4 flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors active:scale-95">
+                                    <span class="material-symbols-outlined text-sm">open_in_new</span>
+                                    View Security Policy
+                                </button>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm fade-in-up"
+                                [style.animationDelay]="'600ms'">
+                                <h3
+                                    class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 sm:mb-4">
+                                    Quick
+                                    Actions</h3>
+                                <div class="flex flex-col gap-2">
+                                    <button (click)="onQuickAction('audit')"
+                                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98]">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">history</span>
+                                        View Audit Log
+                                    </button>
+                                    <button (click)="onQuickAction('roles')"
+                                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98]">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">group</span>
+                                        Assigned Roles
+                                    </button>
+                                    <button (click)="onQuickAction('export')"
+                                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all active:scale-[0.98]">
+                                        <span class="material-symbols-outlined text-lg text-slate-400">download</span>
+                                        Export Permission
+                                    </button>
+                                </div>
                             </div>
 
                         </div>
                     </div>
 
                 </ng-container>
+            </div>
+
+            <!-- Mobile Bottom Bar -->
+            <div
+                class="sm:hidden sticky bottom-0 bg-white/80 backdrop-blur-lg border-t border-slate-200 px-4 py-3 z-10">
+                <div class="flex gap-2">
+                    <button (click)="onBack()"
+                        class="flex-1 flex items-center justify-center gap-2 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-semibold transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+                        Back
+                    </button>
+                    <button (click)="onQuickAction('export')"
+                        class="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-xs font-semibold transition-all active:scale-95">
+                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        Export
+                    </button>
+                </div>
             </div>
         </main>
     </div>

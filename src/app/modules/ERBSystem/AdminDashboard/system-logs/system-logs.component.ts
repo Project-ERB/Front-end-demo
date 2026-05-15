@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -22,6 +22,41 @@ export class SystemLogsComponent implements OnInit {
     private router: Router,
     private logService: PermissionService
   ) { }
+
+  // ═══ Mobile Sidebar State ═══
+  isMobileSidebarOpen = false;
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
+  // ── Navigate to detail ────────────────────────────────────────────────────
+  viewDetails(log: SystemLog): void {
+    this.logService.set(log);
+    this.router.navigate(['log-detail', log.id]);
+  }
+
+  // ═══ Keyboard & Resize Listeners ═══
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.closeMobileSidebar();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth >= 1024) {
+      this.closeMobileSidebar();
+    }
+  }
+
+
+  // ════════════════════════════
 
   isLoading = false;
 
@@ -227,12 +262,6 @@ export class SystemLogsComponent implements OnInit {
       Roles: 'bg-purple-50 text-purple-700',
     };
     return map[module] ?? 'bg-gray-100 text-gray-700';
-  }
-
-  // ── Navigate to detail ────────────────────────────────────────────────────
-  viewDetails(log: SystemLog): void {
-    this.logService.set(log);
-    this.router.navigate(['log-detail', log.id]);
   }
 
 }

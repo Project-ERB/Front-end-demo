@@ -1,5 +1,5 @@
 import { DiscountService } from './../../../../../core/services/Discount/discount.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebaSalesComponent } from "../../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
@@ -56,6 +56,35 @@ export class DiscountMangementComponent implements OnInit {
 
   isLoading = false;
   errorMessage = '';
+
+  // ── Mobile / Sidebar State ────────────────────────────────────────
+  sidebarOpen = false;
+  isMobile = false;
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.isMobile = window.innerWidth < 1024;
+    if (!this.isMobile) this.sidebarOpen = false;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
+
+  // ── Keyboard shortcuts ────────────────────────────────────────────
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    // Escape closes any open modal
+    if (event.key === 'Escape') {
+      if (this.showDeleteModal) { this.closeDeleteModal(); return; }
+      if (this.showEditModal) { this.closeEditModal(); return; }
+      if (this.sidebarOpen) { this.closeSidebar(); return; }
+    }
+  }
 
   navItems = [
     { icon: 'grid_view', label: 'Dashboard', active: false },
@@ -207,12 +236,14 @@ export class DiscountMangementComponent implements OnInit {
       usageLimitPerCustomer: 0, totalUsageLimit: 0,
     };
     this.showEditModal = true;
+    document.body.style.overflow = 'hidden';
   }
 
   closeEditModal(): void {
     this.showEditModal = false;
     this.editingId = '';
     this.saveError = '';
+    document.body.style.overflow = '';
   }
 
   saveEdit(): void {
@@ -248,12 +279,14 @@ export class DiscountMangementComponent implements OnInit {
     this.deletingDiscount = d;
     this.deleteError = '';
     this.showDeleteModal = true;
+    document.body.style.overflow = 'hidden';
   }
 
   closeDeleteModal(): void {
     this.showDeleteModal = false;
     this.deletingDiscount = null;
     this.deleteError = '';
+    document.body.style.overflow = '';
   }
 
   confirmDelete(): void {
@@ -275,10 +308,52 @@ export class DiscountMangementComponent implements OnInit {
     });
   }
 
+  // ── Bulk Delete ────────────────────────────────────────────────────
+  showBulkDeleteModal = false;
+  isBulkDeleting = false;
+  bulkDeleteError = '';
+
+  openBulkDeleteModal(): void {
+    if (this.selectedCount === 0) return;
+    this.bulkDeleteError = '';
+    this.showBulkDeleteModal = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeBulkDeleteModal(): void {
+    this.showBulkDeleteModal = false;
+    this.bulkDeleteError = '';
+    document.body.style.overflow = '';
+  }
+
+  confirmBulkDelete(): void {
+    this.isBulkDeleting = true;
+    this.bulkDeleteError = '';
+    const selectedIds = this.allDiscounts.filter(d => d.selected).map(d => d.id);
+
+    // Delete one by one (adjust if your API supports bulk delete)
+    const deleteObservables = selectedIds.map(id => this.discountService.DeleteDiscount(id));
+
+    import('rxjs').then(({ forkJoin }) => {
+      forkJoin(deleteObservables).subscribe({
+        next: () => {
+          this.isBulkDeleting = false;
+          this.closeBulkDeleteModal();
+          this.loadDiscounts();
+        },
+        error: () => {
+          this.isBulkDeleting = false;
+          this.bulkDeleteError = 'Failed to delete some discounts. Please try again.';
+        },
+      });
+    });
+  }
+
   // ── Filters ────────────────────────────────────────────────────────
   searchQuery = '';
   selectedStatus = '';
   selectedTarget = '';
+  showMobileFilters = false;
 
   get activeFilterCount(): number {
     return [this.searchQuery, this.selectedStatus, this.selectedTarget].filter(Boolean).length;
@@ -300,6 +375,10 @@ export class DiscountMangementComponent implements OnInit {
     this.selectedStatus = '';
     this.selectedTarget = '';
     this.currentPage = 1;
+  }
+
+  toggleMobileFilters(): void {
+    this.showMobileFilters = !this.showMobileFilters;
   }
 
   get allPageSelected(): boolean {
@@ -360,5 +439,8 @@ export class DiscountMangementComponent implements OnInit {
   editDiscount(d: Discount): void { this.openEditModal(d); }
   deleteDiscount(d: Discount): void { this.openDeleteModal(d); }
 
-  ngOnInit(): void { this.loadDiscounts(); }
+  ngOnInit(): void {
+    this.isMobile = window.innerWidth < 1024;
+    this.loadDiscounts();
+  }
 }

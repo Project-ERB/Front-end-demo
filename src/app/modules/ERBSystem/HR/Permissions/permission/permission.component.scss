@@ -1,0 +1,197 @@
+:host {
+    display: block;
+    min-height: 100vh;
+}
+
+// ═══════════════════════════════════════
+// Background Orbs
+// ═══════════════════════════════════════
+.orb-float {
+    animation: orbFloat 8s ease-in-out infinite;
+}
+
+.orb-float-delayed {
+    animation: orbFloat 10s ease-in-out infinite reverse;
+}
+
+@keyframes orbFloat {
+
+    0%,
+    100% {
+        transform: translate(-33%, -33%) scale(1);
+    }
+
+    50% {
+        transform: translate(-30%, -28%) scale(1.06);
+    }
+}
+
+// ═══════════════════════════════════════
+// Mobile Sidebar
+// ═══════════════════════════════════════
+.mobile-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 200ms ease-out;
+}
+
+.mobile-sidebar {
+    will-change: transform;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+// ═══════════════════════════════════════
+// Header Glass
+// ═══════════════════════════════════════
+.header-glass {
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px) saturate(180%);
+}
+
+// ═══════════════════════════════════════
+// Buttons
+// ═══════════════════════════════════════
+.btn-primary {
+    background: linear-gradient(135deg, #2463eb 0%, #1d4ed8 100%);
+    box-shadow: 0 2px 8px rgba(36, 99, 235, 0.25);
+
+    &:hover:not(:disabled) {
+        box-shadow: 0 4px 16px rgba(36, 99, 235, 0.35);
+        transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+        transform: translateY(0) scale(0.97);
+    }
+}
+
+// ═══════════════════════════════════════
+// Search
+// ═══════════════════════════════════════
+.search-input {
+    &::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+    }
+}
+
+// ═══════════════════════════════════════
+// Resource Tags
+// ═══════════════════════════════════════
+.resource-tag {
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+// ═══════════════════════════════════════
+// Status Pill
+// ═══════════════════════════════════════
+.status-pill {
+    transition: all 0.15s ease;
+}
+
+// ═══════════════════════════════════════
+// Action Icons
+// ═══════════════════════════════════════
+.action-icon {
+    opacity: 0;
+    transform: translateX(4px);
+    transition: all 0.2s ease;
+
+    .perm-row:hover & {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    // Always visible on mobile
+    .md\:hidden & {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+// ═══════════════════════════════════════
+// Resource Checkbox in Modal
+// ═══════════════════════════════════════
+.resource-check {
+    &:hover {
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
+
+// ═══════════════════════════════════════
+// Mobile Card
+// ═══════════════════════════════════════
+.perm-card-mobile {
+    &:active {
+        background: #f8fafc;
+    }
+}
+
+// ═══════════════════════════════════════
+// Pagination
+// ═══════════════════════════════════════
+.page-btn {
+    background: transparent;
+    color: #94a3b8;
+    border: 1px solid transparent;
+
+    &:hover:not(:disabled) {
+        background: #fff;
+        color: #2463eb;
+        border-color: #e2e8f0;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+}
+
+.page-btn-active {
+    background: #2463eb;
+    color: #fff;
+    border: 1px solid #2463eb;
+    box-shadow: 0 2px 8px rgba(36, 99, 235, 0.3);
+}
+
+// ═══════════════════════════════════════
+// Custom Scrollbar
+// ═══════════════════════════════════════
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+
+    &:hover {
+        background: #cbd5e1;
+    }
+}
+
+// ═══════════════════════════════════════
+// Responsive
+// ═══════════════════════════════════════
+@media (max-width: 640px) {
+    .resource-check {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

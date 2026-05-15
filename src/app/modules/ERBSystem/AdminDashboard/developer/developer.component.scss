@@ -29,6 +29,7 @@
   transform: translateY(-1px);
   box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
 }
+
 :host {
   display: block;
   min-height: 100vh;
@@ -46,11 +47,114 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1; /* Tailwind slate-300 */
+  background-color: #cbd5e1;
+  /* Tailwind slate-300 */
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8; /* Tailwind slate-400 */
+  background-color: #94a3b8;
+  /* Tailwind slate-400 */
 }
 
+// developer.component.scss
+
+// ─── Status Dot Pulse ──────────────────────────────────────
+.status-dot {
+  &.bg-blue-600 {
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse-dot {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.4);
+  }
+}
+
+// ─── Safe area for bottom nav (iOS) ───────────────────────
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+// ─── Scrollbar ────────────────────────────────────────────
+main::-webkit-scrollbar {
+  width: 5px;
+}
+
+main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+main::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+// ─── Endpoint drawer scrollbar ────────────────────────────
+.endpoint-item,
+.auth-card-row {
+  // Prevent text selection on double-tap (mobile UX)
+  -webkit-tap-highlight-color: transparent;
+}
+
+// ─── Table row hover ──────────────────────────────────────
+@media (hover: hover) {
+  tbody tr:hover .status-dot {
+    animation: none; // Don't pulse on hover, keep stable
+  }
+}
+
+// ─── Modal backdrop on mobile ─────────────────────────────
+@media (max-width: 639px) {
+  [class*="fixed inset-0"] {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+// ─── Method badge hover ───────────────────────────────────
+[class*="bg-blue-100"],
+[class*="bg-green-100"],
+[class*="bg-yellow-100"],
+[class*="bg-red-100"] {
+  transition: transform 0.15s ease;
+}
+
+// ─── Active bottom nav indicator ──────────────────────────
+nav {
+
+  a,
+  button {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 20px;
+      height: 2px;
+      background: #2463eb;
+      border-radius: 1px;
+      transition: transform 0.2s ease;
+    }
+  }
+
+  // Highlight active via routerLinkActive or manual class
+  .text-blue-600::after {
+    transform: translateX(-50%) scaleX(1);
+  }
+}

@@ -50,10 +50,8 @@ export class ApolloservicesService {
     );
   }
 
-  getUsers(): Observable<any> {
-
+  getUsers(first: number = 10, after?: string, before?: string): Observable<any> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -62,16 +60,27 @@ export class ApolloservicesService {
 
     const body = {
       query: `
-      query {
-        users {
+      query GetUsers($first: Int, $after: String, $before: String) {
+        users(first: $first, after: $after, before: $before) {
           nodes {
             username
             email
             roleNames
           }
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
         }
       }
-    `
+    `,
+      variables: {
+        first,
+        ...(after ? { after } : {}),
+        ...(before ? { before } : {})
+      }
     };
 
     return this._httpClient.post<any>(

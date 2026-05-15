@@ -1,282 +1,500 @@
-<div class="min-h-screen bg-slate-50 p-6 flex justify-center">
-    <div class="w-full max-w-4xl bg-white rounded-2xl shadow-xl">
+<!-- ================= ROOT LAYOUT ================= -->
+<div class="flex min-h-screen w-full flex-col lg:flex-row overflow-hidden bg-[#f6f7f8] font-sans text-[#111418]">
 
-        <!-- Header -->
-        <div class="flex items-center justify-between border-b px-6 py-4">
-            <h2 class="text-xl font-bold text-slate-800">Edit Product</h2>
-            <button (click)="cancel()" class="rounded-lg border px-4 py-2 text-sm font-semibold hover:bg-slate-100">
-                Back
+    <!-- ═══════════════ MOBILE SIDEBAR OVERLAY ═══════════════ -->
+    <div *ngIf="sidebarOpen" (click)="closeSidebar()" class="fixed inset-0 z-[999] bg-black/40 lg:hidden fade-overlay">
+    </div>
+
+    <!-- ═══════════════ SIDEBAR ═══════════════ -->
+    <aside [ngClass]="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+        class="fixed lg:static inset-y-0 left-0 z-[1000] w-64 lg:w-auto transition-transform duration-300 ease-in-out">
+        <app-sideba-sales></app-sideba-sales>
+    </aside>
+
+    <!-- ═══════════════ MAIN ═══════════════ -->
+    <main class="flex flex-1 flex-col overflow-y-auto min-w-0">
+
+        <!-- HEADER -->
+        <header class="sticky top-0 z-50 flex h-14 lg:h-16 items-center justify-between border-b bg-white px-3 lg:px-6">
+            <!-- Mobile hamburger -->
+            <button (click)="toggleSidebar()"
+                class="lg:hidden flex items-center justify-center size-10 rounded-lg hover:bg-[#f1f5f9] transition-colors">
+                <span class="material-symbols-outlined text-[22px]">menu</span>
             </button>
-        </div>
 
-        <!-- Error -->
-        <div *ngIf="editError"
-            class="mx-6 mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
-            {{ editError }}
-        </div>
-
-        <!-- Form -->
-        <div class="grid grid-cols-1 gap-4 p-6 sm:grid-cols-2">
-
-            <!-- Name -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Name</label>
-                <input [(ngModel)]="editForm.Name" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
+            <div class="flex items-center gap-2">
+                <h2 class="text-base lg:text-lg font-bold text-[#111418]">Edit Product</h2>
+                <!-- Dirty indicator -->
+                <span *ngIf="isFormDirty"
+                    class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-700 pulse-badge">
+                    <span class="size-1.5 rounded-full bg-amber-500"></span>
+                    Unsaved
+                </span>
             </div>
 
-            <!-- Short Description -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Short Description</label>
-                <input [(ngModel)]="editForm.ShortDescription" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
+            <div class="lg:hidden size-10"></div>
+        </header>
 
-            <!-- Category -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Category</label>
-                <select [(ngModel)]="editForm.CategoryId"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none">
-                    <option value="">Select category</option>
-                    <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
-                </select>
-            </div>
+        <!-- PAGE BODY -->
+        <div class="mx-auto flex w-full max-w-5xl flex-col gap-6 lg:gap-8 px-3 py-5 sm:px-6 lg:px-8 lg:py-8">
 
-            <!-- Product Type -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Product Type</label>
-                <select [(ngModel)]="editForm.ProductType"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none">
-                    <option value="0">Goods</option>
-                    <option value="1">Service</option>
-                </select>
-            </div>
-
-            <!-- UOM Code -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">UOM Code</label>
-                <input [(ngModel)]="editForm.UomCode" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- UOM Name -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">UOM Name</label>
-                <input [(ngModel)]="editForm.UomName" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Cost -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Cost</label>
-                <input [(ngModel)]="editForm.CostAmount" type="number"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Selling -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Selling</label>
-                <input [(ngModel)]="editForm.SellingAmount" type="number"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Currency -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Currency</label>
-                <input [(ngModel)]="editForm.Currency" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Tax Rate Value -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Tax Rate Value</label>
-                <input [(ngModel)]="editForm.TaxRateValue" type="number" step="0.01"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Tax Rate Name -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Tax Rate Name</label>
-                <input [(ngModel)]="editForm.TaxRateName" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Tax Rate Code -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Tax Rate Code</label>
-                <input [(ngModel)]="editForm.TaxRateCode" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Base Barcode -->
-            <div class="flex flex-col gap-1">
-                <label class="text-xs font-semibold uppercase text-slate-500">Base Barcode</label>
-                <input [(ngModel)]="editForm.BaseBarcode" type="text"
-                    class="h-10 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-            </div>
-
-            <!-- Track Inventory -->
-            <div class="flex flex-col gap-1 justify-center">
-                <label class="text-xs font-semibold uppercase text-slate-500">Track Inventory</label>
-                <div class="flex items-center gap-2 mt-1">
-                    <input [(ngModel)]="editForm.IsTrackInventory" type="checkbox" id="trackInv"
-                        class="h-4 w-4 rounded border-slate-300" />
-                    <label for="trackInv" class="text-sm text-slate-700">Enable inventory tracking</label>
+            <!-- TITLE -->
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between slide-in">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Edit Product</h1>
+                    <p class="text-sm lg:text-base text-[#617289]">
+                        Update product details, pricing, variants and more.
+                    </p>
                 </div>
-            </div>
-
-            <!-- Notes -->
-            <div class="flex flex-col gap-1 sm:col-span-2">
-                <label class="text-xs font-semibold uppercase text-slate-500">Notes</label>
-                <textarea [(ngModel)]="editForm.Notes" rows="3"
-                    class="rounded-lg border px-3 py-2 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none"></textarea>
-            </div>
-
-            <!-- ── Specifications ──────────────────────────────────────────── -->
-            <div class="flex flex-col gap-3 sm:col-span-2">
-                <div class="flex items-center justify-between">
-                    <label class="text-xs font-semibold uppercase text-slate-500">Specifications</label>
-                    <button type="button" (click)="addSpecification()"
-                        class="flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors">
-                        + Add Row
+                <div class="flex gap-2 sm:gap-3">
+                    <button type="button" (click)="cancel()"
+                        class="h-10 flex-1 sm:flex-none rounded-lg border px-4 text-sm font-bold hover:bg-slate-50 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="button" (click)="submitEdit()" [disabled]="editLoading"
+                        class="h-10 flex-1 sm:flex-none rounded-lg bg-[#1e3b8a] px-5 text-sm font-bold text-white hover:bg-[#162d6e] disabled:opacity-50 transition-colors btn-submit">
+                        <span *ngIf="!editLoading">Save Changes</span>
+                        <span *ngIf="editLoading" class="flex items-center justify-center gap-2">
+                            <span class="spinner"></span>
+                            Saving...
+                        </span>
                     </button>
                 </div>
+            </div>
 
-                <!-- Header -->
-                <div *ngIf="editSpecifications.length > 0" class="grid grid-cols-[1fr_1fr_80px_36px] gap-2 px-1">
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Key</span>
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Value</span>
-                    <span class="text-xs font-semibold text-slate-400 uppercase">Order</span>
-                    <span></span>
-                </div>
+            <!-- ERROR BANNER -->
+            <div *ngIf="editError"
+                class="slide-in rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">error</span>
+                {{ editError }}
+            </div>
 
-                <!-- Rows -->
-                <div *ngFor="let spec of editSpecifications; let i = index"
-                    class="grid grid-cols-[1fr_1fr_80px_36px] gap-2 items-center">
-                    <input [(ngModel)]="spec.key" type="text" placeholder="e.g. Brand"
-                        class="h-9 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                    <input [(ngModel)]="spec.value" type="text" placeholder="e.g. HP"
-                        class="h-9 rounded-lg border px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                    <input [(ngModel)]="spec.displayOrder" type="number" min="1"
-                        class="h-9 rounded-lg border px-3 text-sm text-center focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                    <button type="button" (click)="removeSpecification(i)"
-                        class="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
-                        ✕
-                    </button>
-                </div>
-
-                <div *ngIf="editSpecifications.length === 0"
-                    class="rounded-lg border border-dashed border-slate-200 py-6 text-center text-sm text-slate-400">
-                    No specifications. Click "Add Row" to add one.
+            <!-- ── STEPPER ── -->
+            <div class="w-full overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+                <div class="flex items-center justify-between min-w-[320px] sm:min-w-0">
+                    <ng-container *ngFor="let step of steps; let i = index">
+                        <div class="flex flex-col items-center gap-1 cursor-pointer shrink-0" (click)="goToStep(i)">
+                            <div [ngClass]="i <= currentStep
+                                    ? 'bg-[#1e3b8a] text-white shadow-md shadow-blue-200'
+                                    : 'bg-[#e2e8f0] text-[#64748b]'"
+                                class="flex size-8 sm:size-9 items-center justify-center rounded-full text-xs font-bold transition-all duration-300">
+                                <span class="material-symbols-outlined text-[16px] sm:text-[18px]">{{ step.icon
+                                    }}</span>
+                            </div>
+                            <span class="text-[10px] sm:text-xs text-[#64748b] hidden sm:block whitespace-nowrap">{{
+                                step.label }}</span>
+                        </div>
+                        <div *ngIf="i < steps.length - 1"
+                            class="flex-1 h-1 mx-1 sm:mx-2 rounded-full bg-[#e2e8f0] overflow-hidden min-w-[24px]">
+                            <div class="h-full bg-[#1e3b8a] transition-all duration-500 ease-out"
+                                [style.width]="i < currentStep ? '100%' : '0%'">
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
 
-            <!-- ── Variants ────────────────────────────────────────────────── -->
-            <div class="flex flex-col gap-3 sm:col-span-2">
-                <div class="flex items-center justify-between">
-                    <label class="text-xs font-semibold uppercase text-slate-500">Variants</label>
-                    <button type="button" (click)="addVariant()"
-                        class="flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 transition-colors">
-                        + Add Variant
+            <!-- ═══════════════ FORM CONTENT ═══════════════ -->
+            <div class="space-y-0">
+
+                <!-- ═══ STEP 0 : BASIC INFO ═══ -->
+                <ng-container *ngIf="currentStep === 0">
+                    <div [@stepTransition]="currentStep" class="step-card grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+                        <!-- Name -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Name <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.Name" type="text" placeholder="e.g. Laptop Pro X"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Short Description -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Short Description <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.ShortDescription" type="text"
+                                placeholder="Brief product description"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Category — with optgroup -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Category <span
+                                    class="text-red-500">*</span></label>
+                            <select [(ngModel)]="editForm.CategoryId"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all">
+                                <option value="" disabled>Select category</option>
+                                <ng-container *ngFor="let parent of categoryOptions">
+                                    <optgroup [label]="parent.name">
+                                        <option [value]="parent.id">{{ parent.name }} (Main)</option>
+                                        <option *ngFor="let child of parent.children" [value]="child.id">
+                                            &nbsp;&nbsp; {{ child.name }}
+                                        </option>
+                                    </optgroup>
+                                </ng-container>
+                            </select>
+                        </div>
+
+                        <!-- Product Type -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Product Type <span
+                                    class="text-red-500">*</span></label>
+                            <select [(ngModel)]="editForm.ProductType"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all">
+                                <option value="" disabled>Select type</option>
+                                <option [ngValue]="0">Goods</option>
+                                <option [ngValue]="1">Service</option>
+                            </select>
+                        </div>
+
+                    </div>
+                </ng-container>
+
+                <!-- ═══ STEP 1 : PRICING ═══ -->
+                <ng-container *ngIf="currentStep === 1">
+                    <div class="step-card grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+                        <!-- UOM Code -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">UOM Code <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.UomCode" type="text" placeholder="e.g. PCS"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- UOM Name -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">UOM Name <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.UomName" type="text" placeholder="e.g. Pieces"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Cost Amount -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Cost Amount <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.CostAmount" type="number" placeholder="e.g. 150.00"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Selling Amount -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Selling Amount <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.SellingAmount" type="number" placeholder="e.g. 299.99"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Currency -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Currency <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.Currency" type="text" placeholder="e.g. USD"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                    </div>
+                </ng-container>
+
+                <!-- ═══ STEP 2 : TAX & INVENTORY ═══ -->
+                <ng-container *ngIf="currentStep === 2">
+                    <div class="step-card grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+                        <!-- Tax Rate Value -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Tax Rate Value <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.TaxRateValue" type="number" step="0.01" placeholder="e.g. 14.0"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Tax Rate Name -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Tax Rate Name <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.TaxRateName" type="text" placeholder="e.g. VAT"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Tax Rate Code -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Tax Rate Code <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.TaxRateCode" type="text" placeholder="e.g. VAT14"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- IsTrackInventory -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Track Inventory <span
+                                    class="text-red-500">*</span></label>
+                            <select [(ngModel)]="editForm.IsTrackInventory"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all">
+                                <option [ngValue]="true">Yes — Track Inventory</option>
+                                <option [ngValue]="false">No — Do Not Track</option>
+                            </select>
+                        </div>
+
+                        <!-- Base Barcode -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-semibold text-[#64748b]">Base Barcode <span
+                                    class="text-red-500">*</span></label>
+                            <input [(ngModel)]="editForm.BaseBarcode" type="text" placeholder="e.g. 6281234567890"
+                                class="h-11 rounded-lg border px-4 text-sm w-full focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all" />
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="flex flex-col gap-1.5 sm:col-span-2">
+                            <label class="text-xs font-semibold text-[#64748b]">Notes</label>
+                            <textarea [(ngModel)]="editForm.Notes" placeholder="Optional notes..." rows="3"
+                                class="w-full rounded-lg border px-4 py-2 text-sm resize-none focus:border-[#1e3b8a] focus:ring-1 focus:ring-[#1e3b8a] outline-none transition-all"></textarea>
+                        </div>
+
+                    </div>
+                </ng-container>
+
+                <!-- ═══ STEP 3 : SPECS, VARIANTS & IMAGE ═══ -->
+                <ng-container *ngIf="currentStep === 3">
+                    <div class="step-card space-y-6 lg:space-y-8">
+
+                        <!-- ── Specifications ── -->
+                        <div class="rounded-xl border bg-white p-3 sm:p-5 space-y-3 sm:space-y-4 card-hover">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold text-sm text-[#0f172a]">Specifications</h3>
+                                <button type="button" (click)="addSpecification()"
+                                    class="rounded bg-[#eef4ff] px-3 py-1 text-xs font-bold text-[#1e3b8a] hover:bg-[#dbeafe] transition-colors">
+                                    + Add
+                                </button>
+                            </div>
+
+                            <!-- Desktop header row -->
+                            <div *ngIf="editSpecifications.length > 0"
+                                class="hidden sm:grid grid-cols-[1fr_1fr_80px_36px] gap-2 px-1">
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase">Key</span>
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase">Value</span>
+                                <span class="text-[10px] font-semibold text-slate-400 uppercase">Order</span>
+                                <span></span>
+                            </div>
+
+                            <!-- Spec rows — stacked on mobile, grid on desktop -->
+                            <div *ngFor="let spec of editSpecifications; let i = index">
+
+                                <!-- Desktop layout -->
+                                <div class="hidden sm:grid grid-cols-[1fr_1fr_80px_36px] gap-2 items-center">
+                                    <input [(ngModel)]="spec.key" type="text" placeholder="e.g. Brand"
+                                        class="h-9 rounded-lg border px-3 text-sm focus:border-[#1e3b8a] outline-none transition-all" />
+                                    <input [(ngModel)]="spec.value" type="text" placeholder="e.g. HP"
+                                        class="h-9 rounded-lg border px-3 text-sm focus:border-[#1e3b8a] outline-none transition-all" />
+                                    <input [(ngModel)]="spec.displayOrder" type="number" min="1"
+                                        class="h-9 rounded-lg border px-3 text-sm text-center focus:border-[#1e3b8a] outline-none transition-all" />
+                                    <button type="button" (click)="removeSpecification(i)"
+                                        class="flex h-9 w-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                    </button>
+                                </div>
+
+                                <!-- Mobile layout — stacked -->
+                                <div class="sm:hidden flex flex-col gap-2 rounded-lg border bg-[#f8fafc] p-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-[10px] font-bold uppercase text-[#64748b]">Spec {{ i + 1
+                                            }}</span>
+                                        <button type="button" (click)="removeSpecification(i)"
+                                            class="flex h-7 w-7 items-center justify-center rounded-md border border-red-200 bg-red-50 text-red-500 hover:bg-red-100 transition-colors">
+                                            <span class="material-symbols-outlined text-[14px]">close</span>
+                                        </button>
+                                    </div>
+                                    <input [(ngModel)]="spec.key" type="text" placeholder="Key (e.g. Brand)"
+                                        class="h-9 rounded-lg border px-3 text-sm bg-white focus:border-[#1e3b8a] outline-none transition-all" />
+                                    <input [(ngModel)]="spec.value" type="text" placeholder="Value (e.g. HP)"
+                                        class="h-9 rounded-lg border px-3 text-sm bg-white focus:border-[#1e3b8a] outline-none transition-all" />
+                                    <input [(ngModel)]="spec.displayOrder" type="number" min="1"
+                                        class="h-9 rounded-lg border px-3 text-sm bg-white text-center focus:border-[#1e3b8a] outline-none transition-all" />
+                                </div>
+
+                            </div>
+
+                            <div *ngIf="editSpecifications.length === 0"
+                                class="rounded-lg border border-dashed border-slate-200 py-6 text-center text-sm text-slate-400">
+                                No specifications. Click "+ Add" to add one.
+                            </div>
+                        </div>
+
+                        <!-- ── Variants ── -->
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="font-semibold text-sm text-[#0f172a]">Variants</h3>
+                                <button type="button" (click)="addVariant()"
+                                    class="rounded-lg bg-[#1e3b8a] px-3 sm:px-4 py-2 text-xs font-bold text-white flex items-center gap-1 hover:bg-[#162d6e] transition-colors">
+                                    <span class="material-symbols-outlined text-[16px]">add</span>
+                                    <span class="hidden sm:inline">Add Variant</span>
+                                    <span class="sm:hidden">Add</span>
+                                </button>
+                            </div>
+
+                            <div *ngFor="let variant of editVariants; let vi = index"
+                                class="rounded-xl border bg-white p-3 sm:p-5 space-y-3 sm:space-y-4 shadow-sm card-hover">
+
+                                <!-- Card Header -->
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold uppercase tracking-wide text-[#1e3b8a]">
+                                        Variant {{ vi + 1 }}
+                                    </span>
+                                    <button type="button" (click)="removeVariant(vi)"
+                                        class="text-red-400 hover:text-red-600 text-xs font-bold flex items-center gap-1 transition-colors">
+                                        <span class="material-symbols-outlined text-[15px]">delete</span>
+                                        <span class="hidden sm:inline">Remove</span>
+                                    </button>
+                                </div>
+
+                                <!-- SKU / Barcode / Price -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-xs font-semibold text-[#64748b]">SKU</label>
+                                        <input [(ngModel)]="variant.sku" type="text" placeholder="e.g. PROD-RED-8GB"
+                                            class="h-10 rounded-lg border px-3 text-sm w-full focus:border-[#1e3b8a] outline-none transition-all" />
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-xs font-semibold text-[#64748b]">Barcode</label>
+                                        <input [(ngModel)]="variant.barcode" type="text" placeholder="e.g. 123456789"
+                                            class="h-10 rounded-lg border px-3 text-sm w-full focus:border-[#1e3b8a] outline-none transition-all" />
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <label class="text-xs font-semibold text-[#64748b]">Price Override</label>
+                                        <input [(ngModel)]="variant.priceOverrideAmount" type="number"
+                                            placeholder="e.g. 299.99"
+                                            class="h-10 rounded-lg border px-3 text-sm w-full focus:border-[#1e3b8a] outline-none transition-all" />
+                                    </div>
+                                </div>
+
+                                <!-- Options -->
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-semibold text-[#64748b]">Options</label>
+                                        <button type="button" (click)="addVariantOption(vi)"
+                                            class="text-[#1e3b8a] text-xs font-bold hover:underline flex items-center gap-1 transition-colors">
+                                            <span class="material-symbols-outlined text-[14px]">add_circle</span>
+                                            Add Option
+                                        </button>
+                                    </div>
+
+                                    <!-- Desktop option header -->
+                                    <div *ngIf="variant.options.length > 0"
+                                        class="hidden sm:grid grid-cols-[1fr_1fr_32px] gap-2 px-1">
+                                        <span
+                                            class="text-[10px] font-semibold text-slate-400 uppercase">Attribute</span>
+                                        <span class="text-[10px] font-semibold text-slate-400 uppercase">Value</span>
+                                        <span></span>
+                                    </div>
+
+                                    <div *ngFor="let opt of variant.options; let oi = index">
+
+                                        <!-- Desktop: inline row -->
+                                        <div class="hidden sm:grid grid-cols-[1fr_1fr_32px] gap-2 items-center">
+                                            <input [(ngModel)]="opt.attributeName" type="text" placeholder="e.g. Color"
+                                                class="h-8 rounded-lg border bg-white px-3 text-sm focus:border-[#1e3b8a] outline-none transition-all" />
+                                            <input [(ngModel)]="opt.value" type="text" placeholder="e.g. Black"
+                                                class="h-8 rounded-lg border bg-white px-3 text-sm focus:border-[#1e3b8a] outline-none transition-all" />
+                                            <button type="button" (click)="removeVariantOption(vi, oi)"
+                                                class="flex h-8 w-8 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-400 hover:bg-red-100 transition-colors">
+                                                <span class="material-symbols-outlined text-[14px]">close</span>
+                                            </button>
+                                        </div>
+
+                                        <!-- Mobile: stacked card -->
+                                        <div
+                                            class="sm:hidden flex flex-col gap-2 rounded-lg bg-[#f8fafc] border px-3 py-2 mb-2">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-[10px] font-bold uppercase text-[#64748b]">Option {{
+                                                    oi + 1 }}</span>
+                                                <button type="button" (click)="removeVariantOption(vi, oi)"
+                                                    class="text-red-400 hover:text-red-600">
+                                                    <span class="material-symbols-outlined text-[16px]">close</span>
+                                                </button>
+                                            </div>
+                                            <input [(ngModel)]="opt.attributeName" type="text"
+                                                placeholder="Attribute (e.g. Color)"
+                                                class="h-9 rounded-lg border px-3 text-sm bg-white focus:border-[#1e3b8a] outline-none transition-all" />
+                                            <input [(ngModel)]="opt.value" type="text" placeholder="Value (e.g. Red)"
+                                                class="h-9 rounded-lg border px-3 text-sm bg-white focus:border-[#1e3b8a] outline-none transition-all" />
+                                        </div>
+
+                                    </div>
+
+                                    <div *ngIf="variant.options.length === 0"
+                                        class="rounded-lg border border-dashed border-orange-200 bg-orange-50 py-3 text-center text-xs text-orange-500">
+                                        At least one option is recommended per variant
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div *ngIf="editVariants.length === 0"
+                                class="rounded-lg border border-dashed border-slate-200 py-6 text-center text-sm text-slate-400">
+                                No variants. Click "Add Variant" to add one.
+                            </div>
+                        </div>
+
+                        <!-- ── Image ── -->
+                        <div class="rounded-xl border bg-white p-3 sm:p-5 space-y-3 card-hover">
+                            <h3 class="font-semibold text-sm text-[#0f172a]">Product Image</h3>
+
+                            <!-- Preview area -->
+                            <div *ngIf="imagePreviewUrl" class="relative inline-block">
+                                <img [src]="imagePreviewUrl" alt="Product preview"
+                                    class="h-32 sm:h-40 rounded-lg border object-cover shadow-sm" />
+                                <button type="button" (click)="removeImage()"
+                                    class="absolute -top-2 -right-2 flex size-6 items-center justify-center rounded-full bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors">
+                                    <span class="material-symbols-outlined text-[14px]">close</span>
+                                </button>
+                            </div>
+
+                            <input type="file" accept="image/*" (change)="onImageSelected($event)" class="block w-full text-sm text-[#64748b]
+                                       file:mr-3 sm:file:mr-4 file:h-9 file:rounded-lg file:border-0
+                                       file:bg-[#eef4ff] file:px-3 sm:file:px-4 file:text-xs
+                                       file:font-bold file:text-[#1e3b8a] hover:file:bg-[#dbeafe]
+                                       file:whitespace-nowrap file:cursor-pointer" />
+                        </div>
+
+                    </div>
+                </ng-container>
+
+                <!-- ═══ NAV BUTTONS ═══ -->
+                <div class="flex items-center justify-between border-t pt-4 lg:pt-6 gap-3 mt-6 lg:mt-8">
+                    <button type="button" (click)="prevStep()" [disabled]="isFirstStep"
+                        class="rounded-lg px-4 sm:px-6 py-2.5 font-bold text-[#617289] disabled:opacity-40 hover:bg-slate-50 transition-colors text-sm sm:text-base">
+                        <span class="flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                            Back
+                        </span>
                     </button>
-                </div>
 
-                <!-- Variant cards -->
-                <div *ngFor="let variant of editVariants; let vi = index"
-                    class="rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col gap-3">
+                    <div class="flex gap-2 sm:gap-3">
+                        <button *ngIf="!isLastStep" type="button" (click)="nextStep()"
+                            class="rounded-lg bg-[#1e3b8a] px-6 sm:px-8 py-2.5 font-bold text-white hover:bg-[#162d6e] transition-colors text-sm sm:text-base">
+                            <span class="flex items-center gap-1">
+                                Next
+                                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            </span>
+                        </button>
 
-                    <!-- Variant header -->
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-slate-500 uppercase">Variant {{ vi + 1 }}</span>
-                        <button type="button" (click)="removeVariant(vi)"
-                            class="rounded-lg border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-500 hover:bg-red-100 transition-colors">
-                            Remove
+                        <button *ngIf="isLastStep" type="button" (click)="submitEdit()" [disabled]="editLoading"
+                            class="rounded-lg bg-green-600 px-6 sm:px-8 py-2.5 font-bold text-white hover:bg-green-700 disabled:opacity-50 transition-colors text-sm sm:text-base btn-submit">
+                            <span *ngIf="!editLoading" class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[18px]">save</span>
+                                Save Changes
+                            </span>
+                            <span *ngIf="editLoading" class="flex items-center gap-2">
+                                <span class="spinner"></span>
+                                Saving...
+                            </span>
                         </button>
                     </div>
-
-                    <!-- SKU / Barcode / Price -->
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <div class="flex flex-col gap-1">
-                            <label class="text-xs font-semibold text-slate-400 uppercase">SKU</label>
-                            <input [(ngModel)]="variant.sku" type="text" placeholder="e.g. HP-LAP-BLK"
-                                class="h-9 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <label class="text-xs font-semibold text-slate-400 uppercase">Barcode</label>
-                            <input [(ngModel)]="variant.barcode" type="text" placeholder="Barcode"
-                                class="h-9 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                        </div>
-                        <div class="flex flex-col gap-1">
-                            <label class="text-xs font-semibold text-slate-400 uppercase">Price Override</label>
-                            <input [(ngModel)]="variant.priceOverrideAmount" type="number" placeholder="0.00"
-                                class="h-9 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                        </div>
-                    </div>
-
-                    <!-- Options -->
-                    <div class="flex flex-col gap-2">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-semibold text-slate-400 uppercase">Options</span>
-                            <button type="button" (click)="addVariantOption(vi)"
-                                class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 transition-colors">
-                                + Add Option
-                            </button>
-                        </div>
-
-                        <!-- Option header -->
-                        <div *ngIf="variant.options.length > 0" class="grid grid-cols-[1fr_1fr_32px] gap-2 px-1">
-                            <span class="text-xs font-semibold text-slate-400 uppercase">Attribute Name</span>
-                            <span class="text-xs font-semibold text-slate-400 uppercase">Value</span>
-                            <span></span>
-                        </div>
-
-                        <!-- Option rows -->
-                        <div *ngFor="let opt of variant.options; let oi = index"
-                            class="grid grid-cols-[1fr_1fr_32px] gap-2 items-center">
-                            <input [(ngModel)]="opt.attributeName" type="text" placeholder="e.g. Color"
-                                class="h-8 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                            <input [(ngModel)]="opt.value" type="text" placeholder="e.g. Black"
-                                class="h-8 rounded-lg border bg-white px-3 text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 outline-none" />
-                            <button type="button" (click)="removeVariantOption(vi, oi)"
-                                class="flex h-8 w-8 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-400 hover:bg-red-100 transition-colors">
-                                ✕
-                            </button>
-                        </div>
-
-                        <!-- Warning if no options -->
-                        <div *ngIf="variant.options.length === 0"
-                            class="rounded-lg border border-dashed border-orange-200 bg-orange-50 py-3 text-center text-xs text-orange-500">
-                            ⚠ At least one option is required per variant
-                        </div>
-                    </div>
                 </div>
 
-                <div *ngIf="editVariants.length === 0"
-                    class="rounded-lg border border-dashed border-slate-200 py-6 text-center text-sm text-slate-400">
-                    No variants. Click "Add Variant" to add one.
-                </div>
-            </div>
+            </div><!-- /form content -->
 
-            <!-- Image -->
-            <div class="flex flex-col gap-1 sm:col-span-2">
-                <label class="text-xs font-semibold uppercase text-slate-500">Product Image</label>
-                <input type="file" accept="image/*" (change)="onImageSelected($event)"
-                    class="rounded-lg border px-3 py-2 text-sm" />
-            </div>
-
-
-        </div><!-- /form grid -->
-
-        <!-- Footer -->
-        <div class="flex justify-end gap-3 border-t px-6 py-4">
-            <button (click)="cancel()" class="rounded-lg border px-5 py-2 text-sm font-semibold hover:bg-slate-100">
-                Cancel
-            </button>
-            <button (click)="submitEdit()" [disabled]="editLoading"
-                class="rounded-lg bg-blue-800 px-5 py-2 text-sm font-bold text-white hover:bg-blue-900 disabled:opacity-50">
-                {{ editLoading ? 'Saving...' : 'Save Changes' }}
-            </button>
         </div>
-
-    </div>
+    </main>
 </div>

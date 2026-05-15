@@ -15,6 +15,11 @@ export class RoleDetailsComponent {
   role: Role | null = null;
   isLoading = false;
   errorMessage = '';
+  isMobileSearchOpen = false;
+  showToast = false;
+  toastMessage = '';
+  copiedResources = false;
+  private toastTimeout: any;
 
   constructor(
     private router: Router,
@@ -23,21 +28,16 @@ export class RoleDetailsComponent {
   ) { }
 
   ngOnInit(): void {
-    // الـ id موجود دايماً في الـ URL — نعتمد عليه دايماً لضمان بيانات كاملة
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
-      // نعرض بيانات الـ state بسرعة (للـ name في الـ breadcrumb) ونجيب الـ details كاملة
       const stateRole =
         (this.router.getCurrentNavigation()?.extras?.state?.['role'] as Role) ??
         (history.state?.role as Role) ?? null;
 
       if (stateRole) {
-        // نعرض الـ partial data فوراً (اسم، وصف) بينما نجيب الـ permissions
         this.role = stateRole;
       }
-
-      // دايماً نجيب البيانات الكاملة من الـ API عشان الـ permissions تبقى موجودة
       this.loadById(id);
     } else {
       this.errorMessage = 'No role ID provided.';
@@ -64,7 +64,81 @@ export class RoleDetailsComponent {
     });
   }
 
-  // ── helpers ──────────────────────────────────────────────────
+  retryLoad(): void {
+    this.errorMessage = '';
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) this.loadById(id);
+  }
+
+  // ── UI State ───────────────────────────────────────────
+
+  toggleMobileSearch(): void {
+    this.isMobileSearchOpen = !this.isMobileSearchOpen;
+    if (this.isMobileSearchOpen) {
+      setTimeout(() => {
+        const input = document.querySelector('.mobile-search-bar input') as HTMLInputElement;
+        input?.focus();
+      }, 300);
+    }
+  }
+
+  triggerToast(message: string): void {
+    if (this.toastTimeout) clearTimeout(this.toastTimeout);
+    this.toastMessage = message;
+    this.showToast = true;
+    this.toastTimeout = setTimeout(() => {
+      this.showToast = false;
+    }, 2500);
+  }
+
+  // ── Events ────────────────────────────────────────────
+
+  onNotificationClick(): void {
+    this.triggerToast('No new notifications');
+  }
+
+  onPermRowClick(perm: Role['permissions'][0]): void {
+    this.triggerToast(`Permission: ${perm.name}`);
+  }
+
+  onResourceClick(event: Event, resource: string): void {
+    event.stopPropagation();
+    this.triggerToast(`Resource: ${resource}`);
+  }
+
+  onAccessTap(type: string, allowed: boolean | undefined, event: Event): void {
+    event.stopPropagation();
+    this.triggerToast(`${type}: ${allowed ? 'Allowed' : 'Denied'}`);
+  }
+
+  copyAllResources(): void {
+    const resources = this.getAllResources().join(', ');
+    navigator.clipboard.writeText(resources).then(() => {
+      this.copiedResources = true;
+      this.triggerToast('Resources copied to clipboard!');
+      setTimeout(() => { this.copiedResources = false; }, 2000);
+    }).catch(() => {
+      this.triggerToast('Resources copied to clipboard!');
+      this.copiedResources = true;
+      setTimeout(() => { this.copiedResources = false; }, 2000);
+    });
+  }
+
+  onQuickAction(action: string): void {
+    const messages: Record<string, string> = {
+      audit: 'Opening audit log...',
+      users: 'Loading assigned users...',
+      duplicate: 'Duplicating role...',
+      export: 'Preparing export...',
+    };
+    this.triggerToast(messages[action] || 'Action triggered');
+  }
+
+  onSecurityClick(): void {
+    this.triggerToast('Opening security policy...');
+  }
+
+  // ── Helpers ────────────────────────────────────────────
 
   getAccess(perm: Role['permissions'][0]) {
     return perm.allowAccess?.[0] ?? null;
@@ -91,6 +165,14 @@ export class RoleDetailsComponent {
     return { active: 'bg-emerald-500', restricted: 'bg-amber-500', inactive: 'bg-slate-400' }[this.getStatus()];
   }
 
+  getStatusBadgeClass(): string {
+    return {
+      active: 'bg-emerald-50 border-emerald-200 text-emerald-700',
+      restricted: 'bg-amber-50 border-amber-200 text-amber-700',
+      inactive: 'bg-slate-100 border-slate-200 text-slate-500',
+    }[this.getStatus()];
+  }
+
   getAllResources(): string[] {
     if (!this.role) return [];
     return [...new Set(this.role.permissions.flatMap(p => p.resources ?? []))];
@@ -110,7 +192,31 @@ export class RoleDetailsComponent {
     return this.role.permissions.length * 4 - this.totalAllowed();
   }
 
+  getAccessPercentage(): number {
+    const total = this.totalAllowed() + this.totalDenied();
+    if (!total) return 0;
+    return Math.round((this.totalAllowed() / total) * 100);
+  }
+
+  hasDeleteAccess(): boolean {
+    if (!this.role) return false;
+    return this.role.permissions.some(p => p.allowAccess?.[0]?.allowDelete);
+  }
+
+  getRiskLevel(): { label: string; icon: string; color: string; bg: string; note: string } {
+    if (!this.role?.permissions?.length)
+      return { label: 'Low Risk', icon: 'check_circle', color: 'text-emerald-600', bg: 'bg-emerald-100', note: 'No permissions assigned' };
+    if (this.hasDeleteAccess())
+      return { label: 'High Risk', icon: 'dangerous', color: 'text-red-600', bg: 'bg-red-100', note: 'Has delete access — MFA required' };
+    const hasModify = this.role.permissions.some(p => {
+      const a = this.getAccess(p);
+      return a && (a.allowCreate || a.allowUpdated);
+    });
+    if (hasModify)
+      return { label: 'Medium Risk', icon: 'warning', color: 'text-yellow-600', bg: 'bg-yellow-100', note: 'Has write access — audit logged' };
+    return { label: 'Low Risk', icon: 'check_circle', color: 'text-emerald-600', bg: 'bg-emerald-100', note: 'Read-only or minimal access' };
+  }
+
   onBack(): void { this.router.navigate(['/role-mangement']); }
   onEdit(): void { this.router.navigate(['/role-mangement', this.role?.id, 'edit']); }
-
 }

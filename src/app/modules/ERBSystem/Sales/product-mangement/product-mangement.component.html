@@ -30,7 +30,8 @@
 
                 <div class="flex w-full flex-wrap items-center gap-2 sm:w-auto">
 
-                    <div class="relative min-w-[220px] flex-1 sm:flex-none sm:w-72">
+                    <!-- Desktop Search -->
+                    <div class="relative hidden sm:block min-w-[220px] sm:w-72">
                         <span
                             class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">search</span>
                         <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()"
@@ -38,38 +39,89 @@
                             class="h-10 w-full rounded-lg border border-[#e2e8f0] bg-white pl-10 pr-3 text-sm shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
                     </div>
 
-                    <div class="relative">
-                        <select [(ngModel)]="selectedCategory" (ngModelChange)="onFilterChange()"
-                            class="h-10 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
-                            [ngClass]="selectedCategory ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
-                            <option value="">Category: All</option>
-                            @for (cat of availableCategories; track cat) {
-                            <option [value]="cat">{{ cat }}</option>
-                            }
-                        </select>
+                    <!-- Mobile Search -->
+                    <div class="relative sm:hidden w-full">
                         <span
-                            class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">search</span>
+                        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()"
+                            placeholder="Search by name or SKU…"
+                            class="h-10 w-full rounded-lg border border-[#e2e8f0] bg-white pl-10 pr-10 text-sm shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                        <button (click)="toggleMobileFilter()"
+                            class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition-all"
+                            [ngClass]="isMobileFilterOpen || activeFilterCount > 0 ? 'text-[#1e3b8a] bg-[#1e3b8a]/5' : 'text-[#64748b]'">
+                            <span class="material-symbols-outlined text-[20px]">tune</span>
+                        </button>
                     </div>
 
-                    <div class="relative">
-                        <select [(ngModel)]="selectedType" (ngModelChange)="onFilterChange()"
-                            class="h-10 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
-                            [ngClass]="selectedType ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
-                            <option value="">Type: All</option>
-                            <option value="GOODS">Goods</option>
-                            <option value="SERVICE">Service</option>
-                        </select>
-                        <span
-                            class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
+                    <!-- Mobile Filters Expanded -->
+                    <div *ngIf="isMobileFilterOpen"
+                        class="sm:hidden w-full flex flex-col gap-2 pt-2 border-t border-[#e2e8f0]">
+                        <div class="relative">
+                            <select [(ngModel)]="selectedCategory" (ngModelChange)="onFilterChange()"
+                                class="h-10 w-full cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                [ngClass]="selectedCategory ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                                <option value="">Category: All</option>
+                                @for (cat of availableCategories; track cat) {
+                                <option [value]="cat">{{ cat }}</option>
+                                }
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
+                        </div>
+                        <div class="relative">
+                            <select [(ngModel)]="selectedType" (ngModelChange)="onFilterChange()"
+                                class="h-10 w-full cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                [ngClass]="selectedType ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                                <option value="">Type: All</option>
+                                <option value="GOODS">Goods</option>
+                                <option value="SERVICE">Service</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
+                        </div>
+                        @if (activeFilterCount > 0) {
+                        <button (click)="clearFilters()"
+                            class="w-full text-sm font-medium text-red-600 hover:text-red-700 py-2 transition-colors">
+                            Clear all filters
+                        </button>
+                        }
                     </div>
 
-                    @if (activeFilterCount > 0) {
-                    <button (click)="clearFilters()"
-                        class="flex h-10 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 text-xs font-medium text-red-600 transition-colors hover:bg-red-100">
-                        <span class="material-symbols-outlined text-[16px]">close</span>
-                        Clear
-                    </button>
-                    }
+                    <!-- Desktop Filters -->
+                    <div class="hidden sm:flex items-center gap-2">
+                        <div class="relative">
+                            <select [(ngModel)]="selectedCategory" (ngModelChange)="onFilterChange()"
+                                class="h-10 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                [ngClass]="selectedCategory ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                                <option value="">Category: All</option>
+                                @for (cat of availableCategories; track cat) {
+                                <option [value]="cat">{{ cat }}</option>
+                                }
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
+                        </div>
+
+                        <div class="relative">
+                            <select [(ngModel)]="selectedType" (ngModelChange)="onFilterChange()"
+                                class="h-10 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white px-3 pr-8 text-sm font-medium text-[#374151] shadow-sm focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
+                                [ngClass]="selectedType ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                                <option value="">Type: All</option>
+                                <option value="GOODS">Goods</option>
+                                <option value="SERVICE">Service</option>
+                            </select>
+                            <span
+                                class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
+                        </div>
+
+                        @if (activeFilterCount > 0) {
+                        <button (click)="clearFilters()"
+                            class="flex h-10 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 text-xs font-medium text-red-600 transition-colors hover:bg-red-100">
+                            <span class="material-symbols-outlined text-[16px]">close</span>
+                            Clear
+                        </button>
+                        }
+                    </div>
                 </div>
 
                 <div class="flex w-full items-center gap-2 sm:w-auto">
@@ -89,7 +141,9 @@
             <!-- ── Table card ── -->
             <div class="flex flex-1 flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
 
-                <div class="flex-1 overflow-auto" style="scrollbar-width:thin;scrollbar-color:#cbd5e1 #f1f5f9;">
+                <!-- ═══ Desktop Table ═══ -->
+                <div class="hidden md:block flex-1 overflow-auto"
+                    style="scrollbar-width:thin;scrollbar-color:#cbd5e1 #f1f5f9;">
                     <table class="w-full border-collapse text-left">
                         <thead class="sticky top-0 z-10 bg-[#f8fafc]">
                             <tr>
@@ -123,21 +177,18 @@
                         </thead>
 
                         <tbody class="divide-y divide-[#f1f5f9]">
-
                             @for (product of pagedProducts; track product.id) {
                             <tr class="group transition-colors hover:bg-[#f8fafc]">
-
                                 <td class="p-4">
                                     <input type="checkbox"
                                         class="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#1e3b8a]" />
                                 </td>
-
                                 <td class="p-4">
                                     <div class="flex items-center gap-3">
                                         <div class="h-10 w-10 shrink-0 overflow-hidden rounded-lg border bg-[#f1f5f9]">
                                             @if (product.imageUrl) {
                                             <img [src]="product.imageUrl" class="h-full w-full object-cover" />
-                                            }@else {
+                                            } @else {
                                             <div class="flex h-full w-full items-center justify-center text-[#94a3b8]">
                                                 <span class="material-symbols-outlined">inventory_2</span>
                                             </div>
@@ -149,30 +200,22 @@
                                         </div>
                                     </div>
                                 </td>
-
                                 <td class="p-4">
-                                    <span class="rounded bg-[#f1f5f9] px-2 py-1 font-mono text-xs text-[#475569]">
-                                        {{ product.code }}
-                                    </span>
+                                    <span class="rounded bg-[#f1f5f9] px-2 py-1 font-mono text-xs text-[#475569]">{{
+                                        product.code }}</span>
                                 </td>
-
                                 <td class="p-4 text-sm text-[#64748b]">{{ product.categoryName }}</td>
-
                                 <td class="p-4 text-sm text-[#64748b]">{{ product.productType }}</td>
-
                                 <td class="p-4 text-right">
-                                    <span class="text-sm font-semibold text-[#0f172a]">
-                                        {{ product.sellingPrice }} {{ product.currency }}
-                                    </span>
+                                    <span class="text-sm font-semibold text-[#0f172a]">{{ product.sellingPrice }} {{
+                                        product.currency }}</span>
                                 </td>
-
                                 <td class="p-4 text-center">
                                     <span class="text-xs font-medium"
                                         [ngClass]="product.isTrackInventory ? 'text-green-600' : 'text-gray-400'">
                                         {{ product.isTrackInventory ? 'Tracked' : 'Not Tracked' }}
                                     </span>
                                 </td>
-
                                 <td class="p-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <button
@@ -192,18 +235,112 @@
                                         </button>
                                     </div>
                                 </td>
-
                             </tr>
                             } @empty {
                             <tr>
                                 <td colspan="8" class="px-6 py-16 text-center">
-                                    <p class="text-[#64748b]">No products found</p>
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="p-4 rounded-2xl bg-slate-100">
+                                            <span
+                                                class="material-symbols-outlined text-[#94a3b8] text-[40px]">inventory_2</span>
+                                        </div>
+                                        <p class="text-[#64748b]">No products found</p>
+                                        <button (click)="clearFilters()"
+                                            class="text-xs font-bold text-[#1e3b8a] hover:underline">Clear all
+                                            filters</button>
+                                    </div>
                                 </td>
                             </tr>
                             }
-
                         </tbody>
                     </table>
+                </div>
+
+                <!-- ═══ Mobile Cards ═══ -->
+                <div class="md:hidden flex-1 overflow-auto divide-y divide-[#f1f5f9]">
+                    @for (product of pagedProducts; track product.id) {
+                    <div class="p-4 transition-colors hover:bg-[#f8fafc]"
+                        [ngClass]="selectedIds.has(product.id) ? 'bg-blue-50/30' : ''">
+
+                        <div class="flex items-start gap-3">
+                            <!-- Checkbox -->
+                            <div class="pt-0.5 flex-shrink-0"
+                                (click)="toggleRow(product.id, !selectedIds.has(product.id))">
+                                <input type="checkbox" [checked]="selectedIds.has(product.id)"
+                                    class="h-4 w-4 cursor-pointer rounded border-slate-300 text-[#1e3b8a]" />
+                            </div>
+
+                            <!-- Image -->
+                            <div
+                                class="h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-[#e2e8f0] bg-[#f1f5f9]">
+                                @if (product.imageUrl) {
+                                <img [src]="product.imageUrl" [alt]="product.name" class="h-full w-full object-cover" />
+                                } @else {
+                                <div class="flex h-full w-full items-center justify-center text-[#94a3b8]">
+                                    <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+                                </div>
+                                }
+                            </div>
+
+                            <!-- Info -->
+                            <div class="min-w-0 flex-1">
+                                <p class="font-bold text-sm text-[#0f172a] truncate">{{ product.name }}</p>
+                                <p class="text-xs text-[#64748b] truncate mt-0.5">{{ product.shortDescription }}</p>
+                                <div class="flex flex-wrap items-center gap-1.5 mt-1.5">
+                                    <span
+                                        class="rounded bg-[#f1f5f9] px-1.5 py-0.5 font-mono text-[10px] text-[#475569]">{{
+                                        product.code }}</span>
+                                    <span class="rounded-md px-1.5 py-0.5 text-[10px] font-semibold border" [ngClass]="product.productType === 'GOODS'
+                                            ? 'bg-blue-50 text-blue-700 border-blue-200'
+                                            : 'bg-purple-50 text-purple-700 border-purple-200'">
+                                        {{ product.productType }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center gap-1 flex-shrink-0">
+                                <button (click)="viewProduct(product.id)"
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg text-[#64748b] hover:text-[#1e3b8a] hover:bg-[#f1f5f9] transition-all active:scale-90">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </button>
+                                <button (click)="EditProduct(product.id)"
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg text-[#1e3b8a] hover:bg-blue-50 transition-all active:scale-90">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </button>
+                                <button (click)="deleteProduct(product.id)"
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 transition-all active:scale-90">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Footer row -->
+                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-[#f1f5f9]">
+                            <span class="text-xs text-[#64748b]">{{ product.categoryName }}</span>
+                            <div class="flex items-center gap-3">
+                                <span class="text-xs font-medium"
+                                    [ngClass]="product.isTrackInventory ? 'text-green-600' : 'text-[#94a3b8]'">
+                                    {{ product.isTrackInventory ? 'Tracked' : 'Not Tracked' }}
+                                </span>
+                                <span class="text-sm font-bold text-[#0f172a] tabular-nums">
+                                    {{ product.sellingPrice }} {{ product.currency }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    } @empty {
+                    <div class="p-12 text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="p-4 rounded-2xl bg-slate-100">
+                                <span class="material-symbols-outlined text-[#94a3b8] text-[36px]">inventory_2</span>
+                            </div>
+                            <p class="text-sm font-medium text-[#64748b]">No products found</p>
+                            <button (click)="clearFilters()"
+                                class="text-xs font-bold text-[#1e3b8a] hover:underline">Clear filters</button>
+                        </div>
+                    </div>
+                    }
                 </div>
 
                 <!-- ── Pagination footer ── -->
@@ -227,8 +364,8 @@
                         <span class="flex h-9 w-9 items-center justify-center text-xs text-[#64748b]">…</span>
                         } @else {
                         <button (click)="goToPage(page)" [ngClass]="page === currentPage
-                                        ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-bold shadow-sm'
-                                        : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
+                                ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-bold shadow-sm'
+                                : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
                             class="flex h-9 w-9 items-center justify-center rounded-lg border text-sm transition-colors">
                             {{ page }}
                         </button>

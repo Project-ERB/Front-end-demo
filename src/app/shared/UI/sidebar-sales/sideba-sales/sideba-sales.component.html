@@ -55,6 +55,14 @@
                 <span class="material-symbols-outlined text-[20px]">receipt_long</span>
                 Orders
             </a>
+
+            <div class="p-4 border-t border-slate-100">
+                <button (click)="onLogout()"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-medium text-sm">Logout</span>
+                </button>
+            </div>
         </nav>
     </div>
 </aside>

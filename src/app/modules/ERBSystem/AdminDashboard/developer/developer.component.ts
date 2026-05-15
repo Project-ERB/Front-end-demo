@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { DeveloperService } from '../../../../core/services/Developer/developer.service';
@@ -77,6 +77,8 @@ interface Permission {
 })
 export class DeveloperComponent implements OnInit, OnDestroy {
 
+  @ViewChild(SiedeAdminComponent) sidebar!: SiedeAdminComponent;
+
   constructor(
     private _developerService: DeveloperService,
     private __ApolloservicesService: ApolloservicesService,
@@ -85,8 +87,31 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     private _ToastrService: ToastrService
   ) { }
 
-  goToDetails(id: string) {
-    this._Router.navigate(['/Developer-Details', id]);
+  // ─── Toast ───────────────────────────────────────────────────
+  showToastMsg = false;
+  toastText = '';
+  private toastTimer: any;
+
+  fireToast(msg: string): void {
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastText = msg;
+    this.showToastMsg = true;
+    this.toastTimer = setTimeout(() => { this.showToastMsg = false; }, 2400);
+  }
+
+  // ─── Sidebar ─────────────────────────────────────────────────
+  toggleSidebar(): void {
+    this.sidebar?.toggle();
+  }
+
+  // ─── Copy ────────────────────────────────────────────────────
+  copyPath(path: string, event?: Event): void {
+    event?.stopPropagation();
+    navigator.clipboard.writeText(path).then(() => {
+      this.fireToast(`Copied: ${path}`);
+    }).catch(() => {
+      this.fireToast(`Copied: ${path}`);
+    });
   }
 
   // ─── Pagination ──────────────────────────────────────────────
@@ -128,6 +153,11 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   modalRoles: Role[] = [];
   modalPermissions: Permission[] = [];
 
+  // ─── Delete Confirm ──────────────────────────────────────────
+  showDeleteConfirm = false;
+  pendingDeleteId: string | null = null;
+  pendingDeletePath: string = '';
+
   // ─── Mobile Drawer ───────────────────────────────────────────
   showEndpointsDrawer = false;
 
@@ -145,13 +175,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   selectCursor: string | null = null;
   selectPageInfo: any = null;
   loadingMoreEndpoints = false;
-
-  navItems = [
-    { name: 'Dashboard', icon: 'grid', active: false },
-    { name: 'Endpoints', icon: 'code', active: true },
-    { name: 'Roles', icon: 'shield-check', active: false },
-    { name: 'Permissions', icon: 'lock-closed', active: false }
-  ];
+  pathSearch = '';
 
   // ─── Lifecycle ───────────────────────────────────────────────
   ngOnInit() {
@@ -221,6 +245,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
 
   // ─── Create Modal ────────────────────────────────────────────
   openModal() {
+    this.showEndpointsDrawer = false;
     this.showModal = true;
   }
 
@@ -231,6 +256,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.selectCursor = null;
     this.selectPageInfo = null;
     this.showPathDropdown = false;
+    this.pathSearch = '';
   }
 
   submitEndpoint() {
@@ -254,13 +280,11 @@ export class DeveloperComponent implements OnInit, OnDestroy {
         this.closeModal();
         this.loadEndpoints();
         this.loadAuthorizedEndpoints();
-        this._ToastrService.success('Submit Endpoint Success', 'Success')
-        console.log(res)
+        this._ToastrService.success('Submit Endpoint Success', 'Success');
       },
       error: (err) => {
         this.isLoading = false;
-        console.error(err);
-        this._ToastrService.error('Failed Submit Endpoint', 'Error')
+        this._ToastrService.error('Failed Submit Endpoint', 'Error');
       }
     });
   }
@@ -279,11 +303,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.loadingAuthorized = false;
-          console.error('Full error object:', JSON.stringify(err, null, 2));
-          console.error('GraphQL errors:', err?.graphQLErrors);
-          console.error('Network error:', err?.networkError);
-          console.error('Message:', err?.message);
-          console.error('GraphQL error details:', err);  // ✅ هتشوف السبب الحقيقي
+          console.error(err);
         }
       });
   }
@@ -349,7 +369,9 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     }
 
     this._developerService.updateEndpoint(epId, newStatus).subscribe({
-      next: () => { },
+      next: () => {
+        this.fireToast(`${ep.path} → ${newStatus ? 'Activated' : 'Deactivated'}`);
+      },
       error: (err) => {
         console.error('Failed to update status:', err);
         const rollbackIndex = this.authorizedEndpoints.findIndex(e => e.id === epId);
@@ -360,19 +382,40 @@ export class DeveloperComponent implements OnInit, OnDestroy {
             ...this.authorizedEndpoints.slice(rollbackIndex + 1)
           ];
         }
+        this.fireToast('Failed to update status');
       }
     });
   }
 
   // ─── Delete ──────────────────────────────────────────────────
-  deleteEndpoint(id: string) {
-    if (!confirm('Are you sure you want to delete this endpoint?')) return;
+  deleteEndpoint(id: string, path?: string) {
+    this.pendingDeleteId = id;
+    this.pendingDeletePath = path || '';
+    this.showDeleteConfirm = true;
+  }
+
+  cancelDelete() {
+    this.showDeleteConfirm = false;
+    this.pendingDeleteId = null;
+    this.pendingDeletePath = '';
+  }
+
+  confirmDelete() {
+    if (!this.pendingDeleteId) return;
+    const id = this.pendingDeleteId;
+    this.showDeleteConfirm = false;
+    this.pendingDeleteId = null;
+
     this._developerService.deleteEndpoint(id).subscribe({
       next: () => {
         this.loadEndpoints();
         this.loadAuthorizedEndpoints();
+        this.fireToast('Endpoint deleted');
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err);
+        this.fireToast('Failed to delete');
+      }
     });
   }
 
@@ -415,8 +458,12 @@ export class DeveloperComponent implements OnInit, OnDestroy {
         next: () => {
           this.closeRolesPermModal();
           this.loadAuthorizedEndpoints();
+          this.fireToast('Roles & permissions updated');
         },
-        error: (err) => console.error('Failed to update roles/permissions:', err)
+        error: (err) => {
+          console.error('Failed to update roles/permissions:', err);
+          this.fireToast('Failed to update');
+        }
       });
   }
 
@@ -453,6 +500,7 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   selectPath(path: string) {
     this.newEndpoint.path = path;
     this.showPathDropdown = false;
+    this.pathSearch = '';
   }
 
   onDropdownScroll(event: Event) {
@@ -461,6 +509,11 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     if (nearBottom && this.selectPageInfo?.hasNextPage && !this.loadingMoreEndpoints) {
       this.loadEndpointsForSelect(this.selectCursor!);
     }
+  }
+
+  // ─── Navigation ──────────────────────────────────────────────
+  goToDetails(id: string) {
+    this._Router.navigate(['/Developer-Details', id]);
   }
 
   // ─── Helpers & Getters ───────────────────────────────────────
@@ -507,4 +560,13 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   get assignedPermissionsCount(): number { return this.permissionsList.filter(p => p.assigned).length; }
   get selectedModalRolesCount(): number { return this.modalRoles.filter(r => r.assigned).length; }
   get selectedModalPermissionsCount(): number { return this.modalPermissions.filter(p => p.assigned).length; }
+
+  get filteredEndpointsForSelect(): Endpoint[] {
+    if (!this.pathSearch.trim()) return this.allEndpointsForSelect;
+    const q = this.pathSearch.toLowerCase().trim();
+    return this.allEndpointsForSelect.filter(ep =>
+      ep.path.toLowerCase().includes(q) ||
+      ep.method.toLowerCase().includes(q)
+    );
+  }
 }

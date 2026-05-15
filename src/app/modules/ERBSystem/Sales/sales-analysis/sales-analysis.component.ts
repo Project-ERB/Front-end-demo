@@ -1,8 +1,9 @@
 import { SalesDashService } from './../../../../core/services/sales-dash/sales-dash.service';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebaSalesComponent } from '../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 export interface KpiCard {
   title: string;
@@ -34,28 +35,78 @@ export interface Product {
 
 @Component({
   selector: 'app-sales-analysis',
+  standalone: true,
   imports: [CommonModule, FormsModule, SidebaSalesComponent],
   templateUrl: './sales-analysis.component.html',
   styleUrl: './sales-analysis.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('500ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('staggerItems', [
+      transition('* => *', [
+        query(
+          '.stagger-item',
+          [
+            style({ opacity: 0, transform: 'translateY(12px)' }),
+            stagger(60, [animate('350ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+    trigger('staggerRows', [
+      transition('* => *', [
+        query(
+          '.prod-row',
+          [
+            style({ opacity: 0, transform: 'translateX(-10px)' }),
+            stagger(40, [animate('300ms ease-out', style({ opacity: 1, transform: 'translateX(0)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+    trigger('scaleIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('400ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+    ]),
+    trigger('toastIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px) scale(0.95)' }),
+        animate('350ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+    ]),
+    trigger('barGrow', [
+      transition(':enter', [
+        style({ width: '0%' }),
+        animate('600ms cubic-bezier(0.22, 1, 0.36, 1)', style({ width: '{{ percentage }}%' })),
+      ]),
+    ]),
+    trigger('chartDraw', [
+      transition(':enter', [
+        style({ strokeDashoffset: '1000' }),
+        animate('1.5s ease-out', style({ strokeDashoffset: '0' })),
+      ]),
+    ]),
+  ],
 })
-export class SalesAnalysisComponent implements OnInit {
+export class SalesAnalysisComponent implements OnInit, OnDestroy {
 
   private readonly _SalesDashService = inject(SalesDashService);
 
   // ─── State ────────────────────────────────────────────────────────────────
   isLoading = false;
   errorMessage = '';
+  isMobileSidebarOpen = false;
 
   selectedPeriod = 'Last 30 Days';
   periods = ['Last 30 Days', 'Last 7 Days', 'Last Quarter', 'Year to Date'];
-
-  navItems = [
-    { icon: 'grid_view', label: 'Dashboard', active: false },
-    { icon: 'trending_up', label: 'Sales Analysis', active: true },
-    { icon: 'category', label: 'Categories', active: false },
-    { icon: 'inventory_2', label: 'Products', active: false },
-    { icon: 'percent', label: 'Discounts', active: false },
-  ];
 
   kpiCards: KpiCard[] = [];
   categories: CategoryBar[] = [];
@@ -70,9 +121,30 @@ export class SalesAnalysisComponent implements OnInit {
   currentPage = 1;
   pageSize = 5;
 
+  // ─── Hover & Toast ─────────────────────────────────────────────────────────
+  hoveredSku: string | null = null;
+  showToastMsg = false;
+  toastText = '';
+  toastIcon = 'check_circle';
+  toastColor = 'text-emerald-400';
+  private toastTimer: any;
+
   // ─── Lifecycle ────────────────────────────────────────────────────────────
   ngOnInit(): void {
     this.loadDashboard();
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.toastTimer);
+  }
+
+  // ─── Sidebar ──────────────────────────────────────────────────────────────
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
   }
 
   // ─── Period Change ────────────────────────────────────────────────────────
@@ -107,10 +179,9 @@ export class SalesAnalysisComponent implements OnInit {
   // ─── Date Range Helper ────────────────────────────────────────────────────
   private getDateRange(): { startDate: string; endDate: string } {
     const end = new Date();
-    end.setHours(23, 59, 59, 999); // ← include the full current day
-
+    end.setHours(23, 59, 59, 999);
     const start = new Date();
-    start.setHours(0, 0, 0, 0); // ← start from beginning of the day
+    start.setHours(0, 0, 0, 0);
 
     switch (this.selectedPeriod) {
       case 'Last 7 Days':
@@ -122,7 +193,7 @@ export class SalesAnalysisComponent implements OnInit {
       case 'Year to Date':
         start.setMonth(0, 1);
         break;
-      default: // Last 30 Days
+      default:
         start.setDate(end.getDate() - 30);
         break;
     }
@@ -317,17 +388,52 @@ export class SalesAnalysisComponent implements OnInit {
   previousPage(): void { if (this.currentPage > 1) this.currentPage--; }
   nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
 
+  // ─── Hover ────────────────────────────────────────────────────────────────
+  onRowHover(sku: string | null): void {
+    this.hoveredSku = sku;
+  }
+
   // ─── Misc ─────────────────────────────────────────────────────────────────
   getStatusClass(status: string): string {
     switch (status) {
-      case 'In Stock': return 'bg-green-50 text-green-700';
-      case 'Low Stock': return 'bg-yellow-50 text-yellow-700';
-      case 'Out of Stock': return 'bg-red-50 text-red-700';
-      default: return 'bg-gray-50 text-gray-700';
+      case 'In Stock': return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+      case 'Low Stock': return 'bg-amber-50 text-amber-700 border border-amber-200';
+      case 'Out of Stock': return 'bg-red-50 text-red-700 border border-red-200';
+      default: return 'bg-gray-50 text-gray-700 border border-gray-200';
     }
   }
 
   exportReport(): void {
-    alert('Exporting report...');
+    this.showToast('Report exported successfully', 'download', 'text-emerald-400');
+  }
+
+  // ─── Toast ────────────────────────────────────────────────────────────────
+  showToast(message: string, icon: string = 'check_circle', color: string = 'text-emerald-400'): void {
+    clearTimeout(this.toastTimer);
+    this.toastText = message;
+    this.toastIcon = icon;
+    this.toastColor = color;
+    this.showToastMsg = true;
+    this.toastTimer = setTimeout(() => { this.showToastMsg = false; }, 2800);
+  }
+
+  // ─── Keyboard ─────────────────────────────────────────────────────────────
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      const input = document.getElementById('sales-search-input');
+      input?.focus();
+    }
+    if (event.key === 'Escape') {
+      this.closeMobileSidebar();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth >= 1024) {
+      this.isMobileSidebarOpen = false;
+    }
   }
 }

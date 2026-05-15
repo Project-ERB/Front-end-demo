@@ -1,0 +1,244 @@
+/* Discount Management - Responsive + Animations */
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+/* Prevent iOS auto-zoom on input focus */
+@media (max-width: 639px) {
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="search"],
+    input[type="date"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+
+    input[type="file"]::file-selector-button {
+        padding: 0.5rem 0.75rem;
+        font-size: 13px;
+    }
+}
+
+/* Sidebar shadow on mobile */
+@media (max-width: 1023px) {
+    aside {
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* Touch-friendly buttons */
+@media (max-width: 1023px) {
+    button {
+        min-height: 40px;
+    }
+
+    button[disabled] {
+        pointer-events: none;
+    }
+}
+
+/* Select optgroup styling */
+select optgroup {
+    font-weight: 700;
+    color: #1e3b8a;
+}
+
+select option {
+    font-weight: 400;
+    color: #111418;
+}
+
+/* ===== ANIMATIONS ===== */
+
+/* Slide-in on page load */
+.slide-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fade in for expandable sections */
+.fade-in {
+    animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Sidebar overlay fade */
+.fade-overlay {
+    animation: overlayIn 0.2s ease-out;
+}
+
+@keyframes overlayIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Stat cards staggered entrance */
+.stat-card {
+    opacity: 0;
+    animation: cardPop 0.4s ease-out forwards;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+@keyframes cardPop {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.stat-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+}
+
+/* Discount mobile card entrance */
+.discount-card {
+    animation: cardSlide 0.3s ease-out both;
+    transition: background-color 0.15s ease;
+}
+
+@keyframes cardSlide {
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.discount-card:active {
+    background-color: #f8fafc;
+}
+
+/* Table row entrance */
+.row-enter {
+    animation: rowIn 0.3s ease-out both;
+}
+
+@keyframes rowIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal bottom sheet slide-up on mobile */
+.modal-sheet {
+    animation: sheetUp 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes sheetUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+@media (min-width: 640px) {
+    .modal-sheet {
+        animation-name: modalPop;
+    }
+}
+
+@keyframes modalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Spinner for buttons */
+.spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Focus ring */
+input:focus,
+select:focus,
+textarea:focus {
+    box-shadow: 0 0 0 3px rgba(30, 59, 138, 0.08);
+}
+
+/* Mobile drag handle for bottom sheet */
+@media (max-width: 639px) {
+    .modal-sheet {
+        max-height: 85vh;
+    }
+}
+
+/* Print: hide sidebar and modals */
+@media print {
+
+    aside,
+    .lg\:hidden,
+    [class*="fixed inset-0"] {
+        display: none !important;
+    }
+}

@@ -1,0 +1,210 @@
+// ─── Animations ───────────────────────────────────────────
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-6px);
+    }
+
+    40% {
+        transform: translateX(6px);
+    }
+
+    60% {
+        transform: translateX(-4px);
+    }
+
+    80% {
+        transform: translateX(4px);
+    }
+}
+
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.5;
+        transform: scale(1.3);
+    }
+}
+
+@keyframes pop-in {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+@keyframes shield-glow {
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 0px transparent);
+    }
+
+    50% {
+        filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.4));
+    }
+}
+
+@keyframes notification-bounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+// ─── Classes ─────────────────────────────────────────────
+
+.fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.error-shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+.loading-pulse {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.status-dot {
+    &.bg-emerald-500 {
+        animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    &.bg-amber-500 {
+        animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+}
+
+.resource-tag {
+    opacity: 0;
+    animation: pop-in 0.3s ease-out forwards;
+}
+
+.risk-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.shield-pulse {
+    animation: shield-glow 3s ease-in-out infinite;
+}
+
+.notification-dot {
+    animation: notification-bounce 2s ease-in-out infinite;
+}
+
+.copy-icon {
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+// ─── Card Hover ──────────────────────────────────────────
+
+.card-hover {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+}
+
+// ─── Access Card ─────────────────────────────────────────
+
+.access-card {
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+
+    &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    &:active::after {
+        opacity: 1;
+    }
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+    }
+}
+
+// ─── Mobile Bottom Bar safe area ─────────────────────────
+
+@media (max-width: 640px) {
+    .sm\:hidden+main {
+        padding-bottom: 70px;
+    }
+}
+
+// ─── Scrollbar Styling ───────────────────────────────────
+
+main::-webkit-scrollbar {
+    width: 6px;
+}
+
+main::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+main::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+main::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

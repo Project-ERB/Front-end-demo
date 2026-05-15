@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoriesService } from '../../../../core/services/categories/categories.service';
@@ -9,6 +9,7 @@ import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba
 import { forkJoin, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 export interface Category {
   id: string;
@@ -18,15 +19,6 @@ export interface Category {
   parent: string;
   status: 'Active' | 'Draft' | 'Archived';
   selected: boolean;
-}
-
-export interface TreeNode {
-  label: string;
-  icon: string;
-  count?: number;
-  expanded: boolean;
-  active: boolean;
-  children?: TreeNode[];
 }
 
 export interface CategoryForm {
@@ -39,14 +31,61 @@ export interface CategoryForm {
 
 @Component({
   selector: 'app-category-mangement',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, ReactiveFormsModule, SidebaSalesComponent],
   templateUrl: './category-mangement.component.html',
   styleUrl: './category-mangement.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('500ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('scaleIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('400ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+    ]),
+    trigger('staggerRows', [
+      transition('* => *', [
+        query(
+          '.cat-row',
+          [
+            style({ opacity: 0, transform: 'translateX(-10px)' }),
+            stagger(40, [animate('300ms ease-out', style({ opacity: 1, transform: 'translateX(0)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+    trigger('modalIn', [
+      transition(':enter', [style({ opacity: 0 }), animate('200ms ease-out', style({ opacity: 1 }))]),
+      transition(':leave', [animate('150ms ease-in', style({ opacity: 0 }))]),
+    ]),
+    trigger('modalPanelIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95) translateY(10px)' }),
+        animate('300ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1) translateY(0)' })),
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in', style({ opacity: 0, transform: 'scale(0.97) translateY(5px)' })),
+      ]),
+    ]),
+    trigger('confirmIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.9)' }),
+        animate('200ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+    ]),
+  ],
 })
-export class CategoryMangementComponent implements OnInit {
+export class CategoryMangementComponent implements OnInit, OnDestroy {
 
   isEditMode: boolean = false;
-  private readonly _ToastrService = inject(ToastrService)
+  isMobileSidebarOpen = false;
+  private readonly _ToastrService = inject(ToastrService);
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _categoriesService = inject(ApollocatoriesService);
@@ -63,13 +102,32 @@ export class CategoryMangementComponent implements OnInit {
   categories: any[] = [];
   allProducts: any[] = [];
 
-  // ── Lifecycle ─────────────────────────────────────────────────────────────
+  // ── Hover ──
+  hoveredCatId: string | null = null;
+
+  // ── Delete Confirm ──
+  showDeleteConfirm = false;
+  deleteTarget: any = null;
+  deleteMessage = '';
+
+  // ── Lifecycle ──
   ngOnInit(): void {
     this.loadCategories();
     this.loadAllProducts();
   }
 
-  // ── Data Loading ──────────────────────────────────────────────────────────
+  ngOnDestroy(): void { }
+
+  // ── Sidebar ──
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
+  // ── Data Loading ──
   loadCategories() {
     this._categoriesService.getApollocategories().subscribe({
       next: (res: any) => {
@@ -92,44 +150,44 @@ export class CategoryMangementComponent implements OnInit {
     });
   }
 
-  // ── Delete Single Category (cascade) ──────────────────────────────────────
-  deleteCategory(id: string): void {
-    const linkedProducts = this.allProducts.filter((p: any) => p.categoryId === id);
-
-    const confirmMessage = linkedProducts.length > 0
-      ? `This category has ${linkedProducts.length} linked product(s). They will be deleted first. Continue?`
+  // ── Delete Single Category ──
+  deleteCategory(cat: any): void {
+    const linkedProducts = this.allProducts.filter((p: any) => p.categoryId === cat.id);
+    this.deleteTarget = cat;
+    this.deleteMessage = linkedProducts.length > 0
+      ? `This category has ${linkedProducts.length} linked product(s). They will be deleted first.`
       : 'Are you sure you want to delete this category?';
+    this.showDeleteConfirm = true;
+  }
 
-    if (!confirm(confirmMessage)) return;
+  confirmSingleDelete(): void {
+    if (!this.deleteTarget) return;
+    const cat = this.deleteTarget;
+    const linkedProducts = this.allProducts.filter((p: any) => p.categoryId === cat.id);
+    this.showDeleteConfirm = false;
 
     if (linkedProducts.length === 0) {
-      this.executeCategoryDelete(id);
+      this.executeCategoryDelete(cat.id);
       return;
     }
 
     forkJoin(linkedProducts.map((p: any) => this._ProductService.deleteProduct(p.id))).subscribe({
-      next: () => {
-        console.log(`Deleted ${linkedProducts.length} linked product(s) ✅`);
-        this.executeCategoryDelete(id);
-      },
-      error: (err) => {
-        console.error('Failed to delete linked products:', err);
-      }
+      next: () => this.executeCategoryDelete(cat.id),
+      error: (err) => console.error('Failed to delete linked products:', err),
     });
+    this.deleteTarget = null;
   }
 
   private executeCategoryDelete(id: string): void {
     this._CategoriesService.deleteCategory(id).subscribe({
       next: () => {
-        console.log('Category deleted ✅');
         this._ToastrService.success('Category deleted successfully', 'Deleted ✅');
         this.loadCategories();
         this.loadAllProducts();
       },
       error: (err) => {
-        console.error('Delete category failed:', err);
         if (err.status === 500) {
-          alert('Cannot delete this category. Please check if it still has linked data.');
+          this._ToastrService.error('Cannot delete this category. Please check if it still has linked data.', 'Error ❌');
         } else {
           this._ToastrService.error('Failed to delete Category', 'Error ❌');
         }
@@ -137,98 +195,99 @@ export class CategoryMangementComponent implements OnInit {
     });
   }
 
-  // ── Delete Selected Categories (cascade) — ✅ now uses bulk API ────────────
+  // ── Delete Selected ──
   deleteSelected(): void {
     if (this.selectedCount === 0) return;
-
     const selectedCategories = this.categories.filter((c: any) => c.selected);
     const totalLinked = selectedCategories.reduce((acc, cat) =>
       acc + this.allProducts.filter((p: any) => p.categoryId === cat.id).length, 0
     );
-
-    const confirmMessage = totalLinked > 0
+    this.deleteMessage = totalLinked > 0
       ? `Delete ${selectedCategories.length} categories and their ${totalLinked} linked product(s)?`
       : `Delete ${selectedCategories.length} selected categories?`;
+    this.deleteTarget = { isBulk: true, categories: selectedCategories };
+    this.showDeleteConfirm = true;
+  }
 
-    if (!confirm(confirmMessage)) return;
+  confirmBulkDelete(): void {
+    if (!this.deleteTarget?.isBulk) return;
+    const selectedCategories = this.deleteTarget.categories;
+    this.showDeleteConfirm = false;
 
     const linkedProductIds = this.allProducts
       .filter((p: any) => selectedCategories.some((c: any) => c.id === p.categoryId))
       .map((p: any) => p.id);
-
     const categoryIds = selectedCategories.map((c: any) => c.id);
-
     const productDeletes = linkedProductIds.length > 0
       ? linkedProductIds.map((id: string) => this._ProductService.deleteProduct(id))
       : [of(null)];
 
-    // ✅ Fixed: use bulk API instead of looping individual deletes
     forkJoin(productDeletes).pipe(
       switchMap(() => this._CategoriesService.deleteAllCategories(categoryIds))
     ).subscribe({
       next: () => {
-        console.log('Selected categories deleted ✅');
+        this._ToastrService.success('Selected categories deleted', 'Deleted ✅');
         this.loadCategories();
         this.loadAllProducts();
       },
-      error: (err) => {
-        console.error('Failed to delete selected categories:', err);
-        alert('Failed to delete selected categories. Please try again.');
-      }
+      error: () => this._ToastrService.error('Failed to delete selected categories', 'Error ❌'),
     });
+    this.deleteTarget = null;
   }
 
-  // ── Delete ALL — ✅ uses switchMap (no nested subscribes) + passes ids ─────
+  // ── Delete ALL ──
   deleteAll(): void {
     if (this.categories.length === 0) return;
-    if (!confirm(`This will permanently delete ALL products and ALL categories. Are you sure?`)) return;
+    this.deleteMessage = 'This will permanently delete ALL products and ALL categories.';
+    this.deleteTarget = { isDeleteAll: true };
+    this.showDeleteConfirm = true;
+  }
 
+  confirmDeleteAll(): void {
+    if (!this.deleteTarget?.isDeleteAll) return;
+    this.showDeleteConfirm = false;
     const ids = this.categories.map((c: any) => c.id);
 
     this._ProductService.deleteAllProducts().pipe(
       switchMap(() => this._CategoriesService.deleteAllCategories(ids))
     ).subscribe({
       next: () => {
-        console.log('All products and categories deleted ✅');
         this.categories = [];
         this.allProducts = [];
         this.currentPage = 1;
+        this._ToastrService.success('All data deleted', 'Cleared ✅');
       },
-      error: (err) => {
-        console.error('Delete all failed:', err);
-        alert('An error occurred during deletion. Please try again.');
-      }
+      error: () => this._ToastrService.error('An error occurred during deletion', 'Error ❌'),
     });
+    this.deleteTarget = null;
   }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm = false;
+    this.deleteTarget = null;
+  }
+
   isSubmitting: boolean = false;
-  // ── Form ──────────────────────────────────────────────────────────────────
+
+  // ── Form ──
   submitCategory() {
     if (this.CategoryForm.invalid) {
-      this.CategoryForm.markAllAsTouched(); // 👈 يخلي ال validation يظهر
+      this.CategoryForm.markAllAsTouched();
       return;
     }
-
-    this.isSubmitting = true; // 👈 تشغيل اللودينج
-
+    this.isSubmitting = true;
     const formValue = this.CategoryForm.value;
-
     const request$ = this.isEditMode && this.editingCategory
       ? this._CategoriesService.updataecategore(formValue, this.editingCategory.id)
       : this._CategoriesService.addCategory(formValue);
 
     request$.subscribe({
-      next: (res) => {
-        console.log('Success ✅', res);
-        this.afterSuccess();
+      next: () => {
         this._ToastrService.success('Category saved successfully', 'Success ✅');
+        this.afterSuccess();
       },
-      error: (err) => {
-        console.error(err);
-        this._ToastrService.error('Something went wrong', 'Error ❌');
-      },
-      complete: () => {
-        this.isSubmitting = false; // 👈 إيقاف اللودينج
-      }
+      error: () => this._ToastrService.error('Something went wrong', 'Error ❌'),
+      complete: () => { this.isSubmitting = false; }
     });
   }
 
@@ -245,57 +304,7 @@ export class CategoryMangementComponent implements OnInit {
     });
   }
 
-  // ── Tree ──────────────────────────────────────────────────────────────────
-  treeFilter = '';
-
-  tree: TreeNode[] = [
-    {
-      label: 'All Categories', icon: 'folder_open', count: 124, expanded: true, active: true,
-      children: [
-        {
-          label: 'Electronics', icon: 'laptop_mac', expanded: true, active: false,
-          children: [
-            { label: 'Computers', icon: 'computer', expanded: false, active: true },
-            { label: 'Smartphones', icon: 'smartphone', expanded: false, active: false },
-            { label: 'Cameras', icon: 'photo_camera', expanded: false, active: false },
-          ],
-        },
-        { label: 'Apparel', icon: 'checkroom', expanded: false, active: false },
-        { label: 'Home & Garden', icon: 'chair', expanded: false, active: false },
-      ],
-    },
-  ];
-
-  treeCollapsedAll = false;
-
-  toggleNode(node: TreeNode): void {
-    if (node.children?.length) node.expanded = !node.expanded;
-  }
-
-  selectNode(node: TreeNode, root: TreeNode[]): void {
-    this.clearActive(root);
-    node.active = true;
-  }
-
-  clearActive(nodes: TreeNode[]): void {
-    nodes.forEach(n => { n.active = false; if (n.children) this.clearActive(n.children); });
-  }
-
-  collapseAll(): void {
-    const collapse = (nodes: TreeNode[]) =>
-      nodes.forEach(n => { n.expanded = false; if (n.children) collapse(n.children); });
-    collapse(this.tree);
-    this.treeCollapsedAll = true;
-  }
-
-  expandAll(): void {
-    const expand = (nodes: TreeNode[]) =>
-      nodes.forEach(n => { n.expanded = true; if (n.children) expand(n.children); });
-    expand(this.tree);
-    this.treeCollapsedAll = false;
-  }
-
-  // ── Search & sort ─────────────────────────────────────────────────────────
+  // ── Search & sort ──
   searchQuery = '';
   sortCol: string = 'name';
   sortDir: 'asc' | 'desc' = 'asc';
@@ -313,10 +322,7 @@ export class CategoryMangementComponent implements OnInit {
   get filteredCategories(): any[] {
     const q = this.searchQuery.toLowerCase().trim();
     let list = this.categories.filter((c: any) =>
-      !q ||
-      c.name?.toLowerCase().includes(q) ||
-      c.code?.toLowerCase().includes(q) ||
-      c.description?.toLowerCase().includes(q)
+      !q || c.name?.toLowerCase().includes(q) || c.code?.toLowerCase().includes(q) || c.description?.toLowerCase().includes(q)
     );
     list = [...list].sort((a: any, b: any) => {
       const av = String(a[this.sortCol] ?? '').toLowerCase();
@@ -326,7 +332,7 @@ export class CategoryMangementComponent implements OnInit {
     return list;
   }
 
-  // ── Bulk selection ────────────────────────────────────────────────────────
+  // ── Bulk selection ──
   get selectedCount(): number {
     return this.categories.filter((c: any) => c.selected).length;
   }
@@ -340,7 +346,7 @@ export class CategoryMangementComponent implements OnInit {
     this.pagedCategories.forEach((c: any) => c.selected = checked);
   }
 
-  // ── Pagination ────────────────────────────────────────────────────────────
+  // ── Pagination ──
   currentPage = 1;
   pageSize = 7;
 
@@ -379,51 +385,28 @@ export class CategoryMangementComponent implements OnInit {
   nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
   onSearchChange(): void { this.currentPage = 1; }
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
-  getStatusClass(status: string): string {
-    switch (status) {
-      case 'Active': return 'bg-green-100 text-green-800';
-      case 'Draft': return 'bg-yellow-100 text-yellow-800';
-      case 'Archived': return 'bg-gray-100 text-gray-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
+  // ── Hover ──
+  onRowHover(id: string | null): void {
+    this.hoveredCatId = id;
   }
 
+  // ── Helpers ──
   getSortIcon(col: string): string {
     if (this.sortCol !== col) return 'swap_vert';
     return this.sortDir === 'asc' ? 'arrow_upward' : 'arrow_downward';
   }
 
-  // ── Modal ─────────────────────────────────────────────────────────────────
+  // ── Modal ──
   isModalOpen = false;
   isParentDropdownOpen = false;
   parentSearchQuery = '';
 
-  form: CategoryForm = {
-    name: '',
-    code: '',
-    parent: '',
-    description: '',
-    isActive: true,
-  };
-
+  form: CategoryForm = { name: '', code: '', parent: '', description: '', isActive: true };
   formErrors: Partial<CategoryForm> = {};
-
-  get parentOptions(): { label: string; value: string; depth: number }[] {
-    const result: { label: string; value: string; depth: number }[] = [];
-    const flatten = (nodes: TreeNode[], depth: number) => {
-      nodes.forEach(n => {
-        result.push({ label: n.label, value: n.label, depth });
-        if (n.children) flatten(n.children, depth + 1);
-      });
-    };
-    if (this.tree[0]?.children) flatten(this.tree[0].children, 0);
-    return result;
-  }
 
   get filteredParentOptions() {
     const q = this.parentSearchQuery.toLowerCase().trim();
-    return this.parentOptions.filter(o => !q || o.label.toLowerCase().includes(q));
+    return this.categories.filter(c => !q || c.name.toLowerCase().includes(q));
   }
 
   openModal(category?: any): void {
@@ -450,41 +433,23 @@ export class CategoryMangementComponent implements OnInit {
     this.editingCategory = null;
   }
 
-  toggleParentDropdown(): void {
-    this.isParentDropdownOpen = !this.isParentDropdownOpen;
-    if (this.isParentDropdownOpen) this.parentSearchQuery = '';
-  }
-
-  selectParent(value: string): void {
-    this.form.parent = value;
-    this.isParentDropdownOpen = false;
-  }
-
-  clearParent(): void {
-    this.form.parent = '';
-    this.isParentDropdownOpen = false;
-  }
-
-  onNameInput(): void {
-    if (!this.form.code || this.form.code === this.autoCode) {
-      this.form.code = this.autoCode;
+  // ── Keyboard ──
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      const input = document.getElementById('cat-search-input');
+      input?.focus();
+    }
+    if (event.key === 'Escape') {
+      this.closeMobileSidebar();
+      if (this.isModalOpen) this.closeModal();
+      if (this.showDeleteConfirm) this.cancelDelete();
     }
   }
 
-  get autoCode(): string {
-    return this.form.name
-      .toUpperCase()
-      .replace(/[^A-Z0-9 ]/g, '')
-      .trim()
-      .split(/\s+/)
-      .slice(0, 3)
-      .join('-');
-  }
-
-  validateForm(): boolean {
-    this.formErrors = {};
-    if (!this.form.name.trim()) this.formErrors.name = 'Category name is required.';
-    if (!this.form.code.trim()) this.formErrors.code = 'Category code is required.';
-    return Object.keys(this.formErrors).length === 0;
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth >= 1024) this.isMobileSidebarOpen = false;
   }
 }

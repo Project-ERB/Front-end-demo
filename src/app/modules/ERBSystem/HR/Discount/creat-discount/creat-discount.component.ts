@@ -1,7 +1,7 @@
 import { CategoriesService } from './../../../../../core/services/categories/categories.service';
 import { ProductService } from './../../../../../core/services/products/product.service';
 import { CreateDiscountPayload, DiscountService } from './../../../../../core/services/Discount/discount.service';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebaSalesComponent } from "../../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
@@ -36,17 +36,67 @@ export class CreatDiscountComponent implements OnInit {
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _ProductService = inject(ProductService);
   private readonly _Router = inject(Router);
-  private readonly _Toastr = inject(ToastrService); // ✅
+  private readonly _Toastr = inject(ToastrService);
 
   isLoading = false;
   isEditMode = false;
 
+  // ── Mobile / Sidebar State ────────────────────────────────────────
+  sidebarOpen = false;
+  isMobile = false;
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.isMobile = window.innerWidth < 1024;
+    if (!this.isMobile) this.sidebarOpen = false;
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
+
+  // ── Keyboard shortcuts ────────────────────────────────────────────
+  @HostListener('window:keydown', ['$event'])
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      if (this.sidebarOpen) this.closeSidebar();
+    }
+    // Ctrl+Enter to submit on step 4
+    if ((event.ctrlKey || event.metaKey) && event.key === 'Enter' && this.currentStep === 4 && !this.isLoading) {
+      this.submitForm();
+    }
+  }
+
+  // ── Unsaved changes guard ─────────────────────────────────────────
+  private _formTouched = false;
+
+  get isFormDirty(): boolean {
+    return this._formTouched && (
+      !!this.discountCode || !!this.discountName || !!this.discountDescription ||
+      this.discountValue !== null || !!this.startDate || !!this.endDate
+    );
+  }
+
+  @HostListener('window:beforeunload')
+  onBeforeUnload(): boolean {
+    if (this.isFormDirty) return false;
+    return true;
+  }
+
+  markTouched(): void {
+    this._formTouched = true;
+  }
+
   // ─── Stepper ────────────────────────────────────────────────────────────────
   steps: Step[] = [
-    { number: 1, label: 'Identity & Type', fieldHint: 'code · name · description · discountType · discountValueAmount' },
-    { number: 2, label: 'Schedule & Targeting', fieldHint: 'startDate · endDate · currency · tagetType · targetId · minimumPurchaseAmount' },
-    { number: 3, label: 'Limits & Rules', fieldHint: 'minimumQuantity · maximumDiscountAmount · totalUsageLimit · usageLimitPerCustomer · canCombine' },
-    { number: 4, label: 'Review & Publish', fieldHint: 'All 16 API fields' },
+    { number: 1, label: 'Identity', fieldHint: 'code · name · type · value' },
+    { number: 2, label: 'Schedule', fieldHint: 'dates · currency · targeting' },
+    { number: 3, label: 'Limits', fieldHint: 'usage · rules · combine' },
+    { number: 4, label: 'Review', fieldHint: 'All 16 API fields' },
   ];
   currentStep = 1;
 
@@ -79,6 +129,7 @@ export class CreatDiscountComponent implements OnInit {
     this.discountCode = Array.from({ length: 8 }, () =>
       chars[Math.floor(Math.random() * chars.length)]
     ).join('');
+    this.markTouched();
   }
 
   // ─── Step 2 ──────────────────────────────────────────────────────────────────
@@ -225,7 +276,13 @@ export class CreatDiscountComponent implements OnInit {
   prevStep(): void { if (this.currentStep > 1) this.currentStep--; }
   goToStep(n: number): void { if (n <= this.currentStep) this.currentStep = n; }
   saveDraft(): void { this._Toastr.info('Draft saved!', 'Draft'); }
-  cancel(): void { this._Router.navigate(['/discount-management']); }
+  cancel(): void {
+    if (this.isFormDirty) {
+      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to leave?');
+      if (!confirmed) return;
+    }
+    this._Router.navigate(['/discount-management']);
+  }
 
   // ─── Build payload ────────────────────────────────────────────────────────────
   private buildPayload(): CreateDiscountPayload {
@@ -293,7 +350,6 @@ export class CreatDiscountComponent implements OnInit {
   submitForm(): void {
     const validationError = this.validateForm();
     if (validationError) {
-      // ✅ toastr بدل الـ errorMessage
       this._Toastr.warning(validationError, 'Validation Error', {
         timeOut: 4000,
         positionClass: 'toast-top-right',
@@ -306,11 +362,11 @@ export class CreatDiscountComponent implements OnInit {
     this._DiscountService.AddDiscount(this.buildPayload()).subscribe({
       next: () => {
         this.isLoading = false;
+        this._formTouched = false;
 
-        // ✅ success toastr
         this._Toastr.success(
           `Discount "${this.discountName}" published successfully!`,
-          'Published 🎉',
+          'Published',
           {
             timeOut: 3000,
             positionClass: 'toast-top-right',
@@ -332,7 +388,6 @@ export class CreatDiscountComponent implements OnInit {
           err?.error?.message ??
           'Something went wrong. Please try again.';
 
-        // ✅ error toastr
         this._Toastr.error(message, 'Error', {
           timeOut: 5000,
           positionClass: 'toast-top-right',
@@ -359,6 +414,7 @@ export class CreatDiscountComponent implements OnInit {
     this.minPurchase = this.minimumQuantity = this.maximumDiscountAmount = null;
     this.usageLimit = this.usageLimitPerCustomer = null;
     this.allowCombine = false;
+    this._formTouched = false;
   }
 
   // ─── Edit mode ────────────────────────────────────────────────────────────────
@@ -389,14 +445,16 @@ export class CreatDiscountComponent implements OnInit {
   toggleDisable(): void { this.edit.status = this.edit.status === 'Active' ? 'Disabled' : 'Active'; }
 
   saveChanges(): void {
-    this._Toastr.success(`Changes saved for "${this.edit.name}"`, 'Saved ✅', {
+    this._Toastr.success(`Changes saved for "${this.edit.name}"`, 'Saved', {
       timeOut: 3000,
       positionClass: 'toast-top-right',
       progressBar: true,
     });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.isMobile = window.innerWidth < 1024;
+  }
 
   // ─── Field Errors ─────────────────────────────────────────────────────────────
   fieldErrors: Record<string, string> = {};
@@ -440,7 +498,6 @@ export class CreatDiscountComponent implements OnInit {
 
   private validateStep3(): boolean {
     this.fieldErrors = {};
-    // step 3 كله optional — بس لو دخل قيمة سالبة نرفضها
     if (this.minimumQuantity !== null && this.minimumQuantity < 0)
       this.fieldErrors['minimumQuantity'] = 'Must be 0 or greater.';
     if (this.maximumDiscountAmount !== null && this.maximumDiscountAmount < 0)

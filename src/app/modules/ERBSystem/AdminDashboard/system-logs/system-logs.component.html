@@ -1,7 +1,18 @@
 <div class="flex h-screen w-full bg-[#f6f6f8] font-[Manrope,sans-serif] antialiased overflow-hidden">
 
-    <!-- ══ Sidebar ══════════════════════════════════════════════════════════ -->
-    <app-siede-admin></app-siede-admin>
+    <!-- ══ Desktop Sidebar ═══════════════════════════════════════════════════ -->
+    <div class="hidden lg:block relative z-10">
+        <app-siede-admin></app-siede-admin>
+    </div>
+
+    <!-- ══ Mobile Sidebar Backdrop ══ -->
+    <div *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()" class="mobile-sidebar-backdrop lg:hidden"></div>
+
+    <!-- ══ Mobile Sidebar Drawer ══ -->
+    <div class="mobile-sidebar fixed inset-y-0 left-0 z-40 lg:hidden w-72 max-w-[85vw] -translate-x-full transition-transform duration-300 ease-out"
+        [class.translate-x-0]="isMobileSidebarOpen">
+        <app-siede-admin [isOpen]="isMobileSidebarOpen" (closed)="closeMobileSidebar()"></app-siede-admin>
+    </div>
 
     <!-- ══ Main ═════════════════════════════════════════════════════════════ -->
     <main class="flex-1 flex flex-col h-screen overflow-hidden">
@@ -9,15 +20,15 @@
         <!-- Top header bar -->
         <header class="bg-white border-b border-[#e5e7eb] h-16 flex items-center justify-between px-4 sm:px-6 shrink-0">
             <div class="flex items-center gap-2 sm:gap-4">
-                <button class="md:hidden text-[#616e89] hover:bg-gray-100 p-2 rounded-md transition-colors">
+                <!-- غيّر الزر ده وأضف (click) -->
+                <button (click)="toggleMobileSidebar()"
+                    class="md:hidden text-[#616e89] hover:bg-gray-100 p-2 rounded-md transition-colors active:scale-95">
                     <span class="material-symbols-outlined">menu</span>
                 </button>
+
+                <!-- باقي كود الـ Header زي ما هو بالظبط بدون تغيير -->
                 <nav class="flex text-xs sm:text-sm text-[#616e89] overflow-hidden">
-                    <a class="hover:text-[#2563EB] transition-colors truncate" href="#">Admin</a>
-                    <span class="mx-1 sm:mx-2">/</span>
-                    <a class="hover:text-[#2563EB] transition-colors truncate" href="#">Monitoring</a>
-                    <span class="mx-1 sm:mx-2">/</span>
-                    <span class="text-[#111318] font-medium truncate">System Logs</span>
+                    <!-- ... -->
                 </nav>
             </div>
 

@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -83,12 +83,12 @@ export class UserManagementComponent implements OnInit {
     this._apolloService.getroles().subscribe({
       next: (res) => {
         this.roleOptions = res?.data?.roles?.nodes ?? [];
-        this.loadUsers(); // ← هنا بدل ngOnInit
+        this.loadUsers('first');
       },
       error: (err) => {
         console.error('roles error:', err);
         this.roleOptions = [];
-        this.loadUsers();
+        this.loadUsers('first');
       },
     });
   }
@@ -160,13 +160,38 @@ export class UserManagementComponent implements OnInit {
   }
 
   // ── API: Load users ────────────────────────────────────────────────────
-  loadUsers(): void {
+  loadUsers(direction: 'next' | 'prev' | 'first' = 'first'): void {
     this.isLoading = true;
-    this._apolloService.getUsers().subscribe({
+
+    let after: string | undefined;
+    let before: string | undefined;
+
+    if (direction === 'next' && this.endCursor) {
+      after = this.endCursor;
+    } else if (direction === 'prev') {
+      // ارجع للـ cursor اللي قبل الصفحة الحالية
+      const prevCursor = this.cursorHistory[this.currentPage - 3];
+      after = prevCursor;
+    }
+    // direction === 'first' → لا after ولا before
+
+    this._apolloService.getUsers(this.pageSize, after, before).subscribe({
       next: (res) => {
-        const nodes = res?.data?.users?.nodes ?? [];
+        const data = res?.data?.users;
+        const nodes = data?.nodes ?? [];
+        const pageInfo = data?.pageInfo;
+
+        this.hasNextPage = pageInfo?.hasNextPage ?? false;
+        this.hasPreviousPage = pageInfo?.hasPreviousPage ?? false;
+
+        // حفظ الـ cursor للصفحة الحالية في الـ history
+        if (pageInfo?.startCursor) {
+          this.cursorHistory[this.currentPage - 1] = pageInfo.startCursor;
+        }
+        this.endCursor = pageInfo?.endCursor ?? null;
+
         this.users = nodes
-          .filter((u: any) => u && u.username)
+          .filter((u: any) => u?.username)
           .map((u: any, index: number) => {
             const avatar = buildAvatarStyle(index);
             return {
@@ -181,16 +206,34 @@ export class UserManagementComponent implements OnInit {
               lastLogin: '-',
             };
           });
+
         this.isLoading = false;
       },
       error: (err) => {
         console.error('users error:', err);
-        this.users = []; // ← مش undefined
+        this.users = [];
         this.isLoading = false;
       },
     });
   }
 
+  nextPage(): void {
+    if (!this.hasNextPage) return;
+    this.currentPage++;
+    this.loadUsers('next');
+  }
+  prevPage(): void {
+    if (!this.hasPreviousPage || this.currentPage <= 1) return;
+    this.currentPage--;
+    this.loadUsers('prev');
+  }
+
+  goToFirst(): void {
+    this.currentPage = 1;
+    this.cursorHistory = [];
+    this.endCursor = null;
+    this.loadUsers('first');
+  }
   // ── Computed ───────────────────────────────────────────────────────────
   get filteredUsers(): User[] {
     const q = this.searchQuery.toLowerCase().trim();
@@ -343,4 +386,18 @@ export class UserManagementComponent implements OnInit {
     return this.roleOptions.find(r => r.id === roleId)?.name ?? 'Viewer';
   }
 
+  readonly pageSize = 10;
+  currentPage = 1;
+
+  private cursorHistory: string[] = [];  // index 0 = page 1 cursor, etc.
+  private endCursor: string | null = null;
+
+  hasNextPage = false;
+  hasPreviousPage = false;
+
+  @ViewChild(SiedeAdminComponent) sidebar!: SiedeAdminComponent;
+
+  toggleSidebar(): void {
+    this.sidebar.toggle();
+  }
 }

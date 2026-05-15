@@ -1,4 +1,4 @@
-import { AdminService } from './../../../../../core/services/Admin-service/admin.service';
+import { AdminService, Role } from './../../../../../core/services/Admin-service/admin.service';
 import { PermissionService, PermissionNode } from './../../../../../core/services/permission/permission.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -124,7 +124,7 @@ export class AddEmployeeComponent implements OnInit {
       permissions: this.permissionService.getPermissions(),
     }).subscribe({
       next: ({ roles, permissions }) => {
-        this.roles = roles.map(r => ({
+        this.roles = roles.map((r: Role) => ({
           id: r.id,
           name: r.name,
           description: r.description,

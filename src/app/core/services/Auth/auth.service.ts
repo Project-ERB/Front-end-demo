@@ -94,4 +94,15 @@ export class AuthService {
       }
     );
   }
+
+  // auth.service.ts
+  logout(): void {
+    // مسح البيانات من localStorage
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('role');
+
+    // مسح الـ signal
+    this.accessToken.set('');
+  }
 }

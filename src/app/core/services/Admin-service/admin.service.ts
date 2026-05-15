@@ -57,6 +57,18 @@ export interface PermissionNode {
   description: string;
 }
 
+export interface RolesPageInfo {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string | null;
+  endCursor: string | null;
+}
+
+export interface RolesPage {
+  nodes: Role[];
+  pageInfo: RolesPageInfo;
+}
+
 // ── Service ──────────────────────────────────────────────────────────────────
 @Injectable({
   providedIn: 'root',
@@ -108,19 +120,19 @@ export class AdminService {
     });
   }
 
-  // ── Get all roles (GraphQL) ──────────────────────────────────────────────
+  // 1. الدالة القديمة (للمكونات التانية اللي محتاجة كل الـ Roles بدون Pagination)
   getRoles(): Observable<Role[]> {
     const query = `
-      query {
-        roles {
-          nodes {
-            id
-            name
-            description
-          }
+    query {
+      roles {
+        nodes {
+          id
+          name
+          description
         }
       }
-    `;
+    }
+  `;
     return this._http
       .post<{ data: { roles: { nodes: Role[] } } }>(
         `${Environment.baseUrl}/graphql?t=${Date.now()}`,
@@ -128,6 +140,35 @@ export class AdminService {
         { headers: this.headers }
       )
       .pipe(map((res) => res.data.roles.nodes));
+  }
+
+  // 2. الدالة الجديدة (لصفحة الـ Roles Management فقط عشان الـ Pagination)
+  getRolesPaged(first: number, after?: string): Observable<RolesPage> {
+    const query = `
+    query GetRoles($first: Int, $after: String) {
+      roles(first: $first, after: $after) {
+        nodes {
+          id
+          name
+          description
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  `;
+
+    return this._http
+      .post<{ data: { roles: RolesPage } }>(
+        `${Environment.baseUrl}/graphql?t=${Date.now()}`,
+        { query, variables: { first, after } },
+        { headers: this.headers }
+      )
+      .pipe(map((res) => res.data.roles));
   }
 
   // ── Get all permissions (GraphQL) ────────────────────────────────────────

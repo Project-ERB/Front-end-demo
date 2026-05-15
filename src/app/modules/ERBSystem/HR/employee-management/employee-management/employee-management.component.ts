@@ -5,7 +5,7 @@ import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sideb
 import { Router, RouterLink } from '@angular/router';
 import { EmployeeService } from '../../../../../core/services/employee/employee.service';
 import { ToastrService } from 'ngx-toastr';
-import { AdminService } from '../../../../../core/services/Admin-service/admin.service';
+import { AdminService, Role } from '../../../../../core/services/Admin-service/admin.service';
 import { PermissionService, PermissionNode } from '../../../../../core/services/permission/permission.service';
 import { forkJoin } from 'rxjs';
 
@@ -157,7 +157,7 @@ export class EmployeeManagementComponent implements OnInit {
       permissions: this._PermService.getPermissions(),
     }).subscribe({
       next: ({ roles, permissions }) => {
-        this.roles = roles.map(r => ({ id: r.id, name: r.name, description: r.description }));
+        this.roles = roles.map((r: Role) => ({ id: r.id, name: r.name, description: r.description }));
         this.permissions = permissions;
       },
       error: (err) => console.error('Failed to load roles/permissions', err),

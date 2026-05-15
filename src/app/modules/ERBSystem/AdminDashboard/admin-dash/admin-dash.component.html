@@ -1,176 +1,278 @@
 <div
-    class="relative flex min-h-screen w-full bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 font-[Manrope,sans-serif] antialiased overflow-hidden">
+    class="relative flex min-h-screen w-full bg-gradient-to-br from-slate-50 via-indigo-50/60 to-cyan-50/40 font-[Manrope,sans-serif] antialiased overflow-hidden">
+
+    <!-- ── Background Orbs ── -->
     <div
-        class="pointer-events-none absolute left-0 top-0 h-[22rem] w-[22rem] rounded-full bg-[#2463eb]/15 blur-3xl -translate-x-1/3 -translate-y-1/3">
+        class="pointer-events-none absolute left-0 top-0 h-[28rem] w-[28rem] rounded-full bg-[#2463eb]/10 blur-3xl -translate-x-1/3 -translate-y-1/3 orb-float">
     </div>
     <div
-        class="pointer-events-none absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
+        class="pointer-events-none absolute right-0 bottom-0 h-[30rem] w-[30rem] rounded-full bg-cyan-400/10 blur-3xl translate-x-1/4 translate-y-1/4 orb-float-delayed">
+    </div>
+    <div
+        class="pointer-events-none absolute top-1/2 left-1/2 h-[20rem] w-[20rem] rounded-full bg-violet-400/5 blur-3xl -translate-x-1/2 -translate-y-1/2">
     </div>
 
-    <!-- ── Sidebar ── -->
+    <!-- ── Desktop Sidebar ── -->
     <div class="hidden lg:block relative z-10">
         <app-siede-admin></app-siede-admin>
     </div>
 
-    <div *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()" class="mobile-sidebar-backdrop lg:hidden"></div>
-    <div
-        class="mobile-sidebar fixed inset-y-0 left-0 z-40 lg:hidden w-72 max-w-[85vw] -translate-x-full transition-transform duration-300"
-        [class.translate-x-0]="isMobileSidebarOpen">
-        <app-siede-admin></app-siede-admin>
-    </div>
+
+
+    <!-- ── Mobile Sidebar Drawer ── -->
+
+    <app-siede-admin #mobileSidebar class="lg:hidden"></app-siede-admin>
+
 
     <!-- ── Main Content ── -->
     <main class="relative z-10 flex-1 h-full overflow-y-auto flex flex-col">
 
-        <!-- Header -->
+        <!-- ═══════ Header ═══════ -->
         <header
-            class="bg-white/85 backdrop-blur-xl border-b border-slate-200 sticky top-0 z-20 px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row sm:items-center gap-4 sm:justify-between">
-            <div>
-                <nav class="flex text-sm text-slate-500 mb-1">
-                    <a class="hover:text-[#2463eb] transition-colors" href="#">Home</a>
-                    <span class="mx-2">/</span>
-                    <span class="text-slate-800 font-medium">System Analysis</span>
-                </nav>
-                <h2 class="text-2xl font-bold text-slate-900">Welcome back, Administrator</h2>
-            </div>
+            class="header-glass border-b border-slate-200/80 sticky top-0 z-20 px-4 sm:px-6 lg:px-8 py-4 flex flex-col gap-3">
 
-            <div class="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-end">
-                <button (click)="toggleMobileSidebar()"
-                    class="lg:hidden p-2 rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-[#2463eb] hover:border-[#2463eb]/40 transition-all">
-                    <span class="material-symbols-outlined">menu</span>
-                </button>
-                <!-- Search -->
-                <div class="relative hidden sm:block">
-                    <span
-                        class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
-                    <input [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()" type="text"
-                        placeholder="Search system logs..." class="pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm
-                               focus:outline-none focus:ring-2 focus:ring-[#2463eb]/50 focus:border-[#2463eb]
-                               w-64 transition-all" />
+            <!-- Top Row -->
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3 min-w-0">
+                    <button (click)="toggleMobileSidebar()"
+                        class="lg:hidden flex-shrink-0 p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#2463eb] hover:border-[#2463eb]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+                        <span class="material-symbols-outlined text-[20px]">menu</span>
+                    </button>
+                    <div class="min-w-0">
+                        <nav class="flex text-xs text-slate-400 mb-0.5 items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px]">home</span>
+                            <span>Home</span>
+                            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                            <span class="text-slate-600 font-medium">System Analysis</span>
+                        </nav>
+                        <h2 class="text-xl sm:text-2xl font-bold text-slate-900 truncate">Welcome back, Administrator
+                        </h2>
+                    </div>
                 </div>
 
-                <!-- Notifications -->
-                <button class="relative p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span class="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border border-white"></span>
-                </button>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <!-- Mobile Search Toggle -->
+                    <button (click)="toggleMobileSearch()"
+                        class="sm:hidden p-2.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-[#2463eb] hover:border-[#2463eb]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+                        <span class="material-symbols-outlined text-[20px]">search</span>
+                    </button>
 
-                <!-- Export -->
-                <button (click)="onExport()" class="bg-[#2463eb] hover:bg-[#2463eb]/90 text-white px-4 py-2 rounded-lg text-sm
-                           font-semibold flex items-center gap-2 transition-all duration-300 hover:shadow-lg hover:shadow-[#2463eb]/30">
-                    <span class="material-symbols-outlined text-[18px]">download</span>
-                    <span class="hidden sm:inline">Export Report</span>
-                </button>
+                    <!-- Notifications -->
+                    <!-- <button
+                        class="relative p-2.5 rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-[#2463eb] hover:border-[#2463eb]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+                        <span class="material-symbols-outlined text-[20px]">notifications</span>
+                        <span
+                            class="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white animate-ping"></span>
+                        <span
+                            class="absolute top-2 right-2 h-2 w-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button> -->
+
+                    <!-- Export -->
+                    <!-- <button (click)="onExport()" [disabled]="isExporting"
+                        class="btn-primary text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all duration-200 active:scale-95 disabled:opacity-70">
+                        <span class="material-symbols-outlined text-[18px]"
+                            [class.animate-spin]="isExporting">download</span>
+                        <span class="hidden sm:inline">{{ isExporting ? 'Exporting...' : 'Export Report' }}</span>
+                    </button> -->
+                </div>
+            </div>
+
+            <!-- Desktop Search -->
+            <div class="relative hidden sm:block max-w-md">
+                <span
+                    class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
+                <input id="desktop-search-input" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+                    type="text" placeholder="Search logs, users, IPs... (Ctrl+K)" class="search-input w-full pl-11 pr-20 py-2.5 bg-white/80 border border-slate-200 rounded-xl text-sm
+                           focus:outline-none focus:ring-2 focus:ring-[#2463eb]/30 focus:border-[#2463eb]/50 focus:bg-white
+                           transition-all duration-200" />
+                <kbd
+                    class="absolute right-3 top-1/2 -translate-y-1/2 hidden md:inline-flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-400 text-[10px] font-mono rounded-md border border-slate-200">
+                    Ctrl K
+                </kbd>
+            </div>
+
+            <!-- Mobile Search Expanded -->
+            <div *ngIf="isMobileSearchOpen" class="sm:hidden slide-down" @scaleIn>
+                <div class="relative">
+                    <span
+                        class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[20px]">search</span>
+                    <input id="mobile-search-input" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange()"
+                        type="text" placeholder="Search logs..." class="search-input w-full pl-11 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-sm
+                               focus:outline-none focus:ring-2 focus:ring-[#2463eb]/30 focus:border-[#2463eb]/50
+                               transition-all duration-200" />
+                    <button (click)="isMobileSearchOpen = false; searchQuery = ''; onSearchChange();"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                </div>
             </div>
         </header>
 
-        <!-- Page Body -->
+        <!-- ═══════ Page Body ═══════ -->
         <div class="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full">
+
+            <!-- ── Quick Stats Bar ── -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4" @fadeUp>
+                <div class="stat-card bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200/80 cursor-default group"
+                    (click)="selectedFilter = 'Success'; onFilterChange()">
+                    <div class="flex items-center justify-between mb-2">
+                        <div
+                            class="p-2 rounded-lg bg-emerald-50 text-emerald-500 group-hover:bg-emerald-100 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">Success</span>
+                    </div>
+                    <p class="text-2xl font-bold text-slate-900">{{ statusCounts.success }}</p>
+                    <div class="h-1 mt-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-emerald-500 rounded-full transition-all duration-700"
+                            [style.width]="(statusCounts.success / logs.length * 100) + '%'"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200/80 cursor-default group"
+                    (click)="selectedFilter = 'Warnings'; onFilterChange()">
+                    <div class="flex items-center justify-between mb-2">
+                        <div
+                            class="p-2 rounded-lg bg-amber-50 text-amber-500 group-hover:bg-amber-100 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">warning</span>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">Warning</span>
+                    </div>
+                    <p class="text-2xl font-bold text-slate-900">{{ statusCounts.warning }}</p>
+                    <div class="h-1 mt-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-amber-500 rounded-full transition-all duration-700"
+                            [style.width]="(statusCounts.warning / logs.length * 100) + '%'"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200/80 cursor-default group"
+                    (click)="selectedFilter = 'Errors Only'; onFilterChange()">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 rounded-lg bg-rose-50 text-rose-500 group-hover:bg-rose-100 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">error</span>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">Error</span>
+                    </div>
+                    <p class="text-2xl font-bold text-slate-900">{{ statusCounts.error }}</p>
+                    <div class="h-1 mt-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-rose-500 rounded-full transition-all duration-700"
+                            [style.width]="(statusCounts.error / logs.length * 100) + '%'"></div>
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-slate-200/80 cursor-default group"
+                    (click)="selectedFilter = 'All Events'; onFilterChange()">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 rounded-lg bg-red-50 text-red-500 group-hover:bg-red-100 transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">block</span>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">Blocked</span>
+                    </div>
+                    <p class="text-2xl font-bold text-slate-900">{{ statusCounts.blocked }}</p>
+                    <div class="h-1 mt-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-red-500 rounded-full transition-all duration-700"
+                            [style.width]="(statusCounts.blocked / logs.length * 100) + '%'"></div>
+                    </div>
+                </div>
+            </div>
 
             <!-- ── Top Widgets Row ── -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" @fadeUp>
 
-                <!-- System Health Card -->
-                <div class="bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
+                <!-- ═══ System Health Card ═══ -->
+                <div
+                    class="health-card bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col">
 
                     <!-- Card Header -->
                     <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-emerald-500">ecg_heart</span>
+                        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                            <div class="p-1.5 rounded-lg bg-emerald-50 text-emerald-500">
+                                <span class="material-symbols-outlined text-[20px]">ecg_heart</span>
+                            </div>
                             System Health
                         </h3>
-
-                        <!-- Loading badge skeleton -->
-                        <div *ngIf="isLoading" class="w-16 h-5 bg-slate-200 rounded-full animate-pulse"></div>
-
-                        <!-- Status badge -->
+                        <div *ngIf="isLoading" class="skeleton-badge"></div>
                         <span *ngIf="!isLoading && health"
-                            [class]="'inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border ' + statusBadgeClass">
+                            [class]="'status-badge inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border ' + statusBadgeClass">
                             <span class="size-1.5 rounded-full animate-pulse" [class]="statusDotClass"></span>
                             {{ health.status }}
                         </span>
                     </div>
 
                     <!-- Loading Skeleton -->
-                    <div *ngIf="isLoading" class="space-y-6 animate-pulse flex-1">
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <div class="w-16 h-3 bg-slate-200 rounded"></div>
-                                <div class="w-10 h-3 bg-slate-200 rounded"></div>
-                            </div>
-                            <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                    <div *ngIf="isLoading" class="space-y-6 flex-1">
+                        <div class="skeleton-bar">
+                            <div class="skeleton-text w-16"></div>
+                            <div class="skeleton-text w-10"></div>
                         </div>
-                        <div>
-                            <div class="flex justify-between mb-2">
-                                <div class="w-24 h-3 bg-slate-200 rounded"></div>
-                                <div class="w-20 h-3 bg-slate-200 rounded"></div>
-                            </div>
-                            <div class="h-2 w-full bg-slate-200 rounded-full"></div>
+                        <div class="skeleton-bar">
+                            <div class="skeleton-text w-24"></div>
+                            <div class="skeleton-text w-20"></div>
                         </div>
                         <div class="flex items-center justify-between pt-4 border-t border-slate-100">
                             <div>
-                                <div class="w-24 h-2.5 bg-slate-200 rounded mb-2"></div>
-                                <div class="w-16 h-6 bg-slate-200 rounded"></div>
+                                <div class="skeleton-text w-24 mb-2 h-2.5"></div>
+                                <div class="skeleton-text w-16 h-7"></div>
                             </div>
-                            <div class="size-10 bg-slate-200 rounded-lg"></div>
+                            <div class="skeleton-icon"></div>
                         </div>
                     </div>
 
                     <!-- Error State -->
                     <div *ngIf="!isLoading && hasError"
-                        class="flex-1 flex flex-col items-center justify-center gap-2 text-center py-4">
-                        <span class="material-symbols-outlined text-red-400 text-[36px]">error</span>
+                        class="flex-1 flex flex-col items-center justify-center gap-2 text-center py-6">
+                        <div class="p-3 rounded-2xl bg-red-50">
+                            <span class="material-symbols-outlined text-red-400 text-[32px]">cloud_off</span>
+                        </div>
                         <p class="text-sm font-medium text-slate-600">Failed to load health data</p>
                         <button (click)="fetchHealth()"
-                            class="text-xs font-bold text-[#2463eb] hover:underline mt-1">Retry</button>
+                            class="mt-1 text-xs font-bold text-[#2463eb] hover:underline underline-offset-2 transition-colors">
+                            Click to retry
+                        </button>
                     </div>
 
                     <!-- Health Data -->
                     <div *ngIf="!isLoading && health && !hasError" class="space-y-5 flex-1">
-
                         <!-- CPU -->
                         <div>
-                            <div class="flex justify-between text-sm mb-1.5">
-                                <span class="text-slate-600 font-medium">CPU Load</span>
-                                <span class="font-bold text-slate-900">{{ health.cpuLoadPercentage }}%</span>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-500 font-medium">CPU Load</span>
+                                <span class="font-bold text-slate-900 tabular-nums">{{ health.cpuLoadPercentage
+                                    }}%</span>
                             </div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-700" [class]="cpuBarColor"
-                                    [style.width]="health.cpuLoadPercentage + '%'">
-                                </div>
+                            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000 ease-out"
+                                    [class]="cpuBarColor" [style.width]="health.cpuLoadPercentage + '%'"></div>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1">{{ 100 - health.cpuLoadPercentage }}% available
-                            </p>
                         </div>
 
                         <!-- Memory -->
                         <div>
-                            <div class="flex justify-between text-sm mb-1.5">
-                                <span class="text-slate-600 font-medium">Memory Usage</span>
-                                <span class="font-bold text-slate-900">
-                                    {{ health.memoryUsageGb }} GB
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-slate-500 font-medium">Memory</span>
+                                <span class="font-bold text-slate-900 tabular-nums">
+                                    {{ health.memoryUsageGb }}
                                     <span class="text-slate-400 font-normal">/ {{ health.totalMemoryGb }} GB</span>
                                 </span>
                             </div>
-                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-700" [class]="memBarColor"
-                                    [style.width]="memoryPercent + '%'">
-                                </div>
+                            <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full rounded-full transition-all duration-1000 ease-out"
+                                    [class]="memBarColor" [style.width]="memoryPercent + '%'"></div>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-1">{{ memoryPercent }}% used · {{ freeMemory }} GB
+                            <p class="text-[11px] text-slate-400 mt-1">{{ memoryPercent }}% used · {{ freeMemory }} GB
                                 free</p>
                         </div>
 
                         <!-- Latency -->
                         <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-                            <div class="flex flex-col gap-0.5">
-                                <span class="text-xs text-slate-500">Network Latency</span>
-                                <span class="text-2xl font-bold" [class]="latencyTextColor">
-                                    {{ health.networkLatencyMs }}<span class="text-sm font-medium text-slate-400">
-                                        ms</span>
-                                </span>
+                            <div>
+                                <span class="text-xs text-slate-400">Network Latency</span>
+                                <p class="text-2xl font-bold tabular-nums" [class]="latencyTextColor">
+                                    {{ health.networkLatencyMs }}<span
+                                        class="text-sm font-medium text-slate-400 ml-0.5">ms</span>
+                                </p>
                             </div>
-                            <div class="p-2 rounded-lg"
+                            <div class="p-3 rounded-xl transition-colors duration-300"
                                 [class]="health.networkLatencyMs < 50 ? 'bg-emerald-50 text-emerald-500' : health.networkLatencyMs < 150 ? 'bg-amber-50 text-amber-500' : 'bg-red-50 text-red-500'">
                                 <span class="material-symbols-outlined">speed</span>
                             </div>
@@ -179,249 +281,392 @@
 
                     <!-- Last updated -->
                     <p *ngIf="!isLoading && lastUpdated"
-                        class="text-[10px] text-slate-400 mt-4 flex items-center gap-1.5">
-                        <span class="size-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        class="text-[11px] text-slate-400 mt-4 flex items-center gap-1.5">
+                        <span class="live-dot"></span>
                         Auto-refresh · {{ lastUpdated | date:'HH:mm:ss' }}
                     </p>
                 </div>
 
-                <!-- Security Attacks Widget -->
+                <!-- ═══ Security Attacks Widget ═══ -->
                 <div
-                    class="lg:col-span-2 bg-white/90 backdrop-blur-sm p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex flex-col">
-                    <div class="flex items-center justify-between mb-6">
+                    class="security-card lg:col-span-2 bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                                <span class="material-symbols-outlined text-red-500">shield_with_heart</span>
-                                Security Attacks &amp; Threat Level
+                            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                                <div class="p-1.5 rounded-lg bg-red-50 text-red-500">
+                                    <span class="material-symbols-outlined text-[20px]">shield_with_heart</span>
+                                </div>
+                                Security Threats
                             </h3>
-                            <p class="text-sm text-slate-500 mt-1">
-                                Real-time incoming traffic analysis ({{ securityStats.timeRange }})
-                            </p>
+                            <p class="text-sm text-slate-400 mt-1">Real-time traffic analysis ({{
+                                securityStats.timeRange }})</p>
                         </div>
-                        <div class="text-right">
-                            <p class="text-3xl font-bold text-slate-900">{{ securityStats.threatsBlocked }}</p>
-                            <p class="text-xs font-medium text-red-500 bg-red-50 px-2 py-0.5 rounded inline-block mt-1">
+                        <div class="text-left sm:text-right flex items-center sm:block gap-3">
+                            <p class="text-4xl font-extrabold text-slate-900 tabular-nums" @countUp>
+                                {{ displayedThreats }}
+                            </p>
+                            <p
+                                class="text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-lg inline-block border border-red-100">
                                 Threats Blocked
                             </p>
                         </div>
                     </div>
 
                     <!-- SVG Chart -->
-                    <div class="flex-1 relative min-h-[160px] w-full">
-                        <svg class="w-full h-full absolute inset-0 text-red-500" viewBox="0 0 400 150"
-                            preserveAspectRatio="none">
+                    <div class="flex-1 relative min-h-[160px] sm:min-h-[180px] w-full">
+                        <svg class="w-full h-full absolute inset-0" viewBox="0 0 400 150" preserveAspectRatio="none">
                             <defs>
                                 <linearGradient id="gradientRed" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="currentColor" stop-opacity="0.2" />
-                                    <stop offset="100%" stop-color="currentColor" stop-opacity="0" />
+                                    <stop offset="0%" stop-color="#ef4444" stop-opacity="0.15" />
+                                    <stop offset="100%" stop-color="#ef4444" stop-opacity="0" />
+                                </linearGradient>
+                                <linearGradient id="gradientOrange" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#f97316" stop-opacity="0.1" />
+                                    <stop offset="100%" stop-color="#f97316" stop-opacity="0" />
                                 </linearGradient>
                             </defs>
+                            <!-- Grid lines -->
+                            <line x1="0" y1="37" x2="400" y2="37" stroke="#f1f5f9" stroke-width="1"
+                                stroke-dasharray="4 4" />
+                            <line x1="0" y1="75" x2="400" y2="75" stroke="#f1f5f9" stroke-width="1"
+                                stroke-dasharray="4 4" />
+                            <line x1="0" y1="112" x2="400" y2="112" stroke="#f1f5f9" stroke-width="1"
+                                stroke-dasharray="4 4" />
+                            <!-- Orange area -->
+                            <path
+                                d="M0,150 L0,135 Q40,140 80,120 T160,110 Q200,100 240,115 T320,95 Q360,80 400,90 L400,150 Z"
+                                fill="url(#gradientOrange)" class="chart-area" />
+                            <path d="M0,135 Q40,140 80,120 T160,110 Q200,100 240,115 T320,95 Q360,80 400,90" fill="none"
+                                stroke="#f97316" stroke-width="2" stroke-linecap="round" opacity="0.6"
+                                class="chart-line" />
+                            <!-- Red area -->
                             <path
                                 d="M0,150 L0,120 Q50,130 80,90 T150,80 Q200,60 230,100 T300,50 Q350,10 400,60 L400,150 Z"
-                                fill="url(#gradientRed)" />
+                                fill="url(#gradientRed)" class="chart-area" />
                             <path d="M0,120 Q50,130 80,90 T150,80 Q200,60 230,100 T300,50 Q350,10 400,60" fill="none"
-                                stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                                stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                                class="chart-line-main" />
+                            <!-- Dots on main line -->
+                            <circle cx="80" cy="90" r="3.5" fill="#ef4444" class="chart-dot" />
+                            <circle cx="150" cy="80" r="3.5" fill="#ef4444" class="chart-dot" />
+                            <circle cx="300" cy="50" r="3.5" fill="#ef4444" class="chart-dot" />
+                            <circle cx="400" cy="60" r="3.5" fill="#ef4444" class="chart-dot" />
                         </svg>
 
                         <!-- X-axis labels -->
-                        <div class="absolute bottom-0 left-0 w-full flex justify-between
-                                    text-xs text-slate-400 font-medium px-2 translate-y-6">
+                        <div
+                            class="absolute bottom-0 left-0 w-full flex justify-between text-[10px] sm:text-xs text-slate-400 font-medium px-1 translate-y-5">
                             <span>00:00</span>
-                            <span>04:00</span>
+                            <span class="hidden xs:inline">04:00</span>
                             <span>08:00</span>
-                            <span>12:00</span>
+                            <span class="hidden xs:inline">12:00</span>
                             <span>16:00</span>
-                            <span>20:00</span>
-                            <span>23:59</span>
+                            <span class="hidden xs:inline">20:00</span>
+                            <span>Now</span>
                         </div>
                     </div>
 
                     <!-- Legend -->
-                    <div class="mt-8 pt-4 border-t border-slate-100 flex gap-6">
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex flex-wrap gap-x-6 gap-y-2">
                         <div class="flex items-center gap-2">
-                            <span class="h-3 w-3 rounded-full bg-red-500"></span>
-                            <span class="text-xs text-slate-600 font-medium">Critical (High)</span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-red-500"></span>
+                            <span class="text-xs text-slate-500 font-medium">Critical</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="h-3 w-3 rounded-full bg-orange-400"></span>
-                            <span class="text-xs text-slate-600 font-medium">Suspicious (Medium)</span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-orange-400"></span>
+                            <span class="text-xs text-slate-500 font-medium">Suspicious</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="h-3 w-3 rounded-full bg-slate-300"></span>
-                            <span class="text-xs text-slate-600 font-medium">Normal Traffic</span>
+                            <span class="h-2.5 w-2.5 rounded-full bg-slate-200"></span>
+                            <span class="text-xs text-slate-500 font-medium">Normal</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ── Recent Logs Table ── -->
-            <div class="bg-white/90 backdrop-blur-sm rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col"
+            <!-- ═══════ Recent Logs Table ═══════ -->
+            <div class="logs-card bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col"
                 @fadeUp>
 
                 <!-- Table Header -->
                 <div
-                    class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <h3 class="text-lg font-bold text-slate-900">Recent System Logs</h3>
-
+                    class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
+                        <h3 class="text-base font-bold text-slate-900">Recent System Logs</h3>
+                        <span
+                            class="text-[11px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md tabular-nums">
+                            {{ filteredLogs.length }}
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
                         <!-- Filter -->
                         <div class="relative">
-                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400
-                                         material-symbols-outlined text-[18px]">filter_list</span>
-                            <select [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange()" class="pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm
-                                       focus:outline-none focus:ring-2 focus:ring-[#2463eb]/50 text-slate-600
-                                       appearance-none cursor-pointer">
+                            <span
+                                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-[18px]">filter_list</span>
+                            <select [(ngModel)]="selectedFilter" (ngModelChange)="onFilterChange()" class="filter-select pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm
+                                       focus:outline-none focus:ring-2 focus:ring-[#2463eb]/30 text-slate-600
+                                       appearance-none cursor-pointer transition-all duration-200">
                                 <option *ngFor="let opt of filterOptions">{{ opt }}</option>
                             </select>
                         </div>
 
                         <!-- Refresh -->
                         <button (click)="onRefresh()"
-                            class="text-slate-500 hover:text-[#2463eb] transition-colors p-2 hover:bg-slate-50 rounded-lg">
-                            <span class="material-symbols-outlined">refresh</span>
+                            class="p-2.5 rounded-xl text-slate-400 hover:text-[#2463eb] hover:bg-[#2463eb]/5 border border-slate-200 hover:border-[#2463eb]/30 transition-all duration-200 active:scale-95"
+                            [class.animate-spin]="isRefreshing">
+                            <span class="material-symbols-outlined text-[20px]">refresh</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Table -->
-                <div class="overflow-x-auto custom-scrollbar">
+                <!-- ═══ Desktop Table ═══ -->
+                <div class="hidden md:block overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-sm text-slate-600">
-                        <thead class="bg-slate-50 text-slate-900 font-semibold border-b border-slate-200">
-                            <tr>
-                                <th class="px-6 py-4">Timestamp</th>
-                                <th class="px-6 py-4">User</th>
-                                <th class="px-6 py-4">Action</th>
-                                <th class="px-6 py-4">IP Address</th>
-                                <th class="px-6 py-4">Status</th>
-                                <th class="px-6 py-4 text-right">Details</th>
+                        <thead>
+                            <tr class="bg-slate-50/80 border-b border-slate-200">
+                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Timestamp</th>
+                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    User</th>
+                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Action</th>
+                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">IP
+                                    Address</th>
+                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Status</th>
+                                <th
+                                    class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                                    Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100" [@staggerRows]="pagedLogs.length">
-                            <tr *ngFor="let log of pagedLogs"
-                                class="log-row hover:bg-slate-50/60 transition-colors duration-200 group">
+                            <tr *ngFor="let log of pagedLogs; let i = index" (mouseenter)="onRowHover(i)"
+                                (mouseleave)="onRowHover(null)"
+                                class="log-row border-l-4 border-l-transparent transition-all duration-200 group cursor-pointer"
+                                [ngClass]="getRowHoverClasses(log.status)"
+                                [class.bg-slate-50/40]="hoveredLogIndex === i">
 
-                                <!-- Timestamp -->
-                                <td class="px-6 py-4 whitespace-nowrap font-mono text-xs text-slate-500">
+                                <td class="px-6 py-4 whitespace-nowrap font-mono text-xs text-slate-400">
                                     {{ log.timestamp }}
                                 </td>
 
-                                <!-- User -->
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div
-                                            [class]="'h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs ' + log.userColor">
+                                            [class]="'avatar h-8 w-8 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 transition-transform duration-200 group-hover:scale-110 ' + log.userColor">
                                             <ng-container *ngIf="!log.isBot">{{ log.userInitials }}</ng-container>
                                             <span *ngIf="log.isBot"
                                                 class="material-symbols-outlined text-[16px]">smart_toy</span>
                                         </div>
-                                        <span class="font-medium text-slate-900">{{ log.userName }}</span>
+                                        <span class="font-medium text-slate-800">{{ log.userName }}</span>
                                     </div>
                                 </td>
 
-                                <!-- Action -->
+                                <td class="px-6 py-4">
+                                    <span class="font-medium text-slate-700">{{ log.action }}</span>
+                                    <span *ngIf="log.actionId" class="text-slate-400 text-xs ml-1 font-mono">#{{
+                                        log.actionId }}</span>
+                                </td>
+
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ log.action }}
-                                    <span *ngIf="log.actionId" class="text-slate-400 text-xs ml-1">(ID: {{ log.actionId
-                                        }})</span>
+                                    <button (click)="onCopyIp(log.ipAddress, $event)"
+                                        class="font-mono text-xs text-slate-400 hover:text-[#2463eb] transition-colors duration-200 flex items-center gap-1 group/ip">
+                                        {{ log.ipAddress }}
+                                        <span
+                                            class="material-symbols-outlined text-[14px] opacity-0 group-hover/ip:opacity-100 transition-opacity">content_copy</span>
+                                    </button>
                                 </td>
 
-                                <!-- IP -->
-                                <td class="px-6 py-4 whitespace-nowrap font-mono text-xs">
-                                    {{ log.ipAddress }}
-                                </td>
-
-                                <!-- Status -->
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <span
-                                        [class]="'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ' + getStatusClasses(log.status)">
+                                        [class]="'status-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border ' + getStatusClasses(log.status)">
                                         <span
                                             [class]="'h-1.5 w-1.5 rounded-full ' + getStatusDotClasses(log.status)"></span>
                                         {{ log.status }}
                                     </span>
                                 </td>
 
-                                <!-- Details -->
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <button (click)="onViewDetails(log)"
-                                        class="text-slate-400 hover:text-[#2463eb] transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                        class="p-1.5 rounded-lg text-slate-300 hover:text-[#2463eb] hover:bg-[#2463eb]/5 transition-all duration-200 active:scale-90">
+                                        <span class="material-symbols-outlined text-[20px]">{{ expandedLogId ===
+                                            (log.timestamp + '-' + log.userName) ? 'expand_less' : 'expand_more'
+                                            }}</span>
                                     </button>
+                                </td>
+                            </tr>
+
+                            <!-- Expanded Detail Row -->
+                            <tr *ngFor="let log of pagedLogs" class="detail-row transition-all duration-300"
+                                [class.hidden]="expandedLogId !== (log.timestamp + '-' + log.userName)">
+                                <td colspan="6" class="px-6 py-0">
+                                    <div
+                                        class="py-4 px-4 bg-slate-50/80 rounded-b-xl ml-4 border border-slate-100 border-t-0">
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
+                                            <div>
+                                                <span class="text-slate-400 block mb-1">Full Timestamp</span>
+                                                <span class="font-mono font-medium text-slate-700">{{ log.timestamp
+                                                    }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-slate-400 block mb-1">IP Address</span>
+                                                <span class="font-mono font-medium text-slate-700">{{ log.ipAddress
+                                                    }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-slate-400 block mb-1">Action ID</span>
+                                                <span class="font-mono font-medium text-slate-700">{{ log.actionId ||
+                                                    'N/A' }}</span>
+                                            </div>
+                                            <div>
+                                                <span class="text-slate-400 block mb-1">Source</span>
+                                                <span class="font-medium text-slate-700">{{ log.isBot ? '🤖 Automated' :
+                                                    '👤 Manual' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
 
                             <!-- Empty state -->
                             <tr *ngIf="filteredLogs.length === 0">
-                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
-                                    <span class="material-symbols-outlined text-[40px] block mb-2">search_off</span>
-                                    No logs match your current filter.
+                                <td colspan="6" class="px-6 py-16 text-center">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="p-4 rounded-2xl bg-slate-100">
+                                            <span
+                                                class="material-symbols-outlined text-slate-300 text-[40px]">search_off</span>
+                                        </div>
+                                        <p class="text-sm font-medium text-slate-400">No logs match your current filter
+                                        </p>
+                                        <button
+                                            (click)="selectedFilter = 'All Events'; searchQuery = ''; onFilterChange();"
+                                            class="text-xs font-bold text-[#2463eb] hover:underline underline-offset-2">
+                                            Clear all filters
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <!-- Pagination Footer -->
-                <div
-                    class="p-4 border-t border-slate-100 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <!-- ═══ Mobile Cards ═══ -->
+                <div class="md:hidden divide-y divide-slate-100" [@staggerRows]="pagedLogs.length">
+                    <div *ngFor="let log of pagedLogs; let i = index"
+                        class="log-row log-card-mobile p-4 transition-all duration-200 active:bg-slate-50"
+                        (click)="onViewDetails(log)">
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div
+                                    [class]="'avatar h-9 w-9 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 ' + log.userColor">
+                                    <ng-container *ngIf="!log.isBot">{{ log.userInitials }}</ng-container>
+                                    <span *ngIf="log.isBot"
+                                        class="material-symbols-outlined text-[16px]">smart_toy</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-sm text-slate-800 truncate">{{ log.userName }}</p>
+                                    <p class="text-[11px] font-mono text-slate-400">{{ log.timestamp }}</p>
+                                </div>
+                            </div>
+                            <span
+                                [class]="'status-pill inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold border flex-shrink-0 ' + getStatusClasses(log.status)">
+                                <span [class]="'h-1.5 w-1.5 rounded-full ' + getStatusDotClasses(log.status)"></span>
+                                {{ log.status }}
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-2">{{ log.action }}</p>
+                        <div class="flex items-center justify-between">
+                            <button (click)="onCopyIp(log.ipAddress, $event)"
+                                class="font-mono text-[11px] text-slate-400 hover:text-[#2463eb] transition-colors flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">language</span>
+                                {{ log.ipAddress }}
+                            </button>
+                            <span *ngIf="log.actionId" class="text-[11px] text-slate-400 font-mono">#{{ log.actionId
+                                }}</span>
+                        </div>
 
-                    <span class="text-sm text-slate-500">
+                        <!-- Expanded details on mobile -->
+                        <div *ngIf="expandedLogId === (log.timestamp + '-' + log.userName)"
+                            class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <span class="text-slate-400 block mb-0.5">Source</span>
+                                <span class="font-medium text-slate-600">{{ log.isBot ? '🤖 Automated' : '👤 Manual'
+                                    }}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-400 block mb-0.5">Action ID</span>
+                                <span class="font-mono font-medium text-slate-600">{{ log.actionId || 'N/A' }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile empty state -->
+                    <div *ngIf="filteredLogs.length === 0" class="p-12 text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="p-4 rounded-2xl bg-slate-100">
+                                <span class="material-symbols-outlined text-slate-300 text-[36px]">search_off</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-400">No logs match your filter</p>
+                            <button (click)="selectedFilter = 'All Events'; searchQuery = ''; onFilterChange();"
+                                class="text-xs font-bold text-[#2463eb]">Clear filters</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ Pagination Footer ═══ -->
+                <div
+                    class="p-4 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <span class="text-xs text-slate-400">
                         <ng-container *ngIf="filteredLogs.length > 0">
-                            Showing
-                            <span class="font-semibold text-slate-700">{{ rangeStart }}–{{ rangeEnd }}</span>
-                            of
-                            <span class="font-semibold text-slate-700">{{ filteredLogs.length }}</span>
-                            entries
+                            Showing <span class="font-semibold text-slate-600">{{ rangeStart }}–{{ rangeEnd }}</span>
+                            of <span class="font-semibold text-slate-600">{{ filteredLogs.length }}</span>
                         </ng-container>
-                        <ng-container *ngIf="filteredLogs.length === 0">No entries found</ng-container>
+                        <ng-container *ngIf="filteredLogs.length === 0">No entries</ng-container>
                     </span>
 
                     <div class="flex items-center gap-1">
-
-                        <!-- First page -->
                         <button (click)="goToPage(1)" [disabled]="currentPage === 1"
-                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
                             <span class="material-symbols-outlined text-[18px]">first_page</span>
                         </button>
-
-                        <!-- Previous -->
                         <button (click)="prevPage()" [disabled]="currentPage === 1"
-                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
                             <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
 
-                        <span *ngIf="pageNumbers[0] > 1" class="px-1 text-slate-400 text-sm select-none">…</span>
+                        <span *ngIf="pageNumbers[0] > 1" class="px-1 text-slate-300 text-sm select-none">…</span>
 
-                        <!-- Page numbers -->
-                        <button *ngFor="let page of pageNumbers" (click)="goToPage(page)"
-                            [class]="page === currentPage
-                                ? 'min-w-[34px] h-[34px] px-2 rounded-md text-sm font-bold bg-[#2463eb] text-white border border-[#2463eb] transition-all'
-                                : 'min-w-[34px] h-[34px] px-2 rounded-md text-sm font-medium bg-white text-slate-600 border border-slate-200 hover:border-[#2463eb] hover:text-[#2463eb] transition-all'">
+                        <button *ngFor="let page of pageNumbers" (click)="goToPage(page)" [class]="page === currentPage
+                                ? 'page-btn-active min-w-[34px] h-[34px] px-2 rounded-lg text-sm font-bold'
+                                : 'page-btn min-w-[34px] h-[34px] px-2 rounded-lg text-sm font-medium'"
+                            [class.active-scale]="page === currentPage">
                             {{ page }}
                         </button>
 
                         <span *ngIf="pageNumbers[pageNumbers.length - 1] < totalPages"
-                            class="px-1 text-slate-400 text-sm select-none">…</span>
+                            class="px-1 text-slate-300 text-sm select-none">…</span>
 
-                        <!-- Next -->
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
                             <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
-
-                        <!-- Last page -->
                         <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
-                            class="p-1.5 rounded-md text-slate-500 hover:bg-white hover:text-[#2463eb] hover:border-[#2463eb]
-                                   border border-transparent transition-all disabled:opacity-30 disabled:cursor-not-allowed">
+                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
                             <span class="material-symbols-outlined text-[18px]">last_page</span>
                         </button>
-
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
+
+    <!-- ═══════ Toast Notification ═══════ -->
+    <div *ngIf="showSuccessToast" class="fixed bottom-6 right-6 z-50 toast-enter" @slideInRight>
+        <div
+            class="flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-2xl shadow-slate-900/30">
+            <span class="material-symbols-outlined text-emerald-400 text-[20px]">check_circle</span>
+            <span class="text-sm font-medium">{{ toastMessage }}</span>
+        </div>
+    </div>
 </div>

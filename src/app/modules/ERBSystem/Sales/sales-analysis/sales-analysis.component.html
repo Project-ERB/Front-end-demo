@@ -1,60 +1,105 @@
-<div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f8fafc] font-sans text-[#0f172a]">
+<div
+    class="relative flex min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 font-[Manrope,sans-serif] antialiased overflow-hidden">
 
-    <!-- Sidebar -->
-    <app-sideba-sales></app-sideba-sales>
+    <!-- ── Background Orbs ── -->
+    <div
+        class="pointer-events-none absolute left-0 top-0 h-[26rem] w-[26rem] rounded-full bg-[#1e3b8a]/6 blur-3xl -translate-x-1/3 -translate-y-1/3 orb-float">
+    </div>
+    <div
+        class="pointer-events-none absolute right-0 bottom-0 h-[28rem] w-[28rem] rounded-full bg-blue-400/6 blur-3xl translate-x-1/4 translate-y-1/4 orb-float-delayed">
+    </div>
 
-    <!-- Main Content -->
-    <main class="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+    <!-- ── Desktop Sidebar ── -->
+    <div class="hidden lg:block relative z-10">
+        <app-sideba-sales></app-sideba-sales>
+    </div>
 
-        <!-- Header -->
-        <header class="flex h-16 items-center justify-between border-b border-[#e2e8f0] bg-white px-6 py-3">
-            <div class="flex items-center gap-2 text-sm text-[#64748b]">
-                <a href="#" class="hover:text-[#1e3b8a]">Home</a>
-                <span class="material-symbols-outlined text-base">chevron_right</span>
-                <a href="#" class="hover:text-[#1e3b8a]">Dashboard</a>
-                <span class="material-symbols-outlined text-base">chevron_right</span>
-                <span class="font-medium text-[#0f172a]">Sales Analysis</span>
+    <!-- ── Mobile Sidebar Backdrop ── -->
+    <div *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()" class="mobile-sidebar-backdrop lg:hidden"></div>
+
+    <!-- ── Mobile Sidebar Drawer ── -->
+    <div class="mobile-sidebar fixed inset-y-0 left-0 z-40 lg:hidden w-72 max-w-[85vw] -translate-x-full transition-transform duration-300 ease-out"
+        [class.translate-x-0]="isMobileSidebarOpen">
+        <app-sideba-sales></app-sideba-sales>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <main class="relative z-10 flex-1 h-full overflow-y-auto flex flex-col">
+
+        <!-- ═══ Header ═══ -->
+        <header class="header-glass border-b border-slate-200/80 sticky top-0 z-20 px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3 min-w-0">
+                    <button (click)="toggleMobileSidebar()"
+                        class="lg:hidden flex-shrink-0 p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#1e3b8a] hover:border-[#1e3b8a]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+                        <span class="material-symbols-outlined text-[20px]">menu</span>
+                    </button>
+                    <div class="min-w-0">
+                        <nav class="flex text-xs text-slate-400 items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px]">home</span>
+                            <span>Home</span>
+                            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                            <span>Dashboard</span>
+                            <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                            <span class="text-slate-600 font-medium">Sales Analysis</span>
+                        </nav>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 truncate mt-0.5">Sales Analysis</h1>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <div class="relative hidden sm:block">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">calendar_today</span>
+                        <select [(ngModel)]="selectedPeriod" (ngModelChange)="onPeriodChange()"
+                            class="filter-select h-10 cursor-pointer pl-10 pr-8 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]/30 transition-all">
+                            @for (period of periods; track period) {
+                            <option [value]="period">{{ period }}</option>
+                            }
+                        </select>
+                    </div>
+                    <button (click)="exportReport()"
+                        class="btn-primary-blue text-white px-4 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all duration-200 active:scale-95">
+                        <span class="material-symbols-outlined text-[18px]">download</span>
+                        <span class="hidden sm:inline">Export</span>
+                    </button>
+                </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            <!-- Mobile Period Selector -->
+            <div class="sm:hidden mt-3" @scaleIn>
                 <div class="relative">
                     <span
-                        class="material-symbols-outlined absolute left-2.5 top-2.5 text-[#64748b]">calendar_today</span>
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">calendar_today</span>
                     <select [(ngModel)]="selectedPeriod" (ngModelChange)="onPeriodChange()"
-                        class="h-10 cursor-pointer rounded-lg border border-[#e2e8f0] bg-[#f8fafc] pl-10 pr-8 text-sm font-medium text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]">
+                        class="filter-select w-full h-10 cursor-pointer pl-10 pr-8 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]/30 transition-all">
                         @for (period of periods; track period) {
                         <option [value]="period">{{ period }}</option>
                         }
                     </select>
                 </div>
-                <button (click)="exportReport()"
-                    class="flex h-10 items-center gap-2 rounded-lg bg-[#1e3b8a] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#1e3b8a]/90">
-                    <span class="material-symbols-outlined text-[20px]">download</span>
-                    Export Report
-                </button>
             </div>
         </header>
 
-        <!-- Loading State -->
+        <!-- ═══ Loading State ═══ -->
         @if (isLoading) {
         <div class="flex flex-1 items-center justify-center py-32">
-            <div class="flex flex-col items-center gap-4 text-[#64748b]">
-                <span class="material-symbols-outlined animate-spin text-5xl text-[#1e3b8a]">
-                    progress_activity
-                </span>
+            <div class="flex flex-col items-center gap-4 text-slate-400">
+                <span class="material-symbols-outlined animate-spin text-5xl text-[#1e3b8a]">progress_activity</span>
                 <p class="text-sm font-medium">Loading dashboard…</p>
             </div>
         </div>
         }
 
-        <!-- Error State -->
+        <!-- ═══ Error State ═══ -->
         @if (errorMessage && !isLoading) {
-        <div class="flex flex-1 items-center justify-center py-32">
+        <div class="flex flex-1 items-center justify-center py-32" @scaleIn>
             <div class="flex flex-col items-center gap-4">
-                <span class="material-symbols-outlined text-5xl text-red-400">error_outline</span>
+                <div class="p-4 rounded-2xl bg-red-50">
+                    <span class="material-symbols-outlined text-5xl text-red-400">error_outline</span>
+                </div>
                 <p class="text-sm font-medium text-red-600">{{ errorMessage }}</p>
                 <button (click)="loadDashboard()"
-                    class="mt-1 flex items-center gap-1.5 rounded-lg border border-[#1e3b8a] px-4 py-2 text-sm font-medium text-[#1e3b8a] transition-colors hover:bg-[#1e3b8a] hover:text-white">
+                    class="mt-1 flex items-center gap-1.5 rounded-xl border border-[#1e3b8a] px-4 py-2 text-sm font-medium text-[#1e3b8a] transition-all hover:bg-[#1e3b8a] hover:text-white active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">refresh</span>
                     Retry
                 </button>
@@ -62,25 +107,26 @@
         </div>
         }
 
-        <!-- Content Body -->
+        <!-- ═══ Content Body ═══ -->
         @if (!isLoading && !errorMessage) {
-        <div class="flex flex-col gap-6 p-6 lg:p-8">
+        <div class="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto w-full">
 
-            <div class="flex flex-col gap-2">
-                <h1 class="text-2xl font-bold text-[#0f172a]">Sales Analysis</h1>
-                <p class="text-sm text-[#64748b]">Overview of revenue, orders, and category performance for the selected
-                    period.</p>
+            <!-- Intro -->
+            <div @fadeUp>
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Sales Overview</h2>
+                <p class="text-slate-500 text-sm mt-1">Revenue, orders, and category performance for {{ selectedPeriod
+                    }}.</p>
             </div>
 
-            <!-- KPI Cards -->
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <!-- ── KPI Cards ── -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" @staggerItems>
                 @for (card of kpiCards; track card.title) {
                 <div
-                    class="flex flex-col gap-4 rounded-xl border border-[#e2e8f0] bg-white p-5 shadow-sm transition-all hover:shadow-md">
-                    <div class="flex items-center justify-between">
-                        <p class="text-sm font-medium text-[#64748b]">{{ card.title }}</p>
+                    class="stagger-item kpi-card bg-white/80 backdrop-blur-sm p-5 rounded-2xl border border-slate-200/80 shadow-sm cursor-default">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-sm font-medium text-slate-500">{{ card.title }}</p>
                         <span [ngClass]="card.isPositive ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'"
-                            class="flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium">
+                            class="flex items-center gap-1 rounded-lg px-2 py-0.5 text-[11px] font-bold">
                             <span class="material-symbols-outlined text-[14px]">
                                 {{ card.isPositive ? 'trending_up' : 'trending_down' }}
                             </span>
@@ -88,81 +134,67 @@
                         </span>
                     </div>
 
-                    <div>
-                        <p class="text-2xl font-bold tracking-tight text-[#0f172a]">{{ card.value }}</p>
-                    </div>
+                    <p class="text-2xl font-bold tracking-tight text-slate-900 tabular-nums mb-3">{{ card.value }}</p>
 
                     <div class="h-10 w-full">
                         <svg class="h-full w-full overflow-visible" fill="none" viewBox="0 0 100 24"
                             preserveAspectRatio="none">
-                            <path [attr.d]="card.sparklinePath" [attr.stroke]="card.isPositive ? '#10b981' : '#ef4444'"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                vector-effect="non-scaling-stroke"></path>
                             <path [attr.d]="card.sparklineFillPath"
                                 [attr.fill]="card.isPositive ? '#10b981' : '#ef4444'" fill-opacity="0.1"
                                 vector-effect="non-scaling-stroke"></path>
+                            <path [attr.d]="card.sparklinePath" [attr.stroke]="card.isPositive ? '#10b981' : '#ef4444'"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                vector-effect="non-scaling-stroke" class="chart-sparkline"></path>
                         </svg>
                     </div>
                 </div>
                 }
             </div>
 
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <!-- ── Charts Section ── -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" @fadeUp>
 
                 <!-- Line Chart -->
-                <div class="flex flex-col rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-sm lg:col-span-2">
-                    <div class="mb-6 flex items-center justify-between">
+                <div
+                    class="chart-card bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/80 shadow-sm lg:col-span-2">
+                    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <h3 class="font-semibold text-[#0f172a]">Sales Trends</h3>
-                            <p class="text-sm text-[#64748b]">Revenue vs Previous Period</p>
+                            <h3 class="font-bold text-slate-900">Sales Trends</h3>
+                            <p class="text-sm text-slate-400">Revenue vs Previous Period</p>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="flex items-center gap-2">
                                 <span class="h-3 w-3 rounded-full bg-[#1e3b8a]"></span>
-                                <span class="text-xs font-medium text-[#64748b]">Current</span>
+                                <span class="text-xs font-medium text-slate-500">Current</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="h-3 w-3 rounded-full bg-slate-300"></span>
-                                <span class="text-xs font-medium text-[#64748b]">Previous</span>
+                                <span class="text-xs font-medium text-slate-500">Previous</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="relative h-[300px] w-full">
+                    <div class="relative h-[260px] sm:h-[300px] w-full">
                         <!-- Grid Lines -->
-                        <div class="absolute inset-0 flex flex-col justify-between text-xs text-[#64748b]">
+                        <div
+                            class="absolute inset-0 flex flex-col justify-between text-[10px] sm:text-xs text-slate-400">
+                            @for (val of ['$100k', '$75k', '$50k', '$25k', '$0']; track val) {
                             <div class="flex w-full items-center">
-                                <span class="w-8 pr-2 text-right">$100k</span>
-                                <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
+                                <span class="w-8 sm:w-10 pr-2 text-right tabular-nums">{{ val }}</span>
+                                <div class="h-px flex-1 border-dashed border-t border-slate-200"></div>
                             </div>
-                            <div class="flex w-full items-center">
-                                <span class="w-8 pr-2 text-right">$75k</span>
-                                <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
-                            </div>
-                            <div class="flex w-full items-center">
-                                <span class="w-8 pr-2 text-right">$50k</span>
-                                <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
-                            </div>
-                            <div class="flex w-full items-center">
-                                <span class="w-8 pr-2 text-right">$25k</span>
-                                <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
-                            </div>
-                            <div class="flex w-full items-center">
-                                <span class="w-8 pr-2 text-right">$0</span>
-                                <div class="h-px flex-1 border-dashed border-t border-[#e2e8f0]"></div>
-                            </div>
+                            }
                         </div>
 
                         <!-- SVG Chart -->
-                        <svg class="absolute inset-0 h-full w-full pb-4 pl-8 pt-2" viewBox="0 0 400 100"
+                        <svg class="absolute inset-0 h-full w-full pb-4 pl-8 sm:pl-10 pt-2" viewBox="0 0 400 100"
                             preserveAspectRatio="none">
                             <path d="M0 80 C 40 70, 80 85, 120 60 S 200 70, 240 50 S 320 60, 400 40" fill="none"
                                 stroke="#cbd5e1" stroke-dasharray="4 4" stroke-width="2"
                                 vector-effect="non-scaling-stroke"></path>
                             <defs>
                                 <linearGradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
-                                    <stop offset="0%" stop-color="#1e3b8a" stop-opacity="0.1"></stop>
+                                    <stop offset="0%" stop-color="#1e3b8a" stop-opacity="0.12"></stop>
                                     <stop offset="100%" stop-color="#1e3b8a" stop-opacity="0"></stop>
                                 </linearGradient>
                             </defs>
@@ -170,51 +202,52 @@
                                 fill="url(#chartGradient)" vector-effect="non-scaling-stroke"></path>
                             <path d="M0 60 C 40 50, 80 65, 120 40 S 200 50, 240 25 S 320 35, 400 15" fill="none"
                                 stroke="#1e3b8a" stroke-linecap="round" stroke-width="3"
-                                vector-effect="non-scaling-stroke"></path>
-                            <circle cx="240" cy="25" r="4" fill="#ffffff" stroke="#1e3b8a" stroke-width="2"></circle>
+                                vector-effect="non-scaling-stroke" class="chart-main-line"></path>
+                            <circle cx="240" cy="25" r="4" fill="#ffffff" stroke="#1e3b8a" stroke-width="2"
+                                class="chart-dot"></circle>
                         </svg>
 
                         <!-- Tooltip -->
                         <div
-                            class="absolute left-[60%] top-[15%] z-10 flex flex-col rounded bg-[#0f172a] px-3 py-1.5 text-xs text-white shadow-lg">
-                            <span class="font-bold">$84,320</span>
-                            <span class="text-gray-300">Feb 18</span>
+                            class="absolute left-[58%] top-[12%] z-10 hidden sm:flex flex-col rounded-xl bg-slate-900 px-3 py-2 text-xs text-white shadow-xl">
+                            <span class="font-bold tabular-nums">$84,320</span>
+                            <span class="text-slate-400">Feb 18</span>
                         </div>
                     </div>
 
                     <!-- X Axis Labels -->
-                    <div class="flex justify-between pl-8 pt-2 text-xs font-medium text-[#64748b]">
-                        <span>Jan 01</span>
-                        <span>Jan 08</span>
-                        <span>Jan 15</span>
-                        <span>Jan 22</span>
-                        <span>Jan 29</span>
-                        <span>Feb 05</span>
+                    <div class="hidden sm:flex justify-between pl-10 pt-2 text-xs font-medium text-slate-400">
+                        @for (label of ['Jan 01', 'Jan 08', 'Jan 15', 'Jan 22', 'Jan 29', 'Feb 05']; track label) {
+                        <span>{{ label }}</span>
+                        }
                     </div>
                 </div>
 
                 <!-- Category Bar Chart -->
-                <div class="flex flex-col rounded-xl border border-[#e2e8f0] bg-white p-6 shadow-sm">
+                <div
+                    class="chart-card bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col">
                     <div class="mb-6">
-                        <h3 class="font-semibold text-[#0f172a]">Category Performance</h3>
-                        <p class="text-sm text-[#64748b]">Sales by Product Category</p>
+                        <h3 class="font-bold text-slate-900">Categories</h3>
+                        <p class="text-sm text-slate-400">Sales by Product Category</p>
                     </div>
 
                     @if (categories.length === 0) {
-                    <div class="flex flex-1 flex-col items-center justify-center gap-2 py-8 text-[#64748b]">
-                        <span class="material-symbols-outlined text-3xl text-[#cbd5e1]">bar_chart</span>
-                        <p class="text-xs">No category data available</p>
+                    <div class="flex flex-1 flex-col items-center justify-center gap-2 py-8 text-slate-400">
+                        <span class="material-symbols-outlined text-3xl text-slate-200">bar_chart</span>
+                        <p class="text-xs">No category data</p>
                     </div>
                     } @else {
-                    <div class="flex h-full flex-col justify-end gap-3 pb-2 pt-4">
+                    <div class="flex h-full flex-col justify-end gap-4 pb-2 pt-4">
                         @for (cat of categories; track cat.name) {
                         <div class="group flex items-center gap-3">
-                            <span class="w-20 text-xs font-medium text-[#64748b]">{{ cat.name }}</span>
-                            <div class="relative h-2 w-full flex-1 rounded-full bg-slate-100">
-                                <div class="absolute h-full rounded-full transition-all duration-500"
+                            <span class="w-16 sm:w-20 text-[11px] font-medium text-slate-500 truncate">{{ cat.name
+                                }}</span>
+                            <div class="relative h-2.5 w-full flex-1 rounded-full bg-slate-100 overflow-hidden">
+                                <div class="absolute h-full rounded-full transition-all duration-700 ease-out"
                                     [ngClass]="[cat.colorClass, cat.hoverClass]" [style.width.%]="cat.percentage"></div>
                             </div>
-                            <span class="w-12 text-right text-xs font-bold text-[#0f172a]">{{ cat.value }}</span>
+                            <span class="w-12 text-right text-xs font-bold text-slate-800 tabular-nums">{{ cat.value
+                                }}</span>
                         </div>
                         }
                     </div>
@@ -222,109 +255,113 @@
                 </div>
             </div>
 
-            <!-- Data Table -->
-            <div class="flex flex-col overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
+            <!-- ═══ Data Table ═══ -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col"
+                @fadeUp>
 
                 <!-- Card Header -->
-                <div class="flex items-center justify-between border-b border-[#e2e8f0] px-6 py-4">
-                    <div class="flex items-center gap-2">
-                        <h3 class="font-semibold text-[#0f172a]">Top Selling Products</h3>
+                <div class="flex items-center justify-between border-b border-slate-100 px-4 sm:px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <h3 class="text-base font-bold text-slate-900">Top Products</h3>
                         @if (activeFilterCount > 0) {
-                        <span
-                            class="flex items-center justify-center rounded-full bg-[#1e3b8a] px-2 py-0.5 text-xs font-semibold text-white">
+                        <span class="text-[11px] font-bold text-white bg-[#1e3b8a] px-2 py-0.5 rounded-lg">
                             {{ activeFilterCount }}
                         </span>
                         }
                     </div>
-                    <button class="text-sm font-medium text-[#1e3b8a] hover:text-[#1e3b8a]/80">View All</button>
+                    <button class="text-sm font-semibold text-[#1e3b8a] hover:text-[#1e3b8a]/80 transition-colors">View
+                        All</button>
                 </div>
 
                 <!-- Filter Toolbar -->
-                <div class="flex flex-wrap items-center gap-3 border-b border-[#e2e8f0] bg-[#f8fafc] px-6 py-3">
-
-                    <!-- Search -->
-                    <div class="relative min-w-[200px] flex-1">
+                <div
+                    class="flex flex-wrap items-center gap-3 border-b border-slate-100 bg-slate-50/60 px-4 sm:px-6 py-3">
+                    <div class="relative flex-1 min-w-[180px]">
                         <span
-                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">search</span>
-                        <input type="text" [(ngModel)]="searchQuery" (ngModelChange)="onFilterChange()"
-                            placeholder="Search by name, SKU or category…"
-                            class="h-9 w-full rounded-lg border border-[#e2e8f0] bg-white pl-9 pr-3 text-sm text-[#0f172a] placeholder-[#94a3b8] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]" />
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-slate-400">search</span>
+                        <input id="sales-search-input" type="text" [(ngModel)]="searchQuery"
+                            (ngModelChange)="onFilterChange()" placeholder="Search by name, SKU…"
+                            class="search-input h-9 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]/30 focus:border-[#1e3b8a]/50 transition-all" />
                     </div>
 
-                    <!-- Category Filter -->
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">category</span>
+                    <div class="relative hidden sm:block">
                         <select [(ngModel)]="selectedCategory" (ngModelChange)="onFilterChange()"
-                            class="h-9 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white pl-9 pr-8 text-sm font-medium text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
-                            [ngClass]="selectedCategory ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                            class="filter-select h-9 cursor-pointer appearance-none rounded-xl border border-slate-200 bg-white pl-3 pr-8 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]/30 transition-all min-w-[140px]"
+                            [class.border-[#1e3b8a]]="selectedCategory" [class.text-[#1e3b8a]]="selectedCategory">
                             <option value="">All Categories</option>
                             @for (cat of availableCategories; track cat) {
                             <option [value]="cat">{{ cat }}</option>
                             }
                         </select>
-                        <span
-                            class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
                     </div>
 
-                    <!-- Status Filter -->
-                    <div class="relative">
-                        <span
-                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-[#64748b]">inventory</span>
+                    <div class="relative hidden sm:block">
                         <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()"
-                            class="h-9 cursor-pointer appearance-none rounded-lg border border-[#e2e8f0] bg-white pl-9 pr-8 text-sm font-medium text-[#0f172a] focus:border-[#1e3b8a] focus:outline-none focus:ring-1 focus:ring-[#1e3b8a]"
-                            [ngClass]="selectedStatus ? 'border-[#1e3b8a] text-[#1e3b8a]' : ''">
+                            class="filter-select h-9 cursor-pointer appearance-none rounded-xl border border-slate-200 bg-white pl-3 pr-8 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#1e3b8a]/30 transition-all min-w-[140px]"
+                            [class.border-[#1e3b8a]]="selectedStatus" [class.text-[#1e3b8a]]="selectedStatus">
                             <option value="">All Statuses</option>
                             @for (s of availableStatuses; track s) {
                             <option [value]="s">{{ s }}</option>
                             }
                         </select>
-                        <span
-                            class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-[#64748b]">expand_more</span>
                     </div>
 
-                    <!-- Clear Filters -->
                     @if (activeFilterCount > 0) {
                     <button (click)="clearFilters()"
-                        class="flex h-9 items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 text-xs font-medium text-red-600 transition-colors hover:bg-red-100">
+                        class="flex h-9 items-center gap-1.5 rounded-xl border border-red-200 bg-red-50 px-3 text-xs font-semibold text-red-600 transition-all hover:bg-red-100 active:scale-95">
                         <span class="material-symbols-outlined text-[16px]">close</span>
-                        Clear filters
+                        <span class="hidden sm:inline">Clear</span>
                     </button>
                     }
                 </div>
 
-                <div class="overflow-x-auto">
+                <!-- ═══ Desktop Table ═══ -->
+                <div class="hidden md:block overflow-x-auto custom-scrollbar">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-[#f8fafc] text-[#64748b]">
-                            <tr>
-                                <th class="px-6 py-3 font-medium">Product Name</th>
-                                <th class="px-6 py-3 font-medium">SKU</th>
-                                <th class="px-6 py-3 font-medium">Category</th>
-                                <th class="px-6 py-3 text-right font-medium">Total Sold</th>
-                                <th class="px-6 py-3 text-right font-medium">Revenue</th>
-                                <th class="px-6 py-3 text-center font-medium">Status</th>
+                        <thead>
+                            <tr class="bg-slate-50/80 border-b border-slate-200">
+                                <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Product</th>
+                                <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    SKU</th>
+                                <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Category</th>
+                                <th
+                                    class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                                    Sold</th>
+                                <th
+                                    class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                                    Revenue</th>
+                                <th
+                                    class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
+                                    Status</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-[#e2e8f0]">
+                        <tbody class="divide-y divide-slate-100" [@staggerRows]="pagedProducts.length">
                             @for (product of pagedProducts; track product.sku) {
-                            <tr class="group transition-colors hover:bg-[#f8fafc]">
-                                <td class="px-6 py-4 font-medium text-[#0f172a]">
+                            <tr (mouseenter)="onRowHover(product.sku)" (mouseleave)="onRowHover(null)"
+                                class="prod-row border-l-4 border-l-transparent hover:border-l-[#1e3b8a] hover:bg-slate-50/50 transition-all duration-200 group"
+                                [class.bg-slate-50/30]="hoveredSku === product.sku">
+                                <td class="px-5 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="size-8 rounded bg-gray-100">
+                                        <div
+                                            class="h-8 w-8 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 transition-transform duration-200 group-hover:scale-105">
                                             <img [src]="product.imageUrl" [alt]="product.imageAlt"
-                                                class="size-full rounded object-cover opacity-80" />
+                                                class="h-full w-full object-cover" />
                                         </div>
-                                        {{ product.name }}
+                                        <span class="font-semibold text-slate-800">{{ product.name }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 font-mono text-[#64748b]">{{ product.sku }}</td>
-                                <td class="px-6 py-4 text-[#64748b]">{{ product.category }}</td>
-                                <td class="px-6 py-4 text-right font-mono text-[#0f172a]">{{ product.totalSold }}</td>
-                                <td class="px-6 py-4 text-right font-mono font-bold text-[#0f172a]">{{ product.revenue
-                                    }}</td>
-                                <td class="px-6 py-4 text-center">
+                                <td class="px-5 py-4 font-mono text-xs text-slate-400">{{ product.sku }}</td>
+                                <td class="px-5 py-4 text-sm text-slate-500">{{ product.category }}</td>
+                                <td class="px-5 py-4 text-right font-mono text-sm text-slate-800 tabular-nums">{{
+                                    product.totalSold }}</td>
+                                <td
+                                    class="px-5 py-4 text-right font-mono text-sm font-bold text-slate-900 tabular-nums">
+                                    {{ product.revenue }}</td>
+                                <td class="px-5 py-4 text-center">
                                     <span
-                                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
+                                        class="status-pill inline-flex items-center rounded-lg px-2.5 py-1 text-[11px] font-semibold"
                                         [ngClass]="getStatusClass(product.status)">
                                         {{ product.status }}
                                     </span>
@@ -334,13 +371,14 @@
                             <tr>
                                 <td colspan="6" class="px-6 py-16 text-center">
                                     <div class="flex flex-col items-center gap-3">
-                                        <span
-                                            class="material-symbols-outlined text-5xl text-[#cbd5e1]">search_off</span>
-                                        <p class="font-medium text-[#64748b]">No products match your filters</p>
+                                        <div class="p-4 rounded-2xl bg-slate-100">
+                                            <span
+                                                class="material-symbols-outlined text-slate-300 text-[40px]">search_off</span>
+                                        </div>
+                                        <p class="font-medium text-slate-400">No products match your filters</p>
                                         <button (click)="clearFilters()"
-                                            class="mt-1 text-sm font-medium text-[#1e3b8a] hover:underline">
-                                            Clear all filters
-                                        </button>
+                                            class="text-xs font-bold text-[#1e3b8a] hover:underline underline-offset-2">Clear
+                                            all filters</button>
                                     </div>
                                 </td>
                             </tr>
@@ -349,46 +387,79 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
+                <!-- ═══ Mobile Cards ═══ -->
+                <div class="md:hidden divide-y divide-slate-100" [@staggerRows]="pagedProducts.length">
+                    @for (product of pagedProducts; track product.sku) {
+                    <div class="prod-card-mobile p-4 transition-all duration-200 active:bg-slate-50/50">
+                        <div class="flex items-start gap-3 mb-3">
+                            <div class="h-10 w-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                                <img [src]="product.imageUrl" [alt]="product.imageAlt"
+                                    class="h-full w-full object-cover" />
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <p class="font-semibold text-sm text-slate-800 truncate">{{ product.name }}</p>
+                                <p class="text-[11px] font-mono text-slate-400 mt-0.5">{{ product.sku }}</p>
+                            </div>
+                            <span
+                                class="status-pill inline-flex items-center rounded-lg px-2 py-0.5 text-[10px] font-semibold flex-shrink-0"
+                                [ngClass]="getStatusClass(product.status)">
+                                {{ product.status }}
+                            </span>
+                        </div>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                            <span class="text-xs text-slate-400">{{ product.category }}</span>
+                            <div class="flex items-center gap-4 text-sm">
+                                <span class="text-slate-500"><span class="font-semibold text-slate-700 tabular-nums">{{
+                                        product.totalSold }}</span> sold</span>
+                                <span class="font-bold text-slate-900 tabular-nums">{{ product.revenue }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    } @empty {
+                    <div class="p-12 text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="p-4 rounded-2xl bg-slate-100">
+                                <span class="material-symbols-outlined text-slate-300 text-[36px]">search_off</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-400">No products found</p>
+                            <button (click)="clearFilters()" class="text-xs font-bold text-[#1e3b8a]">Clear
+                                filters</button>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <!-- ═══ Pagination ═══ -->
+                @if (totalProducts > 0) {
                 <div
-                    class="flex flex-col items-center justify-between gap-4 border-t border-[#e2e8f0] px-6 py-4 sm:flex-row">
-
-                    <p class="text-xs text-[#64748b]">
-                        Showing
-                        <span class="font-medium text-[#0f172a]">{{ showingFrom }}–{{ showingTo }}</span>
-                        of
-                        <span class="font-medium text-[#0f172a]">{{ totalProducts }}</span>
-                        products
-                    </p>
-
+                    class="p-4 border-t border-slate-100 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <span class="text-xs text-slate-400">
+                        Showing <span class="font-semibold text-slate-600">{{ showingFrom }}–{{ showingTo }}</span>
+                        of <span class="font-semibold text-slate-600">{{ totalProducts }}</span>
+                    </span>
                     <div class="flex items-center gap-1">
-
                         <button (click)="previousPage()" [disabled]="currentPage === 1"
-                            class="flex size-8 items-center justify-center rounded-lg border border-[#e2e8f0] bg-white text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40"
-                            aria-label="Previous page">
-                            <span class="material-symbols-outlined text-sm">chevron_left</span>
+                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
                         </button>
-
                         @for (page of pageNumbers; track page) {
                         @if (page === '...') {
-                        <span class="flex size-8 items-center justify-center text-xs text-[#64748b]">…</span>
+                        <span class="px-1 text-slate-300 text-sm">…</span>
                         } @else {
-                        <button (click)="goToPage(page)" [ngClass]="page === currentPage
-                                            ? 'bg-[#1e3b8a] text-white border-[#1e3b8a] font-semibold'
-                                            : 'bg-white text-[#64748b] border-[#e2e8f0] hover:bg-[#f8fafc]'"
-                            class="flex size-8 items-center justify-center rounded-lg border text-xs transition-colors">
+                        <button (click)="goToPage(page)" [class]="page === currentPage
+                                    ? 'page-btn-active-blue min-w-[34px] h-[34px] px-2 rounded-lg text-sm font-bold'
+                                    : 'page-btn min-w-[34px] h-[34px] px-2 rounded-lg text-sm font-medium'">
                             {{ page }}
                         </button>
                         }
                         }
-
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                            class="flex size-8 items-center justify-center rounded-lg border border-[#e2e8f0] bg-white text-[#64748b] transition-colors hover:bg-[#f8fafc] disabled:cursor-not-allowed disabled:opacity-40"
-                            aria-label="Next page">
-                            <span class="material-symbols-outlined text-sm">chevron_right</span>
+                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
                         </button>
                     </div>
                 </div>
+                }
             </div>
 
         </div>
@@ -396,4 +467,15 @@
         <!-- /Content Body -->
 
     </main>
+
+    <!-- ═══ Toast ═══ -->
+    @if (showToastMsg) {
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-6 z-50" @toastIn>
+        <div
+            class="flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-2xl shadow-slate-900/30 min-w-[240px]">
+            <span class="material-symbols-outlined text-[20px]" [ngClass]="toastColor">{{ toastIcon }}</span>
+            <span class="text-sm font-medium">{{ toastText }}</span>
+        </div>
+    </div>
+    }
 </div>

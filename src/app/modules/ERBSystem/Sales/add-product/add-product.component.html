@@ -1,52 +1,73 @@
 <!-- ================= ROOT LAYOUT ================= -->
-<div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f6f7f8] font-sans text-[#111418]">
+<div class="flex min-h-screen w-full flex-col lg:flex-row overflow-hidden bg-[#f6f7f8] font-sans text-[#111418]">
+
+    <!-- ═══════════════ MOBILE SIDEBAR OVERLAY ═══════════════ -->
+    <div *ngIf="sidebarOpen" (click)="closeSidebar()"
+        class="fixed inset-0 z-[999] bg-black/40 lg:hidden transition-opacity">
+    </div>
 
     <!-- ═══════════════ SIDEBAR ═══════════════ -->
-    <app-sideba-sales></app-sideba-sales>
+    <!-- Desktop: always visible | Mobile: slide-in overlay -->
+    <aside [ngClass]="sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+        class="fixed lg:static inset-y-0 left-0 z-[1000] w-64 lg:w-auto transition-transform duration-300 ease-in-out">
+        <app-sideba-sales></app-sideba-sales>
+    </aside>
 
     <!-- ═══════════════ MAIN ═══════════════ -->
-    <main class="flex flex-1 flex-col overflow-y-auto">
+    <main class="flex flex-1 flex-col overflow-y-auto min-w-0">
 
         <!-- HEADER -->
-        <header class="sticky top-0 z-50 flex h-16 items-center justify-between border-b bg-white px-6">
-            <h2 class="text-lg font-bold text-[#111418]">ERP Dashboard</h2>
+        <header class="sticky top-0 z-50 flex h-14 lg:h-16 items-center justify-between border-b bg-white px-3 lg:px-6">
+            <!-- Mobile hamburger -->
+            <button (click)="toggleSidebar()"
+                class="lg:hidden flex items-center justify-center size-10 rounded-lg hover:bg-[#f1f5f9] transition-colors">
+                <span class="material-symbols-outlined text-[22px]">menu</span>
+            </button>
+
+            <h2 class="text-base lg:text-lg font-bold text-[#111418]">ERP Dashboard</h2>
+
+            <!-- Spacer to balance header on mobile -->
+            <div class="lg:hidden size-10"></div>
         </header>
 
         <!-- PAGE BODY -->
-        <div class="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 sm:px-8">
+        <div class="mx-auto flex w-full max-w-5xl flex-col gap-6 lg:gap-8 px-3 py-5 sm:px-6 lg:px-8 lg:py-8">
 
             <!-- TITLE -->
-            <div class="flex flex-wrap items-end justify-between gap-4">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                 <div>
-                    <h1 class="text-3xl font-extrabold tracking-tight">Add New Product</h1>
-                    <p class="text-base text-[#617289]">Create a new product entry in your catalog.</p>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Add New Product</h1>
+                    <p class="text-sm lg:text-base text-[#617289]">Create a new product entry in your catalog.</p>
                 </div>
-                <div class="flex gap-3">
-                    <button type="button" (click)="cancel()" class="h-10 rounded-lg border px-4 text-sm font-bold">
+                <div class="flex gap-2 sm:gap-3">
+                    <button type="button" (click)="cancel()"
+                        class="h-10 flex-1 sm:flex-none rounded-lg border px-4 text-sm font-bold">
                         Cancel
                     </button>
                     <button type="button" (click)="saveDraft()"
-                        class="h-10 rounded-lg bg-[#eef4ff] px-4 text-sm font-bold text-[#1e3b8a]">
+                        class="h-10 flex-1 sm:flex-none rounded-lg bg-[#eef4ff] px-4 text-sm font-bold text-[#1e3b8a]">
                         Save Draft
                     </button>
                 </div>
             </div>
 
-            <!-- FIX: Visual stepper progress bar (progressPercent was unused before) -->
-            <div class="w-full">
-                <div class="flex items-center justify-between mb-2">
+            <!-- ── STEPPER ── -->
+            <div class="w-full overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+                <div class="flex items-center justify-between min-w-[320px] sm:min-w-0">
                     <ng-container *ngFor="let step of steps; let i = index">
-                        <div class="flex flex-col items-center gap-1 cursor-pointer" (click)="goToStep(i)">
+                        <div class="flex flex-col items-center gap-1 cursor-pointer shrink-0" (click)="goToStep(i)">
                             <div [ngClass]="i <= currentStep
                                     ? 'bg-[#1e3b8a] text-white'
                                     : 'bg-[#e2e8f0] text-[#64748b]'"
-                                class="flex size-8 items-center justify-center rounded-full text-xs font-bold transition-colors">
-                                <span class="material-symbols-outlined text-[16px]">{{ step.icon }}</span>
+                                class="flex size-8 sm:size-9 items-center justify-center rounded-full text-xs font-bold transition-colors">
+                                <span class="material-symbols-outlined text-[16px] sm:text-[18px]">{{ step.icon
+                                    }}</span>
                             </div>
-                            <span class="text-xs text-[#64748b] hidden sm:block">{{ step.label }}</span>
+                            <span class="text-[10px] sm:text-xs text-[#64748b] hidden sm:block whitespace-nowrap">{{
+                                step.label }}</span>
                         </div>
                         <div *ngIf="i < steps.length - 1"
-                            class="flex-1 h-1 mx-2 rounded-full bg-[#e2e8f0] overflow-hidden">
+                            class="flex-1 h-1 mx-1 sm:mx-2 rounded-full bg-[#e2e8f0] overflow-hidden min-w-[24px]">
                             <div class="h-full bg-[#1e3b8a] transition-all duration-300"
                                 [style.width]="i < currentStep ? '100%' : '0%'">
                             </div>
@@ -56,11 +77,11 @@
             </div>
 
             <!-- FORM -->
-            <form [formGroup]="addproductform" (ngSubmit)="AddproductSubmit()" class="space-y-8">
+            <form [formGroup]="addproductform" (ngSubmit)="AddproductSubmit()" class="space-y-6 lg:space-y-8">
 
-                <!-- ═══ STEP 0 : BASIC INFO — Code, Name, ShortDescription, CategoryId, ProductType ═══ -->
+                <!-- ═══ STEP 0 : BASIC INFO ═══ -->
                 <ng-container *ngIf="currentStep === 0">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                         <!-- Code -->
                         <div class="flex flex-col gap-1">
@@ -85,7 +106,7 @@
                         </div>
 
                         <!-- ShortDescription — full width -->
-                        <div class="flex flex-col gap-1 md:col-span-2">
+                        <div class="flex flex-col gap-1 sm:col-span-2">
                             <label class="text-xs font-semibold text-[#64748b]">Short Description <span
                                     class="text-red-500">*</span></label>
                             <input type="text" formControlName="ShortDescription"
@@ -104,19 +125,14 @@
                             <select formControlName="CategoryId" class="h-11 rounded-lg border px-4 text-sm w-full"
                                 [ngClass]="addproductform.get('CategoryId')?.invalid && addproductform.get('CategoryId')?.touched ? 'border-red-500' : ''">
                                 <option value="" disabled>Select category</option>
-
                                 <ng-container *ngFor="let parent of categoryOptions">
-                                    <!-- Parent كـ optgroup -->
                                     <optgroup [label]="parent.name">
-                                        <!-- الـ parent نفسه كـ option -->
                                         <option [ngValue]="parent.id">{{ parent.name }} (Main)</option>
-                                        <!-- الـ children -->
                                         <option *ngFor="let child of parent.children" [ngValue]="child.id">
                                             &nbsp;&nbsp; {{ child.name }}
                                         </option>
                                     </optgroup>
                                 </ng-container>
-
                             </select>
                             <span
                                 *ngIf="addproductform.get('CategoryId')?.invalid && addproductform.get('CategoryId')?.touched"
@@ -142,9 +158,9 @@
                     </div>
                 </ng-container>
 
-                <!-- ═══ STEP 1 : UNIT & PRICING — UomCode, UomName, CostAmount, SellingAmount, Currency ═══ -->
+                <!-- ═══ STEP 1 : UNIT & PRICING ═══ -->
                 <ng-container *ngIf="currentStep === 1">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                         <!-- UomCode -->
                         <div class="flex flex-col gap-1">
@@ -209,9 +225,9 @@
                     </div>
                 </ng-container>
 
-                <!-- ═══ STEP 2 : TAX & INVENTORY — TaxRateValue, TaxRateName, TaxRateCode, IsTrackInventory, BaseBarcode, Notes ═══ -->
+                <!-- ═══ STEP 2 : TAX & INVENTORY ═══ -->
                 <ng-container *ngIf="currentStep === 2">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
 
                         <!-- TaxRateValue -->
                         <div class="flex flex-col gap-1">
@@ -278,7 +294,7 @@
                         </div>
 
                         <!-- Notes — full width -->
-                        <div class="flex flex-col gap-1 md:col-span-2">
+                        <div class="flex flex-col gap-1 sm:col-span-2">
                             <label class="text-xs font-semibold text-[#64748b]">Notes</label>
                             <textarea formControlName="Notes" placeholder="Optional notes about this product..."
                                 class="h-24 w-full rounded-lg border px-4 py-2 text-sm resize-none"></textarea>
@@ -287,12 +303,12 @@
                     </div>
                 </ng-container>
 
-                <!-- ═══ STEP 3 : SPECS, VARIANTS & IMAGE — SpecificationsJson, VariantsJson, Image ═══ -->
+                <!-- ═══ STEP 3 : SPECS, VARIANTS & IMAGE ═══ -->
                 <ng-container *ngIf="currentStep === 3">
-                    <div class="space-y-8">
+                    <div class="space-y-6 lg:space-y-8">
 
-                        <!-- ── Specifications (SpecificationsJson) ── -->
-                        <div class="rounded-xl border bg-white p-5 space-y-4">
+                        <!-- ── Specifications ── -->
+                        <div class="rounded-xl border bg-white p-3 sm:p-5 space-y-3 sm:space-y-4">
                             <div class="flex items-center justify-between">
                                 <h3 class="font-semibold text-sm text-[#0f172a]">Specifications</h3>
                                 <button type="button" (click)="addSpec()"
@@ -300,29 +316,33 @@
                                     + Add
                                 </button>
                             </div>
-                            <div *ngFor="let spec of specifications; let i = index" class="flex gap-3">
+                            <div *ngFor="let spec of specifications; let i = index"
+                                class="flex flex-col sm:flex-row gap-2 sm:gap-3">
                                 <input type="text" [(ngModel)]="spec.name" [ngModelOptions]="{standalone: true}"
-                                    placeholder="Key (e.g. Weight)" class="h-10 flex-1 rounded border px-3 text-sm" />
+                                    placeholder="Key (e.g. Weight)"
+                                    class="h-10 flex-1 rounded border px-3 text-sm w-full" />
                                 <input type="text" [(ngModel)]="spec.value" [ngModelOptions]="{standalone: true}"
-                                    placeholder="Value (e.g. 1.5kg)" class="h-10 flex-1 rounded border px-3 text-sm" />
+                                    placeholder="Value (e.g. 1.5kg)"
+                                    class="h-10 flex-1 rounded border px-3 text-sm w-full" />
                                 <button type="button" (click)="removeSpec(i)"
-                                    class="text-red-400 hover:text-red-600 font-bold px-1">✕</button>
+                                    class="text-red-400 hover:text-red-600 font-bold px-1 self-center">✕</button>
                             </div>
                         </div>
 
-                        <!-- ── Variants (VariantsJson) ── -->
+                        <!-- ── Variants ── -->
                         <div class="space-y-4">
                             <div class="flex items-center justify-between">
                                 <h3 class="font-semibold text-sm text-[#0f172a]">Variants</h3>
                                 <button type="button" (click)="addVariant()"
-                                    class="rounded-lg bg-[#1e3b8a] px-4 py-2 text-xs font-bold text-white flex items-center gap-1">
+                                    class="rounded-lg bg-[#1e3b8a] px-3 sm:px-4 py-2 text-xs font-bold text-white flex items-center gap-1">
                                     <span class="material-symbols-outlined text-[16px]">add</span>
-                                    Add Variant
+                                    <span class="hidden sm:inline">Add Variant</span>
+                                    <span class="sm:hidden">Add</span>
                                 </button>
                             </div>
 
                             <div *ngFor="let variant of variants; let vi = index"
-                                class="rounded-xl border bg-white p-5 space-y-4 shadow-sm">
+                                class="rounded-xl border bg-white p-3 sm:p-5 space-y-3 sm:space-y-4 shadow-sm">
 
                                 <!-- Card Header -->
                                 <div class="flex items-center justify-between">
@@ -332,12 +352,12 @@
                                     <button type="button" (click)="removeVariant(vi)" [disabled]="variants.length === 1"
                                         class="text-red-400 hover:text-red-600 disabled:opacity-30 text-xs font-bold flex items-center gap-1">
                                         <span class="material-symbols-outlined text-[15px]">delete</span>
-                                        Remove
+                                        <span class="hidden sm:inline">Remove</span>
                                     </button>
                                 </div>
 
-                                <!-- SKU / Barcode / Price -->
-                                <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                <!-- SKU / Barcode / Price — stack on mobile, 3 cols on sm+ -->
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                     <div class="flex flex-col gap-1">
                                         <label class="text-xs font-semibold text-[#64748b]">SKU</label>
                                         <input type="text" [(ngModel)]="variant.sku"
@@ -368,18 +388,26 @@
                                             Add Option
                                         </button>
                                     </div>
+
+                                    <!-- Each option: stack on mobile, row on sm+ -->
                                     <div *ngFor="let option of variant.options; let oi = index"
-                                        class="flex items-center gap-3 rounded-lg bg-[#f8fafc] border px-3 py-2">
-                                        <input type="text" [(ngModel)]="option.attributeName"
-                                            [ngModelOptions]="{standalone: true}" placeholder="Attribute (e.g. Color)"
-                                            class="h-9 flex-1 rounded border px-3 text-sm bg-white" />
-                                        <span class="text-[#94a3b8] text-xs font-bold">:</span>
-                                        <input type="text" [(ngModel)]="option.value"
-                                            [ngModelOptions]="{standalone: true}" placeholder="Value (e.g. Red)"
-                                            class="h-9 flex-1 rounded border px-3 text-sm bg-white" />
+                                        class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-lg bg-[#f8fafc] border px-3 py-2">
+
+                                        <div class="flex flex-1 gap-2">
+                                            <input type="text" [(ngModel)]="option.attributeName"
+                                                [ngModelOptions]="{standalone: true}"
+                                                placeholder="Attribute (e.g. Color)"
+                                                class="h-9 flex-1 rounded border px-3 text-sm bg-white min-w-0" />
+                                            <span
+                                                class="text-[#94a3b8] text-xs font-bold self-center shrink-0 hidden sm:inline">:</span>
+                                            <input type="text" [(ngModel)]="option.value"
+                                                [ngModelOptions]="{standalone: true}" placeholder="Value (e.g. Red)"
+                                                class="h-9 flex-1 rounded border px-3 text-sm bg-white min-w-0" />
+                                        </div>
+
                                         <button type="button" (click)="removeOption(vi, oi)"
                                             [disabled]="variant.options.length === 1"
-                                            class="text-red-400 hover:text-red-600 disabled:opacity-30">
+                                            class="text-red-400 hover:text-red-600 disabled:opacity-30 self-end sm:self-center shrink-0">
                                             <span class="material-symbols-outlined text-[18px]">close</span>
                                         </button>
                                     </div>
@@ -393,27 +421,30 @@
                             <label class="text-xs font-semibold text-[#64748b]">
                                 Product Image <span class="text-red-500">*</span>
                             </label>
-                            <input type="file" accept="image/*" (change)="onFileSelected($event)"
-                                class="block w-full text-sm text-[#64748b] file:mr-4 file:h-9 file:rounded-lg file:border-0 file:bg-[#eef4ff] file:px-4 file:text-xs file:font-bold file:text-[#1e3b8a] hover:file:bg-[#dbeafe]" />
+                            <input type="file" accept="image/*" (change)="onFileSelected($event)" class="block w-full text-sm text-[#64748b]
+                                       file:mr-3 sm:file:mr-4 file:h-9 file:rounded-lg file:border-0
+                                       file:bg-[#eef4ff] file:px-3 sm:file:px-4 file:text-xs
+                                       file:font-bold file:text-[#1e3b8a] hover:file:bg-[#dbeafe]
+                                       file:whitespace-nowrap" />
                         </div>
 
                     </div>
                 </ng-container>
 
                 <!-- NAV BUTTONS -->
-                <div class="flex items-center justify-between border-t pt-6">
+                <div class="flex items-center justify-between border-t pt-4 lg:pt-6 gap-3">
                     <button type="button" (click)="prevStep()" [disabled]="isFirstStep"
-                        class="rounded-lg px-6 py-2 font-bold text-[#617289] disabled:opacity-40">
+                        class="rounded-lg px-4 sm:px-6 py-2.5 font-bold text-[#617289] disabled:opacity-40 text-sm sm:text-base">
                         Back
                     </button>
 
                     <button *ngIf="!isLastStep" type="button" (click)="nextStep()"
-                        class="rounded-lg bg-[#1e3b8a] px-8 py-2 font-bold text-white">
+                        class="rounded-lg bg-[#1e3b8a] px-6 sm:px-8 py-2.5 font-bold text-white text-sm sm:text-base">
                         Next
                     </button>
 
                     <button *ngIf="isLastStep" type="submit"
-                        class="rounded-lg bg-green-600 px-8 py-2 font-bold text-white">
+                        class="rounded-lg bg-green-600 px-6 sm:px-8 py-2.5 font-bold text-white text-sm sm:text-base">
                         Submit Product
                     </button>
                 </div>

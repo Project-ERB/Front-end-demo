@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -11,7 +11,7 @@ import { ProductService } from '../../../../core/services/products/product.servi
 import { CategoriesService } from '../../../../core/services/categories/categories.service';
 import { ToastrService } from 'ngx-toastr';
 import { ApollocatoriesService } from '../../../../core/services/categories/apollocatories.service';
-import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
+import { SidebaSalesComponent } from '../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component';
 import { Router } from '@angular/router';
 import { forkJoin, Observable } from 'rxjs';
 
@@ -33,6 +33,26 @@ export class AddProductComponent implements OnInit {
   private readonly _ToastrService = inject(ToastrService);
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _Router = inject(Router)
+
+  // ── Mobile / Sidebar State ───────────────────────
+  sidebarOpen = false;
+  isMobile = false;
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.isMobile = window.innerWidth < 1024;
+    if (!this.isMobile) {
+      this.sidebarOpen = false; // auto-close overlay on desktop
+    }
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
 
   // FIX: Renamed to categoryOptions to reflect actual usage (CategoryId select)
   categoryOptions: Array<{ id: string; name: string; children: Array<{ id: string; name: string }> }> = [];
@@ -59,12 +79,11 @@ export class AddProductComponent implements OnInit {
   });
 
   // ================= STEP FIELD MAP =================
-  // FIX: Added per-step validation so Next is blocked until current step fields are valid
   private readonly stepFields: string[][] = [
-    ['Code', 'Name', 'ShortDescription', 'CategoryId', 'ProductType'],           // Step 0 — Basic Info
-    ['UomCode', 'UomName', 'CostAmount', 'SellingAmount', 'Currency'],            // Step 1 — Unit & Pricing
-    ['TaxRateValue', 'TaxRateName', 'TaxRateCode', 'IsTrackInventory', 'BaseBarcode'], // Step 2 — Tax & Inventory
-    [],                                                                            // Step 3 — Specs, Variants & Image
+    ['Code', 'Name', 'ShortDescription', 'CategoryId', 'ProductType'],
+    ['UomCode', 'UomName', 'CostAmount', 'SellingAmount', 'Currency'],
+    ['TaxRateValue', 'TaxRateName', 'TaxRateCode', 'IsTrackInventory', 'BaseBarcode'],
+    [],
   ];
 
   private isCurrentStepValid(): boolean {
@@ -110,7 +129,6 @@ export class AddProductComponent implements OnInit {
           },
           error: (err: any) => {
             console.error('Error loading children:', err);
-            // لو فشل نعرض الـ parents بدون children
             this.categoryOptions = parents.map((p: any) => ({ ...p, children: [] }));
           }
         });
@@ -189,15 +207,12 @@ export class AddProductComponent implements OnInit {
           this._Router.navigate(['/product-management']);
         }, 1500);
       },
-      // Extract the actual backend message from the interceptor response shape:
-      // { isSuccess: false, data: null, errors: string[], message: string, timestamp: string }
       error: (err) => {
         console.error('Error:', err);
         const backendError = err?.error;
         if (backendError && !backendError.isSuccess) {
           const errorMessages: string[] = backendError.errors ?? [];
           const title = backendError.message ?? 'Error';
-          // Show each error code as a separate toast so nothing is hidden
           if (errorMessages.length > 0) {
             errorMessages.forEach(msg =>
               this._ToastrService.error(msg, title)
@@ -217,10 +232,8 @@ export class AddProductComponent implements OnInit {
     this.currentStep = 0;
   }
 
-  // FIX: Removed localStorage usage; added toastr feedback for draft save
   saveDraft(): void {
     const draftData = this.addproductform.value;
-    // Store in a component-level variable so no browser storage API is needed
     this._draftData = draftData;
     this._ToastrService.info('Draft saved successfully.', 'Draft Saved');
     console.log('Draft saved:', draftData);
@@ -241,7 +254,7 @@ export class AddProductComponent implements OnInit {
     { label: 'Basic Info', icon: 'info' },
     { label: 'Unit & Pricing', icon: 'attach_money' },
     { label: 'Tax & Inventory', icon: 'inventory' },
-    { label: 'Specs, Variants & Image', icon: 'tune' },
+    { label: 'Specs & More', icon: 'tune' },
   ];
 
   currentStep = 0;
@@ -256,7 +269,6 @@ export class AddProductComponent implements OnInit {
   }
 
   nextStep(): void {
-    // FIX: Validate current step fields before advancing
     if (!this.isCurrentStepValid()) {
       this.touchCurrentStepFields();
       this._ToastrService.warning('Please complete all required fields before continuing.', 'Incomplete');
@@ -281,9 +293,6 @@ export class AddProductComponent implements OnInit {
   }
 
   // ── Variants ───────────────────────────
-  // Each variant matches the API structure: { sku, barcode, priceOverrideAmount, options[] }
-  // Each option matches: { attributeName, value }
-
   variants: Array<{
     sku: string;
     barcode: string;
@@ -346,19 +355,7 @@ export class AddProductComponent implements OnInit {
 
   // ── Init ───────────────────────────────
   ngOnInit(): void {
-    // this._categoryService.getCategories().subscribe({
-    //   next: (res) => {
-    //     this.categoryOptions = res.map((c: any) => ({
-    //       id: c.id,
-    //       name: c.name
-    //     }));
-    //   },
-    //   error: () => {
-    //     this.categoryOptions = [];
-    //     this._ToastrService.error('Failed to load categories.', 'Error');
-    //   }
-    // });
-
+    this.isMobile = window.innerWidth < 1024;
     this.getcategorues();
   }
 

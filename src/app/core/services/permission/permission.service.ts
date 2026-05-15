@@ -136,6 +136,18 @@ export const PERMISSION_GROUPS: { label: string; values: PermissionName[] }[] = 
   { label: 'System Administration', values: [PermissionName.ManageUsersAndRoles, PermissionName.ManageSystemSettings] },
 ];
 
+export interface PageInfo {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string;
+  endCursor: string;
+}
+
+export interface PermissionsPage {
+  nodes: PermissionNode[];
+  pageInfo: PageInfo;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
 
@@ -199,25 +211,54 @@ export class PermissionService {
   // ── Permissions ──────────────────────────────────────────────────────────
   getPermissions(): Observable<PermissionNode[]> {
     const query = `
-      query {
-        permissions {
-          nodes {
-            id
-            name
-            description
-          }
+    query {
+      permissions {
+        nodes {
+          id
+          name
+          description
         }
       }
-    `;
+    }
+  `;
     return this.http
       .post<{ data: { permissions: { nodes: PermissionNode[] } } }>(
         `${Environment.baseUrl}/graphql?t=${Date.now()}`,
         { query },
-        { headers: this.headers }   // ← Authorization مضاف
+        { headers: this.headers }
       )
       .pipe(map(res => res.data.permissions.nodes));
   }
 
+  getPermissionsPaged(first: number = 5, after?: string): Observable<PermissionsPage> {
+    const query = `
+    query GetPermissions($first: Int, $after: String) {
+      permissions(first: $first, after: $after) {
+        nodes {
+          id
+          name
+          description
+        }
+        pageInfo {
+          hasNextPage
+          hasPreviousPage
+          startCursor
+          endCursor
+        }
+      }
+    }
+  `;
+    return this.http
+      .post<{ data: { permissions: PermissionsPage } }>(
+        `${Environment.baseUrl}/graphql?t=${Date.now()}`,
+        {
+          query,
+          variables: { first, ...(after ? { after } : {}) }
+        },
+        { headers: this.headers }
+      )
+      .pipe(map(res => res.data.permissions));
+  }
   // ── CRUD ─────────────────────────────────────────────────────────────────
   createPermission(payload: CreatePermissionRequest): Observable<CreatePermissionResponse> {
     return this.http.post<CreatePermissionResponse>(

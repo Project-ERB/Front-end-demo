@@ -9,13 +9,24 @@
         <!-- Header -->
         <header
             class="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-[#dbdee6] bg-white sticky top-0 z-10 animate-slide-in">
-            <div class="flex flex-col gap-1 mb-4 sm:mb-0">
-                <div class="flex items-center gap-2 text-xs sm:text-sm text-[#616e89]">
-                    <span>Dashboard</span>
-                    <span class="material-symbols-outlined text-[14px] sm:text-[16px]">chevron_right</span>
-                    <span class="text-[#111318] font-medium">User Management</span>
+
+            <div class="flex items-center gap-3 mb-4 sm:mb-0">
+
+                <!-- ✅ زرار الـ sidebar -->
+                <button (click)="toggleSidebar()" class="lg:hidden size-9 flex items-center justify-center rounded-lg
+                           hover:bg-slate-100 text-[#616e89] transition-all active:scale-90
+                           border border-[#dbdee6]">
+                    <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+
+                <div class="flex flex-col gap-1">
+                    <div class="flex items-center gap-2 text-xs sm:text-sm text-[#616e89]">
+                        <span>Dashboard</span>
+                        <span class="material-symbols-outlined text-[14px] sm:text-[16px]">chevron_right</span>
+                        <span class="text-[#111318] font-medium">User Management</span>
+                    </div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-[#111318]">User Directory</h2>
                 </div>
-                <h2 class="text-xl sm:text-2xl font-bold text-[#111318]">User Directory</h2>
             </div>
 
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -31,7 +42,7 @@
                 <!-- Add user button -->
                 <button (click)="openModal()"
                     class="flex items-center justify-center gap-2 bg-[#2463eb] hover:bg-[#2463eb]/90 text-white
-                           px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-[#2463eb]/30 transition-all hover:shadow-xl hover:animate-bounce-subtle">
+                           px-4 py-2 rounded-lg text-sm font-bold shadow-lg shadow-[#2463eb]/30 transition-all hover:shadow-xl">
                     <span class="material-symbols-outlined text-[20px]">add</span>
                     Add New User
                 </button>
@@ -63,6 +74,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-[#dbdee6]">
+
                             <tr *ngFor="let user of filteredUsers; let i = index"
                                 class="hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group animate-fade-in"
                                 [style.animation-delay.ms]="i * 50">
@@ -88,7 +100,7 @@
                                 <!-- Role -->
                                 <td class="px-4 sm:px-6 py-4">
                                     <span
-                                        [class]="'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 transition-all hover:scale-105'">
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 transition-all hover:scale-105">
                                         {{ user.role }}
                                     </span>
                                 </td>
@@ -113,17 +125,56 @@
                                     <p class="text-sm font-medium">No users match your search.</p>
                                 </td>
                             </tr>
+
                         </tbody>
                     </table>
+                </div>
 
-                    <!-- Footer count -->
-                    <div class="px-4 sm:px-6 py-3 border-t border-[#dbdee6] bg-[#f9fafb]">
-                        <span class="text-xs text-[#616e89]">
-                            Showing <span class="font-semibold text-[#111318]">{{ filteredUsers.length }}</span> of
-                            <span class="font-semibold text-[#111318]">{{ users.length }}</span> users
+                <!-- ✅ Pagination — بره الـ table، جوه الـ wrapper -->
+                <div class="px-4 sm:px-6 py-4 border-t border-[#dbdee6] bg-[#f9fafb]
+                            flex flex-col sm:flex-row items-center justify-between gap-3">
+
+                    <!-- Page indicator -->
+                    <span class="text-xs text-[#616e89]">
+                        Page <span class="font-semibold text-[#111318]">{{ currentPage }}</span>
+                        <span *ngIf="!hasNextPage && !hasPreviousPage"> · All results shown</span>
+                    </span>
+
+                    <!-- Controls -->
+                    <div class="flex items-center gap-2">
+
+                        <!-- First -->
+                        <button (click)="goToFirst()" [disabled]="!hasPreviousPage" class="p-1.5 rounded-lg text-[#616e89] hover:bg-slate-100 hover:text-[#2463eb]
+                                   disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90">
+                            <span class="material-symbols-outlined text-[18px]">first_page</span>
+                        </button>
+
+                        <!-- Prev -->
+                        <button (click)="prevPage()" [disabled]="!hasPreviousPage" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
+                                   text-[#616e89] hover:bg-slate-100 hover:text-[#2463eb] border border-[#dbdee6]
+                                   disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90">
+                            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                            <span class="hidden sm:inline">Prev</span>
+                        </button>
+
+                        <!-- Page badge -->
+                        <span class="min-w-[34px] h-[34px] px-3 rounded-lg text-sm font-bold
+                                     bg-[#2463eb] text-white flex items-center justify-center
+                                     shadow-md shadow-[#2463eb]/30">
+                            {{ currentPage }}
                         </span>
+
+                        <!-- Next -->
+                        <button (click)="nextPage()" [disabled]="!hasNextPage" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
+                                   text-[#616e89] hover:bg-slate-100 hover:text-[#2463eb] border border-[#dbdee6]
+                                   disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-90">
+                            <span class="hidden sm:inline">Next</span>
+                            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                        </button>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </main>
@@ -133,8 +184,8 @@
         class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in"
         (click)="onBackdropClick($event)">
 
-        <div class="w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden border border-[#dbdee6]
-                    animate-slide-in">
+        <div
+            class="w-full max-w-5xl bg-white rounded-xl shadow-2xl overflow-hidden border border-[#dbdee6] animate-slide-in">
 
             <!-- Modal Header -->
             <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#dbdee6] bg-[#f6f6f8]">
@@ -150,10 +201,11 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="max-h-[75vh] overflow-y-auto">
-                <!-- Overlay يظهر أثناء الـ submit -->
-                <div *ngIf="isSubmitting" class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 
-                flex items-center justify-center">
+            <div class="max-h-[75vh] overflow-y-auto relative">
+
+                <!-- Overlay أثناء الـ submit -->
+                <div *ngIf="isSubmitting"
+                    class="absolute inset-0 bg-white/60 backdrop-blur-[2px] z-10 flex items-center justify-center">
                     <div class="flex flex-col items-center gap-3">
                         <svg class="animate-spin" width="32" height="32" viewBox="0 0 24 24" fill="none">
                             <circle cx="12" cy="12" r="10" stroke="#2463eb" stroke-width="3" stroke-dasharray="32"
@@ -162,6 +214,7 @@
                         <p class="text-sm font-semibold text-[#2463eb]">Creating user...</p>
                     </div>
                 </div>
+
                 <form [formGroup]="newUserForm" (ngSubmit)="createUser()" novalidate>
                     <div class="flex flex-col lg:flex-row">
 
@@ -177,9 +230,7 @@
                             <!-- Full Name -->
                             <div class="space-y-1">
                                 <label class="text-xs font-bold uppercase tracking-widest text-[#616e89]"
-                                    for="username">
-                                    Full Name
-                                </label>
+                                    for="username">Full Name</label>
                                 <input formControlName="username" id="username" type="text" placeholder="e.g. Jane Doe"
                                     [class.border-red-400]="newUserForm.get('username')?.invalid && newUserForm.get('username')?.touched"
                                     class="w-full px-3 py-2.5 bg-[#f6f6f8] border border-[#dbdee6] rounded-lg text-sm
@@ -191,9 +242,8 @@
 
                             <!-- Email -->
                             <div class="space-y-1">
-                                <label class="text-xs font-bold uppercase tracking-widest text-[#616e89]" for="email">
-                                    Email Address
-                                </label>
+                                <label class="text-xs font-bold uppercase tracking-widest text-[#616e89]"
+                                    for="email">Email Address</label>
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">mail</span>
@@ -212,9 +262,8 @@
 
                             <!-- Assign Role -->
                             <div class="space-y-1">
-                                <label class="text-xs font-bold uppercase tracking-widest text-[#616e89]" for="roleid">
-                                    Assigned Role
-                                </label>
+                                <label class="text-xs font-bold uppercase tracking-widest text-[#616e89]"
+                                    for="roleid">Assigned Role</label>
                                 <div class="relative">
                                     <select formControlName="roleid" id="roleid"
                                         [class.border-red-400]="newUserForm.get('roleid')?.invalid && newUserForm.get('roleid')?.touched"
@@ -227,8 +276,8 @@
                                     <span
                                         class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
                                 </div>
-                                <p class="text-xs text-[#616e89] mt-1">This role defines the user's initial permissions.
-                                </p>
+                                <p class="text-xs text-[#616e89] mt-1">This role defines the user's initial
+                                    permissions.</p>
                                 <p *ngIf="newUserForm.get('roleid')?.invalid && newUserForm.get('roleid')?.touched"
                                     class="text-red-500 text-xs">Please select a role.</p>
                             </div>
@@ -241,9 +290,8 @@
                                 </h5>
                                 <p class="text-xs text-[#616e89] leading-relaxed">
                                     Upon creation, the user will receive an automated invitation to set their secure
-                                    passphrase.
-                                    All actions are logged under <span class="font-bold">System Logs</span> for audit
-                                    compliance.
+                                    passphrase. All actions are logged under <span class="font-bold">System
+                                        Logs</span> for audit compliance.
                                 </p>
                             </div>
 
@@ -265,7 +313,8 @@
                                         <span class="material-symbols-outlined text-base">grid_view</span>
                                         Permissions Matrix
                                     </h4>
-                                    <p class="text-xs text-[#616e89] mt-1">Configure functional scope across modules</p>
+                                    <p class="text-xs text-[#616e89] mt-1">Configure functional scope across modules
+                                    </p>
                                 </div>
                                 <div class="flex gap-4">
                                     <button type="button" (click)="selectAll()"
@@ -339,8 +388,8 @@
                                                         <div>
                                                             <div class="text-sm font-semibold text-[#111318]">{{
                                                                 mod.label }}</div>
-                                                            <div class="text-[10px] font-mono text-[#9ca3af]">{{ mod.key
-                                                                }}</div>
+                                                            <div class="text-[10px] font-mono text-[#9ca3af]">{{
+                                                                mod.key }}</div>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -370,7 +419,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </form>
@@ -379,19 +427,14 @@
             <!-- Modal Footer -->
             <div class="px-4 sm:px-6 py-4 bg-[#f6f6f8] border-t border-[#dbdee6] flex justify-end gap-3">
                 <button (click)="createUser()" [disabled]="isSubmitting" class="px-4 sm:px-5 py-2 rounded-lg text-sm font-bold bg-[#2463eb] text-white
-           hover:bg-[#2463eb]/90 shadow-lg shadow-[#2463eb]/25 transition-all hover:shadow-xl hover:animate-bounce-subtle
-           flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
-
-                    <!-- Spinner SVG يظهر بس لما isSubmitting = true -->
+                           hover:bg-[#2463eb]/90 shadow-lg shadow-[#2463eb]/25 transition-all hover:shadow-xl
+                           flex items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed">
                     <svg *ngIf="isSubmitting" class="animate-spin" width="16" height="16" viewBox="0 0 24 24"
                         fill="none">
                         <circle cx="12" cy="12" r="10" stroke="white" stroke-width="3" stroke-dasharray="32"
                             stroke-dashoffset="12" stroke-linecap="round" />
                     </svg>
-
-                    <!-- الأيقونة العادية تظهر بس لما مش بيعمل submit -->
                     <span *ngIf="!isSubmitting" class="material-symbols-outlined text-[18px]">check</span>
-
                     {{ isSubmitting ? 'Creating...' : 'Create User' }}
                 </button>
             </div>

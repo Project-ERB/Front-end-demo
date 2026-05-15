@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../../../core/services/products/product.service';
@@ -8,6 +8,7 @@ import { NavigationEnd, Router, RouterLink, RouterLinkActive } from "@angular/ro
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { filter } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
 
 interface Category {
   id: string;
@@ -22,24 +23,85 @@ interface Product {
 
 @Component({
   selector: 'app-product-mangement',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive, SidebaSalesComponent],
   templateUrl: './product-mangement.component.html',
   styleUrl: './product-mangement.component.scss',
+  animations: [
+    trigger('fadeUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('500ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('scaleIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('400ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+    ]),
+    trigger('staggerRows', [
+      transition('* => *', [
+        query(
+          '.prod-row',
+          [
+            style({ opacity: 0, transform: 'translateX(-10px)' }),
+            stagger(40, [animate('300ms ease-out', style({ opacity: 1, transform: 'translateX(0)' }))]),
+          ],
+          { optional: true }
+        ),
+      ]),
+    ]),
+    trigger('modalIn', [
+      transition(':enter', [style({ opacity: 0 }), animate('200ms ease-out', style({ opacity: 1 }))]),
+      transition(':leave', [animate('150ms ease-in', style({ opacity: 0 }))]),
+    ]),
+    trigger('confirmIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.9)' }),
+        animate('200ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1)' })),
+      ]),
+    ]),
+    trigger('toastIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(12px) scale(0.95)' }),
+        animate('350ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
+      ]),
+    ]),
+  ],
 })
-export class ProductMangementComponent implements OnInit {
+export class ProductMangementComponent implements OnInit, OnDestroy {
+
   private readonly _Router = inject(Router);
   private readonly _ProductService = inject(ProductService);
   private readonly _ApollocatoriesService = inject(ApollocatoriesService);
-  private readonly _ToastrService = inject(ToastrService)
-  // ── Products & Categories ─────────────────────────────────────────
+  private readonly _ToastrService = inject(ToastrService);
+
+  // ── Mobile Sidebar ──
+  isMobileSidebarOpen = false;
+
+  // ── Products & Categories ──
   products: any[] = [];
-  productpage: any[] = [];
   categories: any[] = [];
 
-  // ── Filters ───────────────────────────────────────────────────────
+  // ── Hover & Toast ──
+  hoveredProdId: string | null = null;
+  showToastMsg = false;
+  toastText = '';
+  toastIcon = 'check_circle';
+  toastColor = 'text-emerald-400';
+  private toastTimer: any;
+
+  // ── Delete Confirm ──
+  showDeleteConfirm = false;
+  deleteTarget: any = null;
+  deleteMessage = '';
+
+  // ── Filters ──
   searchQuery = '';
   selectedCategory = '';
   selectedType = '';
+  isMobileFilterOpen = false;
 
   get availableCategories(): string[] {
     return [...new Set(this.products.map((p: any) => p.categoryName))].sort();
@@ -63,34 +125,57 @@ export class ProductMangementComponent implements OnInit {
     this._Router.navigate(['/Edite-Produect', id]);
   }
 
-  onFilterChange(): void { this.currentPage = 1; }
+  onFilterChange(): void {
+    this.currentPage = 1;
+  }
 
   clearFilters(): void {
     this.searchQuery = '';
     this.selectedCategory = '';
     this.selectedType = '';
     this.currentPage = 1;
+    this.isMobileFilterOpen = false;
   }
 
-  deleteProduct(id: string): void {
-    if (!confirm('Are you sure you want to delete this product?')) return;
+  toggleMobileFilter(): void {
+    this.isMobileFilterOpen = !this.isMobileFilterOpen;
+  }
+
+  deleteProduct(product: any): void {
+    this.deleteTarget = product;
+    this.deleteMessage = `Are you sure you want to delete "${product.name}"?`;
+    this.showDeleteConfirm = true;
+  }
+
+  confirmDelete(): void {
+    if (!this.deleteTarget) return;
+    const id = this.deleteTarget.id;
+    this.showDeleteConfirm = false;
 
     this._ProductService.deleteProduct(id).subscribe({
       next: () => {
         this.products = this.products.filter(p => p.id !== id);
-        this._ToastrService.success('Product deleted successfully', 'Deleted ✅');
+        this.selectedIds.delete(id);
+        this.showToast(`"${this.deleteTarget.name}" has been deleted`, 'delete', 'text-red-400');
+        this.deleteTarget = null;
       },
       error: () => {
-        this._ToastrService.error('Failed to delete product', 'Error ❌');
+        this.showToast('Failed to delete product', 'error', 'text-red-400');
+        this.deleteTarget = null;
       }
     });
+  }
+
+  cancelDelete(): void {
+    this.showDeleteConfirm = false;
+    this.deleteTarget = null;
   }
 
   viewProduct(id: string): void {
     this._Router.navigate(['/product-details', id]);
   }
 
-  // ── Row selection ─────────────────────────────────────────────────
+  // ── Row selection ──
   selectedIds = new Set<string>();
 
   get selectedCount(): number { return this.selectedIds.size; }
@@ -114,7 +199,7 @@ export class ProductMangementComponent implements OnInit {
     product.enabled = !product.enabled;
   }
 
-  // ── Pagination ────────────────────────────────────────────────────
+  // ── Pagination ──
   currentPage = 1;
   pageSize = 6;
 
@@ -152,22 +237,36 @@ export class ProductMangementComponent implements OnInit {
   previousPage(): void { if (this.currentPage > 1) this.currentPage--; }
   nextPage(): void { if (this.currentPage < this.totalPages) this.currentPage++; }
 
-  // ── Helpers ───────────────────────────────────────────────────────
+  // ── Helpers ──
   formatPrice(price: number): string {
-    return price.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+    return price?.toLocaleString('en-US', { style: 'currency', currency: 'USD' }) ?? '$0';
   }
 
-  exportData(): void { alert('Exporting data…'); }
+  getTypeClass(type: string): string {
+    return type === 'SERVICE'
+      ? 'bg-violet-50 text-violet-700 border border-violet-200'
+      : 'bg-blue-50 text-blue-700 border border-blue-200';
+  }
 
-  // ── Data Loading ──────────────────────────────────────────────────
+  getStockClass(product: any): string {
+    if (!product.isTrackInventory) return 'bg-slate-100 text-slate-500 border border-slate-200';
+    return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+  }
+
+  exportData(): void {
+    this.showToast('Products exported to CSV', 'download', 'text-emerald-400');
+  }
+
+  // ── Data Loading ──
   ngOnInit(): void {
-    // ✅ Reload products every time this page is navigated to
     this._Router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe(() => this.loadProducts());
-
-    // ✅ Also load on first init
     this.loadProducts();
+  }
+
+  ngOnDestroy(): void {
+    clearTimeout(this.toastTimer);
   }
 
   loadProducts(): void {
@@ -185,9 +284,7 @@ export class ProductMangementComponent implements OnInit {
         this.categories = [...categories];
 
         const missingIds = [...new Set(
-          products
-            .map((p: any) => p.categoryId)
-            .filter((id: any) => id && !categoryLookup[id])
+          products.map((p: any) => p.categoryId).filter((id: any) => id && !categoryLookup[id])
         )];
 
         if (missingIds.length === 0) {
@@ -214,16 +311,58 @@ export class ProductMangementComponent implements OnInit {
 
   buildProducts(products: any[], categoryLookup: Record<string, string>): void {
     const baseUrl = 'https://erplocal.runasp.net/';
-
     this.products = products.map(p => ({
       ...p,
       categoryName: categoryLookup[p.categoryId] ?? 'No Category',
       imageUrl: p.imageUrl
-        ? p.imageUrl.startsWith('http')
-          ? p.imageUrl                        // full URL → خليها زي ما هي
-          : baseUrl + p.imageUrl              // relative → أضف base URL
+        ? p.imageUrl.startsWith('http') ? p.imageUrl : baseUrl + p.imageUrl
         : null,
     }));
-    this.productpage = [...this.products];
+  }
+
+  // ── Sidebar ──
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
+  // ── Hover ──
+  onRowHover(id: string | null): void {
+    this.hoveredProdId = id;
+  }
+
+  // ── Toast ──
+  showToast(message: string, icon: string = 'check_circle', color: string = 'text-emerald-400'): void {
+    clearTimeout(this.toastTimer);
+    this.toastText = message;
+    this.toastIcon = icon;
+    this.toastColor = color;
+    this.showToastMsg = true;
+    this.toastTimer = setTimeout(() => { this.showToastMsg = false; }, 2800);
+  }
+
+  // ── Keyboard ──
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      const input = document.getElementById('prod-search-input');
+      input?.focus();
+    }
+    if (event.key === 'Escape') {
+      this.closeMobileSidebar();
+      if (this.showDeleteConfirm) this.cancelDelete();
+    }
+  }
+
+  @HostListener('window:resize')
+  onResize(): void {
+    if (window.innerWidth >= 1024) {
+      this.isMobileSidebarOpen = false;
+      this.isMobileFilterOpen = false;
+    }
   }
 }

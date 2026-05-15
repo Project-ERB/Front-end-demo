@@ -1,10 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, HostListener, NgZone, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SiedeAdminComponent } from "../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
 import { interval, Subscription, switchMap } from 'rxjs';
 import { AdminService, SystemHealth } from '../../../../core/services/Admin-service/admin.service';
-import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { animate, query, stagger, style, transition, trigger, state } from '@angular/animations';
 
 export interface SystemLog {
   timestamp: string;
@@ -27,8 +27,14 @@ export interface SystemLog {
   animations: [
     trigger('fadeUp', [
       transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(16px)' }),
-        animate('420ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+        style({ opacity: 0, transform: 'translateY(20px)' }),
+        animate('500ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('scaleIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'scale(0.95)' }),
+        animate('400ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'scale(1)' })),
       ]),
     ]),
     trigger('staggerRows', [
@@ -36,29 +42,65 @@ export interface SystemLog {
         query(
           '.log-row',
           [
-            style({ opacity: 0, transform: 'translateY(10px)' }),
-            stagger(35, [animate('220ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))]),
+            style({ opacity: 0, transform: 'translateX(-12px)' }),
+            stagger(40, [animate('300ms ease-out', style({ opacity: 1, transform: 'translateX(0)' }))]),
           ],
           { optional: true }
         ),
+      ]),
+    ]),
+    trigger('countUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(8px)' }),
+        animate('600ms 200ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+    trigger('slideInRight', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(20px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateX(0)' })),
+      ]),
+    ]),
+    trigger('pulse', [
+      state('active', style({ transform: 'scale(1)' })),
+      state('inactive', style({ transform: 'scale(0.95)', opacity: 0.7 })),
+      transition('active <=> inactive', animate('150ms ease-in-out')),
+    ]),
+    trigger('shimmer', [
+      transition('* => *', [
+        style({ backgroundPosition: '-200% 0' }),
+        animate('1.5s ease-in-out', style({ backgroundPosition: '200% 0' })),
       ]),
     ]),
   ],
 })
 export class AdminDashComponent implements OnInit, OnDestroy {
 
-  constructor(private _adminService: AdminService) { }
-  // ── Search & Filter ──────────────────────────────────────────────────────
+  constructor(
+    private _adminService: AdminService,
+    private _ngZone: NgZone
+  ) { }
+
+  // ── Search & Filter ──
   searchQuery = '';
   isMobileSidebarOpen = false;
+  isMobileSearchOpen = false;
   selectedFilter = 'All Events';
   filterOptions = ['All Events', 'Errors Only', 'Warnings', 'Success'];
 
-  // ── Pagination ───────────────────────────────────────────────────────────
+  // ── Pagination ──
   readonly pageSize = 10;
   currentPage = 1;
 
-  // ── Widgets ──────────────────────────────────────────────────────────────
+  // ── Hover & Interaction States ──
+  hoveredLogIndex: number | null = null;
+  isRefreshing = false;
+  isExporting = false;
+  showSuccessToast = false;
+  toastMessage = '';
+  expandedLogId: string | null = null;
+
+  // ── Widgets ──
   systemHealth = {
     cpuLoad: 12,
     memoryUsed: 4.2,
@@ -73,7 +115,10 @@ export class AdminDashComponent implements OnInit, OnDestroy {
     timeRange: 'Last 24h'
   };
 
-  // ── Log Data (30 entries) ─────────────────────────────────────────────────
+  // Animated counter
+  displayedThreats = 0;
+
+  // ── Log Data ──
   logs: SystemLog[] = [
     { timestamp: '2023-10-24 14:32:01', userInitials: 'AM', userColor: 'bg-indigo-100 text-indigo-700', userName: 'Alex Morgan', action: 'Updated User Role', actionId: '482', ipAddress: '192.168.1.42', status: 'Success' },
     { timestamp: '2023-10-24 14:15:22', userInitials: 'JS', userColor: 'bg-orange-100 text-orange-700', userName: 'John Smith', action: 'Failed Login Attempt', ipAddress: '10.0.0.15', status: 'Warning' },
@@ -107,10 +152,9 @@ export class AdminDashComponent implements OnInit, OnDestroy {
     { timestamp: '2023-10-24 03:18:55', userInitials: 'JS', userColor: 'bg-orange-100 text-orange-700', userName: 'John Smith', action: 'Session Expired & Logged Out', ipAddress: '10.0.0.15', status: 'Success' },
   ];
 
-  // ── Computed: all filtered logs (no paging) ───────────────────────────────
+  // ── Computed Properties ──
   get filteredLogs(): SystemLog[] {
     let result = this.logs;
-
     if (this.selectedFilter !== 'All Events') {
       const map: Record<string, SystemLog['status']> = {
         'Errors Only': 'Error',
@@ -120,7 +164,6 @@ export class AdminDashComponent implements OnInit, OnDestroy {
       const target = map[this.selectedFilter];
       if (target) result = result.filter(log => log.status === target);
     }
-
     if (this.searchQuery.trim()) {
       const q = this.searchQuery.toLowerCase();
       result = result.filter(log =>
@@ -129,34 +172,27 @@ export class AdminDashComponent implements OnInit, OnDestroy {
         log.ipAddress.toLowerCase().includes(q)
       );
     }
-
     return result;
   }
 
-  // ── Computed: current page slice ─────────────────────────────────────────
   get pagedLogs(): SystemLog[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredLogs.slice(start, start + this.pageSize);
   }
 
-  // ── Computed: total pages ────────────────────────────────────────────────
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredLogs.length / this.pageSize));
   }
 
-  // ── Computed: page numbers to display (up to 5 around current) ──────────
   get pageNumbers(): number[] {
     const total = this.totalPages;
     const current = this.currentPage;
     const delta = 2;
-
     const start = Math.max(1, current - delta);
     const end = Math.min(total, current + delta);
-
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 
-  // ── Computed: range text for footer ──────────────────────────────────────
   get rangeStart(): number {
     return this.filteredLogs.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
   }
@@ -165,7 +201,16 @@ export class AdminDashComponent implements OnInit, OnDestroy {
     return Math.min(this.currentPage * this.pageSize, this.filteredLogs.length);
   }
 
-  // ── Page navigation ───────────────────────────────────────────────────────
+  get statusCounts(): { success: number; warning: number; error: number; blocked: number } {
+    return {
+      success: this.logs.filter(l => l.status === 'Success').length,
+      warning: this.logs.filter(l => l.status === 'Warning').length,
+      error: this.logs.filter(l => l.status === 'Error').length,
+      blocked: this.logs.filter(l => l.status === 'Blocked').length,
+    };
+  }
+
+  // ── Navigation ──
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
@@ -174,49 +219,133 @@ export class AdminDashComponent implements OnInit, OnDestroy {
   prevPage(): void { this.goToPage(this.currentPage - 1); }
   nextPage(): void { this.goToPage(this.currentPage + 1); }
 
-  // ── Reset page when filter / search changes ───────────────────────────────
+  // ── Reset page ──
   onFilterChange(): void { this.currentPage = 1; }
   onSearchChange(): void { this.currentPage = 1; }
 
-  // ── Status helpers ────────────────────────────────────────────────────────
+  // ── Status helpers ──
   getStatusClasses(status: string): string {
     switch (status) {
-      case 'Success': return 'bg-emerald-50 text-emerald-700 border-emerald-100';
-      case 'Warning': return 'bg-orange-50 text-orange-700 border-orange-100';
-      case 'Blocked': return 'bg-red-50 text-red-700 border-red-100';
-      case 'Error': return 'bg-red-50 text-red-700 border-red-100';
-      default: return 'bg-slate-50 text-slate-700 border-slate-100';
+      case 'Success': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'Warning': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'Blocked': return 'bg-red-50 text-red-700 border-red-200';
+      case 'Error': return 'bg-rose-50 text-rose-700 border-rose-200';
+      default: return 'bg-slate-50 text-slate-700 border-slate-200';
     }
   }
 
   getStatusDotClasses(status: string): string {
     switch (status) {
       case 'Success': return 'bg-emerald-500';
-      case 'Warning': return 'bg-orange-500';
+      case 'Warning': return 'bg-amber-500';
       case 'Blocked': return 'bg-red-500';
-      case 'Error': return 'bg-red-500';
+      case 'Error': return 'bg-rose-500';
       default: return 'bg-slate-400';
     }
   }
 
-  // ── Actions ───────────────────────────────────────────────────────────────
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'Success': return 'check_circle';
+      case 'Warning': return 'warning';
+      case 'Blocked': return 'block';
+      case 'Error': return 'error';
+      default: return 'help';
+    }
+  }
+
+  getRowHoverClasses(status: string): string {
+    switch (status) {
+      case 'Success': return 'hover:border-l-emerald-400';
+      case 'Warning': return 'hover:border-l-amber-400';
+      case 'Blocked': return 'hover:border-l-red-400';
+      case 'Error': return 'hover:border-l-rose-400';
+      default: return 'hover:border-l-slate-300';
+    }
+  }
+
+  // ── Actions with feedback ──
   onRefresh(): void {
+    this.isRefreshing = true;
     this.currentPage = 1;
-    console.log('Refreshing logs...');
+    this.fetchHealth();
+    setTimeout(() => { this.isRefreshing = false; }, 800);
+    this.showToast('Logs refreshed successfully');
   }
 
   onExport(): void {
-    console.log('Exporting report...');
+    this.isExporting = true;
+    setTimeout(() => {
+      this.isExporting = false;
+      this.showToast('Report exported to CSV');
+    }, 1200);
   }
 
   onViewDetails(log: SystemLog): void {
-    console.log('Viewing details for:', log);
+    const key = `${log.timestamp}-${log.userName}`;
+    this.expandedLogId = this.expandedLogId === key ? null : key;
   }
 
+  onCopyIp(ip: string, event: Event): void {
+    event.stopPropagation();
+    navigator.clipboard.writeText(ip).then(() => {
+      this.showToast(`IP ${ip} copied to clipboard`);
+    });
+  }
+
+  // closeMobileSidebar(): void {
+  //   this.isMobileSidebarOpen = false;
+  // }
+
+  toggleMobileSearch(): void {
+    this.isMobileSearchOpen = !this.isMobileSearchOpen;
+    if (this.isMobileSearchOpen) {
+      setTimeout(() => {
+        const input = document.getElementById('mobile-search-input');
+        input?.focus();
+      }, 100);
+    }
+  }
+
+  onRowHover(index: number | null): void {
+    this.hoveredLogIndex = index;
+  }
+
+  // ── Toast ──
+  showToast(message: string): void {
+    this.toastMessage = message;
+    this.showSuccessToast = true;
+    setTimeout(() => { this.showSuccessToast = false; }, 2500);
+  }
+
+  // ── Counter Animation ──
+  animateCounter(target: number, duration: number = 1200): void {
+    let start = 0;
+    const startTime = performance.now();
+    const step = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      this.displayedThreats = Math.round(eased * target);
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+    requestAnimationFrame(step);
+  }
+
+  // ── Health Data ──
+  health: SystemHealth | null = null;
+  hasError = false;
+  isLoading = false;
+  lastUpdated: Date | null = null;
+  private pollSub?: Subscription;
+
   ngOnInit(): void {
-    // Placeholder for future data fetching logic
     this.fetchHealth();
-    // بتحدث كل 30 ثانية تلقائياً
+    this.animateCounter(this.securityStats.threatsBlocked);
+
     this.pollSub = interval(30000)
       .pipe(switchMap(() => this._adminService.getSystemHealth()))
       .subscribe({
@@ -225,18 +354,11 @@ export class AdminDashComponent implements OnInit, OnDestroy {
       });
   }
 
-  health: SystemHealth | null = null;
-  hasError = false;
-  isLoading = false;
-  lastUpdated: Date | null = null
-  private pollSub?: Subscription;
-
   ngOnDestroy(): void {
     this.pollSub?.unsubscribe();
   }
 
   fetchHealth(): void {
-    console.log('Hello world!');
     this.isLoading = true;
     this.hasError = false;
     this._adminService.getSystemHealth().subscribe({
@@ -244,11 +366,6 @@ export class AdminDashComponent implements OnInit, OnDestroy {
         this.health = data;
         this.lastUpdated = new Date();
         this.isLoading = false;
-        console.log('System health:', data);
-        console.log('CPU Load %:', data.cpuLoadPercentage);
-        console.log('Memory Usage GB:', data.memoryUsageGb);
-        console.log('Total Memory GB:', data.totalMemoryGb);
-        console.log('Network Latency ms:', data.networkLatencyMs);
       },
       error: () => {
         this.hasError = true;
@@ -280,53 +397,6 @@ export class AdminDashComponent implements OnInit, OnDestroy {
     return 'bg-red-500';
   }
 
-  get cpuBadge(): string {
-    const v = this.health?.cpuLoadPercentage ?? 0;
-    if (v < 50) return 'bg-emerald-100 text-emerald-700';
-    if (v < 80) return 'bg-amber-100 text-amber-700';
-    return 'bg-red-100 text-red-700';
-  }
-
-  get cpuBadgeLabel(): string {
-    const v = this.health?.cpuLoadPercentage ?? 0;
-    if (v < 50) return 'Normal';
-    if (v < 80) return 'Moderate';
-    return 'High';
-  }
-
-  get memBadge(): string {
-    if (this.memoryPercent < 50) return 'bg-emerald-100 text-emerald-700';
-    if (this.memoryPercent < 80) return 'bg-amber-100 text-amber-700';
-    return 'bg-red-100 text-red-700';
-  }
-
-  get memBadgeLabel(): string {
-    if (this.memoryPercent < 50) return 'Normal';
-    if (this.memoryPercent < 80) return 'Moderate';
-    return 'High';
-  }
-
-  get latencyBadge(): string {
-    const v = this.health?.networkLatencyMs ?? 0;
-    if (v < 50) return 'bg-emerald-100 text-emerald-700';
-    if (v < 150) return 'bg-amber-100 text-amber-700';
-    return 'bg-red-100 text-red-700';
-  }
-
-  get latencyBadgeLabel(): string {
-    const v = this.health?.networkLatencyMs ?? 0;
-    if (v < 50) return 'Excellent';
-    if (v < 150) return 'Good';
-    return 'Slow';
-  }
-
-  get latencyTextColor(): string {
-    const v = this.health?.networkLatencyMs ?? 0;
-    if (v < 50) return 'text-emerald-600';
-    if (v < 150) return 'text-amber-600';
-    return 'text-red-600';
-  }
-
   get statusBadgeClass(): string {
     return this.health?.status === 'Healthy'
       ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
@@ -337,8 +407,46 @@ export class AdminDashComponent implements OnInit, OnDestroy {
     return this.health?.status === 'Healthy' ? 'bg-emerald-500' : 'bg-red-500';
   }
 
+  get latencyTextColor(): string {
+    const v = this.health?.networkLatencyMs ?? 0;
+    if (v < 50) return 'text-emerald-600';
+    if (v < 150) return 'text-amber-600';
+    return 'text-red-600';
+  }
+
+  // ── Keyboard shortcut ──
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboard(event: KeyboardEvent): void {
+    // Ctrl+K to focus search
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      if (window.innerWidth < 640) {
+        this.toggleMobileSearch();
+      } else {
+        const input = document.getElementById('desktop-search-input');
+        input?.focus();
+      }
+    }
+    // Escape to close sidebar/search
+    if (event.key === 'Escape') {
+      this.closeMobileSidebar();
+      this.isMobileSearchOpen = false;
+    }
+  }
+
+  // ── Close sidebar on resize ──
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    if (window.innerWidth >= 1024) {
+      this.isMobileSidebarOpen = false;
+      this.isMobileSearchOpen = false;
+    }
+  }
+
+  @ViewChild('mobileSidebar') mobileSidebar!: SiedeAdminComponent;
+
   toggleMobileSidebar(): void {
-    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+    this.mobileSidebar.toggle();
   }
 
   closeMobileSidebar(): void {

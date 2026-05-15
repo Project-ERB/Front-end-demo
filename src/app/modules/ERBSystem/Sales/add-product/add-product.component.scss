@@ -1,0 +1,116 @@
+/* ═══════════════════════════════════════════════════════
+   Add Product Component — Responsive Styles
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Base resets for better mobile experience ── */
+:host {
+    display: block;
+    width: 100%;
+}
+
+/* ── Prevent horizontal overflow on small screens ── */
+main {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ── Form inputs: ensure no zoom on iOS (font >= 16px) ── */
+@media (max-width: 639px) {
+
+    input[type="text"],
+    input[type="number"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    select,
+    textarea {
+        font-size: 16px !important; // prevents iOS auto-zoom on focus
+    }
+
+    /* ── File input: make it more touch-friendly ── */
+    input[type="file"]::file-selector-button {
+        padding: 0.5rem 0.75rem;
+        font-size: 13px;
+    }
+}
+
+/* ── Stepper: ensure smooth horizontal scroll on mobile ── */
+@media (max-width: 639px) {
+    .overflow-x-auto {
+        scrollbar-width: none; // Firefox
+        -ms-overflow-style: none; // IE
+
+        &::-webkit-scrollbar {
+            display: none; // Chrome/Safari
+        }
+    }
+}
+
+/* ── Variant option rows: better spacing on small screens ── */
+@media (max-width: 639px) {
+
+    // Add subtle separator between stacked option rows
+    .space-y-2>div+div {
+        margin-top: 0.5rem;
+    }
+}
+
+/* ── Sidebar slide-in on mobile ── */
+@media (max-width: 1023px) {
+    aside {
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* ── Touch-friendly button sizing (min 44x44 tap target) ── */
+@media (max-width: 1023px) {
+    button {
+        min-height: 40px;
+    }
+
+    // Remove button on variants — needs a bigger tap area
+    button[disabled] {
+        pointer-events: none;
+    }
+}
+
+/* ── Textarea on mobile ── */
+@media (max-width: 639px) {
+    textarea {
+        min-height: 80px;
+    }
+}
+
+/* ── Optgroup styling for category select ── */
+select optgroup {
+    font-weight: 700;
+    color: #1e3b8a;
+}
+
+select option {
+    font-weight: 400;
+    color: #111418;
+}
+
+/* ── Smooth transitions for sidebar overlay ── */
+.fixed.inset-0 {
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ── Print: hide sidebar ── */
+@media print {
+
+    aside,
+    .lg\\:hidden {
+        display: none !important;
+    }
+}
