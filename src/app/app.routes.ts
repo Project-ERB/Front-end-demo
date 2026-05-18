@@ -355,6 +355,10 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/Sales/orders/orders.component').then((O) => O.OrdersComponent),
       },
       {
+        path: 'receivable-mangment',
+        loadComponent: () => import('./modules/ERBSystem/Sales/receivable-managment/receivable-managment.component').then((R) => R.ReceivableManagmentComponent)
+      },
+      {
         path: 'warehouse-dashboard',
         loadComponent: () => import('./modules/ERBSystem/HR/warehouse-dashboard/warehouse-dashboard.component').then((W) => W.WarehouseDashboardComponent),
       },
