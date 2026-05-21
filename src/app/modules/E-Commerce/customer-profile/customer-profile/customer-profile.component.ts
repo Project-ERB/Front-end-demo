@@ -5,6 +5,7 @@ import { NavbarECommerceComponent } from "../../../../shared/UI/navbar-e-commerc
 import { ECommerceService } from '../../../../core/services/e-commerce/e-commerce.service';
 import { RouterLink } from "@angular/router";
 import { animate, query, stagger, style, transition, trigger } from '@angular/animations';
+import { ECommerceSidebarComponent } from "../../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component";
 
 interface Address {
   label: string;
@@ -40,7 +41,7 @@ interface Order {
 
 @Component({
   selector: 'app-customer-profile',
-  imports: [CommonModule, FormsModule, NavbarECommerceComponent, RouterLink],
+  imports: [CommonModule, FormsModule, NavbarECommerceComponent, RouterLink, ECommerceSidebarComponent],
   templateUrl: './customer-profile.component.html',
   styleUrl: './customer-profile.component.scss',
   animations: [

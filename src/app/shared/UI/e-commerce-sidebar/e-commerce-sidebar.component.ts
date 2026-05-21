@@ -1,15 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterLink, RouterModule } from '@angular/router';
 import { CategoriesService } from '../../../core/services/categories/categories.service';
 
 @Component({
   selector: 'app-e-commerce-sidebar',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './e-commerce-sidebar.component.html',
   styleUrl: './e-commerce-sidebar.component.scss',
 })
-export class ECommerceSidebarComponent {
+export class ECommerceSidebarComponent implements OnInit {
 
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _Router = inject(Router);
@@ -18,7 +18,10 @@ export class ECommerceSidebarComponent {
   isCategoriesLoading = true;
   selectedCategoryId: string | null = null;
   expandedCategoryId: string | null = null;
-  isMobileSidebarOpen = false;
+
+  // 1. إضافة Input و Output للتحكم من المكون الأب
+  @Input() isMobileSidebarOpen: boolean = false;
+  @Output() isMobileSidebarOpenChange = new EventEmitter<boolean>();
 
   ngOnInit(): void {
     this.loadCategories();
@@ -58,7 +61,7 @@ export class ECommerceSidebarComponent {
 
   selectCategory(categoryId: string | null): void {
     this.selectedCategoryId = categoryId;
-    this.isMobileSidebarOpen = false;
+    this.closeMobileSidebar(); // استدعاء دالة الإغلاق المحدثة
     this._Router.navigate(['/home'], {
       queryParams: categoryId ? { category: categoryId } : {}
     });
@@ -69,12 +72,8 @@ export class ECommerceSidebarComponent {
     this.expandedCategoryId = this.expandedCategoryId === categoryId ? null : categoryId;
   }
 
-  toggleMobileSidebar(): void {
-    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
-  }
-
+  // 2. تحديث دالة الإغلاق لإرسال قيمة False للمكون الأب
   closeMobileSidebar(): void {
-    this.isMobileSidebarOpen = false;
+    this.isMobileSidebarOpenChange.emit(false);
   }
-
 }

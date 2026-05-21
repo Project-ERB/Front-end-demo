@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
-import { CommonModule } from '@angular/common'; 
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar-e-commerce',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './navbar-e-commerce.component.html',
   styleUrl: './navbar-e-commerce.component.scss',
 })

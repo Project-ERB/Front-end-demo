@@ -1,6 +1,13 @@
+<!-- خلفية شفافة تظهر خلف الـ Sidebar في الموبايل -->
+<div class="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+    [ngClass]="{'opacity-100 pointer-events-auto': isMobileSidebarOpen, 'opacity-0 pointer-events-none': !isMobileSidebarOpen}"
+    (click)="closeMobileSidebar()">
+</div>
+
 <aside
-    class="mobile-sidebar fixed left-0 top-0 z-30 flex h-full w-72 max-w-[85vw] shrink-0 flex-col justify-between border-r border-gray-200/80 dark:border-gray-800 bg-white/95 dark:bg-background-dark/95 backdrop-blur-xl p-4 transition-transform duration-300 lg:relative lg:z-auto lg:w-64 lg:max-w-none lg:translate-x-0"
-    [class.translate-x-0]="isMobileSidebarOpen" [class.-translate-x-full]="!isMobileSidebarOpen">
+    class="mobile-sidebar fixed left-0 top-0 z-30 flex h-full w-72 max-w-[85vw] shrink-0 flex-col justify-between border-r border-gray-200/80 dark:border-gray-800 bg-white/95 dark:bg-background-dark/95 backdrop-blur-xl p-4 transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:z-auto lg:w-64 lg:max-w-none lg:translate-x-0"
+    [ngClass]="{'translate-x-0': isMobileSidebarOpen, '-translate-x-full': !isMobileSidebarOpen}">
+
     <div class="flex flex-col gap-6">
 
         <!-- Mobile Header -->

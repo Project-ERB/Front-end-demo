@@ -8,10 +8,11 @@ import { animate, query, stagger, style, transition, trigger } from '@angular/an
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
 import { ToastrService } from 'ngx-toastr';
 import { CategoriesService } from '../../../core/services/categories/categories.service';
+import { ECommerceSidebarComponent } from "../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component";
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, CommonModule, NavbarECommerceComponent, RouterLink],
+  imports: [RouterModule, CommonModule, NavbarECommerceComponent, RouterLink, ECommerceSidebarComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [
