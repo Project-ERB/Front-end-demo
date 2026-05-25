@@ -8,8 +8,9 @@ export interface PaymentTransactionRaw {
   transactionDate?: string;
   relatedTransactionId?: string;
   method?: string;
+  type?: string;
 }
- 
+
 export interface PaymentRaw {
   id?: string;
   invoiceId?: string;
@@ -19,21 +20,33 @@ export interface PaymentRaw {
   remainingAmount?: number;
   transactions?: PaymentTransactionRaw[];
 }
- 
+
 export interface PaymentsResponse {
   nodes: PaymentRaw[];
 }
- 
+
+export interface InvoiceRaw {
+  totalAmount?: number;
+  paidAmount?: number;
+  remainingAmount?: number;
+  invoiceNumber?: string;
+}
+
+export interface InvoicesResponse {
+  nodes: InvoiceRaw[];
+}
+
 // ── Normalized types used by components ─────────────────────────────────────
- 
+
 export interface PaymentTransaction {
   id: string;
   amount: number;
   transactionDate: string;
   method: string;
+  type: string;
   relatedTransactionId: string | null;
 }
- 
+
 export interface Payment {
   id: string;
   invoiceId: string;
@@ -43,9 +56,9 @@ export interface Payment {
   remainingAmount: number;
   transactions: PaymentTransaction[];
 }
- 
+
 // ── GraphQL Query ────────────────────────────────────────────────────────────
- 
+
 const GET_PAYMENTS = gql`
   query GetPayments {
     payments {
@@ -59,6 +72,7 @@ const GET_PAYMENTS = gql`
         transactions {
           id
           amount
+          type
           transactionDate
           relatedTransactionId
           method
@@ -68,13 +82,26 @@ const GET_PAYMENTS = gql`
   }
 `;
 
+const GET_INVOICES = gql`
+  query GetInvoices {
+    invoices {
+      nodes {
+        totalAmount
+        paidAmount
+        remainingAmount
+        invoiceNumber
+      }
+    }
+  }
+`;
+
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentService {
-  
-constructor(private apollo: Apollo) {}
- 
+
+  constructor(private apollo: Apollo) { }
+
   getPayments() {
     return this.apollo
       .query<{ payments: PaymentsResponse }>({
@@ -88,26 +115,36 @@ constructor(private apollo: Apollo) {}
         })
       );
   }
- 
+
+  getInvoices() {
+    return this.apollo
+      .query<{ invoices: InvoicesResponse }>({
+        query: GET_INVOICES,
+        fetchPolicy: 'network-only',
+      })
+      .pipe(
+        map((result) => result.data?.invoices?.nodes ?? [])
+      );
+  }
+
   // ── Helpers ────────────────────────────────────────────────────────────────
- 
+
   private normalize(raw: PaymentRaw): Payment {
     return {
-      id:                 raw.id                 ?? '',
-      invoiceId:          raw.invoiceId          ?? '',
-      currency:           raw.currency           ?? 'EGP',
-      invoiceTotalAmount: raw.invoiceTotalAmount  ?? 0,
-      totalPaid:          raw.totalPaid           ?? 0,
-      remainingAmount:    raw.remainingAmount     ?? 0,
+      id: raw.id ?? '',
+      invoiceId: raw.invoiceId ?? '',
+      currency: raw.currency ?? 'EGP',
+      invoiceTotalAmount: raw.invoiceTotalAmount ?? 0,
+      totalPaid: raw.totalPaid ?? 0,
+      remainingAmount: raw.remainingAmount ?? 0,
       transactions: (raw.transactions ?? []).map((tx) => ({
-        id:                   tx.id                   ?? '',
-        amount:               tx.amount               ?? 0,
-        transactionDate:      tx.transactionDate       ?? '',
-        method:               tx.method               ?? 'Unknown',
-        relatedTransactionId: tx.relatedTransactionId  ?? null,
+        id: tx.id ?? '',
+        amount: tx.amount ?? 0,
+        transactionDate: tx.transactionDate ?? '',
+        method: tx.method ?? 'Unknown',
+        type: tx.type ?? 'Credit',
+        relatedTransactionId: tx.relatedTransactionId ?? null,
       })),
     };
   }
 }
- 
-

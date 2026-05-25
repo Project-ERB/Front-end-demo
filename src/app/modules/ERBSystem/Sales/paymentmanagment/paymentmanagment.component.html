@@ -1,1 +1,279 @@
-<p>paymentmanagment works!</p>
+<!-- payments.component.html -->
+<div class="page-shell">
+
+    <!-- ─── Sidebar ─── -->
+    <app-sideba-sales></app-sideba-sales>
+
+    <!-- ─── Main Content ─── -->
+    <div class="page-shell__main">
+
+        <!-- ─── Top App Bar ─── -->
+        <header
+            class="sticky top-0 z-40 bg-[#f9f9ff] border-b border-[#c7c4d8] shadow-sm flex justify-between items-center px-6 h-16">
+            <div class="flex items-center gap-4">
+                <div class="relative w-64">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#464555] text-[20px]">search</span>
+                    <input [(ngModel)]="searchQuery"
+                        class="w-full pl-10 pr-4 py-2 bg-[#f0f3ff] border border-[#c7c4d8] rounded-lg text-sm text-[#111c2d] placeholder:text-[#464555] focus:outline-none focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd] transition-colors"
+                        placeholder="Search payments..." type="text" />
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    class="w-10 h-10 rounded-full text-[#464555] hover:bg-[#f0f3ff] flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button
+                    class="w-10 h-10 rounded-full text-[#464555] hover:bg-[#f0f3ff] flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <div class="h-6 w-px bg-[#c7c4d8] mx-1"></div>
+                <button
+                    class="flex items-center gap-2 px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-xs font-medium hover:bg-[#f0f3ff] transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">download</span>
+                    Export
+                </button>
+            </div>
+        </header>
+
+        <!-- ─── Page Content ─── -->
+        <main class="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
+
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-4xl font-bold text-[#111c2d] tracking-tight">Payments</h2>
+                    <p class="text-base text-[#464555] mt-1">Track transaction history and invoice settlements.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="flex items-center gap-2 px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-sm cursor-pointer hover:border-[#3525cd] transition-colors">
+                        <span class="material-symbols-outlined text-[20px] text-[#464555]">calendar_month</span>
+                        <span>Last 30 Days</span>
+                        <span class="material-symbols-outlined text-[20px] text-[#464555]">keyboard_arrow_down</span>
+                    </div>
+                    <div
+                        class="flex items-center gap-2 px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-sm cursor-pointer hover:border-[#3525cd] transition-colors">
+                        <span class="material-symbols-outlined text-[20px] text-[#464555]">filter_list</span>
+                        <span>Filter</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ─── Stats Bento Grid ─── -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+                <ng-container *ngFor="let stat of stats">
+                    <!-- Highlighted card -->
+                    <div *ngIf="stat.highlighted"
+                        class="bg-[#4f46e5] p-4 rounded-xl border border-[#4f46e5] flex flex-col gap-2 text-[#dad7ff]">
+                        <div class="flex items-center gap-2 opacity-80">
+                            <span class="material-symbols-outlined text-[20px]">{{ stat.icon }}</span>
+                            <span class="text-[12px] font-medium uppercase tracking-wider">{{ stat.label }}</span>
+                        </div>
+                        <div class="text-2xl font-semibold text-white">{{ stat.value }}</div>
+                        <div class="mt-auto">
+                            <button
+                                class="text-[12px] font-medium bg-[#dad7ff] text-[#3525cd] px-3 py-1 rounded-full hover:bg-white transition-colors">
+                                Review Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Regular stat card -->
+                    <div *ngIf="!stat.highlighted"
+                        class="bg-white p-4 rounded-xl border border-[#c7c4d8] flex flex-col gap-2">
+                        <div class="flex items-center gap-2 text-[#464555]">
+                            <span class="material-symbols-outlined text-[20px]">{{ stat.icon }}</span>
+                            <span class="text-[12px] font-medium uppercase tracking-wider">{{ stat.label }}</span>
+                        </div>
+                        <div class="text-2xl font-semibold text-[#111c2d]">{{ stat.value }}</div>
+                        <div class="flex items-center gap-1 text-[12px] font-medium" [ngClass]="stat.trendClass">
+                            <span class="material-symbols-outlined text-[14px]">{{ stat.trendIcon }}</span>
+                            <span>{{ stat.trendText }}</span>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
+
+            <!-- ─── Data Table Card ─── -->
+            <div class="bg-white border border-[#c7c4d8] rounded-xl overflow-hidden shadow-sm flex flex-col flex-1">
+
+                <!-- Loading State -->
+                <div *ngIf="loading" class="p-10 flex flex-col items-center justify-center gap-3">
+                    <div class="w-8 h-8 border-3 border-[#3525cd] border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-sm text-[#464555]">Loading payments...</span>
+                </div>
+
+                <!-- Table Content -->
+                <div *ngIf="!loading" class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="bg-[#f0f3ff] border-b border-[#c7c4d8] text-[#464555] text-[12px] font-medium uppercase tracking-wide">
+                                <th class="p-3 w-12 text-center"></th>
+                                <!-- <th class="p-3">Group ID</th> -->
+                                <th class="p-3">Invoice Number</th>
+                                <th class="p-3 text-right">Total Amount</th>
+                                <th class="p-3 text-right">Total Paid</th>
+                                <th class="p-3 text-right">Remaining</th>
+                                <th class="p-3 w-48">Settlement Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm text-[#111c2d]">
+
+                            <ng-container *ngFor="let group of filteredGroups">
+
+                                <!-- ── Group Header Row ── -->
+                                <tr class="border-b border-[#c7c4d8] hover:bg-[#f0f3ff] transition-colors cursor-pointer"
+                                    [ngClass]="group.expanded ? 'bg-[#f0f3ff]/60' : 'bg-white'"
+                                    (click)="toggleGroup(group)">
+                                    <td class="p-3 text-center" (click)="$event.stopPropagation()">
+                                        <button (click)="toggleGroup(group)"
+                                            class="text-[#464555] hover:text-[#3525cd] transition-colors">
+                                            <span
+                                                class="material-symbols-outlined text-[20px] transition-transform duration-200"
+                                                [style.transform]="group.expanded ? 'rotate(0deg)' : 'rotate(-90deg)'">
+                                                expand_more
+                                            </span>
+                                        </button>
+                                    </td>
+
+                                    <!-- <td class="p-3 font-semibold">{{ group.groupId }}</td> -->
+                                    <td class="p-3 font-semibold text-[#3525cd]">{{ group.invoiceNumber }}</td>
+                                    <td class="p-3 text-right">{{ formatCurrency(group.totalAmount) }}</td>
+                                    <td class="p-3 text-right text-emerald-600 font-medium">{{
+                                        formatCurrency(group.totalPaid) }}</td>
+                                    <td class="p-3 text-right" [ngClass]="remainingTextColor(group)">{{
+                                        formatCurrency(remaining(group)) }}</td>
+
+                                    <!-- Settlement progress bar -->
+                                    <td class="p-3">
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex-1 h-2 bg-[#d8e3fb] rounded-full overflow-hidden">
+                                                <div class="h-full rounded-full transition-all duration-500"
+                                                    [ngClass]="progressBarColor(group)"
+                                                    [style.width.%]="settlementPct(group)"></div>
+                                            </div>
+                                            <span *ngIf="settlementPct(group) === 100"
+                                                class="text-[12px] font-medium text-emerald-600 flex items-center gap-1 whitespace-nowrap">
+                                                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                                                Paid
+                                            </span>
+                                            <span *ngIf="settlementPct(group) !== 100"
+                                                class="text-[12px] font-medium text-[#464555] w-8 text-right"
+                                                [ngClass]="settlementPct(group) === 0 ? 'text-red-500' : ''">{{
+                                                settlementPct(group) }}%</span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- ── Expandable Transaction Sub-table ── -->
+                                <tr *ngIf="group.expanded" class="border-b border-[#c7c4d8] bg-[#f9f9ff]">
+                                    <td class="p-0" colspan="7">
+                                        <div class="pl-14 pr-4 py-4 border-l-4 border-[#3525cd]">
+
+                                            <div
+                                                class="text-[11px] font-bold uppercase tracking-wider text-[#464555] mb-3 flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-[16px]">history</span>
+                                                Transaction History
+                                            </div>
+
+                                            <p *ngIf="group.transactions.length === 0"
+                                                class="text-sm text-[#464555] italic py-2">
+                                                No transactions recorded for this invoice.
+                                            </p>
+
+                                            <table *ngIf="group.transactions.length > 0"
+                                                class="w-full text-left text-[13px]">
+                                                <thead class="text-[#464555] border-b border-[#c7c4d8]/50">
+                                                    <tr>
+                                                        <th class="pb-2 font-medium">Trx ID</th>
+                                                        <th class="pb-2 font-medium">Date</th>
+                                                        <th class="pb-2 font-medium">Method</th>
+                                                        <th class="pb-2 font-medium text-center">Type</th>
+                                                        <th class="pb-2 font-medium text-right">Amount</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let trx of group.transactions"
+                                                        class="border-b border-[#c7c4d8]/30 last:border-0 hover:bg-[#f0f3ff] transition-colors">
+                                                        <td class="py-2 font-mono text-[#464555] text-[12px]">{{ trx.id
+                                                            }}</td>
+                                                        <td class="py-2">{{ trx.date }}</td>
+                                                        <td class="py-2">
+                                                            <div class="flex items-center gap-1.5">
+                                                                <span
+                                                                    class="material-symbols-outlined text-[16px] text-[#464555]">{{
+                                                                    trx.methodIcon }}</span>
+                                                                {{ trx.method }}
+                                                            </div>
+                                                        </td>
+                                                        <td class="py-2 text-center">
+                                                            <span
+                                                                class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium"
+                                                                [ngClass]="trx.type === 'Credit' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'">{{
+                                                                trx.type }}</span>
+                                                        </td>
+                                                        <td class="py-2 text-right font-semibold">{{
+                                                            formatCurrency(trx.amount) }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </ng-container>
+
+                            <!-- Empty state row -->
+                            <tr *ngIf="filteredGroups.length === 0">
+                                <td colspan="7" class="p-10 text-center text-sm text-[#464555]">
+                                    <span
+                                        class="material-symbols-outlined text-[48px] text-[#c7c4d8] block mb-3">search_off</span>
+                                    No payment groups found matching "{{ searchQuery }}".
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ── Pagination ── -->
+                <div *ngIf="!loading && totalEntries > 0"
+                    class="mt-auto px-4 py-3 border-t border-[#c7c4d8] bg-[#f9f9ff] flex items-center justify-between">
+                    <span class="text-sm text-[#464555]">
+                        Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ maxOnPage() }} of {{ totalEntries }}
+                        entries
+                    </span>
+                    <div class="flex gap-1 items-center">
+                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                            class="p-1 rounded text-[#464555] hover:bg-[#e7eeff] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                        </button>
+
+                        <!-- Find this block in the Pagination section -->
+                        <ng-container *ngFor="let p of getPageNumbers()">
+                            <span *ngIf="p === '...'"
+                                class="w-8 h-8 flex items-center justify-center text-[#464555]">...</span>
+                            <button *ngIf="p !== '...'" (click)="goToPageSafe(p)" [ngClass]="currentPage === p
+                ? 'bg-[#3525cd] text-white'
+                : 'text-[#111c2d] hover:bg-[#e7eeff]'"
+                                class="w-8 h-8 rounded text-sm font-medium flex items-center justify-center transition-colors">{{
+                                p }}</button>
+                        </ng-container>
+
+                        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                            class="p-1 rounded text-[#464555] hover:bg-[#e7eeff] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>

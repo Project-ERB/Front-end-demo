@@ -1,0 +1,10 @@
+.page-shell {
+    display: flex;
+    min-height: 100vh;
+
+    &__main {
+        flex: 1;
+        min-width: 0; // يمنع overflow في الـ flex
+        overflow-y: auto;
+    }
+}

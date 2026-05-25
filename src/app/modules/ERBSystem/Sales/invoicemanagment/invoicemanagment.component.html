@@ -1,1 +1,273 @@
-<p>invoicemanagment works!</p>
+<!-- invoices.component.html -->
+<div class="page-shell">
+
+    <!-- ─── Sidebar ─── -->
+    <app-sideba-sales></app-sideba-sales>
+
+    <!-- ─── Main Content ─── -->
+    <div class="page-shell__main">
+
+        <!-- ─── Top App Bar ─── -->
+        <header
+            class="bg-[#f9f9ff] sticky top-0 z-40 border-b border-[#c7c4d8] shadow-sm flex justify-between items-center px-6 h-16">
+            <div class="relative w-64 hidden md:block">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#464555] text-[20px]">search</span>
+                <input
+                    class="w-full pl-10 pr-4 py-2 bg-[#f0f3ff] border border-[#c7c4d8] rounded-xl text-sm focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd] outline-none transition-all"
+                    placeholder="Search across ERP..." type="text" />
+            </div>
+            <div class="flex items-center gap-4">
+                <button
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-[#464555] hover:bg-[#f0f3ff] transition-all">
+                    <span class="material-symbols-outlined">notifications</span>
+                </button>
+                <button
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-[#464555] hover:bg-[#f0f3ff] transition-all">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <div class="w-px h-6 bg-[#c7c4d8]"></div>
+                <div
+                    class="flex items-center gap-2 cursor-pointer hover:bg-[#f0f3ff] p-1 pr-3 rounded-full transition-all border border-[#c7c4d8]">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCncawUxCDMt1IKv2SLkUj-d5WcDONdkKa-g436jvNSKnxyUnoYgG6XOOrG2M4GH6qVqb7AjUX7triVPIsm75S5mPvOktnAfO7PCyMqEMWr_AKfI6QsFr3H-UACGSpvBoR7YZX1f88TaJNF06ZxLR4vRKEqIruBhg2CDx4Ur5xUsvARSCjlfrVqvYWw6sB8vsS-RMbFypogBCN6GADlVBz7xfsMzPEre01Uv2LJocMMOBgPZZTG3taI0AYzufW2OyWwums-yT3wYwcB"
+                        alt="Admin" class="w-8 h-8 rounded-full object-cover bg-[#e7eeff]" />
+                    <span class="text-xs font-medium text-[#111c2d]">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ─── Page Content ─── -->
+        <main class="flex-1 p-6 flex flex-col gap-6">
+
+            <!-- Page Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <h1 class="text-4xl font-bold text-[#111c2d] mb-1 tracking-tight">Invoices</h1>
+                    <p class="text-sm text-[#464555]">Manage customer billing, track payments, and review transaction
+                        history.</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#464555] text-[20px]">calendar_today</span>
+                        <input [(ngModel)]="selectedDate"
+                            class="pl-10 pr-4 py-2 bg-white border border-[#c7c4d8] rounded-xl text-sm text-[#111c2d] focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd] outline-none"
+                            type="date" />
+                    </div>
+                    <button
+                        class="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-[#dad7ff] rounded-lg text-sm font-semibold hover:opacity-90 transition-opacity">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                        Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Toolbar -->
+            <div
+                class="flex items-center justify-between gap-4 bg-white p-4 rounded-xl border border-[#c7c4d8] shadow-sm">
+                <div class="flex items-center gap-4 flex-1">
+                    <div class="relative max-w-md w-full">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#464555] text-[20px]">search</span>
+                        <input [(ngModel)]="searchQuery"
+                            class="w-full pl-10 pr-4 py-2 bg-[#f0f3ff] border border-[#c7c4d8] rounded-xl text-sm focus:border-[#3525cd] focus:ring-1 focus:ring-[#3525cd] outline-none transition-all"
+                            placeholder="Search by Invoice #, Customer, or Amount..." type="text" />
+                    </div>
+                    <button
+                        class="flex items-center gap-1 px-4 py-2 bg-white border border-[#c7c4d8] text-[#464555] rounded-xl text-xs font-medium hover:bg-[#f0f3ff] transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filters
+                    </button>
+                </div>
+                <div class="text-sm text-[#464555] shrink-0">
+                    Showing 1–{{ maxOnPage() }} of {{ totalInvoices | number }} invoices
+                </div>
+            </div>
+
+            <!-- ─── Table Card ─── -->
+            <div class="bg-white rounded-xl border border-[#c7c4d8] shadow-sm overflow-hidden flex flex-col flex-1">
+
+                <!-- Loading State -->
+                <div *ngIf="loading" class="p-10 flex flex-col items-center justify-center gap-3">
+                    <div class="w-8 h-8 border-3 border-[#3525cd] border-t-transparent rounded-full animate-spin"></div>
+                    <span class="text-sm text-[#464555]">Loading invoices...</span>
+                </div>
+
+                <!-- Table Content -->
+                <div *ngIf="!loading" class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-[#f0f3ff] border-b border-[#c7c4d8]">
+                            <tr>
+                                <th class="p-3 w-10 text-center">
+                                    <input type="checkbox"
+                                        class="rounded border-[#c7c4d8] text-[#3525cd] focus:ring-[#3525cd]"
+                                        [checked]="allSelected" (change)="toggleAll($any($event.target).checked)" />
+                                </th>
+                                <!-- <th class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider">ID</th> -->
+                                <th class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider">Invoice
+                                    #</th>
+                                <!-- Changed: Customer ID → Customer -->
+                                <th class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider">Customer
+                                </th>
+                                <th class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider">Date
+                                </th>
+                                <th class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider">Status
+                                </th>
+                                <th
+                                    class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider text-right">
+                                    Amount</th>
+                                <th
+                                    class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider text-right">
+                                    Paid</th>
+                                <th
+                                    class="p-3 text-[12px] font-medium text-[#464555] uppercase tracking-wider text-right">
+                                    Remaining</th>
+                                <th class="p-3 w-12"></th>
+                            </tr>
+                        </thead>
+
+                        <tbody class="text-sm text-[#111c2d]">
+                            <ng-container *ngFor="let inv of filteredInvoices">
+
+                                <!-- ── Invoice Row ── -->
+                                <tr class="border-b border-[#c7c4d8] hover:bg-[#f0f3ff] transition-colors group"
+                                    [ngClass]="inv.expanded ? 'bg-[#f0f3ff]' : 'bg-white'">
+                                    <td class="p-3 text-center">
+                                        <input type="checkbox"
+                                            class="rounded border-[#c7c4d8] text-[#3525cd] focus:ring-[#3525cd]"
+                                            [(ngModel)]="inv.selected" />
+                                    </td>
+
+                                    <!-- <td class="p-3 text-base font-semibold">{{ inv.id }}</td> -->
+
+                                    <td class="p-3 text-sm">{{ inv.invoiceNumber }}</td>
+
+                                    <!-- Changed: Display customerName instead of customerId -->
+                                    <td class="p-3 text-sm">
+                                        <div class="flex flex-col">
+                                            <span class="font-medium text-[#111c2d]">{{ inv.customerName }}</span>
+                                            <!-- <span class="text-[11px] text-[#464555]">{{ inv.customerId }}</span> -->
+                                        </div>
+                                    </td>
+
+                                    <td class="p-3 text-sm"
+                                        [ngClass]="isOverdue(inv) ? 'text-[#ba1a1a]' : 'text-[#464555]'">
+                                        {{ inv.date }}
+                                    </td>
+
+                                    <td class="p-3">
+                                        <span
+                                            class="inline-flex items-center px-2 py-1 rounded-full text-[11px] font-semibold"
+                                            [ngClass]="statusBadgeClasses(inv.status)">{{ inv.status }}</span>
+                                    </td>
+
+                                    <td class="p-3 text-right text-sm">{{ formatCurrency(inv.amount) }}</td>
+                                    <td class="p-3 text-right text-sm text-[#464555]">{{ formatCurrency(inv.paid) }}
+                                    </td>
+                                    <td class="p-3 text-right text-sm"
+                                        [ngClass]="inv.status === 'Overdue' ? 'font-semibold text-[#ba1a1a]' : inv.status === 'Sent' ? 'font-semibold' : ''">
+                                        {{ formatCurrency(inv.remaining) }}</td>
+
+                                    <td class="p-3 text-center">
+                                        <button *ngIf="inv.lines.length > 0" (click)="toggleExpand(inv)"
+                                            class="text-[#3525cd] transition-colors"
+                                            [style.transform]="inv.expanded ? 'rotate(180deg)' : 'rotate(0deg)'"
+                                            style="display:inline-block; transition: transform 0.2s;">
+                                            <span class="material-symbols-outlined text-[20px]">expand_more</span>
+                                        </button>
+                                        <button *ngIf="inv.lines.length === 0"
+                                            class="text-[#464555] hover:text-[#3525cd] transition-colors opacity-0 group-hover:opacity-100">
+                                            <span class="material-symbols-outlined text-[20px]">more_vert</span>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- ── Expanded Invoice Lines ── -->
+                                <tr *ngIf="inv.expanded && inv.lines.length > 0"
+                                    class="border-b border-[#c7c4d8] bg-[#e7eeff]">
+                                    <td class="p-0" colspan="10">
+                                        <div class="p-6 pl-[72px] border-l-4 border-[#3525cd]">
+                                            <h4 class="text-base font-semibold text-[#111c2d] mb-3">Invoice Lines</h4>
+                                            <table
+                                                class="w-full text-left text-sm text-[#464555] bg-white border border-[#c7c4d8] rounded-lg overflow-hidden">
+                                                <thead
+                                                    class="bg-[#f0f3ff] border-b border-[#c7c4d8] text-[11px] font-semibold uppercase tracking-wider">
+                                                    <tr>
+                                                        <!-- Changed: Product ID → Product -->
+                                                        <th class="px-4 py-2">Product</th>
+                                                        <th class="px-4 py-2">Description</th>
+                                                        <th class="px-4 py-2 text-right">Qty</th>
+                                                        <th class="px-4 py-2 text-right">Unit Price</th>
+                                                        <th class="px-4 py-2 text-right">Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr *ngFor="let line of inv.lines"
+                                                        class="border-b border-[#c7c4d8] last:border-0 hover:bg-[#f0f3ff] transition-colors">
+                                                        <!-- Changed: Display productName with productId as subtitle -->
+                                                        <td class="px-4 py-2">
+                                                            <div class="flex flex-col">
+                                                                <span class="font-medium text-[#111c2d] text-sm">{{
+                                                                    line.productName }}</span>
+                                                                <!-- <span class="font-mono text-[#464555] text-[11px]">{{
+                                                                    line.productId }}</span> -->
+                                                            </div>
+                                                        </td>
+                                                        <td class="px-4 py-2 text-sm">{{ line.description }}</td>
+                                                        <td class="px-4 py-2 text-right text-sm">{{ line.qty }}</td>
+                                                        <td class="px-4 py-2 text-right text-sm">{{
+                                                            formatCurrency(line.unitPrice) }}</td>
+                                                        <td
+                                                            class="px-4 py-2 text-right text-sm text-[#111c2d] font-medium">
+                                                            {{ formatCurrency(line.total) }}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </ng-container>
+
+                            <!-- Empty state -->
+                            <tr *ngIf="filteredInvoices.length === 0">
+                                <td colspan="10" class="p-10 text-center text-sm text-[#464555]">
+                                    <span
+                                        class="material-symbols-outlined text-[48px] text-[#c7c4d8] block mb-3">search_off</span>
+                                    No invoices found matching "{{ searchQuery }}".
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- ── Pagination Footer ── -->
+                <div *ngIf="!loading && totalInvoices > 0"
+                    class="bg-[#f0f3ff] border-t border-[#c7c4d8] p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm text-[#464555]">Rows per page:</span>
+                        <select [ngModel]="rowsPerPage" (ngModelChange)="onRowsPerPageChange($event)"
+                            class="bg-white border border-[#c7c4d8] rounded-lg text-sm py-1 pl-2 pr-6 outline-none focus:border-[#3525cd] text-[#111c2d]">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                            class="p-1 rounded-lg text-[#464555] hover:bg-[#e7eeff] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                        </button>
+                        <span class="text-sm text-[#111c2d]">Page {{ currentPage }} of {{ totalPages | number }}</span>
+                        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                            class="p-1 rounded-lg text-[#464555] hover:bg-[#e7eeff] disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                            <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>

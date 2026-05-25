@@ -10,7 +10,7 @@ export type InvoiceStatusRaw =
   | 'OVERDUE'
   | 'CANCELLED'
   | string;
- 
+
 export interface InvoiceLineRaw {
   productId?: string;
   description?: string;
@@ -20,7 +20,7 @@ export interface InvoiceLineRaw {
   discountAmount?: number;
   lineTotal?: number;
 }
- 
+
 export interface InvoiceRaw {
   id?: string;
   invoiceNumber?: string;
@@ -34,11 +34,21 @@ export interface InvoiceRaw {
   remainingAmount?: number;
   lines?: InvoiceLineRaw[];
 }
- 
+
+export interface CustomerRaw {
+  id?: string;
+  name?: string;
+}
+
+export interface ProductRaw {
+  id?: string;
+  name?: string;
+}
+
 // ── Normalized types used by components ─────────────────────────────────────
- 
+
 export type InvoiceStatus = 'paid' | 'partial' | 'unpaid' | 'overdue' | 'draft' | 'cancelled';
- 
+
 export interface InvoiceLine {
   productId: string;
   description: string;
@@ -48,7 +58,7 @@ export interface InvoiceLine {
   discountAmount: number;
   lineTotal: number;
 }
- 
+
 export interface Invoice {
   id: string;
   invoiceNumber: string;
@@ -62,9 +72,19 @@ export interface Invoice {
   remainingAmount: number;
   lines: InvoiceLine[];
 }
- 
-// ── GraphQL Query ────────────────────────────────────────────────────────────
- 
+
+export interface Customer {
+  id: string;
+  name: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+}
+
+// ── GraphQL Queries ──────────────────────────────────────────────────────────
+
 const GET_INVOICES = gql`
   query GetInvoices {
     invoices {
@@ -93,12 +113,34 @@ const GET_INVOICES = gql`
   }
 `;
 
+const GET_CUSTOMERS = gql`
+  query GetCustomers {
+    customers {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+`;
+
+const GET_PRODUCTS = gql`
+  query GetProducts {
+    products {
+      nodes {
+        id
+        name
+      }
+    }
+  }
+`;
+
 @Injectable({
   providedIn: 'root',
 })
 export class InvoiceService {
-  constructor(private apollo: Apollo) {}
- 
+  constructor(private apollo: Apollo) { }
+
   getInvoices() {
     return this.apollo
       .query<{ invoices: { nodes: InvoiceRaw[] } }>({
@@ -112,40 +154,74 @@ export class InvoiceService {
         })
       );
   }
- 
+
+  getCustomers() {
+    return this.apollo
+      .query<{ customers: { nodes: CustomerRaw[] } }>({
+        query: GET_CUSTOMERS,
+        fetchPolicy: 'network-only',
+      })
+      .pipe(
+        map((result) => {
+          const nodes = result.data?.customers?.nodes ?? [];
+          return nodes.map((raw) => ({
+            id: raw.id ?? '',
+            name: raw.name ?? '',
+          }));
+        })
+      );
+  }
+
+  getProducts() {
+    return this.apollo
+      .query<{ products: { nodes: ProductRaw[] } }>({
+        query: GET_PRODUCTS,
+        fetchPolicy: 'network-only',
+      })
+      .pipe(
+        map((result) => {
+          const nodes = result.data?.products?.nodes ?? [];
+          return nodes.map((raw) => ({
+            id: raw.id ?? '',
+            name: raw.name ?? '',
+          }));
+        })
+      );
+  }
+
   // ── Helpers ────────────────────────────────────────────────────────────────
- 
+
   private normalize(raw: InvoiceRaw): Invoice {
     return {
-      id:              raw.id              ?? '',
-      invoiceNumber:   raw.invoiceNumber   ?? '',
-      customerId:      raw.customerId      ?? '',
-      salesOrderId:    raw.salesOrderId    ?? '',
-      invoiceDate:     raw.invoiceDate     ?? '',
-      status:          this.mapStatus(raw.status),
-      currency:        raw.defaultCurrency ?? 'EGP',
-      totalAmount:     raw.totalAmount     ?? 0,
-      paidAmount:      raw.paidAmount      ?? 0,
+      id: raw.id ?? '',
+      invoiceNumber: raw.invoiceNumber ?? '',
+      customerId: raw.customerId ?? '',
+      salesOrderId: raw.salesOrderId ?? '',
+      invoiceDate: raw.invoiceDate ?? '',
+      status: this.mapStatus(raw.status),
+      currency: raw.defaultCurrency ?? 'EGP',
+      totalAmount: raw.totalAmount ?? 0,
+      paidAmount: raw.paidAmount ?? 0,
       remainingAmount: raw.remainingAmount ?? 0,
       lines: (raw.lines ?? []).map((l) => ({
-        productId:      l.productId      ?? '',
-        description:    l.description    ?? '',
-        quantity:       l.quantity       ?? 0,
-        unitPrice:      l.unitPrice      ?? 0,
-        taxAmount:      l.taxAmount      ?? 0,
+        productId: l.productId ?? '',
+        description: l.description ?? '',
+        quantity: l.quantity ?? 0,
+        unitPrice: l.unitPrice ?? 0,
+        taxAmount: l.taxAmount ?? 0,
         discountAmount: l.discountAmount ?? 0,
-        lineTotal:      l.lineTotal      ?? 0,
+        lineTotal: l.lineTotal ?? 0,
       })),
     };
   }
- 
+
   private mapStatus(raw?: InvoiceStatusRaw): InvoiceStatus {
     const map: Record<string, InvoiceStatus> = {
-      PAID:      'paid',
-      PARTIAL:   'partial',
-      SENT:      'unpaid',
-      DRAFT:     'draft',
-      OVERDUE:   'overdue',
+      PAID: 'paid',
+      PARTIAL: 'partial',
+      SENT: 'unpaid',
+      DRAFT: 'draft',
+      OVERDUE: 'overdue',
       CANCELLED: 'cancelled',
     };
     return map[(raw ?? '').toUpperCase()] ?? 'unpaid';
