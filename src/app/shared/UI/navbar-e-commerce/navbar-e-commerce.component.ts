@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,8 @@ export class NavbarECommerceComponent implements OnInit {
 
   private readonly _Router = inject(Router);
   private readonly _eCommerceService = inject(ECommerceService);
+   @Output() searchChanged = new EventEmitter<string>();
+
   cartCount = 0;
 
   ngOnInit() {
@@ -32,8 +34,8 @@ export class NavbarECommerceComponent implements OnInit {
     });
   }
 
-  navigateToShopCart() {
-    this._Router.navigate(['/cart']);
+  onSearchChange(value: string) {
+    this.searchChanged.emit(value);
   }
-
+ 
 }

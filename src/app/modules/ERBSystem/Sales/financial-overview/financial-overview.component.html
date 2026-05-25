@@ -1,0 +1,240 @@
+<div class="page-shell">
+  <!-- Sidebar -->
+  <app-sideba-sales></app-sideba-sales>
+
+  <!-- Main -->
+  <main class="page-shell__main">
+    <section class="fo" aria-label="Financial Overview">
+      <!-- ── Loading ──────────────────────────────────────────────────────── -->
+      <div class="fo__state fo__state--loading" *ngIf="loading">
+        <div class="fo__spinner"></div>
+        <p>Loading financial data...</p>
+      </div>
+
+      <!-- ── Error ────────────────────────────────────────────────────────── -->
+      <div class="fo__state fo__state--error" *ngIf="!loading && error">
+        <i class="ti ti-alert-circle" aria-hidden="true"></i>
+        <p>{{ error }}</p>
+        <button (click)="retry()">Retry</button>
+      </div>
+
+      <!-- ── Content ──────────────────────────────────────────────────────── -->
+      <ng-container *ngIf="!loading && !error">
+        <!-- Page Header -->
+        <div class="fo__header">
+          <div>
+            <h1 class="fo__title">Financial Overview</h1>
+            <p class="fo__subtitle">
+              Summary of invoices, payments and receivable accounts
+            </p>
+          </div>
+          <div>
+            <a
+              routerLink="/receivable-mangment"
+              routerLinkActive="bg-blue-700"
+              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              receivable
+            </a>
+
+            <a
+              routerLink="/paymentsmangement"
+              routerLinkActive="bg-blue-700"
+              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              Payments
+            </a>
+            <a
+              routerLink="/InvoiceManagement"
+              routerLinkActive="bg-blue-700"
+              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            >
+              Invoices
+            </a>
+          </div>
+          
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="fo__kpi-grid">
+          <div
+            class="fo__kpi"
+            *ngFor="let card of kpiCards"
+            [ngClass]="'fo__kpi--' + card.type"
+          >
+            <div class="fo__kpi-icon">
+              <i class="ti ti-{{ card.icon }}" aria-hidden="true"></i>
+            </div>
+            <div class="fo__kpi-label">{{ card.label }}</div>
+            <div class="fo__kpi-value">{{ card.value }}</div>
+            <div class="fo__kpi-sub">{{ card.sub }}</div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="fo__charts-grid">
+          <!-- Donut -->
+          <div class="fo__card">
+            <p class="fo__section-label">Invoice Distribution</p>
+            <div class="fo__legend">
+              <span class="fo__legend-item" *ngFor="let seg of donutSegments">
+                <span
+                  class="fo__legend-dot"
+                  [style.background]="seg.color"
+                ></span>
+                {{ seg.label }} {{ seg.percent }}%
+              </span>
+            </div>
+            <div class="fo__chart-wrap fo__chart-wrap--donut">
+              <canvas
+                #donutCanvas
+                role="img"
+                aria-label="Donut chart showing invoice status distribution"
+              ></canvas>
+            </div>
+            <div class="fo__progress-bar">
+              <span
+                *ngFor="let seg of donutSegments"
+                [style.width.%]="seg.percent"
+                [style.background]="seg.color"
+              ></span>
+            </div>
+          </div>
+
+          <!-- Bar -->
+          <div class="fo__card">
+            <p class="fo__section-label">Monthly Payments</p>
+            <div class="fo__chart-wrap fo__chart-wrap--bar">
+              <canvas
+                #barCanvas
+                role="img"
+                aria-label="Bar chart of monthly payment totals"
+              ></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Tables Row (Invoices + Payments) ─────────────────────────── -->
+        <div class="fo__tables-grid">
+          <!-- ── Receivable Accounts (full width) ─────────────────────────── -->
+          <div class="fo__card fo__card--table fo__receivables">
+            <p class="fo__section-label">Receivable Accounts</p>
+            <div class="fo__empty" *ngIf="receivableRows.length === 0">
+              No receivable accounts found
+            </div>
+            <table
+              *ngIf="receivableRows.length > 0"
+              aria-label="Receivable Accounts"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Customer</th>
+                  <th scope="col" class="text-right">Current Balance</th>
+                  <th scope="col" class="text-right">Opening Balance</th>
+                  <th scope="col" class="text-right">Credit Limit</th>
+                  <th scope="col" class="text-right">Accounts</th>
+                  <th scope="col" class="text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let row of receivableRows">
+                  <td class="fo__truncate" [title]="row.customerName">
+                    {{ row.customerName }}
+                  </td>
+                  <td class="text-right">{{ row.currentBalance }}</td>
+                  <td class="text-right fo__muted">{{ row.openingBalance }}</td>
+                  <td class="text-right fo__muted">{{ row.creditLimit }}</td>
+                  <td class="text-right">
+                    <span class="fo__badge fo__badge--partial">{{
+                      row.accountCount
+                    }}</span>
+                  </td>
+                  <td class="text-right">
+                    <span
+                      class="fo__badge"
+                      [ngClass]="
+                        row.isClosed
+                          ? 'fo__badge--cancelled'
+                          : 'fo__badge--paid'
+                      "
+                    >
+                      {{ row.isClosed ? "Closed" : "Active" }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Invoices -->
+          <div class="fo__card fo__card--table">
+            <p class="fo__section-label">Recent Invoices</p>
+            <div class="fo__empty" *ngIf="recentInvoices.length === 0">
+              No invoices found
+            </div>
+            <table
+              *ngIf="recentInvoices.length > 0"
+              aria-label="Recent Invoices"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Invoice #</th>
+                  <th scope="col">Customer</th>
+                  <th scope="col" class="text-right">Total</th>
+                  <th scope="col" class="text-right">Remaining</th>
+                  <th scope="col" class="text-right">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let inv of recentInvoices">
+                  <td class="fo__mono">#{{ inv.number }}</td>
+                  <td class="fo__truncate" [title]="inv.customerName">
+                    {{ inv.customerName }}
+                  </td>
+                  <td class="text-right">{{ inv.total }}</td>
+                  <td class="text-right fo__muted">{{ inv.remaining }}</td>
+                  <td class="text-right">
+                    <span class="fo__badge fo__badge--{{ inv.status }}">
+                      {{ getStatusLabel(inv.status) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Payments -->
+          <div class="fo__card fo__card--table">
+            <p class="fo__section-label">Recent Payments</p>
+            <div class="fo__empty" *ngIf="recentPayments.length === 0">
+              No payments found
+            </div>
+            <table
+              *ngIf="recentPayments.length > 0"
+              aria-label="Recent Payments"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Date</th>
+                  <th scope="col">Invoice</th>
+                  <th scope="col" class="text-right">Amount</th>
+                  <th scope="col" class="text-right">Method</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let pay of recentPayments">
+                  <td class="fo__date">{{ pay.date }}</td>
+                  <td class="fo__mono">#{{ pay.invoiceNumber }}</td>
+                  <td class="text-right">{{ pay.amount }}</td>
+                  <td class="text-right fo__muted">
+                    {{ getMethodLabel(pay.method) }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+    </section>
+  </main>
+</div>

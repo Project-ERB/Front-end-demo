@@ -94,6 +94,7 @@ export class ReceivableService {
     return this.apollo
       .query<{ receivableAccounts: ReceivableAccountsResponse }>({
         query: GET_RECEIVABLE_ACCOUNTS,
+        fetchPolicy: 'network-only',
         variables: {
           first,
           after: after || null,
@@ -108,6 +109,7 @@ export class ReceivableService {
     return this.apollo
       .query<{ customers: { nodes: CustomerRaw[] } }>({
         query: GET_CUSTOMERS,
+         fetchPolicy: 'network-only',
       })
       .pipe(
         map((result) => result.data?.customers?.nodes ?? [])

@@ -84,13 +84,15 @@ export class CartComponent implements OnInit {
   errorMessage = signal('');
   showCheckoutModal = signal(false);
   isSubmittingOrder = signal(false);
+isMobileSidebarOpen = false;
+  pendingQuantities = signal<Map<string, number>>(new Map());
+  savingItems = signal<Set<string>>(new Set());
 
-  // Payment methods للعرض في الـ modal
   paymentMethods = [
-    { label: 'Cash', value: PaymentMethod.Cash, icon: 'payments' },
-    { label: 'Card', value: PaymentMethod.Card, icon: 'credit_card' },
+    { label: 'Cash',   value: PaymentMethod.Cash,   icon: 'payments' },
+    { label: 'Card',   value: PaymentMethod.Card,   icon: 'credit_card' },
     { label: 'Wallet', value: PaymentMethod.Wallet, icon: 'account_balance_wallet' },
-    { label: 'Kiosk', value: PaymentMethod.Kiosk, icon: 'point_of_sale' },
+    { label: 'Kiosk',  value: PaymentMethod.Kiosk,  icon: 'point_of_sale' },
   ];
 
   checkoutForm: FormGroup = this._fb.group({
@@ -99,17 +101,15 @@ export class CartComponent implements OnInit {
     shippingAddress: [''],
   });
 
-  get subtotal() { return this.cart()?.subTotal ?? 0; }
-  get shippingCost() { return this.cart()?.shippingCost ?? 0; }
-  get estimatedTax() { return this.cart()?.totalTaxAmount ?? 0; }
-  get total() { return this.cart()?.grandTotal ?? 0; }
-  get totalItems() { return this.cartItems().reduce((sum, item) => sum + item.quantity, 0); }
-  get needsAddress() { return this.checkoutForm.get('shipping')?.value === true; }
+  get subtotal()    { return this.cart()?.subTotal ?? 0; }
+  get shippingCost(){ return this.cart()?.shippingCost ?? 0; }
+  get estimatedTax(){ return this.cart()?.totalTaxAmount ?? 0; }
+  get total()       { return this.cart()?.grandTotal ?? 0; }
+  get totalItems()  { return this.cartItems().reduce((sum, item) => sum + item.quantity, 0); }
+  get needsAddress(){ return this.checkoutForm.get('shipping')?.value === true; }
 
   ngOnInit() {
     this.loadCart();
-
-    // إذا اختار shipping = true يبقى الـ address مطلوب
     this.checkoutForm.get('shipping')?.valueChanges.subscribe(val => {
       const addressControl = this.checkoutForm.get('shippingAddress');
       if (val) {
@@ -121,19 +121,85 @@ export class CartComponent implements OnInit {
       addressControl?.updateValueAndValidity();
     });
   }
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
+  // ─── Helpers ────────────────────────────────────────────────────────────────
+
+  getDisplayQuantity(item: CartItem): number {
+    return this.pendingQuantities().get(item.id) ?? item.quantity;
+  }
+
+  isSaving(itemId: string): boolean {
+    return this.savingItems().has(itemId);
+  }
+
+  hasPendingChange(item: CartItem): boolean {
+    const pending = this.pendingQuantities().get(item.id);
+    return pending !== undefined && pending !== item.quantity;
+  }
+
+  onQuantityFocusOut(event: FocusEvent, item: CartItem) {
+    const wrapper = event.currentTarget as HTMLElement;
+    const newFocus = event.relatedTarget as Node | null;
+    // لو المستخدم بس اتنقل من + لـ - أو العكس، متبعتش
+    if (newFocus && wrapper.contains(newFocus)) return;
+    this.commitQuantityUpdate(item);
+  }
+
+  // ─── Quantity Logic ──────────────────────────────────────────────────────────
+
+  increaseQuantity(item: CartItem) {
+    const current = this.getDisplayQuantity(item);
+    this.pendingQuantities.update(map => new Map(map).set(item.id, current + 1));
+  }
+
+  decreaseQuantity(item: CartItem) {
+    const current = this.getDisplayQuantity(item);
+    if (current <= 1) return;
+    this.pendingQuantities.update(map => new Map(map).set(item.id, current - 1));
+  }
+
+  commitQuantityUpdate(item: CartItem) {
+    const pending = this.pendingQuantities().get(item.id);
+    if (pending === undefined || pending === item.quantity) return;
+
+    this.savingItems.update(set => new Set([...set, item.id]));
+
+    this._eCommerceService.updateQuantity(item.id, pending).subscribe({
+      next: () => {
+        this.savingItems.update(set => { const s = new Set(set); s.delete(item.id); return s; });
+        this.pendingQuantities.update(map => { const m = new Map(map); m.delete(item.id); return m; });
+        this.loadCart();
+        this._toastr.success('Quantity updated.');
+      },
+      error: () => {
+        // Rollback
+        this.savingItems.update(set => { const s = new Set(set); s.delete(item.id); return s; });
+        this.pendingQuantities.update(map => { const m = new Map(map); m.delete(item.id); return m; });
+        this._toastr.error('Failed to update quantity.');
+      }
+    });
+  }
+
+  // ─── Cart Operations ─────────────────────────────────────────────────────────
 
   loadCart() {
     this.isLoading.set(true);
     this._eCommerceService.getCart().subscribe({
       next: (res) => {
         this.cart.set(res.data.cart);
-
-        // ✅ حدّث العداد
+        const loadedIds = new Set(res.data.cart?.items?.map((i: CartItem) => i.id) ?? []);
+        this.pendingQuantities.update(map => {
+          const m = new Map(map);
+          loadedIds.forEach(id => m.delete(id as string));
+          return m;
+        });
         const total = res.data.cart?.items?.reduce(
           (sum: number, item: any) => sum + item.quantity, 0
         ) ?? 0;
         this._eCommerceService.updateCartCount(total);
-
         this.isLoading.set(false);
       },
       error: () => {
@@ -142,30 +208,13 @@ export class CartComponent implements OnInit {
       }
     });
   }
-  increaseQuantity(item: CartItem) {
-    this._eCommerceService.updateQuantity(item.id, item.quantity + 1).subscribe({
-      next: () => {
-        this.loadCart(); // ← loadCart بالفعل بتحدث الـ count جوّاها
-        this._toastr.success('Quantity updated.');
-      },
-      error: () => this._toastr.error('Failed to update quantity.')
-    });
-  }
-
-  decreaseQuantity(item: CartItem) {
-    if (item.quantity <= 1) return;
-    this._eCommerceService.updateQuantity(item.id, item.quantity - 1).subscribe({
-      next: () => {
-        this.loadCart(); // ← نفس الكلام
-        this._toastr.success('Quantity updated.');
-      },
-      error: () => this._toastr.error('Failed to update quantity.')
-    });
-  }
 
   removeItem(itemId: string) {
+    this.pendingQuantities.update(map => { const m = new Map(map); m.delete(itemId); return m; });
     this._eCommerceService.removeCartItem(itemId).subscribe({
-      next: () => { this.loadCart(); this._toastr.success('Item removed from cart.'); },
+      next: () => { 
+        this.loadCart(); 
+        this._toastr.success('Item removed from cart.'); },
       error: () => this._toastr.error('Failed to remove item from cart.')
     });
   }
@@ -175,34 +224,24 @@ export class CartComponent implements OnInit {
     this.showCheckoutModal.set(true);
   }
 
-  closeCheckoutModal() {
-    this.showCheckoutModal.set(false);
-  }
+  closeCheckoutModal() { this.showCheckoutModal.set(false); }
 
   submitOrder() {
     if (this.checkoutForm.invalid || !this.cart()) return;
-
     this.isSubmittingOrder.set(true);
-
     const payload: CreateOrderPayload = {
       cartId: this.cart()!.id,
       method: this.checkoutForm.value.method,
       shipping: this.checkoutForm.value.shipping,
       shippingAddress: this.checkoutForm.value.shippingAddress ?? '',
     };
-
     this._eCommerceService.createOrder(payload).subscribe({
       next: (res) => {
         this.isSubmittingOrder.set(false);
         this.showCheckoutModal.set(false);
         this._toastr.success('Order placed successfully!');
-
         const paymentUrl = res?.data?.value;
-        if (paymentUrl) {
-          window.location.href = paymentUrl; // نفس الـ tab
-        } else {
-          this.loadCart();
-        }
+        if (paymentUrl) { window.location.href = paymentUrl; } else { this.loadCart(); }
       },
       error: (err) => {
         this.isSubmittingOrder.set(false);

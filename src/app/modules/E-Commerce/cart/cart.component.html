@@ -6,78 +6,90 @@
   <div
     class="pointer-events-none absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
   </div>
-  <!-- Header -->
+
   <app-navbar-e-commerce></app-navbar-e-commerce>
 
   <div class="relative z-10 flex flex-1 overflow-hidden">
-    <app-e-commerce-sidebar></app-e-commerce-sidebar>
+    <div *ngIf="isMobileSidebarOpen" (click)="closeMobileSidebar()" class="mobile-sidebar-backdrop lg:hidden"></div>
+    <!-- sidebar -->
+    <app-e-commerce-sidebar [(isMobileSidebarOpen)]="isMobileSidebarOpen"></app-e-commerce-sidebar>
+    
 
-    <!-- Main Content -->
     <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+
         <!-- Shopping Cart Section -->
         <div class="lg:col-span-2">
           <h1 @fadeUp class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white mb-6 tracking-tight">
-            Shopping Cart ({{ totalItems }}
-            {{ totalItems === 1 ? "item" : "items" }})
+            Shopping Cart ({{ totalItems }} {{ totalItems === 1 ? "item" : "items" }})
           </h1>
 
-          <!-- Cart Items -->
           <div class="space-y-4" [@cartStagger]="cartItems().length">
-            <!-- Loading State -->
+
             @if (isLoading()) {
             <div class="flex justify-center items-center py-20">
               <span class="material-symbols-outlined animate-spin text-4xl text-blue-500">progress_activity</span>
             </div>
             }
 
-            <!-- Error State -->
             @if (errorMessage()) {
             <p class="text-center text-red-500 py-10">{{ errorMessage() }}</p>
             }
 
-            <!-- Cart Items — غيّر الـ @for الموجود -->
             @for (item of cartItems(); track item.id) {
             <div
               class="cart-row flex flex-col gap-4 p-4 sm:p-5 border border-gray-200/70 dark:border-gray-700/70 rounded-2xl bg-white/90 dark:bg-background-dark/70 backdrop-blur-sm shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
 
-              <!-- Product Image -->
-              <div
-                class="w-full sm:w-32 h-40 sm:h-32 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+              <div class="w-full sm:w-32 h-40 sm:h-32 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
                 <img [src]="item.productImageUrl" [alt]="item.productName" class="w-full h-full object-cover" />
               </div>
 
-              <!-- Product Details -->
               <div class="flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-1">
-                    {{ item.productName }}
-                  </h3>
+                  <h3 class="font-semibold text-lg text-gray-900 dark:text-white mb-1">{{ item.productName }}</h3>
                   <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">SKU: {{ item.sku }}</p>
                   <div class="flex items-center gap-1">
                     <ng-container *ngFor="let star of [1,2,3,4,5]; let i = index">
                       <span class="material-symbols-outlined"
-                        [ngClass]="i < item.taxRate ? 'text-yellow-400' : 'text-gray-300'">
-                        star
-                      </span>
+                        [ngClass]="i < item.taxRate ? 'text-yellow-400' : 'text-gray-300'">star</span>
                     </ng-container>
-
-                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
-                      {{ item.taxRate }}
-                    </span>
+                    <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">{{ item.taxRate }}</span>
                   </div>
                 </div>
 
-                <!-- Quantity and Remove -->
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mt-4">
-                  <div class="flex items-center gap-2 sm:gap-3">
-                    <button (click)="decreaseQuantity(item)"
-                      class="w-9 h-9 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer transition-transform hover:scale-105">
+
+                  <!-- ✅ الـ focusout اتنقل للـ TS عشان نتجنب الـ casting error -->
+                  <div class="flex items-center gap-2 sm:gap-3"
+                    (focusout)="onQuantityFocusOut($event, item)">
+
+                    <!-- زر - -->
+                    <button
+                      [disabled]="getDisplayQuantity(item) <= 1 || isSaving(item.id)"
+                      (click)="decreaseQuantity(item)"
+                      class="w-9 h-9 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed">
                       <span class="material-symbols-outlined text-base">remove</span>
                     </button>
-                    <span class="w-12 text-center font-medium text-gray-900 dark:text-white">{{ item.quantity }}</span>
-                    <button (click)="increaseQuantity(item)"
-                      class="w-9 h-9 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer transition-transform hover:scale-105">
+
+                    <!-- العداد -->
+                    <div class="w-12 flex flex-col items-center gap-0.5">
+                      <span class="font-medium text-gray-900 dark:text-white text-center leading-none">
+                        {{ getDisplayQuantity(item) }}
+                      </span>
+                      @if (isSaving(item.id)) {
+                        <span class="material-symbols-outlined animate-spin text-[10px] text-blue-400 leading-none">
+                          progress_activity
+                        </span>
+                      } @else if (hasPendingChange(item)) {
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                      }
+                    </div>
+
+                    <!-- زر + -->
+                    <button
+                      [disabled]="isSaving(item.id)"
+                      (click)="increaseQuantity(item)"
+                      class="w-9 h-9 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center cursor-pointer transition-transform hover:scale-105 disabled:opacity-40 disabled:cursor-not-allowed">
                       <span class="material-symbols-outlined text-base">add</span>
                     </button>
                   </div>
@@ -90,92 +102,55 @@
                 </div>
               </div>
 
-              <!-- Price -->
               <div class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start sm:ml-2">
-                <p class="text-xl font-black text-gray-900 dark:text-white">
-                  ${{ item.totalPrice.toFixed(2) }}
-                </p>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0 sm:mt-1">
-                  ${{ item.unitPrice.toFixed(2) }} each
-                </p>
+                <p class="text-xl font-black text-gray-900 dark:text-white">${{ item.totalPrice.toFixed(2) }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-0 sm:mt-1">${{ item.unitPrice.toFixed(2) }} each</p>
               </div>
             </div>
             }
           </div>
 
-          <!-- Empty Cart Message -->
           @if(cartItems().length === 0){
           <div class="text-center py-12">
             <span class="material-symbols-outlined text-6xl text-gray-300 dark:text-gray-600 mb-4">shopping_cart</span>
-            <p class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">
-              Your cart is empty
-            </p>
+            <p class="text-xl font-semibold text-gray-600 dark:text-gray-400 mb-2">Your cart is empty</p>
             <a routerLink="/home" class="text-blue-600 dark:text-blue-400 hover:underline">Continue Shopping</a>
           </div>
           }
         </div>
 
-        <!-- Order Summary Section -->
+        <!-- Order Summary -->
         <div class="lg:col-span-1">
           <div class="sticky top-6 sm:top-8" @fadeUp>
-            <div
-              class="border border-gray-200/70 dark:border-gray-700 rounded-2xl p-5 sm:p-6 bg-white/90 dark:bg-background-dark/75 backdrop-blur-sm shadow-sm">
-              <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                Order Summary
-              </h2>
-
-              <!-- Price Breakdown -->
+            <div class="border border-gray-200/70 dark:border-gray-700 rounded-2xl p-5 sm:p-6 bg-white/90 dark:bg-background-dark/75 backdrop-blur-sm shadow-sm">
+              <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Order Summary</h2>
               <div class="space-y-3 mb-6">
                 <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                  <span>Subtotal</span>
-                  <span>${{ subtotal.toFixed(2) }}</span>
+                  <span>Subtotal</span><span>${{ subtotal.toFixed(2) }}</span>
                 </div>
                 <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                  <span>Shipping</span>
-                  <span>${{ shippingCost.toFixed(2) }}</span>
+                  <span>Shipping</span><span>${{ shippingCost.toFixed(2) }}</span>
                 </div>
                 <div class="flex justify-between text-gray-700 dark:text-gray-300">
-                  <span>Estimated Tax</span>
-                  <span>${{ estimatedTax.toFixed(2) }}</span>
+                  <span>Estimated Tax</span><span>${{ estimatedTax.toFixed(2) }}</span>
                 </div>
               </div>
-
-              <!-- Total -->
               <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mb-6">
                 <div class="flex justify-between items-center">
                   <span class="text-lg font-bold text-gray-900 dark:text-white">Total</span>
                   <span class="text-2xl font-bold text-gray-900 dark:text-white">${{ total.toFixed(2) }}</span>
                 </div>
               </div>
-
-              <!-- Promo Code -->
-              <!-- <div class="mb-6">
-              <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Promo Code</label>
-              <div class="flex gap-2">
-                <input type="text" [(ngModel)]="promoCode" placeholder="Enter code"
-                  class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                <button (click)="applyPromoCode()"
-                  class="px-4 py-2 bg-gray-200 dark:bg-gray-700 cursor-pointer text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 font-medium">
-                  Apply
-                </button>
-              </div>
-            </div> -->
-
-              <!-- Checkout Button -->
               <button (click)="proceedToCheckout()"
                 class="w-full py-3 bg-gradient-to-r from-main to-indigo-500 hover:from-hover-main hover:to-indigo-600 text-white font-semibold cursor-pointer rounded-xl flex items-center justify-center gap-2 mb-4 transition-all duration-300 hover:shadow-lg hover:shadow-main/30 hover:-translate-y-0.5">
                 <span class="material-symbols-outlined">lock</span>
                 Proceed to Checkout
               </button>
-
-              <!-- OR Divider -->
               <div class="flex items-center gap-4 mb-4">
                 <div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
                 <span class="text-sm text-gray-500 dark:text-gray-400">OR</span>
                 <div class="flex-1 border-t border-gray-300 dark:border-gray-600"></div>
               </div>
-
-              <!-- Express Checkout -->
               <button (click)="expressCheckout()"
                 class="w-full py-3 bg-black dark:bg-gray-800 hover:bg-gray-900 dark:hover:bg-gray-700 cursor-pointer text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:-translate-y-0.5">
                 <span class="font-bold">XP</span>
@@ -185,88 +160,58 @@
         </div>
       </div>
     </main>
-
   </div>
 
-  <!-- Footer -->
   <footer class="border-t border-gray-200 dark:border-gray-700 mt-16 py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p class="text-sm text-gray-600 dark:text-gray-400">
-          © 2024 E-Commerce ERP. All Rights Reserved.
-        </p>
+        <p class="text-sm text-gray-600 dark:text-gray-400">© 2024 E-Commerce ERP. All Rights Reserved.</p>
         <div class="flex gap-6">
-          <a href="#"
-            class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Help</a>
-          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Returns
-            Policy</a>
-          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Contact
-            Us</a>
+          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Help</a>
+          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Returns Policy</a>
+          <a href="#" class="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">Contact Us</a>
         </div>
       </div>
     </div>
   </footer>
 
-
-  <!-- ===== Checkout Modal ===== -->
+  <!-- Checkout Modal -->
   @if (showCheckoutModal()) {
   <div class="fixed inset-0 z-50 flex items-center justify-center p-4" (click)="closeCheckoutModal()">
-
-    <!-- Backdrop -->
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
-
-    <!-- Modal Card -->
     <div @modalPop
       class="relative z-10 w-full max-w-md bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden"
       (click)="$event.stopPropagation()">
-
-      <!-- Header -->
       <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-blue-600">shopping_bag</span>
           <h2 class="text-lg font-bold text-gray-900 dark:text-white">Confirm Your Order</h2>
         </div>
-        <button (click)="closeCheckoutModal()"
-          class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">
+        <button (click)="closeCheckoutModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
-
-      <!-- Body -->
       <div class="px-6 py-5" [formGroup]="checkoutForm">
-
-        <!-- Order Summary mini -->
         <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-5 space-y-2 text-sm">
-          <div class="flex justify-between text-gray-600 dark:text-gray-300">
-            <span>Subtotal</span><span>${{ subtotal.toFixed(2) }}</span>
-          </div>
-          <div class="flex justify-between text-gray-600 dark:text-gray-300">
-            <span>Shipping</span><span>${{ shippingCost.toFixed(2) }}</span>
-          </div>
-          <div class="flex justify-between text-gray-600 dark:text-gray-300">
-            <span>Tax</span><span>${{ estimatedTax.toFixed(2) }}</span>
-          </div>
-          <div
-            class="flex justify-between font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2 mt-1">
+          <div class="flex justify-between text-gray-600 dark:text-gray-300"><span>Subtotal</span><span>${{ subtotal.toFixed(2) }}</span></div>
+          <div class="flex justify-between text-gray-600 dark:text-gray-300"><span>Shipping</span><span>${{ shippingCost.toFixed(2) }}</span></div>
+          <div class="flex justify-between text-gray-600 dark:text-gray-300"><span>Tax</span><span>${{ estimatedTax.toFixed(2) }}</span></div>
+          <div class="flex justify-between font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2 mt-1">
             <span>Total</span><span>${{ total.toFixed(2) }}</span>
           </div>
         </div>
-
-        <!-- Payment Method -->
         <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Payment Method</p>
         <div class="grid grid-cols-2 gap-3 mb-5">
           @for (pm of paymentMethods; track pm.value) {
           <button type="button" (click)="checkoutForm.get('method')?.setValue(pm.value)"
             [class]="checkoutForm.get('method')?.value === pm.value
-            ? 'flex items-center gap-2 p-3 rounded-xl border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold cursor-pointer transition-all'
-            : 'flex items-center gap-2 p-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:border-blue-300 cursor-pointer transition-all'">
+              ? 'flex items-center gap-2 p-3 rounded-xl border-2 border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-semibold cursor-pointer transition-all'
+              : 'flex items-center gap-2 p-3 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:border-blue-300 cursor-pointer transition-all'">
             <span class="material-symbols-outlined text-xl">{{ pm.icon }}</span>
             <span class="text-sm">{{ pm.label }}</span>
           </button>
           }
         </div>
-
-        <!-- Shipping Toggle -->
         <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl mb-4">
           <div class="flex items-center gap-2">
             <span class="material-symbols-outlined text-gray-500">local_shipping</span>
@@ -274,33 +219,25 @@
           </div>
           <button type="button" (click)="checkoutForm.get('shipping')?.setValue(!checkoutForm.get('shipping')?.value)"
             [class]="checkoutForm.get('shipping')?.value
-            ? 'w-11 h-6 rounded-full bg-blue-600 relative transition-colors cursor-pointer'
-            : 'w-11 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors cursor-pointer'">
+              ? 'w-11 h-6 rounded-full bg-blue-600 relative transition-colors cursor-pointer'
+              : 'w-11 h-6 rounded-full bg-gray-300 dark:bg-gray-600 relative transition-colors cursor-pointer'">
             <span [class]="checkoutForm.get('shipping')?.value
-            ? 'absolute top-1 left-5 w-4 h-4 bg-white rounded-full shadow transition-all'
-            : 'absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-all'"></span>
+              ? 'absolute top-1 left-5 w-4 h-4 bg-white rounded-full shadow transition-all'
+              : 'absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow transition-all'"></span>
           </button>
         </div>
-
-        <!-- Shipping Address -->
         @if (needsAddress) {
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Shipping Address
-          </label>
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Shipping Address</label>
           <textarea formControlName="shippingAddress" rows="2" placeholder="Enter your shipping address..."
             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none text-sm">
-        </textarea>
+          </textarea>
         </div>
         }
-
-        <!-- Error if method not selected -->
         @if (checkoutForm.get('method')?.invalid && checkoutForm.touched) {
         <p class="text-xs text-red-500 mb-3">Please select a payment method.</p>
         }
       </div>
-
-      <!-- Footer -->
       <div class="px-6 pb-5 flex gap-3">
         <button (click)="closeCheckoutModal()"
           class="flex-1 py-3 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors">

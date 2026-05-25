@@ -60,13 +60,11 @@ export class ProductService {
           }
         }
       }
-    }`
+    }`,
     };
-    return this._HttpClient.post<any>(
-      `${Environment.baseUrl}/graphql`,
-      body,
-      { headers }
-    );
+    return this._HttpClient.post<any>(`${Environment.baseUrl}/graphql`, body, {
+      headers,
+    });
   }
 
   // getCategories(): Observable<any> {
@@ -99,7 +97,7 @@ export class ProductService {
       'Content-Type': 'application/json',
       Accept: 'application/json',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
-      'Pragma': 'no-cache',
+      Pragma: 'no-cache',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
     const body = {
@@ -142,7 +140,7 @@ export class ProductService {
     return this._HttpClient.post<any>(
       `${Environment.baseUrl}/graphql?t=${Date.now()}`,
       body,
-      { headers }
+      { headers },
     );
   }
 
@@ -154,7 +152,7 @@ export class ProductService {
     return this._HttpClient.post<any>(
       `${Environment.baseUrl}/api/products/AddProduct`,
       data,
-      { headers }
+      { headers },
     );
   }
 
@@ -163,7 +161,11 @@ export class ProductService {
     const headers = new HttpHeaders({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-    return this._HttpClient.put(`${Environment.baseUrl}/api/products/update/${id}`, data, { headers });
+    return this._HttpClient.put(
+      `${Environment.baseUrl}/api/products/update/${id}`,
+      data,
+      { headers },
+    );
   }
 
   // ✅ Delete a single product by ID
@@ -172,7 +174,10 @@ export class ProductService {
     const headers = new HttpHeaders({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-    return this._HttpClient.delete(`${Environment.baseUrl}/api/products/${id}`, { headers });
+    return this._HttpClient.delete(
+      `${Environment.baseUrl}/api/products/${id}`,
+      { headers },
+    );
   }
 
   // ✅ Delete ALL products
@@ -181,6 +186,10 @@ export class ProductService {
     const headers = new HttpHeaders({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
-    return this._HttpClient.delete(`${Environment.baseUrl}/api/products`, { headers });
+    return this._HttpClient.delete(`${Environment.baseUrl}/api/products`, {
+      headers,
+    });
   }
+
+ 
 }

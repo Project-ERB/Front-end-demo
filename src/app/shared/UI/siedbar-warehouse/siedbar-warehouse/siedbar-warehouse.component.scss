@@ -1,0 +1,224 @@
+// @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Geist+Mono:wght@400;500&display=swap');
+
+// // ── Tokens (نفس الـ dashboard) ────────────────────────────────
+// :host {
+//   --f-display : 'Bricolage Grotesque', sans-serif;
+//   --f-mono    : 'Geist Mono', monospace;
+
+//   --teal      : #63dcdb;
+//   --teal-dim  : rgba(99, 220, 219, 0.10);
+//   --teal-glow : rgba(99, 220, 219, 0.28);
+//   --teal-soft : rgba(99, 220, 219, 0.05);
+//   --glass-border : rgba(255, 255, 255, 0.07);
+//   --t-1  : #e8f0f0;
+//   --t-2  : rgba(232, 240, 240, 0.45);
+//   --t-3  : rgba(232, 240, 240, 0.22);
+//   --danger: #f87171;
+
+//   display: block;
+// }
+
+// // ── Aside shell ───────────────────────────────────────────────
+// aside {
+//   background:
+//     linear-gradient(180deg,
+//       rgba(6, 14, 28, 0.97) 0%,
+//       rgba(4, 10, 22, 0.99) 100%
+//     ) !important;
+
+//   border-right: 1px solid var(--glass-border) !important;
+//   backdrop-filter: blur(24px) saturate(160%);
+//   position: relative;
+//   overflow: hidden;
+
+//   // Subtle teal glow at the top-left corner
+//   &::before {
+//     content: '';
+//     position: absolute;
+//     top: -60px;
+//     left: -40px;
+//     width: 220px;
+//     height: 220px;
+//     border-radius: 50%;
+//     background: radial-gradient(circle, rgba(99,220,219,0.08) 0%, transparent 70%);
+//     pointer-events: none;
+//     animation: sideGlow 6s ease-in-out infinite alternate;
+//   }
+
+//   // Thin teal line on the right edge (active indicator feel)
+//   &::after {
+//     content: '';
+//     position: absolute;
+//     top: 0; right: 0;
+//     width: 1px;
+//     height: 100%;
+//     background: linear-gradient(
+//       180deg,
+//       transparent 0%,
+//       rgba(99,220,219,0.35) 30%,
+//       rgba(99,220,219,0.35) 70%,
+//       transparent 100%
+//     );
+//     pointer-events: none;
+//   }
+// }
+
+// @keyframes sideGlow {
+//   from { opacity: 0.6; transform: scale(1); }
+//   to   { opacity: 1;   transform: scale(1.15); }
+// }
+
+// // ── Logo area ─────────────────────────────────────────────────
+// .flex.h-16.items-center {
+//   border-bottom: 1px solid var(--glass-border) !important;
+//   background: rgba(255,255,255,0.018);
+//   padding: 0 20px;
+
+//   // Logo icon box
+//   .flex.size-8.items-center.justify-center.rounded-lg {
+//     background: linear-gradient(135deg, #0e2a5e, #1a4a9e) !important;
+//     border: 1px solid rgba(99,220,219,0.2);
+//     box-shadow: 0 0 14px rgba(99,220,219,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+//     transition: box-shadow 0.3s ease;
+
+//     .material-symbols-outlined {
+//       color: var(--teal) !important;
+//       font-size: 18px !important;
+//     }
+//   }
+
+//   // App name
+//   span.text-lg.font-bold {
+//     font-family: var(--f-display) !important;
+//     font-weight: 800;
+//     font-size: 0.95rem !important;
+//     letter-spacing: -0.04em;
+//     color: var(--t-1) !important;
+//   }
+// }
+
+// // ── Section label ─────────────────────────────────────────────
+// p.text-xs.font-semibold.uppercase {
+//   font-family: var(--f-mono) !important;
+//   font-size: 0.58rem !important;
+//   letter-spacing: 0.18em;
+//   color: var(--teal) !important;
+//   opacity: 0.5;
+//   padding-top: 20px !important;
+//   padding-bottom: 8px !important;
+// }
+
+// // ── Nav links ─────────────────────────────────────────────────
+// nav a {
+//   font-family: var(--f-display) !important;
+//   font-size: 0.8rem !important;
+//   font-weight: 500;
+//   color: var(--t-2) !important;
+//   border-radius: 8px !important;
+//   padding: 8px 12px !important;
+//   gap: 10px;
+//   transition: all 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+//   position: relative;
+//   overflow: hidden;
+
+//   // hover sweep
+//   &::before {
+//     content: '';
+//     position: absolute;
+//     inset: 0;
+//     background: linear-gradient(90deg, var(--teal-dim), transparent);
+//     opacity: 0;
+//     border-radius: 8px;
+//     transition: opacity 0.18s ease;
+//   }
+
+//   .material-symbols-outlined {
+//     color: var(--t-3) !important;
+//     font-size: 18px !important;
+//     transition: color 0.18s ease, transform 0.18s ease;
+//   }
+
+//   // hover state
+//   &:hover {
+//     background: var(--teal-soft) !important;
+//     color: var(--t-1) !important;
+
+//     &::before { opacity: 1; }
+
+//     .material-symbols-outlined {
+//       color: var(--teal) !important;
+//       transform: translateX(2px);
+//     }
+//   }
+
+//   // active (routerLinkActive)
+// //   &.bg-\[#1e3b8a\]\/10 {
+// //     background: var(--teal-dim) !important;
+// //     color: var(--teal) !important;
+// //     box-shadow: inset 3px 0 0 var(--teal), 0 0 16px rgba(99,220,219,0.07);
+
+// //     &::before { opacity: 1; }
+
+// //     .material-symbols-outlined {
+// //       color: var(--teal) !important;
+// //       text-shadow: 0 0 10px var(--teal-glow);
+// //     }
+// //   }
+// }
+
+// // ── Divider before logout ─────────────────────────────────────
+// .border-t.border-slate-100 {
+//   border-top-color: var(--glass-border) !important;
+//   padding: 12px 0 0 !important;
+//   margin-top: auto;
+// }
+
+// // ── Logout button ─────────────────────────────────────────────
+// button {
+//   font-family: var(--f-display) !important;
+//   font-size: 0.78rem !important;
+//   font-weight: 500;
+//   color: rgba(248, 113, 113, 0.65) !important;
+//   border-radius: 8px !important;
+//   transition: all 0.18s ease !important;
+
+//   .material-symbols-outlined {
+//     color: rgba(248, 113, 113, 0.55) !important;
+//     font-size: 18px !important;
+//     transition: all 0.18s ease;
+//   }
+
+//   &:hover {
+//     background: rgba(248, 113, 113, 0.08) !important;
+//     color: var(--danger) !important;
+//     box-shadow: inset 3px 0 0 var(--danger);
+
+//     .material-symbols-outlined {
+//       color: var(--danger) !important;
+//       transform: translateX(2px);
+//     }
+//   }
+// }
+
+// // ── Scrollbar ─────────────────────────────────────────────────
+// .overflow-y-auto {
+//   scrollbar-width: thin;
+//   scrollbar-color: rgba(99,220,219,0.15) transparent;
+
+//   &::-webkit-scrollbar       { width: 3px; }
+//   &::-webkit-scrollbar-thumb { background: rgba(99,220,219,0.15); border-radius: 99px; }
+// }
+
+// // ── Staggered nav link entrance ───────────────────────────────
+// nav a {
+//   animation: linkIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+//   @for $i from 1 through 8 {
+//     &:nth-child(#{$i}) { animation-delay: #{0.05 + ($i * 0.06)}s; }
+//   }
+// }
+
+// @keyframes linkIn {
+//   from { opacity: 0; transform: translateX(-10px); }
+//   to   { opacity: 1; transform: translateX(0); }
+// }

@@ -355,9 +355,25 @@ export const routes: Routes = [
         loadComponent: () => import('./modules/ERBSystem/Sales/orders/orders.component').then((O) => O.OrdersComponent),
       },
       {
+        path: 'FinancialOverview',
+        loadComponent: () => import('./modules/ERBSystem/Sales/financial-overview/financial-overview.component').then((F) => F.FinancialOverviewComponent)
+        ,title: 'FinancialOverview',
+      },
+      {
         path: 'receivable-mangment',
         loadComponent: () => import('./modules/ERBSystem/Sales/receivable-managment/receivable-managment.component').then((R) => R.ReceivableManagmentComponent)
       },
+        {
+        path: 'paymentsmangement',
+        loadComponent: () => import('./modules/ERBSystem/Sales/paymentmanagment/paymentmanagment.component').then((F) => F.PaymentmanagmentComponent)
+        ,title: 'paymentsmangement',
+      },
+        {
+        path: 'InvoiceManagement',
+        loadComponent: () => import('./modules/ERBSystem/Sales/invoicemanagment/invoicemanagment.component').then((F) => F.InvoicemanagmentComponent)
+        ,title: 'InvoiceManagement',
+      },
+      
       {
         path: 'warehouse-dashboard',
         loadComponent: () => import('./modules/ERBSystem/HR/warehouse-dashboard/warehouse-dashboard.component').then((W) => W.WarehouseDashboardComponent),

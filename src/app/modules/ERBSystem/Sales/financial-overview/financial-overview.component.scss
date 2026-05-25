@@ -1,0 +1,511 @@
+// ─── Page Shell (sidebar + content) ──────────────────────────────────────────
+// الـ sidebar عنده w-64 (256px) من Tailwind — الـ main بيأخذ باقي المساحة
+
+.page-shell {
+  display: flex;
+  min-height: 100vh;
+
+  &__main {
+    flex: 1;
+    min-width: 0; // يمنع overflow في الـ flex
+    overflow-y: auto;
+  }
+}
+
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+
+$radius-md: 8px;
+$radius-lg: 12px;
+
+$text-primary: #1a1a18;
+$text-secondary: #5f5e5a;
+$text-tertiary: #888780;
+
+$border: rgba(0, 0, 0, 0.09);
+
+$bg-page: #f9f9f7;
+$bg-card: #ffffff;
+$bg-kpi: #f4f4f1;
+
+// status palette
+$colors: (
+  success: (
+    #eaf3de,
+    #3b6d11,
+  ),
+  warning: (
+    #faeeda,
+    #854f0b,
+  ),
+  danger: (
+    #fcebeb,
+    #a32d2d,
+  ),
+  partial: (
+    #e6f1fb,
+    #185fa5,
+  ),
+  draft: (
+    #f1efe8,
+    #5f5e5a,
+  ),
+  cancelled: (
+    #f1efe8,
+    #5f5e5a,
+  ),
+);
+
+// ─── Root ─────────────────────────────────────────────────────────────────────
+
+.fo {
+  display: block;
+  padding: 1.5rem;
+  background: $bg-page;
+  direction: rtl;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  // ── Page Header ───────────────────────────────────────────────────────────
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 0.5px solid $border;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 4px;
+  }
+
+  &__subtitle {
+    font-size: 13px;
+    color: $text-tertiary;
+    margin: 0;
+  }
+
+  // ── State (loading / error) ──────────────────────────────────────────────
+
+  &__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 260px;
+    color: $text-secondary;
+    font-size: 14px;
+
+    button {
+      margin-top: 4px;
+      padding: 8px 20px;
+      border: 0.5px solid $border;
+      border-radius: $radius-md;
+      background: $bg-card;
+      color: $text-primary;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s;
+
+      &:hover {
+        background: darken($bg-card, 4%);
+      }
+    }
+
+    &--error i {
+      font-size: 28px;
+      color: #a32d2d;
+    }
+  }
+
+  // spinner
+  &__spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(0, 0, 0, 0.08);
+    border-top-color: #185fa5;
+    border-radius: 50%;
+    animation: fo-spin 0.7s linear infinite;
+  }
+
+  // ── KPI Grid ──────────────────────────────────────────────────────────────
+
+  &__kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 14px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 500px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__kpi {
+    background: $bg-kpi;
+    border-radius: $radius-md;
+    padding: 1rem 1.25rem;
+    transition:
+      transform 0.15s,
+      box-shadow 0.15s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+    }
+
+    // modifiers
+    &--success &-value {
+      color: #3b6d11;
+    }
+    &--warning &-value {
+      color: #854f0b;
+    }
+    &--danger &-value {
+      color: #a32d2d;
+    }
+  }
+
+  &__kpi-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: $radius-md;
+    background: rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+
+    i {
+      font-size: 18px;
+      color: $text-secondary;
+    }
+  }
+
+  &__kpi-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: $text-secondary;
+    margin-bottom: 6px;
+
+    i {
+      font-size: 15px;
+      opacity: 0.7;
+    }
+  }
+
+  &__kpi-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: $text-primary;
+    letter-spacing: -0.5px;
+  }
+
+  &__kpi-sub {
+    font-size: 11px;
+    color: $text-tertiary;
+    margin-top: 4px;
+  }
+
+  // ── Shared Card ───────────────────────────────────────────────────────────
+
+  &__card {
+    background: $bg-card;
+    border: 0.5px solid $border;
+    border-radius: $radius-lg;
+    padding: 1rem 1.25rem;
+
+    &--table {
+      overflow-x: auto;
+    }
+  }
+
+  // ── Section Label ─────────────────────────────────────────────────────────
+
+  &__section-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: $text-tertiary;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+
+  // ── Charts Grid ───────────────────────────────────────────────────────────
+
+  &__charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.8fr;
+    gap: 12px;
+    margin-bottom: 12px;
+
+    @media (max-width: 800px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__chart-wrap {
+    position: relative;
+    width: 100%;
+
+    &--donut {
+      height: 185px;
+    }
+    &--bar {
+      height: 215px;
+    }
+  }
+
+  // ── Legend ────────────────────────────────────────────────────────────────
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  &__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    color: $text-secondary;
+  }
+
+  &__legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  // ── Progress Bar ──────────────────────────────────────────────────────────
+
+  &__progress-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 14px;
+    gap: 2px;
+
+    span {
+      border-radius: 4px;
+      transition: width 0.4s ease;
+    }
+  }
+
+  // ── Tables Grid ───────────────────────────────────────────────────────────
+
+  &__tables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // ── Table ─────────────────────────────────────────────────────────────────
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+  }
+
+  th {
+    text-align: right;
+    font-size: 11px;
+    font-weight: 500;
+    color: $text-tertiary;
+    border-bottom: 0.5px solid $border;
+    padding: 0 8px 8px;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 9px 8px;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.05);
+    color: $text-primary;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  &__mono {
+    font-family: monospace;
+    font-size: 12px;
+    color: $text-secondary;
+  }
+  &__muted {
+    color: $text-tertiary;
+  }
+  &__truncate {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &__date {
+    font-size: 12px;
+    color: $text-secondary;
+  }
+
+  &__empty {
+    font-size: 13px;
+    color: $text-tertiary;
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  // ── Badges ────────────────────────────────────────────────────────────────
+
+  &__badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: $radius-md;
+    white-space: nowrap;
+
+    &--paid {
+      background: #eaf3de;
+      color: #3b6d11;
+    }
+    &--partial {
+      background: #e6f1fb;
+      color: #185fa5;
+    }
+    &--unpaid {
+      background: #faeeda;
+      color: #854f0b;
+    }
+    &--overdue {
+      background: #fcebeb;
+      color: #a32d2d;
+    }
+    &--draft {
+      background: #f1efe8;
+      color: #5f5e5a;
+    }
+    &--cancelled {
+      background: #f1efe8;
+      color: #5f5e5a;
+    }
+  }
+}
+
+// ─── Spinner animation ────────────────────────────────────────────────────────
+
+@keyframes fo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// ─── Dark Mode ────────────────────────────────────────────────────────────────
+
+@media (prefers-color-scheme: dark) {
+  .fo {
+    background: #1c1c1a;
+
+    &__kpi {
+      background: #2a2a28;
+    }
+    &__card {
+      background: #242422;
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+    &__spinner {
+      border-color: rgba(255, 255, 255, 0.1);
+      border-top-color: #378add;
+    }
+
+    &__kpi-value,
+    td {
+      color: #e8e8e4;
+    }
+
+    &__kpi-label,
+    th {
+      color: #888780;
+    }
+
+    &__kpi-sub,
+    &__section-label {
+      color: #666663;
+    }
+
+    &__mono,
+    &__date {
+      color: #888780;
+    }
+    &__muted {
+      color: #666663;
+    }
+
+    td {
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+    th {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    &__badge {
+      &--paid {
+        background: #1e3a0d;
+        color: #97c459;
+      }
+      &--partial {
+        background: #0c2d52;
+        color: #85b7eb;
+      }
+      &--unpaid {
+        background: #3d2800;
+        color: #ef9f27;
+      }
+      &--overdue {
+        background: #3d0f0f;
+        color: #f09595;
+      }
+      &--draft,
+      &--cancelled {
+        background: #2a2a28;
+        color: #888780;
+      }
+    }
+
+    &__kpi--success .fo__kpi-value {
+      color: #97c459;
+    }
+    &__kpi--warning .fo__kpi-value {
+      color: #ef9f27;
+    }
+    &__kpi--danger .fo__kpi-value {
+      color: #f09595;
+    }
+    &__receivables {
+      margin-bottom: 12px;
+    }
+  }
+}
