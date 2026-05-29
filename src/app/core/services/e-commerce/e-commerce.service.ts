@@ -128,5 +128,99 @@ export class ECommerceService {
     );
   }
 
+  getReceivableAccounts(): Observable<any> {
+    return this._HttpClient.post<any>(
+      `${Environment.baseUrl}/graphql`,
+      {
+        query: `
+      query {
+        myReceivableAccounts {
+          nodes {
+            customerId
+            currency
+            openingBalance
+            creditLimit
+            isClosed
+            currentBalance
+            transactions {
+              amount
+              type
+              date
+              reference
+              notes
+            }
+          }
+        }
+      }
+    `
+      }
+    );
+  }
+
+  getMyInvoices(): Observable<any> {
+    return this._HttpClient.post<any>(
+      `${Environment.baseUrl}/graphql`,
+      {
+        query: `
+      query {
+        myInvoices {
+          nodes {
+            totalAmount
+            paidAmount
+            remainingAmount
+            lines {
+              productId
+              description
+              quantity
+              unitPrice
+              taxAmount
+              discountAmount
+              lineTotal
+            }
+            invoiceNumber
+            invoiceDate
+            status
+            defaultCurrency
+            subtotal
+            totalTax
+            totalDiscount
+          }
+        }
+      }
+    `
+      }
+    );
+  }
+
+  getMyPayments(): Observable<any> {
+    return this._HttpClient.post<any>(
+      `${Environment.baseUrl}/graphql`,
+      {
+        query: `
+        query {
+          myPayments {
+            nodes {
+            id
+            invoiceId
+            currency
+            invoiceTotalAmount
+            totalPaid
+            remainingAmount
+            transactions {
+              amount
+              type
+              transactionDate
+              relatedTransactionId
+              method
+            }
+            }
+          }
+        }
+      `
+      }
+    );
+  }
+
 }
+
 

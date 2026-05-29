@@ -10,7 +10,7 @@ import { CategoriesService } from '../../../core/services/categories/categories.
 import { ECommerceSidebarComponent } from "../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component";
 
 type SortField = 'name' | 'price' | null;
-type SortDir   = 'asc' | 'desc';
+type SortDir = 'asc' | 'desc';
 
 @Component({
   selector: 'app-home',
@@ -44,29 +44,29 @@ type SortDir   = 'asc' | 'desc';
   ],
 })
 export class HomeComponent implements OnInit {
-  private readonly productService    = inject(ProductService);
+  private readonly productService = inject(ProductService);
   private readonly _ECommerceService = inject(ECommerceService);
   private readonly _CategoriesService = inject(CategoriesService);
-  private readonly _ToastrService    = inject(ToastrService);
-  private readonly _Router           = inject(Router);
+  private readonly _ToastrService = inject(ToastrService);
+  private readonly _Router = inject(Router);
 
-  products: any[]    = [];
+  products: any[] = [];
   allProducts: any[] = [];
-  categories: any[]  = [];
+  categories: any[] = [];
 
-  selectedCategoryId:  string | null = null;
-  expandedCategoryId:  string | null = null;
+  selectedCategoryId: string | null = null;
+  expandedCategoryId: string | null = null;
   isCategoriesLoading = true;
-  isLoading           = false;
-  errorMessage        = '';
-  addingToCartSku:    string | null = null;
-  cartSuccessMessage  = '';
+  isLoading = false;
+  errorMessage = '';
+  addingToCartSku: string | null = null;
+  cartSuccessMessage = '';
   isMobileSidebarOpen = false;
-  searchTerm          = '';
+  searchTerm = '';
 
   // ── Sort state ────────────────────────────────────────────
   sortField: SortField = null;
-  sortDir:   SortDir   = 'asc';
+  sortDir: SortDir = 'asc';
 
   // ── Filter dropdown state ─────────────────────────────────
   isFilterOpen = false;
@@ -97,7 +97,7 @@ export class HomeComponent implements OnInit {
       this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortField = field;
-      this.sortDir   = 'asc';
+      this.sortDir = 'asc';
     }
     this.applyFilters();
   }
@@ -133,7 +133,7 @@ export class HomeComponent implements OnInit {
 
   // ─── Load all products ────────────────────────────────────
   loadProducts(): void {
-    this.isLoading    = true;
+    this.isLoading = true;
     this.errorMessage = '';
 
     this.productService.getProducts().subscribe({
@@ -145,14 +145,14 @@ export class HomeComponent implements OnInit {
       error: (err) => {
         console.error('Error loading products:', err);
         this.errorMessage = 'Failed to load products. Please try again.';
-        this.isLoading    = false;
+        this.isLoading = false;
       },
     });
   }
 
   // ─── Load by category ─────────────────────────────────────
   loadProductsByCategory(categoryId: string): void {
-    this.isLoading    = true;
+    this.isLoading = true;
     this.errorMessage = '';
 
     this._CategoriesService.getProductsByCategory(categoryId).subscribe({
@@ -164,7 +164,7 @@ export class HomeComponent implements OnInit {
       error: (err) => {
         console.error('Error loading products by category:', err);
         this.errorMessage = 'Failed to load products. Please try again.';
-        this.isLoading    = false;
+        this.isLoading = false;
       },
     });
   }
@@ -181,13 +181,13 @@ export class HomeComponent implements OnInit {
       return;
     }
 
-    this.addingToCartSku    = sku;
+    this.addingToCartSku = sku;
     this.cartSuccessMessage = '';
 
     this._ECommerceService.addToCart({ sku, quantity }).subscribe({
       next: () => {
         this.cartSuccessMessage = `"${product.name}" added to cart!`;
-        this.addingToCartSku   = null;
+        this.addingToCartSku = null;
         this._ToastrService.success(this.cartSuccessMessage);
       },
       error: (err) => {
@@ -213,7 +213,7 @@ export class HomeComponent implements OnInit {
 
   selectCategory(categoryId: string | null): void {
     this.selectedCategoryId = categoryId;
-    this.searchTerm         = '';
+    this.searchTerm = '';
     this.closeMobileSidebar();
     this.closeFilter(); // ← close filter dropdown after selection
     if (categoryId === null) {
@@ -230,38 +230,53 @@ export class HomeComponent implements OnInit {
   }
 
   // ─── Categories ───────────────────────────────────────────
+  // استبدل دالة loadCategories() الموجودة بالكود ده
+
   loadCategories(): void {
     this.isCategoriesLoading = true;
+
     this._CategoriesService.getCategories().subscribe({
       next: (parents) => {
         if (parents.length === 0) {
-          this.categories          = [];
+          this.categories = [];
           this.isCategoriesLoading = false;
           return;
         }
 
+        // ✅ initialize كل parent بـ children فاضي وloadingChildren = true
+        this.categories = parents.map(p => ({
+          ...p,
+          children: [],
+          loadingChildren: true,
+        }));
+
         let loaded = 0;
-        this.categories = parents.map(p => ({ ...p, children: [], loadingChildren: true }));
+        const total = parents.length;
 
         parents.forEach((parent, index) => {
           this._CategoriesService.getChildCategories(parent.id).subscribe({
             next: (children) => {
-              this.categories[index] = { ...this.categories[index], children, loadingChildren: false };
+              // ✅ استخدم spread جديد عشان Angular يلاحق التغيير
+              this.categories = this.categories.map((cat, i) =>
+                i === index ? { ...cat, children, loadingChildren: false } : cat
+              );
               loaded++;
-              if (loaded === parents.length) this.isCategoriesLoading = false;
+              if (loaded === total) this.isCategoriesLoading = false;
             },
             error: () => {
-              this.categories[index] = { ...this.categories[index], children: [], loadingChildren: false };
+              this.categories = this.categories.map((cat, i) =>
+                i === index ? { ...cat, children: [], loadingChildren: false } : cat
+              );
               loaded++;
-              if (loaded === parents.length) this.isCategoriesLoading = false;
-            }
+              if (loaded === total) this.isCategoriesLoading = false;
+            },
           });
         });
       },
       error: (err) => {
         console.error('Error loading categories:', err);
         this.isCategoriesLoading = false;
-      }
+      },
     });
   }
 }
