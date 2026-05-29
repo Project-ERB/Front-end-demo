@@ -148,22 +148,6 @@ export const routes: Routes = [
         path: 'my-orders',
         loadComponent: () => import('./modules/E-Commerce/myorders/myorders.component').then((M) => M.MyordersComponent),
         title: 'My Orders',
-
-      },
-      {
-        path: 'my-invoices',
-        loadComponent: () => import('./modules/E-Commerce/myinvoiceecommerce/myinvoiceecommerce.component').then((M) => M.MyinvoiceecommerceComponent),
-        title: 'My Invoices',
-      },
-      {
-        path: 'my-payments',
-        loadComponent: () => import('./modules/E-Commerce/mypaymant-ecommerce/mypaymant-ecommerce.component').then((M) => M.MypaymantEcommerceComponent),
-        title: 'My Payments',
-      },
-      {
-        path: 'my-receivables',
-        loadComponent: () => import('./modules/E-Commerce/my-receivable-ecommerce/my-receivable-ecommerce.component').then((M) => M.MyReceivableEcommerceComponent),
-        title: 'My Receivables',
       },
       {
         path: 'my-receivables',
@@ -388,24 +372,23 @@ export const routes: Routes = [
       },
       {
         path: 'FinancialOverview',
-        loadComponent: () => import('./modules/ERBSystem/Sales/financial-overview/financial-overview.component').then((F) => F.FinancialOverviewComponent)
-        , title: 'FinancialOverview',
+        loadComponent: () => import('./modules/ERBSystem/Sales/financial-overview/financial-overview.component').then((F) => F.FinancialOverviewComponent),
+        title: 'FinancialOverview',
       },
       {
         path: 'receivable-mangment',
-        loadComponent: () => import('./modules/ERBSystem/Sales/receivable-managment/receivable-managment.component').then((R) => R.ReceivableManagmentComponent)
+        loadComponent: () => import('./modules/ERBSystem/Sales/receivable-managment/receivable-managment.component').then((R) => R.ReceivableManagmentComponent),
       },
       {
         path: 'paymentsmangement',
-        loadComponent: () => import('./modules/ERBSystem/Sales/paymentmanagment/paymentmanagment.component').then((F) => F.PaymentmanagmentComponent)
-        , title: 'paymentsmangement',
+        loadComponent: () => import('./modules/ERBSystem/Sales/paymentmanagment/paymentmanagment.component').then((F) => F.PaymentmanagmentComponent),
+        title: 'paymentsmangement',
       },
       {
         path: 'InvoiceManagement',
-        loadComponent: () => import('./modules/ERBSystem/Sales/invoicemanagment/invoicemanagment.component').then((F) => F.InvoicemanagmentComponent)
-        , title: 'InvoiceManagement',
+        loadComponent: () => import('./modules/ERBSystem/Sales/invoicemanagment/invoicemanagment.component').then((F) => F.InvoicemanagmentComponent),
+        title: 'InvoiceManagement',
       },
-
       {
         path: 'warehouse-dashboard',
         loadComponent: () => import('./modules/ERBSystem/HR/warehouse-dashboard/warehouse-dashboard.component').then((W) => W.WarehouseDashboardComponent),
