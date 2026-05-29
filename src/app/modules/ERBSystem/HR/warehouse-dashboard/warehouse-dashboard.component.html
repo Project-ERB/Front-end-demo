@@ -1,71 +1,63 @@
-<div class="bg-surface text-on-surface h-screen flex overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden bg-[#f6f6f8] font-sans text-slate-900 antialiased">
 
-    <!-- SideNavBar -->
-    <app-siedbar-warehouse ></app-siedbar-warehouse>
+    <app-siedbar-warehouse></app-siedbar-warehouse>
 
-    <!-- Main Canvas -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <!-- Main -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f6f6f8]">
 
-        <!-- TopNavBar -->
+        <!-- Header (تم تعديله ليتطابق تماماً مع كمبوننت المستودعات) -->
         <header
-            class="flex justify-between items-center px-8 h-16 w-full bg-surface/80 backdrop-blur-md sticky top-0 z-40 border-b border-[#c1c6d7]/20 flex-shrink-0">
+            class="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0 z-10">
             <div class="flex items-center gap-4">
-                <h1 class="text-lg font-bold tracking-tighter text-[#1b1c1c]">InvenTrack</h1>
-                <nav class="hidden md:flex gap-6 ml-6 h-full items-center">
-                    <a class="text-[#0070f3] dark:text-blue-400 font-bold border-b-2 border-[#0070f3] pb-[22px] translate-y-[11px] font-sans text-sm tracking-tight cursor-pointer transition-all duration-150 ease-in-out"
-                        routerLink="/warehouse-dashboard">Overview</a>
+                <h2 class="text-lg font-semibold text-slate-900">Dashboard</h2>
+                <span class="text-slate-300 text-xl font-light">/</span>
+                <nav class="flex">
+                    <ol class="inline-flex items-center space-x-1">
+                        <li>
+                            <a href="#" class="text-sm font-medium text-slate-500 hover:text-[#1e3b8a]">Overview</a>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="material-symbols-outlined text-slate-400"
+                                style="font-size:16px">chevron_right</span>
+                            <span class="ml-1 text-sm font-medium text-slate-900">KPI Metrics</span>
+                        </li>
+                    </ol>
                 </nav>
             </div>
-            <!-- <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
                 <button
-                    class="text-on-surface-variant hover:text-on-surface transition-colors p-1 rounded-DEFAULT hover:bg-surface-container-high">
-                    <span class="material-symbols-outlined">notifications</span>
+                    class="p-2 text-slate-500 hover:text-slate-700 transition-colors rounded-full hover:bg-slate-100">
+                    <span class="material-symbols-outlined" style="font-size:24px">notifications</span>
                 </button>
-                <button
-                    class="text-on-surface-variant hover:text-on-surface transition-colors p-1 rounded-DEFAULT hover:bg-surface-container-high">
-                    <span class="material-symbols-outlined">history</span>
-                </button>
-                <button
-                    class="text-on-surface-variant hover:text-on-surface transition-colors p-1 rounded-DEFAULT hover:bg-surface-container-high">
-                    <span class="material-symbols-outlined">account_circle</span>
-                </button>
-            </div> -->
+                <div class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuAkgJaABO2vOhw1kV9tjmhRLs7IMWxIp8N4jg_x6QxqwE2YxloN8EPi-DhHG7Oadvn20SWA8q-hq3_5SL0VTQFnN3_4ELMxPoKOePPOL-AuUZziexbZQZXkQLScJg4x0NAm1tnxhUkxDjzV6Qi9JcKQce9YMsjJ5cI4Vq2sFf2HF2N1oMI0z59A03Lih-SkKVsw-giqxv3JrQ-4AdM5ME11PdlAlaoAi8zOfYnugNXqjHDO_QE3VkGIsJZYrxvSH86xoJs-LrinyBtX"
+                        alt="User" class="w-full h-full object-cover" />
+                </div>
+            </div>
         </header>
 
-        <!-- Content Area -->
-        <div class="flex-1 overflow-y-auto p-8">
-            <div class="max-w-7xl mx-auto space-y-8 pb-12">
-
-                <!-- Page Header -->
-                <div class="flex justify-between items-end">
-                    <div>
-                        <div class="font-mono text-xs text-on-surface-variant mb-1">/ overview / kpi-metrics</div>
-                        <h2 class="text-2xl font-bold tracking-tight text-on-surface">System Overview</h2>
-                    </div>
-                    <div
-                        class="text-sm font-mono text-on-surface-variant bg-surface-container-low px-3 py-1 rounded-DEFAULT border border-outline-variant/15">
-                        Last sync: Just now
-                    </div>
-                </div>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-6">
+            <div class="max-w-7xl mx-auto space-y-6">
 
                 <!-- ── Loading Skeleton ── -->
                 <div *ngIf="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div *ngFor="let i of [1,2,3,4,5,6,7,8]"
-                        class="bg-surface-container-low p-5 rounded-lg border border-outline-variant/15 animate-pulse">
-                        <div class="h-3 bg-surface-container-highest rounded w-24 mb-4"></div>
-                        <div class="h-7 bg-surface-container-highest rounded w-20 mb-2"></div>
-                        <div class="h-2 bg-surface-container-highest rounded w-28"></div>
+                        class="bg-white p-5 rounded-lg border border-slate-200 shadow-sm animate-pulse">
+                        <div class="h-3 bg-slate-100 rounded w-24 mb-4"></div>
+                        <div class="h-7 bg-slate-100 rounded w-20 mb-2"></div>
+                        <div class="h-2 bg-slate-100 rounded w-28"></div>
                     </div>
                 </div>
 
                 <!-- ── Error State ── -->
                 <div *ngIf="error"
-                    class="bg-error-container/30 border border-error-container rounded-lg p-6 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-error text-[24px]">error</span>
+                    class="bg-red-50 border border-red-200 rounded-lg p-6 flex items-center gap-3 shadow-sm">
+                    <span class="material-symbols-outlined text-red-500 text-[24px]">error</span>
                     <div>
-                        <p class="text-sm font-semibold text-error">{{ error }}</p>
+                        <p class="text-sm font-semibold text-red-600">{{ error }}</p>
                         <button (click)="loadDashboard()"
-                            class="text-xs text-error underline mt-1 hover:no-underline">Retry</button>
+                            class="text-xs text-red-500 underline mt-1 hover:no-underline">Retry</button>
                     </div>
                 </div>
 
@@ -74,93 +66,96 @@
 
                     <!-- Normal KPIs -->
                     <div
-                        class="bg-surface-container-lowest p-5 rounded-lg border border-outline-variant/15 flex flex-col relative group hover:bg-surface-container-high transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-on-surface-variant">Total Products</span>
-                            <span class="material-symbols-outlined text-outline text-[20px]">inventory</span>
+                        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Products</p>
+                            <p class="text-2xl font-bold text-slate-900 mt-1">{{ formatNumber(kpis.totalProducts) }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight mt-auto">{{ formatNumber(kpis.totalProducts) }}
+                        <div class="p-3 bg-blue-50 rounded-lg text-[#1e3b8a]">
+                            <span class="material-symbols-outlined">inventory</span>
                         </div>
-                        <div class="text-[10px] font-mono text-on-surface-variant mt-1">Active SKUs</div>
                     </div>
 
                     <div
-                        class="bg-surface-container-lowest p-5 rounded-lg border border-outline-variant/15 flex flex-col relative group hover:bg-surface-container-high transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-on-surface-variant">Total Warehouses</span>
-                            <span class="material-symbols-outlined text-outline text-[20px]">warehouse</span>
+                        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Warehouses</p>
+                            <p class="text-2xl font-bold text-slate-900 mt-1">{{ kpis.totalWarehouses }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight mt-auto">{{ kpis.totalWarehouses }}</div>
-                        <div class="text-[10px] font-mono text-on-surface-variant mt-1">Active locations</div>
+                        <div class="p-3 bg-indigo-50 rounded-lg text-indigo-600">
+                            <span class="material-symbols-outlined">warehouse</span>
+                        </div>
                     </div>
 
                     <div
-                        class="bg-surface-container-lowest p-5 rounded-lg border border-outline-variant/15 flex flex-col relative group hover:bg-surface-container-high transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-on-surface-variant">Qty On Hand</span>
-                            <span class="material-symbols-outlined text-outline text-[20px]">storage</span>
+                        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Qty On Hand</p>
+                            <p class="text-2xl font-bold text-slate-900 mt-1">{{ formatNumber(kpis.totalQuantityOnHand)
+                                }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight mt-auto">{{ formatNumber(kpis.totalQuantityOnHand)
-                            }}</div>
-                        <div class="text-[10px] font-mono text-on-surface-variant mt-1">Units global</div>
+                        <div class="p-3 bg-green-50 rounded-lg text-green-600">
+                            <span class="material-symbols-outlined">storage</span>
+                        </div>
                     </div>
 
                     <div
-                        class="bg-surface-container-lowest p-5 rounded-lg border border-outline-variant/15 flex flex-col relative group hover:bg-surface-container-high transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-on-surface-variant">Total Reserved</span>
-                            <span class="material-symbols-outlined text-outline text-[20px]">lock</span>
+                        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Reserved</p>
+                            <p class="text-2xl font-bold text-slate-900 mt-1">{{ formatNumber(kpis.totalReserved) }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight mt-auto">{{ formatNumber(kpis.totalReserved) }}
+                        <div class="p-3 bg-orange-50 rounded-lg text-orange-600">
+                            <span class="material-symbols-outlined">lock</span>
                         </div>
-                        <div class="text-[10px] font-mono text-on-surface-variant mt-1">Pending fulfillment</div>
                     </div>
 
                     <div
-                        class="bg-surface-container-lowest p-5 rounded-lg border border-outline-variant/15 flex flex-col relative group hover:bg-surface-container-high transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-on-surface-variant">Total Available</span>
-                            <span
-                                class="material-symbols-outlined text-primary-container text-[20px]">check_circle</span>
+                        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Total Available</p>
+                            <p class="text-2xl font-bold text-slate-900 mt-1">{{ formatNumber(kpis.totalAvailable) }}
+                            </p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight mt-auto">{{ formatNumber(kpis.totalAvailable) }}
+                        <div class="p-3 bg-emerald-50 rounded-lg text-emerald-600">
+                            <span class="material-symbols-outlined">check_circle</span>
                         </div>
-                        <div class="text-[10px] font-mono text-on-surface-variant mt-1">Ready for alloc</div>
                     </div>
 
                     <div
-                        class="bg-surface-container-lowest p-5 rounded-lg border border-outline-variant/15 flex flex-col relative group hover:bg-surface-container-high transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-on-surface-variant">Inventory Value</span>
-                            <span class="material-symbols-outlined text-outline text-[20px]">payments</span>
+                        class="bg-white p-4 rounded-lg border border-slate-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-slate-500">Inventory Value</p>
+                            <p class="text-2xl font-bold text-slate-900 mt-1">{{
+                                formatCurrency(kpis.totalInventoryValue) }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight mt-auto">{{
-                            formatCurrency(kpis.totalInventoryValue) }}</div>
-                        <div class="text-[10px] font-mono text-on-surface-variant mt-1">Est. valuation</div>
+                        <div class="p-3 bg-purple-50 rounded-lg text-purple-600">
+                            <span class="material-symbols-outlined">payments</span>
+                        </div>
                     </div>
 
                     <!-- Warning KPI -->
                     <div
-                        class="bg-[#fef7e0]/30 p-5 rounded-lg border border-[#fef7e0] flex flex-col relative group hover:bg-[#fef7e0]/50 transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-[#b45309]">Low Stock Items</span>
-                            <span class="material-symbols-outlined text-[#b45309] text-[20px]">warning</span>
+                        class="bg-amber-50 p-4 rounded-lg border border-amber-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-amber-700">Low Stock Items</p>
+                            <p class="text-2xl font-bold text-amber-700 mt-1">{{ formatNumber(kpis.lowStockItems) }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight text-[#b45309] mt-auto">{{
-                            formatNumber(kpis.lowStockItems) }}</div>
-                        <div class="text-[10px] font-mono text-[#b45309]/80 mt-1">Requires attention</div>
+                        <div class="p-3 bg-amber-100 rounded-lg text-amber-700">
+                            <span class="material-symbols-outlined">warning</span>
+                        </div>
                     </div>
 
                     <!-- Danger KPI -->
                     <div
-                        class="bg-error-container/30 p-5 rounded-lg border border-error-container flex flex-col relative group hover:bg-error-container/50 transition-colors duration-150">
-                        <div class="flex justify-between items-start mb-4">
-                            <span class="text-sm font-medium text-error">Out Of Stock</span>
-                            <span class="material-symbols-outlined text-error text-[20px]">error</span>
+                        class="bg-red-50 p-4 rounded-lg border border-red-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-red-600">Out Of Stock</p>
+                            <p class="text-2xl font-bold text-red-600 mt-1">{{ formatNumber(kpis.outOfStockItems) }}</p>
                         </div>
-                        <div class="text-2xl font-bold tracking-tight text-error mt-auto">{{
-                            formatNumber(kpis.outOfStockItems) }}</div>
-                        <div class="text-[10px] font-mono text-error/80 mt-1">Critical impact</div>
+                        <div class="p-3 bg-red-100 rounded-lg text-red-600">
+                            <span class="material-symbols-outlined">error</span>
+                        </div>
                     </div>
                 </div>
 
@@ -169,56 +164,57 @@
 
                     <!-- Stock Movement Trend -->
                     <div
-                        class="lg:col-span-3 bg-surface-container-lowest rounded-lg border border-outline-variant/15 p-5">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-sm font-semibold text-on-surface">Stock Movement Trend</h3>
-                            <div class="flex bg-surface-container-low rounded p-0.5 border border-outline-variant/15">
+                        class="lg:col-span-3 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="flex justify-between items-center p-5 border-b border-slate-200">
+                            <h3 class="text-sm font-semibold text-slate-900">Stock Movement Trend</h3>
+                            <div class="flex bg-slate-100 rounded-md p-0.5 border border-slate-200">
                                 <button (click)="setTimeRange('7d')"
-                                    [ngClass]="{'bg-white text-on-surface shadow-sm rounded-sm': activeTimeRange === '7d'}"
-                                    class="px-3 py-1 text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors">Last
+                                    [ngClass]="{'bg-white text-slate-900 shadow-sm rounded-sm': activeTimeRange === '7d'}"
+                                    class="px-3 py-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors">Last
                                     7 days</button>
                                 <button (click)="setTimeRange('30d')"
-                                    [ngClass]="{'bg-white text-on-surface shadow-sm rounded-sm': activeTimeRange === '30d'}"
-                                    class="px-3 py-1 text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors">Last
+                                    [ngClass]="{'bg-white text-slate-900 shadow-sm rounded-sm': activeTimeRange === '30d'}"
+                                    class="px-3 py-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors">Last
                                     30 days</button>
                                 <button (click)="setTimeRange('90d')"
-                                    [ngClass]="{'bg-white text-on-surface shadow-sm rounded-sm': activeTimeRange === '90d'}"
-                                    class="px-3 py-1 text-xs font-medium text-on-surface-variant hover:text-on-surface transition-colors">Last
+                                    [ngClass]="{'bg-white text-slate-900 shadow-sm rounded-sm': activeTimeRange === '90d'}"
+                                    class="px-3 py-1 text-xs font-medium text-slate-500 hover:text-slate-900 transition-colors">Last
                                     90 days</button>
                             </div>
                         </div>
-                        <div class="h-64 w-full relative">
+                        <div class="p-5 h-64 w-full relative">
                             <canvas #stockMovementChart></canvas>
                         </div>
                     </div>
 
                     <!-- Stock By Warehouse -->
                     <div
-                        class="lg:col-span-1 bg-surface-container-lowest rounded-lg border border-outline-variant/15 p-5 flex flex-col">
-                        <h3 class="text-sm font-semibold text-on-surface mb-4">Stock By Warehouse</h3>
-                        <div class="h-48 w-full mb-6">
+                        class="lg:col-span-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="p-5 border-b border-slate-200">
+                            <h3 class="text-sm font-semibold text-slate-900">Stock By Warehouse</h3>
+                        </div>
+                        <div class="p-5 h-48 w-full mb-2">
                             <canvas #warehouseChart></canvas>
                         </div>
-                        <div class="overflow-x-auto border-t border-outline-variant/15 pt-4">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr
-                                        class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">
-                                        <th class="py-2 pr-2">Warehouse</th>
-                                        <th class="py-2 px-2 text-right">Products</th>
-                                        <th class="py-2 px-2 text-right">Qty</th>
-                                        <th class="py-2 pl-2 text-right">Value</th>
+                        <div class="overflow-x-auto border-t border-slate-200">
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                                        <th class="py-2 px-4 text-left">Warehouse</th>
+                                        <th class="py-2 px-4 text-right">Products</th>
+                                        <th class="py-2 px-4 text-right">Qty</th>
+                                        <th class="py-2 px-4 text-right">Value</th>
                                     </tr>
                                 </thead>
-                                <tbody class="text-xs divide-y divide-outline-variant/10">
-                                    <tr *ngFor="let row of warehouseRows"
-                                        class="hover:bg-surface-container-low transition-colors">
-                                        <td class="py-2 pr-2 font-medium">{{ row.warehouseName }}</td>
-                                        <td class="py-2 px-2 text-right font-mono text-on-surface-variant">{{
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr *ngFor="let row of warehouseRows" class="hover:bg-slate-50 transition-colors">
+                                        <td class="py-2 px-4 font-medium text-sm text-slate-900">{{ row.warehouseName }}
+                                        </td>
+                                        <td class="py-2 px-4 text-right font-mono text-sm text-slate-500">{{
                                             formatNumber(row.totalProducts) }}</td>
-                                        <td class="py-2 px-2 text-right font-mono text-on-surface-variant">{{
+                                        <td class="py-2 px-4 text-right font-mono text-sm text-slate-500">{{
                                             formatNumber(row.totalQuantity) }}</td>
-                                        <td class="py-2 pl-2 text-right font-mono text-on-surface-variant">{{
+                                        <td class="py-2 px-4 text-right font-mono text-sm text-slate-500">{{
                                             formatCurrency(row.inventoryValue) }}</td>
                                     </tr>
                                 </tbody>
@@ -228,37 +224,36 @@
 
                     <!-- Top Moving Products -->
                     <div
-                        class="lg:col-span-2 bg-surface-container-lowest rounded-lg border border-outline-variant/15 p-5 flex flex-col">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-sm font-semibold text-on-surface">Top Moving Products</h3>
+                        class="lg:col-span-2 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="flex justify-between items-center p-5 border-b border-slate-200">
+                            <h3 class="text-sm font-semibold text-slate-900">Top Moving Products</h3>
                             <div class="relative">
                                 <span
-                                    class="material-symbols-outlined absolute left-2 top-1.5 text-outline text-[16px]">search</span>
+                                    class="material-symbols-outlined absolute left-2.5 top-2 text-slate-400 text-[16px]">search</span>
                                 <input [(ngModel)]="searchProduct"
-                                    class="text-xs pl-8 pr-3 py-1.5 bg-surface-container-low border border-outline-variant/20 rounded focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container w-48 transition-all"
+                                    class="text-xs pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1e3b8a] focus:border-[#1e3b8a] w-48 transition-all shadow-sm"
                                     placeholder="Search products..." type="text" />
                             </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr
-                                        class="text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/15">
-                                        <th class="py-2 px-3">Product Name</th>
-                                        <th class="py-2 px-3 text-right">Total In</th>
-                                        <th class="py-2 px-3 text-right">Total Out</th>
-                                        <th class="py-2 px-3 w-32">Trend</th>
+                            <table class="min-w-full divide-y divide-slate-200">
+                                <thead class="bg-slate-50">
+                                    <tr class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                                        <th class="py-2 px-4 text-left">Product Name</th>
+                                        <th class="py-2 px-4 text-right">Total In</th>
+                                        <th class="py-2 px-4 text-right">Total Out</th>
+                                        <th class="py-2 px-4 w-32 text-left">Trend</th>
                                     </tr>
                                 </thead>
-                                <tbody class="text-xs divide-y divide-outline-variant/10">
-                                    <tr *ngFor="let p of filteredProducts"
-                                        class="hover:bg-surface-container-low transition-colors">
-                                        <td class="py-2.5 px-3 font-medium text-on-surface">{{ p.productName }}</td>
-                                        <td class="py-2.5 px-3 text-right font-mono text-[11px] text-green-600">+{{
+                                <tbody class="divide-y divide-slate-200 bg-white">
+                                    <tr *ngFor="let p of filteredProducts" class="hover:bg-slate-50 transition-colors">
+                                        <td class="py-2.5 px-4 font-medium text-sm text-slate-900">{{ p.productName }}
+                                        </td>
+                                        <td class="py-2.5 px-4 text-right font-mono text-[11px] text-green-600">+{{
                                             formatNumber(p.totalIn) }}</td>
-                                        <td class="py-2.5 px-3 text-right font-mono text-[11px] text-red-600">-{{
+                                        <td class="py-2.5 px-4 text-right font-mono text-[11px] text-red-600">-{{
                                             formatNumber(p.totalOut) }}</td>
-                                        <td class="py-2.5 px-3">
+                                        <td class="py-2.5 px-4">
                                             <div class="flex items-center gap-1 w-full">
                                                 <div class="h-1.5 bg-green-500 rounded-sm" [style.width.%]="p.inPct">
                                                 </div>
@@ -268,8 +263,8 @@
                                         </td>
                                     </tr>
                                     <tr *ngIf="filteredProducts.length === 0">
-                                        <td colspan="4" class="py-6 text-center text-xs text-on-surface-variant">No
-                                            products found</td>
+                                        <td colspan="4" class="py-6 text-center text-xs text-slate-400">No products
+                                            found</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -278,71 +273,67 @@
                 </div>
 
                 <!-- ── Low Stock Table ── -->
-                <div *ngIf="!loading" class="mt-8">
-                    <div class="flex justify-between items-end mb-4">
+                <div *ngIf="!loading"
+                    class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                    <div class="flex justify-between items-center p-5 border-b border-slate-200">
                         <div>
-                            <h3 class="text-lg font-bold text-on-surface">Action Required: Low Stock</h3>
-                            <p class="text-xs text-on-surface-variant mt-1">Items below minimum threshold requiring
-                                immediate restocking.</p>
+                            <h3 class="text-sm font-semibold text-slate-900">Action Required: Low Stock</h3>
+                            <p class="text-xs text-slate-500 mt-1">Items below minimum threshold requiring immediate
+                                restocking.</p>
                         </div>
                         <div class="relative">
                             <span
-                                class="material-symbols-outlined absolute left-2 top-1.5 text-outline text-[16px]">search</span>
+                                class="material-symbols-outlined absolute left-2.5 top-2 text-slate-400 text-[16px]">search</span>
                             <input [(ngModel)]="searchLowStock"
-                                class="text-xs pl-8 pr-3 py-1.5 bg-surface-container-lowest border border-outline-variant/20 rounded focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container w-56 transition-all"
+                                class="text-xs pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-[#1e3b8a] focus:border-[#1e3b8a] w-56 transition-all shadow-sm"
                                 placeholder="Filter critical..." type="text" />
                         </div>
                     </div>
-                    <div
-                        class="bg-surface-container-lowest border border-outline-variant/20 rounded-lg overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr
-                                        class="bg-surface-container-low text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider border-b border-outline-variant/20">
-                                        <th class="py-3 px-4 w-1/4">Product Name</th>
-                                        <th class="py-3 px-4">Warehouse</th>
-                                        <th class="py-3 px-4 text-right">Qty Available</th>
-                                        <th class="py-3 px-4">Last Stock Date</th>
-                                        <th class="py-3 px-4">Status</th>
-                                        <th class="py-3 px-4 text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-sm divide-y divide-outline-variant/10">
-                                    <tr *ngFor="let item of filteredLowStock" [ngClass]="{
-                      'hover:bg-error-container/10 bg-error-container/5': item.status === 'critical',
-                      'hover:bg-[#fef7e0]/30 bg-[#fef7e0]/20': item.status === 'warning'
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                                    <th class="py-3 px-4 text-left w-1/4">Product Name</th>
+                                    <th class="py-3 px-4 text-left">Warehouse</th>
+                                    <th class="py-3 px-4 text-right">Qty Available</th>
+                                    <th class="py-3 px-4 text-left">Last Stock Date</th>
+                                    <th class="py-3 px-4 text-left">Status</th>
+                                    <th class="py-3 px-4 text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                <tr *ngFor="let item of filteredLowStock" [ngClass]="{
+                      'hover:bg-red-50 bg-red-50/30': item.status === 'critical',
+                      'hover:bg-amber-50 bg-amber-50/30': item.status === 'warning'
                     }" class="transition-colors">
-                                        <td class="py-3 px-4 font-medium text-on-surface">{{ item.productName }}</td>
-                                        <td class="py-3 px-4 text-on-surface-variant text-xs">{{ item.warehouseName }}
-                                        </td>
-                                        <td [ngClass]="{'text-error': item.status === 'critical', 'text-[#b45309]': item.status === 'warning'}"
-                                            class="py-3 px-4 text-right font-mono font-bold text-xs">{{
-                                            item.quantityAvailable }}</td>
-                                        <td class="py-3 px-4 text-on-surface-variant font-mono text-[11px]">{{
-                                            formatDate(item.lastStockDate) }}</td>
-                                        <td class="py-3 px-4">
-                                            <span *ngIf="item.status === 'critical'"
-                                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-error-container text-on-error-container border border-error/20">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-error"></span> Critical
-                                            </span>
-                                            <span *ngIf="item.status === 'warning'"
-                                                class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-[#fef7e0] text-[#b45309] border border-[#b45309]/20">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-[#b45309]"></span> Warning
-                                            </span>
-                                        </td>
-                                        <td class="py-3 px-4 text-right">
-                                            <button
-                                                class="px-3 py-1 bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-xs font-medium rounded border border-outline-variant/30 transition-colors">Restock</button>
-                                        </td>
-                                    </tr>
-                                    <tr *ngIf="filteredLowStock.length === 0">
-                                        <td colspan="6" class="py-6 text-center text-xs text-on-surface-variant">No
-                                            items match your filter</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                                    <td class="py-3 px-4 font-medium text-sm text-slate-900">{{ item.productName }}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-500">{{ item.warehouseName }}</td>
+                                    <td [ngClass]="{'text-red-600': item.status === 'critical', 'text-amber-600': item.status === 'warning'}"
+                                        class="py-3 px-4 text-right font-mono font-bold text-sm">{{
+                                        item.quantityAvailable }}</td>
+                                    <td class="py-3 px-4 text-sm text-slate-500 font-mono text-[11px]">{{
+                                        formatDate(item.lastStockDate) }}</td>
+                                    <td class="py-3 px-4">
+                                        <span *ngIf="item.status === 'critical'"
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-red-200 bg-red-50 text-red-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Critical
+                                        </span>
+                                        <span *ngIf="item.status === 'warning'"
+                                            class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border border-amber-200 bg-amber-50 text-amber-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Warning
+                                        </span>
+                                    </td>
+                                    <td class="py-3 px-4 text-right">
+                                        <button
+                                            class="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-medium rounded-md border border-slate-200 shadow-sm transition-colors">Restock</button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="filteredLowStock.length === 0">
+                                    <td colspan="6" class="py-6 text-center text-xs text-slate-400">No items match your
+                                        filter</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

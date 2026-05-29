@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
@@ -84,11 +84,21 @@ export class MyInvoicesComponent implements OnInit {
     this.activeFilter.set(filter);
   }
 
-  filteredInvoices(): Invoice[] {
+  filteredInvoices = computed(() => {
     const f = this.activeFilter();
     if (f === 'all') return this.invoices();
     return this.invoices().filter(inv => inv.status?.toLowerCase() === f);
-  }
+  });
+
+  totalSummary = computed(() => {
+    const all = this.invoices();
+    return {
+      total: all.reduce((s, i) => s + (i.totalAmount ?? 0), 0),
+      paid: all.reduce((s, i) => s + (i.paidAmount ?? 0), 0),
+      remaining: all.reduce((s, i) => s + (i.remainingAmount ?? 0), 0),
+      count: all.length,
+    };
+  });
 
   getPaidPercent(inv: Invoice): number {
     if (!inv.totalAmount) return 0;
@@ -117,13 +127,5 @@ export class MyInvoicesComponent implements OnInit {
     return 'bg-rose-500';
   }
 
-  totalSummary() {
-    const all = this.invoices();
-    return {
-      total: all.reduce((s, i) => s + (i.totalAmount ?? 0), 0),
-      paid: all.reduce((s, i) => s + (i.paidAmount ?? 0), 0),
-      remaining: all.reduce((s, i) => s + (i.remainingAmount ?? 0), 0),
-      count: all.length,
-    };
-  }
+
 }

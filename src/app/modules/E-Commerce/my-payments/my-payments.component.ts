@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ECommerceSidebarComponent } from '../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component';
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
@@ -84,11 +84,21 @@ export class MyPaymentsComponent implements OnInit {
     return 'unpaid';
   }
 
-  filteredPayments(): Payment[] {
+  filteredPayments = computed(() => {
     const f = this.activeFilter();
     if (f === 'all') return this.payments();
     return this.payments().filter(p => this.getPaymentStatus(p) === f);
-  }
+  });
+
+  totalSummary = computed(() => {
+    const all = this.payments();
+    return {
+      count: all.length,
+      totalInvoiced: all.reduce((s, p) => s + (p.invoiceTotalAmount ?? 0), 0),
+      totalPaid: all.reduce((s, p) => s + (p.totalPaid ?? 0), 0),
+      totalRemaining: all.reduce((s, p) => s + (p.remainingAmount ?? 0), 0),
+    };
+  });
 
   getPaidPercent(p: Payment): number {
     if (!p.invoiceTotalAmount) return 0;
@@ -129,13 +139,4 @@ export class MyPaymentsComponent implements OnInit {
     return 'text-amber-400';
   }
 
-  totalSummary() {
-    const all = this.payments();
-    return {
-      count: all.length,
-      totalInvoiced: all.reduce((s, p) => s + (p.invoiceTotalAmount ?? 0), 0),
-      totalPaid: all.reduce((s, p) => s + (p.totalPaid ?? 0), 0),
-      totalRemaining: all.reduce((s, p) => s + (p.remainingAmount ?? 0), 0),
-    };
-  }
 }
