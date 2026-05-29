@@ -1,0 +1,235 @@
+<section class="payments-page">
+
+  <!-- ── Header ──────────────────────────────────────────────────────────── -->
+  <header class="page-header">
+    <div class="header-left">
+      <span class="header-eyebrow">Financial Overview</span>
+      <h1 class="page-title">My Payments</h1>
+    </div>
+    <!-- ✅ Fix 2: loadData بدل loadPayments -->
+    <button class="btn-refresh" (click)="loadData()" [disabled]="isLoading()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="1 4 1 10 7 10"></polyline>
+        <path d="M3.51 15a9 9 0 1 0 .49-4.95"></path>
+      </svg>
+      Refresh
+    </button>
+  </header>
+
+  <!-- ── Loading ─────────────────────────────────────────────────────────── -->
+  <div class="loading-overlay" *ngIf="isLoading()">
+    <div class="loader-ring"></div>
+    <p>Loading your payments…</p>
+  </div>
+
+  <!-- ── Error ───────────────────────────────────────────────────────────── -->
+  <div class="error-banner" *ngIf="error() && !isLoading()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    {{ error() }}
+    <!-- ✅ Fix 2: loadData بدل loadPayments -->
+    <button class="btn-retry" (click)="loadData()">Retry</button>
+  </div>
+
+  <!-- ── Main Content ─────────────────────────────────────────────────────── -->
+  <ng-container *ngIf="!isLoading() && !error()">
+
+    <!-- ── KPI Strip ──────────────────────────────────────────────────────── -->
+    <div class="kpi-grid">
+
+      <div class="kpi-card kpi-invoices">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total Invoices</span>
+          <span class="kpi-value">{{ summary().totalInvoices }}</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-total">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total Billed</span>
+          <span class="kpi-value">{{ summary().totalAmount | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+      <div class="kpi-card kpi-paid">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Total Paid</span>
+          <span class="kpi-value">{{ summary().totalPaid | number:'1.0-0' }}</span>
+        </div>
+        <span class="kpi-badge">{{ paidPercentage() }}%</span>
+      </div>
+
+      <div class="kpi-card kpi-remaining">
+        <div class="kpi-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="kpi-content">
+          <span class="kpi-label">Remaining</span>
+          <span class="kpi-value">{{ summary().totalRemaining | number:'1.0-0' }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Charts ─────────────────────────────────────────────────────────── -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <span class="chart-title">Invoices Breakdown</span>
+          <span class="chart-subtitle">Total · Paid · Remaining per invoice</span>
+        </div>
+        <div class="chart-body">
+          <canvas #overviewChart></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <span class="chart-title">Payment Trend</span>
+          <span class="chart-subtitle">Cumulative transactions over time</span>
+        </div>
+        <div class="chart-body">
+          <canvas #trendChart></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Invoices List ──────────────────────────────────────────────────── -->
+    <div class="section-header">
+      <h2>Invoices <span class="count-pill">{{ payments().length }}</span></h2>
+    </div>
+
+    <div class="empty-state" *ngIf="payments().length === 0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="2" y="3" width="20" height="14" rx="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+      </svg>
+      <p>No payments found</p>
+    </div>
+
+    <div class="payments-list">
+      <div
+        class="payment-card"
+        *ngFor="let payment of payments(); trackBy: trackByPaymentId"
+        [class.expanded]="isExpanded(payment.id)"
+      >
+
+        <!-- ── Card Header ────────────────────────────────────────────────── -->
+        <div class="card-header" (click)="toggleCard(payment.id)">
+
+          <div class="card-meta">
+            <div class="invoice-badge">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+              </svg>
+              #{{ payment.invoiceId }}
+            </div>
+            <span class="currency-tag">{{ payment.currency }}</span>
+            <span class="status-tag" [ngClass]="getStatusClass(payment)">
+              {{ getStatusLabel(payment) }}
+            </span>
+          </div>
+
+          <div class="card-amounts">
+            <div class="amount-group">
+              <span class="amount-label">Total</span>
+              <span class="amount-value">{{ payment.invoiceTotalAmount | number:'1.2-2' }}</span>
+            </div>
+            <div class="amount-group paid">
+              <span class="amount-label">Paid</span>
+              <span class="amount-value">{{ payment.totalPaid | number:'1.2-2' }}</span>
+            </div>
+            <div class="amount-group remaining">
+              <span class="amount-label">Remaining</span>
+              <span class="amount-value">{{ payment.remainingAmount | number:'1.2-2' }}</span>
+            </div>
+          </div>
+
+          <div class="progress-section">
+            <div class="progress-track">
+              <div
+                class="progress-fill"
+                [style.width.%]="getPaymentProgress(payment)"
+                [ngClass]="getStatusClass(payment)"
+              ></div>
+            </div>
+            <span class="progress-pct">{{ getPaymentProgress(payment) }}%</span>
+          </div>
+
+          <button class="toggle-btn" [class.open]="isExpanded(payment.id)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+
+        </div>
+
+        <!-- ── Transactions Panel ─────────────────────────────────────────── -->
+        <div class="transactions-panel" *ngIf="isExpanded(payment.id)">
+
+          <div class="tx-panel-header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            Transactions ({{ payment.transactions.length }})
+          </div>
+
+          <div class="tx-empty" *ngIf="payment.transactions.length === 0">
+            No transactions recorded yet.
+          </div>
+
+          <div class="tx-table" *ngIf="payment.transactions.length > 0">
+            <div class="tx-row tx-head">
+              <span>ID</span>
+              <span>Date</span>
+              <span class="tx-right">Amount</span>
+            </div>
+            <div
+              class="tx-row"
+              *ngFor="let tx of payment.transactions; trackBy: trackByTxId; let i = index"
+              [style.animation-delay]="i * 35 + 'ms'"
+            >
+              <span class="tx-id">{{ tx.id }}</span>
+              <span class="tx-date">
+                {{ tx.transactionDate ? (tx.transactionDate | date:'MMM dd, yyyy') : '—' }}
+              </span>
+              <span class="tx-amount">
+                {{ tx.amount | number:'1.2-2' }}
+                <em>{{ payment.currency }}</em>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </ng-container>
+</section>

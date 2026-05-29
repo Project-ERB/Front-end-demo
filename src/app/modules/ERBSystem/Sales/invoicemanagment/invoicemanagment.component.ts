@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
-import {
-  InvoiceService,
+import { Customer, InvoiceService, Product } from '../../../../core/services/invoice/invoice.service';
+
+import { 
   Invoice as InvoiceApi,
   InvoiceLine as InvoiceLineApi,
-  InvoiceStatus as InvoiceStatusApi,
-  Customer,
-  Product
+  InvoiceStatus as InvoiceStatusApi,    
+ 
 } from '../../../../core/services/invoice/invoice.service';
 
 export type InvoiceStatus = 'Draft' | 'Sent' | 'Paid' | 'Overdue' | 'Partial' | 'Cancelled';

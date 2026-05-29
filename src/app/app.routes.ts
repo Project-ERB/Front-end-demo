@@ -148,6 +148,22 @@ export const routes: Routes = [
         path: 'my-orders',
         loadComponent: () => import('./modules/E-Commerce/myorders/myorders.component').then((M) => M.MyordersComponent),
         title: 'My Orders',
+
+      },
+      {
+        path: 'my-invoices',
+        loadComponent: () => import('./modules/E-Commerce/myinvoiceecommerce/myinvoiceecommerce.component').then((M) => M.MyinvoiceecommerceComponent),
+        title: 'My Invoices',
+      },
+      {
+        path: 'my-payments',
+        loadComponent: () => import('./modules/E-Commerce/mypaymant-ecommerce/mypaymant-ecommerce.component').then((M) => M.MypaymantEcommerceComponent),
+        title: 'My Payments',
+      },
+      {
+        path: 'my-receivables',
+        loadComponent: () => import('./modules/E-Commerce/my-receivable-ecommerce/my-receivable-ecommerce.component').then((M) => M.MyReceivableEcommerceComponent),
+        title: 'My Receivables',
       },
       {
         path: 'my-receivables',
