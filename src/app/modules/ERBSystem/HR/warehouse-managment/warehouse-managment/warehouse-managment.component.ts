@@ -51,6 +51,16 @@ export class WarehouseManagmentComponent implements OnInit {
   isLoadingWarehouses = false;
   warehousesError = '';
 
+  isMobileSidebarOpen: boolean = false;
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
   private mapWarehouse(node: WarehouseNode, index: number): Warehouse {
     const colors = ['blue', 'purple', 'orange', 'emerald', 'pink', 'teal'];
     const words = node.name.trim().split(/\s+/);

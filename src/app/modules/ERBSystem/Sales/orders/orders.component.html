@@ -1,9 +1,25 @@
-<div [class]="darkMode ? 'dark' : ''" class="h-screen w-full">
-    <div
-        class="flex h-screen w-full bg-[#f6f6f8] dark:bg-[#121620] font-sans text-slate-900 dark:text-slate-100 antialiased overflow-hidden">
+<div class="h-screen w-full">
+    <div class="flex h-screen w-full bg-[#f6f6f8] font-sans text-slate-900 antialiased overflow-hidden">
 
-        <!-- Sidebar -->
-        <app-sideba-sales></app-sideba-sales>
+        <!-- ── Desktop Sidebar ── -->
+        <div class="hidden lg:block relative z-10">
+            <app-sideba-sales></app-sideba-sales>
+        </div>
+
+        <!-- ── Mobile Sidebar Backdrop ── -->
+        <div class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+            [class.opacity-100]="isMobileSidebarOpen" [class.opacity-0]="!isMobileSidebarOpen"
+            [class.pointer-events-auto]="isMobileSidebarOpen" [class.pointer-events-none]="!isMobileSidebarOpen"
+            (click)="closeMobileSidebar()">
+        </div>
+
+        <!-- ── Mobile Sidebar Drawer ── -->
+        <div class="fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] transition-transform duration-300 ease-out lg:hidden"
+            [class.translate-x-0]="isMobileSidebarOpen" [class.-translate-x-full]="!isMobileSidebarOpen">
+
+            <app-sideba-sales [isMobileOpen]="isMobileSidebarOpen" (closeMobile)="closeMobileSidebar()">
+            </app-sideba-sales>
+        </div>
 
         <!-- Main Content -->
         <div class="flex flex-col flex-1 h-full overflow-hidden">
@@ -12,24 +28,31 @@
             <div class="flex-none p-6 pb-2">
 
                 <!-- Breadcrumb -->
-                <div class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-4">
+                <div class="flex items-center gap-2 text-sm text-slate-500 mb-4">
                     <a href="#" class="hover:text-[#1e3b8a] transition-colors">Home</a>
                     <span class="material-symbols-outlined text-base">chevron_right</span>
                     <a href="#" class="hover:text-[#1e3b8a] transition-colors">Sales</a>
                     <span class="material-symbols-outlined text-base">chevron_right</span>
-                    <span class="font-medium text-slate-800 dark:text-slate-200">Orders</span>
+                    <span class="font-medium text-slate-800">Orders</span>
                 </div>
 
                 <!-- Header -->
                 <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
-                    <div>
-                        <h1 class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">Order Management
-                        </h1>
-                        <p class="text-slate-500 dark:text-slate-400 mt-1">Manage and fulfill customer orders across all
-                            channels</p>
+                    <div class="flex items-center gap-3">
+                        <!-- زرار الهامبرجر للموبايل -->
+                        <button (click)="toggleMobileSidebar()"
+                            class="lg:hidden flex-shrink-0 p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#1e3b8a] hover:border-[#1e3b8a]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+                            <span class="material-symbols-outlined text-[20px]">menu</span>
+                        </button>
+
+                        <div>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Order Management
+                            </h1>
+                            <p class="text-slate-500 mt-1">Manage and fulfill customer orders across all channels</p>
+                        </div>
                     </div>
                     <button
-                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-sm">
+                        class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors shadow-sm">
                         <span class="material-symbols-outlined text-lg">download</span>
                         Export CSV
                     </button>
@@ -38,11 +61,10 @@
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     @for (stat of stats; track stat.label) {
-                    <div
-                        class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col gap-1">
-                        <span class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ stat.label }}</span>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col gap-1">
+                        <span class="text-sm font-medium text-slate-500">{{ stat.label }}</span>
                         <div class="flex items-end justify-between">
-                            <span class="text-2xl font-bold text-slate-900 dark:text-white">{{ stat.value }}</span>
+                            <span class="text-2xl font-bold text-slate-900">{{ stat.value }}</span>
                             <span class="flex items-center text-xs font-medium px-2 py-0.5 rounded-full"
                                 [class]="trendClass(stat.up)">
                                 <span class="material-symbols-outlined text-sm mr-0.5">{{ trendIcon(stat.up) }}</span>
@@ -56,49 +78,46 @@
 
             <!-- Table Section (scrollable) -->
             <div class="flex-1 overflow-hidden px-6 pb-6">
-                <div
-                    class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm h-full flex flex-col">
+                <div class="bg-white border border-slate-200 rounded-xl shadow-sm h-full flex flex-col">
 
                     <!-- Table Toolbar -->
                     <div
-                        class="p-4 border-b border-slate-200 dark:border-slate-700 flex flex-wrap gap-4 items-center justify-between rounded-t-xl">
+                        class="p-4 border-b border-slate-200 flex flex-wrap gap-4 items-center justify-between rounded-t-xl">
                         <!-- Search -->
-                        <div class="relative flex-1 min-w-[260px] max-w-md">
+                        <div class="relative flex-1 min-w-[220px] max-w-md">
                             <span
                                 class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined text-xl">search</span>
                             <input [(ngModel)]="searchQuery" type="text"
                                 placeholder="Search by Order ID, Customer, or Email..."
-                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-blue-200 focus:border-[#1e3b8a] outline-none transition-all" />
+                                class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-900 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-200 focus:border-[#1e3b8a] outline-none transition-all" />
                         </div>
 
                         <!-- Actions + Filters -->
                         <div class="flex items-center gap-3">
                             @if (selectedCount > 0) {
                             <div
-                                class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-700 pr-3 mr-1">
-                                <span class="font-medium text-slate-700 dark:text-slate-200">{{ selectedCount }}
-                                    selected</span>
+                                class="flex items-center gap-2 text-xs text-slate-500 border-r border-slate-200 pr-3 mr-1">
+                                <span class="font-medium text-slate-700">{{ selectedCount }} selected</span>
                             </div>
                             }
-                            <div
-                                class="hidden md:flex items-center gap-2 border-r border-slate-200 dark:border-slate-700 pr-3 mr-1">
+                            <div class="hidden md:flex items-center gap-2 border-r border-slate-200 pr-3 mr-1">
                                 <button
-                                    class="px-3 py-2 text-xs font-medium text-slate-500 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 transition-colors">
+                                    class="px-3 py-2 text-xs font-medium text-slate-500 bg-slate-100 rounded hover:bg-slate-200 transition-colors">
                                     Mark Fulfilled
                                 </button>
                                 <button
-                                    class="px-3 py-2 text-xs font-medium text-slate-500 bg-slate-100 rounded hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 transition-colors">
+                                    class="px-3 py-2 text-xs font-medium text-slate-500 bg-slate-100 rounded hover:bg-slate-200 transition-colors">
                                     Print Invoices
                                 </button>
                             </div>
                             <div class="flex items-center gap-2">
                                 <button
-                                    class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                    class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                                     <span class="material-symbols-outlined text-lg">filter_list</span>
                                     Status
                                 </button>
                                 <button
-                                    class="flex items-center gap-2 px-3 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-lg text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+                                    class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
                                     <span class="material-symbols-outlined text-lg">calendar_today</span>
                                     Date Range
                                 </button>
@@ -119,7 +138,7 @@
                     <div class="flex-1 flex items-center justify-center p-12">
                         <div class="text-center">
                             <span class="material-symbols-outlined text-4xl text-rose-400 mb-2 block">error</span>
-                            <p class="text-slate-500 dark:text-slate-400">{{ errorMessage }}</p>
+                            <p class="text-slate-500">{{ errorMessage }}</p>
                             <button (click)="loadOrders()"
                                 class="mt-4 px-4 py-2 bg-[#1e3b8a] text-white text-sm rounded-lg hover:bg-blue-800 transition-colors">
                                 Retry
@@ -132,34 +151,34 @@
                     @if (!isLoading && !errorMessage) {
                     <div class="overflow-auto flex-1">
                         <table class="w-full text-left border-collapse">
-                            <thead class="bg-slate-50 dark:bg-slate-800 sticky top-0 z-10">
+                            <thead class="bg-slate-50 sticky top-0 z-10">
                                 <tr>
-                                    <th class="p-4 w-12 border-b border-slate-200 dark:border-slate-700">
+                                    <th class="p-4 w-12 border-b border-slate-200">
                                         <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()"
                                             class="rounded border-slate-300 text-[#1e3b8a] focus:ring-[#1e3b8a] h-4 w-4 cursor-pointer" />
                                     </th>
                                     <th
-                                        class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                        class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                                         Order ID</th>
                                     <th
-                                        class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                        class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                                         Date</th>
                                     <th
-                                        class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700 text-right">
+                                        class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200 text-right">
                                         Total</th>
                                     <th
-                                        class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                        class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                                         Payment</th>
                                     <th
-                                        class="p-4 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider border-b border-slate-200 dark:border-slate-700">
+                                        class="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200">
                                         Fulfillment</th>
-                                    <th class="p-4 w-12 border-b border-slate-200 dark:border-slate-700"></th>
+                                    <th class="p-4 w-12 border-b border-slate-200"></th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700 bg-white dark:bg-slate-900">
+                            <tbody class="divide-y divide-slate-100 bg-white">
                                 @for (order of filteredOrders; track order.id) {
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group"
-                                    [class.bg-blue-50]="order.selected" [class.dark:bg-blue-900/10]="order.selected">
+                                <tr class="hover:bg-slate-50 transition-colors group"
+                                    [class.bg-blue-50]="order.selected">
 
                                     <td class="p-4">
                                         <input type="checkbox" [(ngModel)]="order.selected"
@@ -171,11 +190,9 @@
                                             order.id }}</a>
                                     </td>
 
-                                    <td class="p-4 text-sm text-slate-600 dark:text-slate-300 whitespace-nowrap">{{
-                                        order.date }}</td>
+                                    <td class="p-4 text-sm text-slate-600 whitespace-nowrap">{{ order.date }}</td>
 
-                                    <td
-                                        class="p-4 text-sm font-medium text-slate-900 dark:text-white text-right tabular-nums">
+                                    <td class="p-4 text-sm font-medium text-slate-900 text-right tabular-nums">
                                         {{ formatCurrency(order.total) }}
                                     </td>
 
@@ -196,14 +213,14 @@
                                     </td>
 
                                     <td class="p-4 text-right">
-                                        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                        <button class="text-slate-400 hover:text-slate-600">
                                             <span class="material-symbols-outlined text-lg">more_vert</span>
                                         </button>
                                     </td>
                                 </tr>
                                 } @empty {
                                 <tr>
-                                    <td colspan="8" class="p-12 text-center text-slate-500 dark:text-slate-400">
+                                    <td colspan="8" class="p-12 text-center text-slate-500">
                                         <span class="material-symbols-outlined text-4xl mb-2 block">search_off</span>
                                         No orders match your search.
                                     </td>
@@ -215,30 +232,26 @@
                     }
 
                     <!-- Pagination -->
-                    <div
-                        class="p-4 border-t border-slate-200 dark:border-slate-700 flex items-center justify-between rounded-b-xl">
-                        <div class="text-sm text-slate-500 dark:text-slate-400">
-                            Showing <span class="font-medium text-slate-900 dark:text-white">1</span> to
-                            <span class="font-medium text-slate-900 dark:text-white">{{ filteredOrders.length }}</span>
+                    <div class="p-4 border-t border-slate-200 flex items-center justify-between rounded-b-xl">
+                        <div class="text-sm text-slate-500">
+                            Showing <span class="font-medium text-slate-900">1</span> to
+                            <span class="font-medium text-slate-900">{{ filteredOrders.length }}</span>
                             of
-                            <span class="font-medium text-slate-900 dark:text-white">128</span> results
+                            <span class="font-medium text-slate-900">128</span> results
                         </div>
                         <div class="flex items-center gap-2">
-                            <button
-                                class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 disabled:opacity-50"
-                                disabled>
+                            <button class="p-2 rounded hover:bg-slate-100 text-slate-500 disabled:opacity-50" disabled>
                                 <span class="material-symbols-outlined text-lg">chevron_left</span>
                             </button>
                             <button class="px-3 py-1 rounded bg-[#1e3b8a] text-white text-sm font-medium">1</button>
                             <button
-                                class="px-3 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium transition-colors">2</button>
+                                class="px-3 py-1 rounded hover:bg-slate-100 text-slate-600 text-sm font-medium transition-colors">2</button>
                             <button
-                                class="px-3 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium transition-colors">3</button>
+                                class="px-3 py-1 rounded hover:bg-slate-100 text-slate-600 text-sm font-medium transition-colors">3</button>
                             <span class="px-2 text-slate-400">...</span>
                             <button
-                                class="px-3 py-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium transition-colors">12</button>
-                            <button
-                                class="p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400">
+                                class="px-3 py-1 rounded hover:bg-slate-100 text-slate-600 text-sm font-medium transition-colors">12</button>
+                            <button class="p-2 rounded hover:bg-slate-100 text-slate-500">
                                 <span class="material-symbols-outlined text-lg">chevron_right</span>
                             </button>
                         </div>

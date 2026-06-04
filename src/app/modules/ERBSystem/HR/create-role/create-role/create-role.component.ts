@@ -162,9 +162,13 @@ export class CreateRoleComponent implements OnInit {
     console.log('Payload →', this.RoleForm.value);
 
     this._AdminService.creatCustomRole(this.RoleForm.value).subscribe({
-      next: (res) => {
+      next: (res: any) => { // ← أضف :any
         this.isSaving = false;
-        this._ToastrService.success('Role created successfully!');
+
+        // ✅ استخراج رسالة النجاح من الـ Response باستخدام الأقواس المربعة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Role created successfully!';
+
+        this._ToastrService.success(successMsg); // ← عرض الرسالة اللي رجعت من الباك اند
         console.log('Created:', res);
         this.saveSuccess = true;
         this.isDirty = false;
@@ -172,10 +176,17 @@ export class CreateRoleComponent implements OnInit {
           this._Router.navigate(['/role-mangement']);
         }, 3000);
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.isSaving = false;
-        this._ToastrService.error('Failed to create role.');
+
+        // ✅ استخراج رسالة الخطأ من الـ Backend باستخدام الأقواس المربعة
+        const errorMsg = err?.['error']?.['message'] || err?.['error']?.['errors']?.[0] || err?.['message'] || 'Failed to create role.';
+
+        this._ToastrService.error(errorMsg); // ← عرض رسالة الخطأ الحقيقية
         console.error('Error:', err);
+
+        // ✅ لو عايز تعرض الخطأ فوق الفورم كمان زي باقي الأخطاء
+        this.formError = errorMsg;
       },
     });
   }

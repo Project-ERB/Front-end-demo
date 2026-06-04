@@ -311,6 +311,7 @@ export class EditeProduectComponent implements OnInit {
   }
 
   // ── Submit ────────────────────────────────────────────────────────
+  // ── Submit ────────────────────────────────────────────────────────
   submitEdit(): void {
     this.editLoading = true;
     this.editError = '';
@@ -350,22 +351,28 @@ export class EditeProduectComponent implements OnInit {
     }
 
     this._ProductService.ubdateProduct(this.productId, formData).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.editLoading = false;
         this._originalSnapshot = JSON.stringify(this.editForm); // reset dirty
-        this._ToastrService.success('Product updated successfully', 'Updated');
+
+        // ✅ استخراج رسالة النجاح من الـ Response
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Product updated successfully';
+        this._ToastrService.success(successMsg, 'Updated');
+
         setTimeout(() => {
           this.router.navigate(['/product-management']);
         }, 1200);
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.editLoading = false;
-        const backendError = err?.error;
-        if (backendError && !backendError.isSuccess) {
-          const errorMessages: string[] = backendError.errors ?? [];
-          const title = backendError.message ?? 'Error';
+
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة
+        const backendError = err?.['error'];
+        if (backendError && backendError['isSuccess'] === false) {
+          const errorMessages: any[] = backendError?.['errors'] ?? [];
+          const title = backendError?.['message'] ?? 'Error';
           if (errorMessages.length > 0) {
-            errorMessages.forEach((msg) =>
+            errorMessages.forEach((msg: any) =>
               this._ToastrService.error(msg, title)
             );
           } else {
@@ -373,13 +380,13 @@ export class EditeProduectComponent implements OnInit {
           }
           this.editError = title;
         } else {
-          this.editError = 'Failed to update product.';
-          this._ToastrService.error(this.editError, 'Error');
+          const fallbackMsg = err?.['error']?.['message'] || err?.['message'] || 'Failed to update product.';
+          this.editError = fallbackMsg;
+          this._ToastrService.error(fallbackMsg, 'Error');
         }
       },
     });
   }
-
   // ── Unsaved changes guard on browser back/refresh ─────────────────
   @HostListener('window:beforeunload')
   onBeforeUnload(): boolean {

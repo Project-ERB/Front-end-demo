@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { SiedeAdminComponent } from "../../../../../shared/UI/siede-admin/siede-admin/siede-admin.component";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-permission',
@@ -14,6 +15,7 @@ import { SiedeAdminComponent } from "../../../../../shared/UI/siede-admin/siede-
 export class CreatePermissionComponent {
 
   private readonly _ToastrService = inject(ToastrService);
+  private readonly _router = inject(Router);
 
   permissionName: PermissionName | '' = '';
   description = '';
@@ -47,16 +49,31 @@ export class CreatePermissionComponent {
     };
 
     this.permissionService.createPermission(payload).subscribe({
-      next: (res) => {
+      next: (res: any) => { // ← ضف :any عشان TypeScript يسيبك في حالك
         console.log(res);
         this.isLoading = false;
-        this._ToastrService.success('Permission created successfully!', 'successfully! ✅');
+
+        // ✅ استخدم الأقواس المربعة بدل النقطة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Permission created successfully!';
+
+        this._ToastrService.success(successMsg, 'Success! ✅');
+        this.successMessage = successMsg;
+
+        setTimeout(() => {
+          this._router.navigate(['/permissions']);
+        }, 3000);
+
         this.onCancel();
       },
-      error: (err) => {
+      error: (err: any) => { // ← ضف :any هنا كمان
         console.log(err);
         this.isLoading = false;
-        this._ToastrService.error('Permission created failed!', 'failed! ❌');
+
+        // ✅ استخدم الأقواس المربعة بدل النقطة
+        const errorMsg = err?.['error']?.['message'] || err?.['error']?.['errors']?.[0] || err?.['message'] || 'Permission creation failed!';
+
+        this._ToastrService.error(errorMsg, 'Failed! ❌');
+        this.errorMessage = errorMsg;
       },
     });
   }

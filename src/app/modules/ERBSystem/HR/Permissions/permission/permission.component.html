@@ -98,11 +98,11 @@
                             Ctrl K
                         </kbd>
                     </div>
-                    <button (click)="onExport()"
+                    <!-- <button (click)="onExport()"
                         class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all duration-200 active:scale-95">
                         <span class="material-symbols-outlined text-[18px]">download</span>
                         <span class="hidden sm:inline">Export</span>
-                    </button>
+                    </button> -->
                 </div>
             </div>
 
@@ -141,8 +141,8 @@
                                     Name</th>
                                 <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                     Description</th>
-                                <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Resources</th>
+                                <!-- <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    Resources</th> -->
                                 <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                     Status</th>
                                 <th class="px-5 py-3.5 w-10"></th>
@@ -198,7 +198,7 @@
                                         perm.description || '—' }}</span>
                                 </td>
 
-                                <td class="px-5 py-4">
+                                <!-- <td class="px-5 py-4">
                                     <div class="flex flex-wrap gap-1 max-w-[260px]">
                                         <ng-container *ngIf="perm.resources?.length; else noResources">
                                             <span *ngFor="let r of perm.resources"
@@ -211,7 +211,7 @@
                                             <span class="text-xs text-slate-400">—</span>
                                         </ng-template>
                                     </div>
-                                </td>
+                                </td> -->
 
                                 <td class="px-5 py-4">
                                     <span
@@ -295,7 +295,7 @@
                         </div>
 
                         <!-- Resources -->
-                        <div class="flex flex-wrap gap-1 mb-3">
+                        <!-- <div class="flex flex-wrap gap-1 mb-3">
                             <ng-container *ngIf="perm.resources?.length; else mobileNoRes">
                                 <span *ngFor="let r of perm.resources"
                                     class="px-2 py-0.5 text-[10px] font-semibold rounded-md border"
@@ -345,10 +345,7 @@
                     <div class="flex items-center gap-1">
 
                         <!-- First -->
-                        <button (click)="goToFirst()" [disabled]="!hasPreviousPage"
-                            class="page-btn p-1.5 rounded-lg transition-all duration-200 disabled:opacity-25 disabled:cursor-not-allowed active:scale-90">
-                            <span class="material-symbols-outlined text-[18px]">first_page</span>
-                        </button>
+
 
                         <!-- Prev -->
                         <button (click)="prevPage()" [disabled]="!hasPreviousPage"

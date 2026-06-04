@@ -139,6 +139,8 @@ export class AddProductComponent implements OnInit {
     });
   }
 
+  isSubmitting = false; // ✅ Flag to track submission state
+
   // ================= SUBMIT =================
   AddproductSubmit(): void {
     if (this.addproductform.invalid) {
@@ -146,6 +148,8 @@ export class AddProductComponent implements OnInit {
       this._ToastrService.error('Please fill all required fields.', 'Validation Error');
       return;
     }
+
+    this.isSubmitting = true; // ✅ 1. تفعيل الـ Loading هنا
 
     const formValue = this.addproductform.value;
     const formData = new FormData();
@@ -162,7 +166,7 @@ export class AddProductComponent implements OnInit {
     formData.append('Currency', formValue.Currency);
     formData.append('TaxRateValue', String(formValue.TaxRateValue));
     formData.append('TaxRateName', formValue.TaxRateName);
-    formData.append('TaxRateCode', formValue.TaxRateCode);
+    formData.append('TaxRateCode', String(formValue.TaxRateCode));
     formData.append('IsTrackInventory', formValue.IsTrackInventory ? 'true' : 'false');
     formData.append('BaseBarcode', formValue.BaseBarcode);
     formData.append('Notes', formValue.Notes ?? '');
@@ -191,9 +195,13 @@ export class AddProductComponent implements OnInit {
     }
 
     this._productService.addProduct(formData).subscribe({
-      next: (res) => {
-        console.log('Product created:', res);
-        this._ToastrService.success('Add Product Success', 'Success');
+      next: (res: any) => {
+
+        this.isSubmitting = false;
+
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Add Product Success';
+        this._ToastrService.success(successMsg, 'Success');
+
         this.addproductform.reset();
         this.specifications = [{ name: '', value: '' }];
         this.variants = [{
@@ -207,21 +215,26 @@ export class AddProductComponent implements OnInit {
           this._Router.navigate(['/product-management']);
         }, 1500);
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         console.error('Error:', err);
-        const backendError = err?.error;
-        if (backendError && !backendError.isSuccess) {
-          const errorMessages: string[] = backendError.errors ?? [];
-          const title = backendError.message ?? 'Error';
+        this.isSubmitting = false;
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة لتجنب مشاكل الـ TS
+        const backendError = err?.['error'];
+        if (backendError && backendError['isSuccess'] === false) {
+          const errorMessages: any[] = backendError?.['errors'] ?? [];
+          const title = backendError?.['message'] ?? 'Error';
+
           if (errorMessages.length > 0) {
-            errorMessages.forEach(msg =>
+            errorMessages.forEach((msg: any) =>
               this._ToastrService.error(msg, title)
             );
           } else {
             this._ToastrService.error(title, 'Error');
           }
         } else {
-          this._ToastrService.error('Failed to create product. Please try again.', 'Error');
+          // ✅ Fallback لو هيكل الخطأ مختلف أو رسالة عادية
+          const fallbackMsg = err?.['error']?.['message'] || err?.['message'] || 'Failed to create product. Please try again.';
+          this._ToastrService.error(fallbackMsg, 'Error');
         }
       }
     });

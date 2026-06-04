@@ -1,12 +1,41 @@
 <div class="flex min-h-screen w-full flex-row overflow-hidden bg-[#f6f6f8] font-sans text-[#0f172a]">
 
-    <app-sideba-sales></app-sideba-sales>
+    <!-- ── Desktop Sidebar ── -->
+    <div class="hidden lg:block relative z-10">
+        <app-sideba-sales></app-sideba-sales>
+    </div>
 
+    <!-- ── Mobile Sidebar Backdrop ── -->
+    <div class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+        [class.opacity-100]="isMobileSidebarOpen" [class.opacity-0]="!isMobileSidebarOpen"
+        [class.pointer-events-auto]="isMobileSidebarOpen" [class.pointer-events-none]="!isMobileSidebarOpen"
+        (click)="closeMobileSidebar()">
+    </div>
+
+    <!-- ── Mobile Sidebar Drawer ── -->
+    <div class="fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] transition-transform duration-300 ease-out lg:hidden"
+        [class.translate-x-0]="isMobileSidebarOpen" [class.-translate-x-full]="!isMobileSidebarOpen">
+
+        <!-- بنمرر الـ Inputs والـ Outputs للـ sidebar عشان يقدر يقفل نفسه -->
+        <app-sideba-sales [isMobileOpen]="isMobileSidebarOpen" (closeMobile)="closeMobileSidebar()">
+        </app-sideba-sales>
+    </div>
+
+    <!-- ── Main Content ── -->
     <div class="flex flex-1 flex-col overflow-hidden">
 
         <!-- ── Top Header ── -->
-        <header class="flex h-16 shrink-0 items-center justify-between border-b border-[#e2e8f0] bg-white px-6">
-            <h1 class="text-xl font-bold text-[#0f172a]">Product Management</h1>
+        <header class="flex h-16 shrink-0 items-center justify-between border-b border-[#e2e8f0] bg-white px-4 sm:px-6">
+            <div class="flex items-center gap-3 min-w-0">
+
+                <!-- زرار الهامبرجر (بيظهر على الموبايل بس) -->
+                <button (click)="toggleMobileSidebar()"
+                    class="lg:hidden flex-shrink-0 p-2 rounded-xl border border-[#e2e8f0] bg-white text-[#64748b] hover:text-[#1e3b8a] hover:border-[#1e3b8a]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+                    <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+
+                <h1 class="text-xl font-bold text-[#0f172a] truncate">Product Management</h1>
+            </div>
 
             <div class="flex items-center gap-3">
                 <div class="relative hidden sm:block">
@@ -23,7 +52,7 @@
         </header>
 
         <!-- ── Page Content ── -->
-        <main class="flex flex-1 flex-col gap-5 overflow-hidden p-6">
+        <main class="flex flex-1 flex-col gap-5 overflow-hidden p-4 sm:p-6">
 
             <!-- Action bar -->
             <div class="flex shrink-0 flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -230,7 +259,7 @@
                                         </button>
                                         <button
                                             class="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 transition-colors hover:bg-red-50"
-                                            (click)="deleteProduct(product.id)" title="Delete">
+                                            (click)="confirmDelete(product)" title="Delete">
                                             <span class="material-symbols-outlined text-[18px]">delete</span>
                                         </button>
                                     </div>
@@ -308,8 +337,9 @@
                                     class="flex h-8 w-8 items-center justify-center rounded-lg text-[#1e3b8a] hover:bg-blue-50 transition-all active:scale-90">
                                     <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </button>
-                                <button (click)="deleteProduct(product.id)"
-                                    class="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 transition-all active:scale-90">
+                                <button
+                                    class="flex h-8 w-8 items-center justify-center rounded-lg text-red-500 transition-colors hover:bg-red-50"
+                                    (click)="confirmDelete(product)" title="Delete">
                                     <span class="material-symbols-outlined text-[18px]">delete</span>
                                 </button>
                             </div>

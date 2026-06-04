@@ -44,6 +44,18 @@ export class ReceivableManagmentComponent implements OnInit, OnDestroy {
   searchQuery = '';
   activeTab: TabFilter = 'all';
 
+  // <--- تم الإضافة
+  isMobileSidebarOpen: boolean = false;
+
+  // <--- تم الإضافة
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
   // Server-side pagination
   pageSize = 8;
   endCursor: string | null = null;

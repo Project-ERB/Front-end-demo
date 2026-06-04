@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebaSalesComponent } from "../../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 import { Router, RouterLink } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 export type DiscountStatus = 'Active' | 'Scheduled' | 'Expired';
 
@@ -52,7 +53,11 @@ export interface EditDiscountForm {
 })
 export class DiscountMangementComponent implements OnInit {
 
-  constructor(private router: Router, private discountService: DiscountService) { }
+  constructor(
+    private router: Router,
+    private discountService: DiscountService,
+    private toastr: ToastrService // ✅ أضف ده
+  ) { }
 
   isLoading = false;
   errorMessage = '';
@@ -255,15 +260,26 @@ export class DiscountMangementComponent implements OnInit {
       endDate: this.editForm.endDate ? new Date(this.editForm.endDate).toISOString() : new Date().toISOString(),
       targets: [],
     };
+
     this.discountService.UpdateDiscount(this.editingId, payload).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.isSaving = false;
+
+        // ✅ استخراج رسالة النجاح من الـ Response
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Discount updated successfully!';
+        this.toastr.success(successMsg, 'Updated ✅');
+
         this.closeEditModal();
         this.loadDiscounts();
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         console.error('Update failed', err);
-        this.saveError = 'Failed to update discount. Please try again.';
+
+        // ✅ استخراج رسالة الخطأ من الـ Backend
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Failed to update discount. Please try again.';
+        this.saveError = errorMsg; // ← عشان تتعرض في الـ Modal
+        this.toastr.error(errorMsg, 'Error ❌');
+
         this.isSaving = false;
       },
     });
@@ -295,14 +311,24 @@ export class DiscountMangementComponent implements OnInit {
     this.deleteError = '';
 
     this.discountService.DeleteDiscount(this.deletingDiscount.id).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.isDeleting = false;
+
+        // ✅ استخراج رسالة النجاح من الـ Response
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Discount deleted successfully!';
+        this.toastr.success(successMsg, 'Deleted ✅');
+
         this.closeDeleteModal();
         this.loadDiscounts();
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         console.error('Delete failed', err);
-        this.deleteError = 'Failed to delete discount. Please try again.';
+
+        // ✅ استخراج رسالة الخطأ من الـ Backend
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Failed to delete discount. Please try again.';
+        this.deleteError = errorMsg; // ← عشان تتعرض في الـ Modal
+        this.toastr.error(errorMsg, 'Error ❌');
+
         this.isDeleting = false;
       },
     });
@@ -331,19 +357,27 @@ export class DiscountMangementComponent implements OnInit {
     this.bulkDeleteError = '';
     const selectedIds = this.allDiscounts.filter(d => d.selected).map(d => d.id);
 
-    // Delete one by one (adjust if your API supports bulk delete)
     const deleteObservables = selectedIds.map(id => this.discountService.DeleteDiscount(id));
 
     import('rxjs').then(({ forkJoin }) => {
       forkJoin(deleteObservables).subscribe({
-        next: () => {
+        next: (res: any) => { // ← أضف :any
           this.isBulkDeleting = false;
+
+          // ✅ استخراج رسالة النجاح من الـ Response
+          const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Selected discounts deleted successfully!';
+          this.toastr.success(successMsg, 'Deleted ✅');
+
           this.closeBulkDeleteModal();
           this.loadDiscounts();
         },
-        error: () => {
+        error: (err: any) => { // ← أضف :any
           this.isBulkDeleting = false;
-          this.bulkDeleteError = 'Failed to delete some discounts. Please try again.';
+
+          // ✅ استخراج رسالة الخطأ من الـ Backend
+          const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Failed to delete some discounts. Please try again.';
+          this.bulkDeleteError = errorMsg; // ← عشان تتعرض في الـ Modal
+          this.toastr.error(errorMsg, 'Error ❌');
         },
       });
     });

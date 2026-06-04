@@ -1,16 +1,41 @@
 <div class="flex h-screen w-full overflow-hidden bg-[#f6f6f8] font-sans text-slate-900 antialiased">
 
-    <app-siedbar-warehouse></app-siedbar-warehouse>
-    <!-- Main -->
-    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#f6f6f8]">
+    <!-- ── Desktop Sidebar ── -->
+    <div class="hidden lg:block relative z-10 w-64">
+        <app-siedbar-warehouse></app-siedbar-warehouse>
+    </div>
+
+    <!-- ── Mobile Sidebar Backdrop ── -->
+    <div class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+        [class.opacity-100]="isMobileSidebarOpen" [class.opacity-0]="!isMobileSidebarOpen"
+        [class.pointer-events-auto]="isMobileSidebarOpen" [class.pointer-events-none]="!isMobileSidebarOpen"
+        (click)="closeMobileSidebar()">
+    </div>
+
+    <!-- ── Mobile Sidebar Drawer ── -->
+    <div class="fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] transition-transform duration-300 ease-out lg:hidden"
+        [class.translate-x-0]="isMobileSidebarOpen" [class.-translate-x-full]="!isMobileSidebarOpen">
+        <app-siedbar-warehouse [isMobileOpen]="isMobileSidebarOpen" (closeMobile)="closeMobileSidebar()">
+        </app-siedbar-warehouse>
+    </div>
+
+    <!-- ── Main Content ── -->
+    <div class="flex flex-1 flex-col overflow-hidden min-w-0">
 
         <!-- Header -->
         <header
-            class="h-16 px-6 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0 z-10">
+            class="h-16 px-4 sm:px-6 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0 z-10">
             <div class="flex items-center gap-4">
+
+                <!-- زرار الهامبرجر للموبايل -->
+                <button (click)="toggleMobileSidebar()"
+                    class="lg:hidden flex-shrink-0 p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#1e3b8a] hover:border-[#1e3b8a]/40 transition-all duration-200 active:scale-95">
+                    <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+
                 <h2 class="text-lg font-semibold text-slate-900">Warehouses</h2>
-                <span class="text-slate-300 text-xl font-light">/</span>
-                <nav class="flex">
+                <span class="text-slate-300 text-xl font-light hidden sm:inline">/</span>
+                <nav class="hidden sm:flex">
                     <ol class="inline-flex items-center space-x-1">
                         <li>
                             <a href="#" class="text-sm font-medium text-slate-500 hover:text-[#1e3b8a]">Dashboard</a>
@@ -36,7 +61,7 @@
         </header>
 
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-6">
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
 
             <!-- Stats -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -82,12 +107,11 @@
                             style="font-size:20px">search</span>
                     </div>
                     <input [(ngModel)]="searchQuery" name="searchField123" autocomplete="new-password" autocorrect="off"
-                        autocapitalize="off" spellcheck="false" type="text"
-                        placeholder="Search warehouses by name, manager, or address..."
+                        autocapitalize="off" spellcheck="false" type="text" placeholder="Search warehouses..."
                         class="block w-full pl-10 pr-3 py-2.5 border border-slate-200 rounded-lg bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-[#1e3b8a] focus:border-[#1e3b8a] sm:text-sm shadow-sm transition-all" />
                 </div>
                 <!-- Actions -->
-                <div class="flex items-center gap-3 w-full sm:w-auto">
+                <div class="flex items-center gap-3 w-full sm:w-auto flex-wrap">
                     <button
                         class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-lg text-slate-700 text-sm font-medium hover:bg-slate-50 transition-all shadow-sm">
                         <span class="material-symbols-outlined" style="font-size:20px">filter_list</span>
@@ -106,7 +130,7 @@
                     <button (click)="openTransferPage()"
                         class="flex items-center justify-center gap-2 px-4 py-2.5 bg-white border border-[#1e3b8a] rounded-lg text-[#1e3b8a] text-sm font-bold hover:bg-blue-50 transition-all shadow-sm">
                         <span class="material-symbols-outlined" style="font-size:20px">swap_horiz</span>
-                        <span>Stock Transfer</span>
+                        <span>Transfer</span>
                     </button>
                 </div>
             </div>
@@ -135,7 +159,7 @@
                                     class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                                     Manager</th>
                                 <th scope="col"
-                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                    class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider hidden md:table-cell">
                                     Address</th>
                                 <th scope="col"
                                     class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -206,7 +230,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
                                         <div class="text-sm text-slate-900">{{ wh.address }}</div>
                                         <div class="text-xs text-slate-500">{{ wh.city }}</div>
                                     </td>
@@ -248,8 +272,8 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="bg-white px-6 py-4 flex items-center justify-between border-t border-slate-200">
-                    <p class="text-sm text-slate-700">
+                <div class="bg-white px-4 sm:px-6 py-4 flex items-center justify-between border-t border-slate-200">
+                    <p class="text-sm text-slate-700 hidden sm:block">
                         Showing
                         <span class="font-medium text-slate-900">{{ (currentPage - 1) * pageSize + 1 }}</span>
                         to
@@ -258,7 +282,7 @@
                         <span class="font-medium text-slate-900">{{ totalResults }}</span>
                         results
                     </p>
-                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px ml-auto">
                         <button (click)="prevPage()" [disabled]="currentPage === 1"
                             class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-slate-300 bg-white text-sm font-medium text-slate-500 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined" style="font-size:18px">chevron_left</span>
@@ -279,8 +303,8 @@
                 </div>
             </div>
 
-        </div>
-    </main>
+        </main>
+    </div>
 </div>
 
 <!-- ════════════════════════════════════════════════════════════════ -->
@@ -388,18 +412,15 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <span class="material-symbols-outlined text-slate-400 text-lg">search</span>
                             </div>
-                            <!-- ✅ productSearch منفصل عن showCatalogDropdown -->
                             <input [(ngModel)]="transferForm.productSearch" (focus)="showCatalogDropdown = true"
                                 type="text" placeholder="Search product by name or SKU..."
                                 class="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-md text-sm bg-white placeholder-slate-400 focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] transition-colors" />
                         </div>
                     </div>
 
-                    <!-- ✅ Catalog dropdown يظهر بناءً على showCatalogDropdown أو productSearch -->
                     <div *ngIf="showCatalogDropdown || transferForm.productSearch.length > 0"
                         class="border-b border-slate-200 divide-y divide-slate-100 max-h-40 overflow-y-auto bg-white">
 
-                        <!-- Loading state -->
                         <div *ngIf="isLoadingProducts"
                             class="px-5 py-4 text-sm text-slate-400 text-center flex items-center justify-center gap-2">
                             <svg class="animate-spin h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg"
@@ -411,14 +432,12 @@
                             Loading products...
                         </div>
 
-                        <!-- Error state -->
                         <div *ngIf="productsError && !isLoadingProducts"
                             class="px-5 py-4 text-sm text-red-500 text-center flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-base">error</span>
                             {{ productsError }}
                         </div>
 
-                        <!-- Results -->
                         <ng-container *ngIf="!isLoadingProducts && !productsError">
                             <button *ngFor="let item of filteredCatalogItems" type="button"
                                 (click)="addCatalogItem(item)"
@@ -440,7 +459,6 @@
                         </ng-container>
                     </div>
 
-                    <!-- Items table -->
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-200">
                             <thead class="bg-slate-50">
@@ -490,7 +508,6 @@
                                     </td>
                                 </tr>
 
-                                <!-- Empty state -->
                                 <tr *ngIf="transferForm.transferItems.length === 0">
                                     <td colspan="4" class="px-5 py-8 text-center text-slate-400 text-sm">
                                         <span
@@ -503,7 +520,6 @@
                     </div>
 
                     <div class="p-4 bg-slate-50 border-t border-slate-200 text-center">
-                        <!-- ✅ استخدام showCatalogDropdown بدل حط space في productSearch -->
                         <button type="button" (click)="showCatalogDropdown = true"
                             class="inline-flex items-center gap-1.5 text-sm font-medium text-[#1E3A8A] hover:text-blue-900 transition-colors">
                             <span class="material-symbols-outlined text-lg">add_circle</span> Browse Catalog to Add More
@@ -511,7 +527,7 @@
                     </div>
                 </div>
 
-            </div><!-- end scrollable body -->
+            </div>
 
             <!-- Modal Footer -->
             <div
@@ -565,7 +581,6 @@
             <div class="px-6 py-6 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <!-- Name -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             Warehouse Name <span class="text-red-500">*</span>
@@ -577,7 +592,6 @@
                             Name is required </p>
                     </div>
 
-                    <!-- Street -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             Street <span class="text-red-500">*</span>
@@ -589,7 +603,6 @@
                             Street is required </p>
                     </div>
 
-                    <!-- City -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             City <span class="text-red-500">*</span>
@@ -602,7 +615,6 @@
                         </p>
                     </div>
 
-                    <!-- State -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">State</label>
                         <input [(ngModel)]="addWarehouseForm.state" autocomplete="off" type="text"
@@ -613,7 +625,6 @@
                         </p>
                     </div>
 
-                    <!-- Postal Code -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Postal Code</label>
                         <input [(ngModel)]="addWarehouseForm.postalCode" autocomplete="off" type="text"
@@ -622,10 +633,8 @@
                         <p *ngIf="submittedAddWarehouse && !addWarehouseForm.postalCode" class="text-red-500 text-xs">
                             Postal Code is required
                         </p>
-
                     </div>
 
-                    <!-- Country -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             Country <span class="text-red-500">*</span>
@@ -638,7 +647,6 @@
                         </p>
                     </div>
 
-                    <!-- Type -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Type</label>
                         <div class="relative">
@@ -707,7 +715,6 @@
             <div class="px-6 py-6 space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-                    <!-- Name -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             Warehouse Name <span class="text-red-500">*</span>
@@ -716,7 +723,6 @@
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
                     </div>
 
-                    <!-- Street -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             Street <span class="text-red-500">*</span>
@@ -725,7 +731,6 @@
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
                     </div>
 
-                    <!-- City -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             City <span class="text-red-500">*</span>
@@ -734,21 +739,18 @@
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
                     </div>
 
-                    <!-- State -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">State</label>
                         <input [(ngModel)]="editWarehouseForm.state" type="text" placeholder="e.g. Giza"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
                     </div>
 
-                    <!-- Postal Code -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Postal Code</label>
                         <input [(ngModel)]="editWarehouseForm.postalCode" type="text" placeholder="e.g. 12345"
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
                     </div>
 
-                    <!-- Country -->
                     <div>
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">
                             Country <span class="text-red-500">*</span>
@@ -757,7 +759,6 @@
                             class="block w-full px-3 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-1 focus:ring-[#1E3A8A] focus:border-[#1E3A8A] bg-white" />
                     </div>
 
-                    <!-- Type -->
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-slate-700 mb-1.5">Type</label>
                         <div class="relative">
@@ -798,7 +799,6 @@
                     </ng-container>
                 </button>
             </div>
-
         </div>
     </div>
 </ng-container>

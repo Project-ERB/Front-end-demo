@@ -51,6 +51,16 @@ export class PaymentmanagmentComponent implements OnInit {
   pageSize = 3;
   loading = false;
 
+  isMobileSidebarOpen: boolean = false;
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
   get totalPages(): number {
     return Math.ceil(this.totalEntries / this.pageSize);
   }

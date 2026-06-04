@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PredictedProduct, WarehouseNode, WarehousePrediction, WarehouseService } from '../../../../core/services/warehouse/warehouse.service';
 import { ProductService } from '../../../../core/services/products/product.service';
+import { SiedbarWarehouseComponent } from "../../../../shared/UI/siedbar-warehouse/siedbar-warehouse/siedbar-warehouse.component";
 
 interface ProductMap {
   [id: string]: string;
@@ -10,14 +11,25 @@ interface ProductMap {
 
 @Component({
   selector: 'app-inventory-prediction',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SiedbarWarehouseComponent],
   templateUrl: './inventory-prediction.component.html',
   styleUrl: './inventory-prediction.component.scss',
 })
-export class InventoryPredictionComponent {
+export class InventoryPredictionComponent implements OnInit {
 
   private warehouseService = inject(WarehouseService);
   private productService = inject(ProductService);
+
+  // ── Mobile Sidebar State ──
+  isMobileSidebarOpen = false;
+
+  openMobileSidebar(): void {
+    this.isMobileSidebarOpen = true;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
 
   days: number = 30;
   loading = false;
@@ -69,7 +81,6 @@ export class InventoryPredictionComponent {
 
     this.warehouseService.getInventoryPrediction(this.days).subscribe({
       next: (data: WarehousePrediction[]) => {
-        // Resolve warehouse names & product names
         this.predictions = (data ?? []).map((w) => ({
           ...w,
           warehouseName: w.warehouseName || this.warehouseMap[w.warehouseId] || w.warehouseId,
@@ -90,20 +101,15 @@ export class InventoryPredictionComponent {
 
   /* ─── Display Helpers ─── */
 
-
-  /** Safely read a field from the product, tolerating different casings from the API */
   getFieldValue(product: PredictedProduct, field: string): number | null {
-    // Cast to 'any' to safely bypass strict 'unknown' index signature checking
     const p = product as any;
 
-    // Try exact match first
     const val = p[field];
     if (val !== undefined && val !== null) {
       const num = Number(val);
       if (!isNaN(num)) return num;
     }
 
-    // Try common casing variations
     const variants: string[] = [];
     if (field === 'quantityAvailable') {
       variants.push('quantityavailable', 'QuantityAvailable', 'quantity_available');
@@ -168,8 +174,4 @@ export class InventoryPredictionComponent {
   private isHigh(level: string | undefined): boolean {
     return level?.toLowerCase().includes('high') ?? false;
   }
-
-
-
-
-} 
+}

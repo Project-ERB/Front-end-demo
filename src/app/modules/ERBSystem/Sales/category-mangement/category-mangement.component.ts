@@ -180,21 +180,27 @@ export class CategoryMangementComponent implements OnInit, OnDestroy {
 
   private executeCategoryDelete(id: string): void {
     this._CategoriesService.deleteCategory(id).subscribe({
-      next: () => {
-        this._ToastrService.success('Category deleted successfully', 'Deleted ✅');
+      next: (res: any) => { // ← أضف :any
+        // ✅ استخراج رسالة النجاح
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Category deleted successfully';
+        this._ToastrService.success(successMsg, 'Deleted ✅');
+
         this.loadCategories();
         this.loadAllProducts();
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
+        // ✅ استخراج رسالة الخطأ
+        const errorMsg = err?.['error']?.['message'] || err?.['message'];
+
         if (err.status === 500) {
-          this._ToastrService.error('Cannot delete this category. Please check if it still has linked data.', 'Error ❌');
+          // لو في رسالة من الباك اند اعرضها، لو لا اعرض الرسالة الافتراضية
+          this._ToastrService.error(errorMsg || 'Cannot delete this category. Please check if it still has linked data.', 'Error ❌');
         } else {
-          this._ToastrService.error('Failed to delete Category', 'Error ❌');
+          this._ToastrService.error(errorMsg || 'Failed to delete Category', 'Error ❌');
         }
       }
     });
   }
-
   // ── Delete Selected ──
   deleteSelected(): void {
     if (this.selectedCount === 0) return;
@@ -225,12 +231,19 @@ export class CategoryMangementComponent implements OnInit, OnDestroy {
     forkJoin(productDeletes).pipe(
       switchMap(() => this._CategoriesService.deleteAllCategories(categoryIds))
     ).subscribe({
-      next: () => {
-        this._ToastrService.success('Selected categories deleted', 'Deleted ✅');
+      next: (res: any) => { // ← أضف :any
+        // ✅ استخراج رسالة النجاح
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Selected categories deleted';
+        this._ToastrService.success(successMsg, 'Deleted ✅');
+
         this.loadCategories();
         this.loadAllProducts();
       },
-      error: () => this._ToastrService.error('Failed to delete selected categories', 'Error ❌'),
+      error: (err: any) => { // ← أضف :any
+        // ✅ استخراج رسالة الخطأ
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Failed to delete selected categories';
+        this._ToastrService.error(errorMsg, 'Error ❌');
+      },
     });
     this.deleteTarget = null;
   }
@@ -251,13 +264,20 @@ export class CategoryMangementComponent implements OnInit, OnDestroy {
     this._ProductService.deleteAllProducts().pipe(
       switchMap(() => this._CategoriesService.deleteAllCategories(ids))
     ).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
+        // ✅ استخراج رسالة النجاح
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'All data deleted';
+
         this.categories = [];
         this.allProducts = [];
         this.currentPage = 1;
-        this._ToastrService.success('All data deleted', 'Cleared ✅');
+        this._ToastrService.success(successMsg, 'Cleared ✅');
       },
-      error: () => this._ToastrService.error('An error occurred during deletion', 'Error ❌'),
+      error: (err: any) => { // ← أضف :any
+        // ✅ استخراج رسالة الخطأ
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'An error occurred during deletion';
+        this._ToastrService.error(errorMsg, 'Error ❌');
+      },
     });
     this.deleteTarget = null;
   }
@@ -282,11 +302,18 @@ export class CategoryMangementComponent implements OnInit, OnDestroy {
       : this._CategoriesService.addCategory(formValue);
 
     request$.subscribe({
-      next: () => {
-        this._ToastrService.success('Category saved successfully', 'Success ✅');
+      next: (res: any) => { // ← أضف :any
+        // ✅ استخراج رسالة النجاح
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Category saved successfully';
+        this._ToastrService.success(successMsg, 'Success ✅');
+
         this.afterSuccess();
       },
-      error: () => this._ToastrService.error('Something went wrong', 'Error ❌'),
+      error: (err: any) => { // ← أضف :any
+        // ✅ استخراج رسالة الخطأ
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Something went wrong';
+        this._ToastrService.error(errorMsg, 'Error ❌');
+      },
       complete: () => { this.isSubmitting = false; }
     });
   }

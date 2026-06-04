@@ -1,17 +1,40 @@
-<!-- payments.component.html -->
 <div class="page-shell">
 
-    <!-- ─── Sidebar ─── -->
-    <app-sideba-sales></app-sideba-sales>
+    <!-- ── Desktop Sidebar ── -->
+    <div class="hidden lg:block relative z-10">
+        <app-sideba-sales></app-sideba-sales>
+    </div>
+
+    <!-- ── Mobile Sidebar Backdrop ── -->
+    <div class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+        [class.opacity-100]="isMobileSidebarOpen" [class.opacity-0]="!isMobileSidebarOpen"
+        [class.pointer-events-auto]="isMobileSidebarOpen" [class.pointer-events-none]="!isMobileSidebarOpen"
+        (click)="closeMobileSidebar()">
+    </div>
+
+    <!-- ── Mobile Sidebar Drawer ── -->
+    <div class="fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] transition-transform duration-300 ease-out lg:hidden"
+        [class.translate-x-0]="isMobileSidebarOpen" [class.-translate-x-full]="!isMobileSidebarOpen">
+
+        <app-sideba-sales [isMobileOpen]="isMobileSidebarOpen" (closeMobile)="closeMobileSidebar()">
+        </app-sideba-sales>
+    </div>
 
     <!-- ─── Main Content ─── -->
     <div class="page-shell__main">
 
         <!-- ─── Top App Bar ─── -->
         <header
-            class="sticky top-0 z-40 bg-[#f9f9ff] border-b border-[#c7c4d8] shadow-sm flex justify-between items-center px-6 h-16">
+            class="sticky top-0 z-40 bg-[#f9f9ff] border-b border-[#c7c4d8] shadow-sm flex justify-between items-center px-4 sm:px-6 h-16">
             <div class="flex items-center gap-4">
-                <div class="relative w-64">
+
+                <!-- زرار الهامبرجر للموبايل -->
+                <button (click)="toggleMobileSidebar()"
+                    class="lg:hidden flex-shrink-0 p-2 rounded-xl border border-[#c7c4d8] bg-white text-[#464555] hover:text-[#3525cd] hover:border-[#3525cd] transition-all duration-200 active:scale-95">
+                    <span class="material-symbols-outlined text-[20px]">menu</span>
+                </button>
+
+                <div class="relative w-64 hidden sm:block">
                     <span
                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#464555] text-[20px]">search</span>
                     <input [(ngModel)]="searchQuery"
@@ -19,50 +42,51 @@
                         placeholder="Search payments..." type="text" />
                 </div>
             </div>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 sm:gap-4">
                 <button
                     class="w-10 h-10 rounded-full text-[#464555] hover:bg-[#f0f3ff] flex items-center justify-center transition-colors">
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
                 <button
-                    class="w-10 h-10 rounded-full text-[#464555] hover:bg-[#f0f3ff] flex items-center justify-center transition-colors">
+                    class="hidden sm:flex w-10 h-10 rounded-full text-[#464555] hover:bg-[#f0f3ff] items-center justify-center transition-colors">
                     <span class="material-symbols-outlined">settings</span>
                 </button>
-                <div class="h-6 w-px bg-[#c7c4d8] mx-1"></div>
+                <div class="h-6 w-px bg-[#c7c4d8] mx-1 hidden sm:block"></div>
                 <button
-                    class="flex items-center gap-2 px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-xs font-medium hover:bg-[#f0f3ff] transition-colors">
+                    class="flex items-center gap-2 px-3 sm:px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-xs font-medium hover:bg-[#f0f3ff] transition-colors">
                     <span class="material-symbols-outlined text-[18px]">download</span>
-                    Export
+                    <span class="hidden sm:inline">Export</span>
                 </button>
             </div>
         </header>
 
         <!-- ─── Page Content ─── -->
-        <main class="flex-1 p-6 flex flex-col gap-6 overflow-y-auto">
+        <main class="flex-1 p-4 sm:p-6 flex flex-col gap-6 overflow-y-auto">
 
             <!-- Page Header -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-4xl font-bold text-[#111c2d] tracking-tight">Payments</h2>
-                    <p class="text-base text-[#464555] mt-1">Track transaction history and invoice settlements.</p>
+                    <h2 class="text-2xl sm:text-4xl font-bold text-[#111c2d] tracking-tight">Payments</h2>
+                    <p class="text-sm sm:text-base text-[#464555] mt-1">Track transaction history and invoice
+                        settlements.</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <div
                         class="flex items-center gap-2 px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-sm cursor-pointer hover:border-[#3525cd] transition-colors">
                         <span class="material-symbols-outlined text-[20px] text-[#464555]">calendar_month</span>
-                        <span>Last 30 Days</span>
+                        <span class="hidden sm:inline">Last 30 Days</span>
                         <span class="material-symbols-outlined text-[20px] text-[#464555]">keyboard_arrow_down</span>
                     </div>
                     <div
                         class="flex items-center gap-2 px-4 py-2 bg-[#f9f9ff] border border-[#c7c4d8] rounded-lg text-[#111c2d] text-sm cursor-pointer hover:border-[#3525cd] transition-colors">
                         <span class="material-symbols-outlined text-[20px] text-[#464555]">filter_list</span>
-                        <span>Filter</span>
+                        <span class="hidden sm:inline">Filter</span>
                     </div>
                 </div>
             </div>
 
             <!-- ─── Stats Bento Grid ─── -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 
                 <ng-container *ngFor="let stat of stats">
                     <!-- Highlighted card -->
@@ -114,7 +138,6 @@
                             <tr
                                 class="bg-[#f0f3ff] border-b border-[#c7c4d8] text-[#464555] text-[12px] font-medium uppercase tracking-wide">
                                 <th class="p-3 w-12 text-center"></th>
-                                <!-- <th class="p-3">Group ID</th> -->
                                 <th class="p-3">Invoice Number</th>
                                 <th class="p-3 text-right">Total Amount</th>
                                 <th class="p-3 text-right">Total Paid</th>
@@ -141,7 +164,6 @@
                                         </button>
                                     </td>
 
-                                    <!-- <td class="p-3 font-semibold">{{ group.groupId }}</td> -->
                                     <td class="p-3 font-semibold text-[#3525cd]">{{ group.invoiceNumber }}</td>
                                     <td class="p-3 text-right">{{ formatCurrency(group.totalAmount) }}</td>
                                     <td class="p-3 text-right text-emerald-600 font-medium">{{
@@ -255,7 +277,6 @@
                             <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                         </button>
 
-                        <!-- Find this block in the Pagination section -->
                         <ng-container *ngFor="let p of getPageNumbers()">
                             <span *ngIf="p === '...'"
                                 class="w-8 h-8 flex items-center justify-center text-[#464555]">...</span>

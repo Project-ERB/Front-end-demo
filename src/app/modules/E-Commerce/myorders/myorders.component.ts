@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Environment } from '../../../shared/UI/environment/env';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { RouterLink } from "@angular/router";
+import { NavbarECommerceComponent } from "../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
+import { ECommerceSidebarComponent } from "../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component";
 
 export interface OrderItem {
   productId: string;
@@ -39,7 +41,7 @@ export interface Order {
 
 @Component({
   selector: 'app-myorders',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NavbarECommerceComponent, ECommerceSidebarComponent],
 
   animations: [
     trigger('fadeUp', [
@@ -63,7 +65,7 @@ export interface Order {
   templateUrl: './myorders.component.html',
   styleUrl: './myorders.component.scss',
 })
-export class MyordersComponent {
+export class MyordersComponent implements OnInit {
 
   private readonly http = inject(HttpClient);
 
@@ -72,8 +74,20 @@ export class MyordersComponent {
   errorMessage = '';
   expandedOrderId: string | null = null;
 
+  // Sidebar Control
+  isMobileSidebarOpen = false;
+
   ngOnInit(): void {
     this.loadOrders();
+  }
+
+  // ─── Mobile Sidebar Methods ─────────────────────────────
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
   }
 
   loadOrders(): void {

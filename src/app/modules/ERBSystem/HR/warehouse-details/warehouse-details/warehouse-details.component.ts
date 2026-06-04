@@ -27,8 +27,8 @@ export interface StockMovement {
   date: string; time: string; type: TransactionType;
   productName: string; sku: string; imageUrl: string;
   quantityChange: number;
-  unitCost: number;      // ← أضف
-  currency: string;      // ← أضف
+  unitCost: number;
+  currency: string;
   userInitials: string; userName: string; userAvatarColor: string;
   referenceId: string;
 }
@@ -59,6 +59,17 @@ export class WarehouseDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private toast: ToastrService
   ) { }
+
+  // ── Mobile Sidebar State ──
+  isMobileSidebarOpen = false;
+
+  openMobileSidebar(): void {
+    this.isMobileSidebarOpen = true;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
 
   // ── Warehouse selector ────────────────────────────────────────────
   warehouseOptions: { value: string; guid: string; label: string }[] = [];
@@ -130,7 +141,6 @@ export class WarehouseDetailsComponent implements OnInit {
     { key: 'inventory', label: 'Inventory' },
     { key: 'movements', label: 'Stock Movements' },
     { key: 'adjustments', label: 'Adjustments' },
-    // { key: 'settings', label: 'Settings' },
   ];
 
   // ── Data ─────────────────────────────────────────────────────────
@@ -146,8 +156,6 @@ export class WarehouseDetailsComponent implements OnInit {
       }
     });
 
-    // ✅ بس loadWarehouseOptions هي اللي بتكال هنا
-    // هي اللي بتكال loadInventory و loadStockMovements جوّاها
     this.loadWarehouseOptions();
     this.loadAllProducts();
     this.loadAdjustments();
@@ -180,7 +188,6 @@ export class WarehouseDetailsComponent implements OnInit {
           console.log('✅ selected warehouse:', this.warehouse.name, this.warehouseId);
         }
 
-        // ✅ بيتكالوا بس بعد ما الـ warehouses اتحملت
         this.loadInventory();
         this.loadStockMovements();
       },
@@ -250,6 +257,7 @@ export class WarehouseDetailsComponent implements OnInit {
       },
     });
   }
+
   // ── Load Stock Movements ──────────────────────────────────────────
   loadStockMovements(): void {
     this.isLoadingMovements = true;
@@ -264,8 +272,8 @@ export class WarehouseDetailsComponent implements OnInit {
           sku: n.sku,
           imageUrl: '',
           quantityChange: n.movementType === 'Out' || n.movementType === 'TransferOut' ? -n.quantity : n.quantity,
-          unitCost: n.unitCost,       // ← أضف
-          currency: n.currency,       // ← أضف
+          unitCost: n.unitCost,
+          currency: n.currency,
           userInitials: '—',
           userName: n.warehouseName,
           userAvatarColor: 'indigo',
@@ -451,7 +459,7 @@ export class WarehouseDetailsComponent implements OnInit {
 
   get modalProductResults() {
     const q = this.modalForm.productSearch.toLowerCase();
-    if (!q) return this.allProducts.slice(0, 5);  // ← allProducts بدل inventory
+    if (!q) return this.allProducts.slice(0, 5);
     return this.allProducts.filter(p =>
       p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q)
     );
@@ -475,9 +483,8 @@ export class WarehouseDetailsComponent implements OnInit {
     };
     this.modalForm.productSearch = item.name;
 
-    // ربط الـ systemQty بـ quantityOnHand من الـ inventory
     const inventoryItem = this.inventory.find(i => i.sku === item.sku);
-    this.modalForm.systemQty = inventoryItem?.onHand ?? 0; // onHand = quantityOnHand
+    this.modalForm.systemQty = inventoryItem?.onHand ?? 0;
   }
   modalNext(): void { if (this.modalStep < 3) this.modalStep = (this.modalStep + 1) as 1 | 2 | 3; }
   modalBack(): void { if (this.modalStep > 1) this.modalStep = (this.modalStep - 1) as 1 | 2 | 3; }
@@ -496,11 +503,8 @@ export class WarehouseDetailsComponent implements OnInit {
       next: () => {
         this.isSubmittingAdjustment = false;
         this.toast.success('Adjustment submitted successfully!');
-
-        // reload من الـ API عشان البيانات تتحفظ وتظهر بعد الـ refresh
         this.loadInventory();
         this.loadStockMovements();
-
         setTimeout(() => this.closeAdjustmentModal(), 1500);
       },
       error: (err) => {
@@ -524,7 +528,6 @@ export class WarehouseDetailsComponent implements OnInit {
     unitCost: null as number | null
   };
 
-  // ← Now searches allProducts (not inventory)
   get initStockProductResults(): WarehouseProduct[] {
     const q = this.initStockForm.productSearch.toLowerCase();
     if (!q) return this.allProducts.slice(0, 5);
@@ -541,7 +544,7 @@ export class WarehouseDetailsComponent implements OnInit {
     this.initStockForm = { productSearch: '', selectedProduct: null, quantity: 0, unitCost: null };
     this.initStockError = '';
     this.initStockSuccess = false;
-    this.stockInWarehouseId = this.warehouseId; // ← default للمخزن الحالي
+    this.stockInWarehouseId = this.warehouseId;
     this.showInitStockModal = true;
   }
   closeInitStockModal(): void { if (this.isSubmittingInitStock) return; this.showInitStockModal = false; }
@@ -564,7 +567,6 @@ export class WarehouseDetailsComponent implements OnInit {
     this.isSubmittingInitStock = true;
     this.initStockError = '';
 
-    // ✅ productId انتقل للـ body
     this.warehouseService.stockIn(this.warehouseId, {
       productId: p.productId,
       sku: p.sku,
@@ -591,12 +593,10 @@ export class WarehouseDetailsComponent implements OnInit {
     this.warehouseService.getAdjustments().subscribe({
       next: (nodes) => {
         this.adjustments = nodes.map(n => {
-          // استخرج الـ type والـ reason من الـ reference
           const referenceParts = n.reference?.split(':') ?? [];
           const typeRaw = referenceParts[0]?.trim() ?? '';
           const reason = referenceParts.slice(1).join(':').trim() ?? '';
 
-          // map الـ type للـ AdjustmentType
           const typeMap: Record<string, AdjustmentType> = {
             'Damage': 'Damage',
             'Count Adjustment': 'Physical Count',
@@ -654,7 +654,7 @@ export class WarehouseDetailsComponent implements OnInit {
     this.increaseStockForm = { productSearch: '', selectedProduct: null, addQty: 0, unitCost: null };
     this.increaseStockError = '';
     this.increaseStockSuccess = false;
-    this.stockInWarehouseId = this.warehouseId; // ← نفس الـ property
+    this.stockInWarehouseId = this.warehouseId;
     this.showIncreaseStockModal = true;
   }
 
@@ -681,7 +681,6 @@ export class WarehouseDetailsComponent implements OnInit {
     this.isSubmittingIncreaseStock = true;
     this.increaseStockError = '';
 
-    // ✅ productId انتقل للـ body
     this.warehouseService.stockIn(this.warehouseId, {
       productId: p.productId,
       sku: p.sku,
@@ -702,6 +701,7 @@ export class WarehouseDetailsComponent implements OnInit {
       },
     });
   }
+
   // ── Decrease Stock Modal ──────────────────────────────────────────
   showDecreaseStockModal = false;
   decreaseStockForm = { productSearch: '', selectedProduct: null as null | InventoryItem, qty: 0, reference: '' };
@@ -716,7 +716,7 @@ export class WarehouseDetailsComponent implements OnInit {
     this.decreaseStockForm = { productSearch: '', selectedProduct: null, qty: 0, reference: '' };
     this.decreaseStockError = '';
     this.decreaseStockSuccess = false;
-    this.stockOutWarehouseId = this.warehouseId; // ← default للمخزن الحالي
+    this.stockOutWarehouseId = this.warehouseId;
     this.showDecreaseStockModal = true;
   }
 
@@ -739,7 +739,6 @@ export class WarehouseDetailsComponent implements OnInit {
     if (!this.stockOutWarehouseId) { this.decreaseStockError = 'No warehouse selected.'; return; }
     if (!p.inventoryId) { this.decreaseStockError = 'Inventory ID not found.'; return; }
 
-    // ✅ NEW: منع الـ negative stock
     if (this.decreaseStockForm.qty > p.available) {
       this.decreaseStockError = `Cannot decrease more than available stock (${p.available} units).`;
       return;
@@ -762,7 +761,6 @@ export class WarehouseDetailsComponent implements OnInit {
           const reduced = this.decreaseStockForm.qty;
           this.inventory[idx] = {
             ...this.inventory[idx],
-            // ✅ NEW: Math.max عشان نأمن من negative values
             onHand: Math.max(0, this.inventory[idx].onHand - reduced),
             available: Math.max(0, this.inventory[idx].available - reduced),
           };
@@ -772,8 +770,8 @@ export class WarehouseDetailsComponent implements OnInit {
             type: 'Stock Out', productName: p.name, sku: p.sku, imageUrl: '',
             quantityChange: -reduced, userInitials: 'JD', userName: this.warehouse.name,
             userAvatarColor: 'indigo', referenceId: refId,
-            unitCost: 0,        // ← أضف
-            currency: '',       // ← أضف
+            unitCost: 0,
+            currency: '',
           });
         }
         setTimeout(() => this.closeDecreaseStockModal(), 1500);
@@ -784,6 +782,5 @@ export class WarehouseDetailsComponent implements OnInit {
       },
     });
   }
-
 
 }

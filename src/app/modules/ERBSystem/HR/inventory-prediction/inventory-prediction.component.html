@@ -1,164 +1,242 @@
-<!-- Page Header -->
-<div class="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-    <div>
-        <h1 class="text-2xl font-bold text-[#0f172a]">Inventory Prediction</h1>
-        <p class="text-sm text-[#64748b]">
-            Predict which products are at risk of stockout based on demand forecasting.
-        </p>
+<div class="flex h-screen w-full overflow-hidden bg-[#f6f6f8] font-sans text-slate-900 antialiased">
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Desktop Sidebar (always visible on lg+)           -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="hidden lg:flex flex-shrink-0 h-full">
+        <app-siedbar-warehouse></app-siedbar-warehouse>
     </div>
-</div>
 
-<!-- Controls Card -->
-<div class="mb-6 rounded-xl border border-[#e2e8f0] bg-white p-5 shadow-sm">
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
-        <!-- Days Input -->
-        <div class="flex flex-col gap-1.5">
-            <label for="daysInput" class="text-sm font-medium text-[#334155]">
-                Forecast Period (Days)
-            </label>
-            <input id="daysInput" type="number" [min]="1" [max]="365" [(ngModel)]="days" placeholder="e.g. 30"
-                class="h-10 w-48 rounded-lg border border-[#e2e8f0] bg-white px-3 text-sm text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20"
-                [disabled]="loading" />
-        </div>
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Mobile Sidebar Drawer + Backdrop                  -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <div class="fixed inset-0 z-50 lg:hidden" [class.pointer-events-none]="!isMobileSidebarOpen"
+        [class.invisible]="!isMobileSidebarOpen">
 
-        <!-- Predict Button -->
-        <button (click)="predict()" [disabled]="loading || days < 1"
-            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-5 text-sm font-medium text-white transition-colors hover:bg-[#1e3b8a]/90 disabled:cursor-not-allowed disabled:opacity-50">
-            @if (loading) {
-            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-            </svg>
-            <span>Predicting…</span>
-            } @else {
-            <span class="material-symbols-outlined text-[18px]">auto_graph</span>
-            <span>Predict Stock Risk</span>
-            }
-        </button>
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/40 backdrop-blur-[2px] transition-opacity duration-300"
+            [class.opacity-0]="!isMobileSidebarOpen" [class.opacity-100]="isMobileSidebarOpen"
+            (click)="closeMobileSidebar()"></div>
 
-        <!-- Result Summary -->
-        @if (predictions.length > 0 && !loading) {
-        <div class="flex items-center gap-3 sm:ml-auto">
-            <div class="flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
-                <span class="material-symbols-outlined text-[14px]">warning</span>
-                {{ totalAtRisk }} products at risk
-            </div>
-            <div
-                class="flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-xs font-medium text-[#1e3b8a]">
-                <span class="material-symbols-outlined text-[14px]">warehouse</span>
-                {{ predictions.length }} warehouses
-            </div>
-        </div>
-        }
-    </div>
-</div>
-
-<!-- Empty State -->
-@if (!loading && predictions.length === 0 && !hasSearched) {
-<div
-    class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#cbd5e1] bg-white/50 py-20">
-    <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-[#eff6ff]">
-        <span class="material-symbols-outlined text-3xl text-[#1e3b8a]">query_stats</span>
-    </div>
-    <h3 class="mb-1 text-base font-semibold text-[#0f172a]">No Prediction Yet</h3>
-    <p class="max-w-xs text-center text-sm text-[#64748b]">
-        Enter the number of days and click <strong>"Predict Stock Risk"</strong> to see which products may run out of
-        stock.
-    </p>
-</div>
-}
-
-<!-- No Risk State -->
-@if (!loading && hasSearched && predictions.length === 0) {
-<div
-    class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#cbd5e1] bg-white/50 py-20">
-    <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-green-50">
-        <span class="material-symbols-outlined text-3xl text-green-600">check_circle</span>
-    </div>
-    <h3 class="mb-1 text-base font-semibold text-[#0f172a]">All Clear!</h3>
-    <p class="max-w-xs text-center text-sm text-[#64748b]">
-        No products are predicted to be at risk within the specified period.
-    </p>
-</div>
-}
-
-<!-- Error State -->
-@if (errorMessage && !loading) {
-<div class="rounded-xl border border-red-200 bg-red-50 p-4">
-    <div class="flex items-start gap-3">
-        <span class="material-symbols-outlined mt-0.5 text-xl text-red-500">error</span>
-        <div>
-            <p class="text-sm font-medium text-red-800">Prediction Failed</p>
-            <p class="mt-1 text-sm text-red-600">{{ errorMessage }}</p>
+        <!-- Drawer Panel -->
+        <div class="fixed inset-y-0 left-0 w-72 z-50 shadow-2xl transform transition-transform duration-300 ease-out"
+            [class.-translate-x-full]="!isMobileSidebarOpen" [class.translate-x-0]="isMobileSidebarOpen">
+            <app-siedbar-warehouse [isMobileOpen]="isMobileSidebarOpen" (closeMobile)="closeMobileSidebar()">
+            </app-siedbar-warehouse>
         </div>
     </div>
-</div>
-}
 
-<!-- Prediction Results -->
-@if (predictions.length > 0 && !loading) {
-<div class="flex flex-col gap-5">
-    @for (warehouse of predictions; track warehouse.warehouseId) {
-    <div class="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
-        <!-- Warehouse Header -->
-        <div class="flex items-center justify-between border-b border-[#e2e8f0] bg-[#f8fafc] px-5 py-3.5">
-            <div class="flex items-center gap-3">
-                <div class="flex size-9 items-center justify-center rounded-lg bg-[#1e3b8a]/10">
-                    <span class="material-symbols-outlined text-lg text-[#1e3b8a]">warehouse</span>
+    <!-- ══════════════════════════════════════════════════ -->
+    <!-- Main Content                                      -->
+    <!-- ══════════════════════════════════════════════════ -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden">
+
+        <!-- Header -->
+        <header
+            class="h-16 px-4 sm:px-6 flex items-center justify-between bg-white border-b border-slate-200 flex-shrink-0 z-10">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- Hamburger Button (mobile only) -->
+                <button
+                    class="lg:hidden p-2 -ml-1 text-slate-500 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                    (click)="openMobileSidebar()">
+                    <span class="material-symbols-outlined" style="font-size:24px">menu</span>
+                </button>
+
+                <div class="p-2 bg-[#1e3b8a]/10 rounded-lg">
+                    <span class="material-symbols-outlined text-[#1e3b8a]">query_stats</span>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-[#0f172a]">
-                        {{ warehouse.warehouseName || warehouse.warehouseId }}
-                    </h3>
-                    <p class="text-xs text-[#64748b]">
-                        {{ warehouse.productsAtRisk?.length ?? 0 }} product(s) at risk
-                    </p>
+                    <h2 class="text-lg font-semibold text-slate-900">Inventory Prediction</h2>
+                    <p class="text-xs text-slate-500 hidden sm:block">Stock risk forecasting & analytics</p>
                 </div>
             </div>
-        </div>
+            <div class="flex items-center gap-3">
+                <button class="relative p-2 text-slate-500 hover:text-[#1e3b8a] transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span
+                        class="absolute top-1.5 right-1.5 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+                <div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden ring-2 ring-white shadow-sm bg-cover bg-center"
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBHIO8CMGT-EM3Uutr0ZsANRYc-KdFVoYwGZAcpywhr_fy7knV3FjAS9Y8_ooCniZu6juiCNVeJiDYoGKyDa_hTp6hmEIk44gSwyFgNHYxvtau_frREl1oGxEdXU8g8uHDtn9Mqx9EUOwl_cDJ4zVSGTioq0BJrIZ1Q_uiGR-rivMEafhh2ZqoFWYsitJu6kw6NMt1soFCdq2xIhIdFcLaSAMGM1UM6X2dpMZHBwHFbCwlm9LmrVZJGKTYVNQSGPUtngCVZ0kMEmDEf')">
+                </div>
+            </div>
+        </header>
 
-        <!-- Products Table -->
-        @if (warehouse.productsAtRisk && warehouse.productsAtRisk.length > 0) {
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-                <thead>
-                    <tr class="border-b border-[#e2e8f0] text-xs font-medium uppercase text-[#64748b]">
-                        <th class="px-5 py-3">Product</th>
-                        <th class="px-5 py-3 text-right">Quantity Available</th>
-                        <th class="px-5 py-3 text-center">Estimated Days Left</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-[#f1f5f9]">
-                    @for (product of warehouse.productsAtRisk; track product.productId) {
-                    <tr class="transition-colors hover:bg-[#f8fafc]">
-                        <td class="px-5 py-3 font-medium text-[#0f172a]">
-                            {{ product.productName || product.productId }}
-                        </td>
-                        <td class="px-5 py-3 text-right">
-                            <span class="font-semibold tabular-nums"
-                                [class]="getQuantityColorClass(getFieldValue(product, 'quantityAvailable'))">
-                                {{ formatNumber(getFieldValue(product, 'quantityAvailable')) }}
-                            </span>
-                        </td>
-                        <td class="px-5 py-3 text-center">
-                            <span
-                                class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                                [class]="getDaysLeftBadgeClass(getFieldValue(product, 'estimatedDaysLeft'))">
-                                @if (getFieldValue(product, 'estimatedDaysLeft') !== null) {
-                                {{ getFieldValue(product, 'estimatedDaysLeft') }} days
-                                } @else {
-                                <span class="text-[#94a3b8]">—</span>
-                                }
-                            </span>
-                        </td>
-                    </tr>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6">
+            <div class="max-w-5xl mx-auto">
+
+                <!-- Page Header -->
+                <div class="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h1 class="text-2xl font-bold text-[#0f172a]">Inventory Prediction</h1>
+                        <p class="text-sm text-[#64748b]">
+                            Predict which products are at risk of stockout based on demand forecasting.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Controls Card -->
+                <div class="mb-6 rounded-xl border border-[#e2e8f0] bg-white p-4 sm:p-5 shadow-sm">
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-end">
+                        <!-- Days Input -->
+                        <div class="flex flex-col gap-1.5">
+                            <label for="daysInput" class="text-sm font-medium text-[#334155]">
+                                Forecast Period (Days)
+                            </label>
+                            <input id="daysInput" type="number" [min]="1" [max]="365" [(ngModel)]="days"
+                                placeholder="e.g. 30"
+                                class="h-10 w-full sm:w-48 rounded-lg border border-[#e2e8f0] bg-white px-3 text-sm text-[#0f172a] outline-none transition-colors placeholder:text-[#94a3b8] focus:border-[#1e3b8a] focus:ring-2 focus:ring-[#1e3b8a]/20"
+                                [disabled]="loading" />
+                        </div>
+
+                        <!-- Predict Button -->
+                        <button (click)="predict()" [disabled]="loading || days < 1"
+                            class="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#1e3b8a] px-5 text-sm font-medium text-white transition-colors hover:bg-[#1e3b8a]/90 disabled:cursor-not-allowed disabled:opacity-50">
+                            @if (loading) {
+                            <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4" />
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                            </svg>
+                            <span>Predicting…</span>
+                            } @else {
+                            <span class="material-symbols-outlined text-[18px]">auto_graph</span>
+                            <span>Predict Stock Risk</span>
+                            }
+                        </button>
+
+                        <!-- Result Summary -->
+                        @if (predictions.length > 0 && !loading) {
+                        <div class="flex items-center gap-3 sm:ml-auto">
+                            <div
+                                class="flex items-center gap-1.5 rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
+                                <span class="material-symbols-outlined text-[14px]">warning</span>
+                                {{ totalAtRisk }} products at risk
+                            </div>
+                            <div
+                                class="flex items-center gap-1.5 rounded-full bg-[#eff6ff] px-3 py-1 text-xs font-medium text-[#1e3b8a]">
+                                <span class="material-symbols-outlined text-[14px]">warehouse</span>
+                                {{ predictions.length }} warehouses
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                @if (!loading && predictions.length === 0 && !hasSearched) {
+                <div
+                    class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#cbd5e1] bg-white/50 py-20">
+                    <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-[#eff6ff]">
+                        <span class="material-symbols-outlined text-3xl text-[#1e3b8a]">query_stats</span>
+                    </div>
+                    <h3 class="mb-1 text-base font-semibold text-[#0f172a]">No Prediction Yet</h3>
+                    <p class="max-w-xs text-center text-sm text-[#64748b]">
+                        Enter the number of days and click <strong>"Predict Stock Risk"</strong> to see which products
+                        may run out of
+                        stock.
+                    </p>
+                </div>
+                }
+
+                <!-- No Risk State -->
+                @if (!loading && hasSearched && predictions.length === 0) {
+                <div
+                    class="flex flex-col items-center justify-center rounded-xl border border-dashed border-[#cbd5e1] bg-white/50 py-20">
+                    <div class="mb-4 flex size-16 items-center justify-center rounded-2xl bg-green-50">
+                        <span class="material-symbols-outlined text-3xl text-green-600">check_circle</span>
+                    </div>
+                    <h3 class="mb-1 text-base font-semibold text-[#0f172a]">All Clear!</h3>
+                    <p class="max-w-xs text-center text-sm text-[#64748b]">
+                        No products are predicted to be at risk within the specified period.
+                    </p>
+                </div>
+                }
+
+                <!-- Error State -->
+                @if (errorMessage && !loading) {
+                <div class="rounded-xl border border-red-200 bg-red-50 p-4">
+                    <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined mt-0.5 text-xl text-red-500">error</span>
+                        <div>
+                            <p class="text-sm font-medium text-red-800">Prediction Failed</p>
+                            <p class="mt-1 text-sm text-red-600">{{ errorMessage }}</p>
+                        </div>
+                    </div>
+                </div>
+                }
+
+                <!-- Prediction Results -->
+                @if (predictions.length > 0 && !loading) {
+                <div class="flex flex-col gap-5">
+                    @for (warehouse of predictions; track warehouse.warehouseId) {
+                    <div class="overflow-hidden rounded-xl border border-[#e2e8f0] bg-white shadow-sm">
+                        <!-- Warehouse Header -->
+                        <div
+                            class="flex items-center justify-between border-b border-[#e2e8f0] bg-[#f8fafc] px-5 py-3.5">
+                            <div class="flex items-center gap-3">
+                                <div class="flex size-9 items-center justify-center rounded-lg bg-[#1e3b8a]/10">
+                                    <span class="material-symbols-outlined text-lg text-[#1e3b8a]">warehouse</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-semibold text-[#0f172a]">
+                                        {{ warehouse.warehouseName || warehouse.warehouseId }}
+                                    </h3>
+                                    <p class="text-xs text-[#64748b]">
+                                        {{ warehouse.productsAtRisk?.length ?? 0 }} product(s) at risk
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Products Table -->
+                        @if (warehouse.productsAtRisk && warehouse.productsAtRisk.length > 0) {
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-[#e2e8f0] text-xs font-medium uppercase text-[#64748b]">
+                                        <th class="px-5 py-3">Product</th>
+                                        <th class="px-5 py-3 text-right">Quantity Available</th>
+                                        <th class="px-5 py-3 text-center">Estimated Days Left</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#f1f5f9]">
+                                    @for (product of warehouse.productsAtRisk; track product.productId) {
+                                    <tr class="transition-colors hover:bg-[#f8fafc]">
+                                        <td class="px-5 py-3 font-medium text-[#0f172a]">
+                                            {{ product.productName || product.productId }}
+                                        </td>
+                                        <td class="px-5 py-3 text-right">
+                                            <span class="font-semibold tabular-nums"
+                                                [class]="getQuantityColorClass(getFieldValue(product, 'quantityAvailable'))">
+                                                {{ formatNumber(getFieldValue(product, 'quantityAvailable')) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-5 py-3 text-center">
+                                            <span
+                                                class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold"
+                                                [class]="getDaysLeftBadgeClass(getFieldValue(product, 'estimatedDaysLeft'))">
+                                                @if (getFieldValue(product, 'estimatedDaysLeft') !== null) {
+                                                {{ getFieldValue(product, 'estimatedDaysLeft') }} days
+                                                } @else {
+                                                <span class="text-[#94a3b8]">—</span>
+                                                }
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        }
+                    </div>
                     }
-                </tbody>
-            </table>
+                </div>
+                }
+
+            </div>
         </div>
-        }
-    </div>
-    }
+    </main>
+
 </div>
-}
-`,

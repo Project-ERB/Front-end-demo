@@ -4,11 +4,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Customer, InvoiceService, Product } from '../../../../core/services/invoice/invoice.service';
 
-import { 
+import {
   Invoice as InvoiceApi,
   InvoiceLine as InvoiceLineApi,
-  InvoiceStatus as InvoiceStatusApi,    
- 
+  InvoiceStatus as InvoiceStatusApi,
+
 } from '../../../../core/services/invoice/invoice.service';
 
 export type InvoiceStatus = 'Draft' | 'Sent' | 'Paid' | 'Overdue' | 'Partial' | 'Cancelled';
@@ -51,6 +51,16 @@ export class InvoicemanagmentComponent implements OnInit {
   currentPage = 1;
   totalInvoices = 0;
   loading = false;
+
+  isMobileSidebarOpen: boolean = false;
+
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
 
   get totalPages(): number {
     return Math.ceil(this.totalInvoices / this.rowsPerPage);

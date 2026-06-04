@@ -299,9 +299,14 @@ export class CartDetailsComponent implements OnInit {
       this._ToastrService.error('Product SKU not found.');
       return;
     }
+
     this.addingToCartSku = sku;
     this._eCommerceService.addToCart({ sku, quantity }).subscribe({
       next: (res) => {
+
+        // ✅ استخراج رسالة النجاح من الـ Response أو وضع رسالة افتراضية
+        const successMsg = res?.message || res?.data?.message || `"${this.product.name}" added to cart!`;
+
         // ← جيب العدد الحقيقي وحدّث الـ badge
         this._eCommerceService.getCart().subscribe({
           next: (cartRes) => {
@@ -309,20 +314,23 @@ export class CartDetailsComponent implements OnInit {
             const item = items.find((i: any) => i.sku === sku);
             if (item) this.cartItemId = item.id;
 
-            // ← أضف السطر ده
             const totalItems = items.reduce((sum: number, i: any) => sum + i.quantity, 0);
             this._eCommerceService.updateCartCount(totalItems);
           },
           error: (err) => console.error('getCart error:', err)
         });
-        this.cartSuccessMessage = `"${this.product.name}" added to cart!`;
+
+        this.cartSuccessMessage = successMsg;
         this.addingToCartSku = null;
-        this._ToastrService.success(this.cartSuccessMessage);
+        this._ToastrService.success(successMsg); // ✅ عرض الرسالة اللي رجعت من الباك اند
         setTimeout(() => (this.cartSuccessMessage = ''), 3000);
       },
-      error: () => {
+      error: (err) => {
+        // ✅ استخراج رسالة الخطأ من الـ Backend (غالباً بتكون في err.error.message)
+        const errorMsg = err?.error?.message || err?.message || 'Failed to add to cart. Please try again.';
+
         this.addingToCartSku = null;
-        this._ToastrService.error('Failed to add to cart. Please try again.');
+        this._ToastrService.error(errorMsg); // ✅ عرض رسالة الخطأ الحقيقية
       },
     });
   }
@@ -333,13 +341,19 @@ export class CartDetailsComponent implements OnInit {
       return;
     }
     this._eCommerceService.updateQuantity(this.cartItemId, qty + 1).subscribe({
-      next: () => {
-        this._ToastrService.success('Cart quantity updated!');
+      next: (res) => {
+        // ✅ استخراج رسالة النجاح
+        const successMsg = res?.message || 'Cart quantity updated!';
+        this._ToastrService.success(successMsg);
+
         this.quantity.update(q => q + 1);
-        // ← أضف السطر ده
         this._eCommerceService.updateCartCount(this._eCommerceService.getCartCount() + 1);
       },
-      error: () => this._ToastrService.error('Failed to update quantity.')
+      error: (err) => {
+        // ✅ استخراج رسالة الخطأ
+        const errorMsg = err?.error?.message || err?.message || 'Failed to update quantity.';
+        this._ToastrService.error(errorMsg);
+      }
     });
   }
 
@@ -350,13 +364,19 @@ export class CartDetailsComponent implements OnInit {
       return;
     }
     this._eCommerceService.updateQuantity(this.cartItemId, qty - 1).subscribe({
-      next: () => {
-        this._ToastrService.success('Cart quantity updated!');
+      next: (res) => {
+        // ✅ استخراج رسالة النجاح
+        const successMsg = res?.message || 'Cart quantity updated!';
+        this._ToastrService.success(successMsg);
+
         this.quantity.update(q => q - 1);
-        // ← أضف السطر ده
         this._eCommerceService.updateCartCount(this._eCommerceService.getCartCount() - 1);
       },
-      error: () => this._ToastrService.error('Failed to update quantity.')
+      error: (err) => {
+        // ✅ استخراج رسالة الخطأ
+        const errorMsg = err?.error?.message || err?.message || 'Failed to update quantity.';
+        this._ToastrService.error(errorMsg);
+      }
     });
   }
 

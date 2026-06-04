@@ -185,15 +185,31 @@ export class HomeComponent implements OnInit {
     this.cartSuccessMessage = '';
 
     this._ECommerceService.addToCart({ sku, quantity }).subscribe({
-      next: () => {
-        this.cartSuccessMessage = `"${product.name}" added to cart!`;
+      next: (res) => {
+        // ✅ استخراج رسالة النجاح من الـ Response أو وضع رسالة افتراضية
+        const successMsg = res?.message || res?.data?.message || `"${product.name}" added to cart!`;
+
         this.addingToCartSku = null;
-        this._ToastrService.success(this.cartSuccessMessage);
+        this._ToastrService.success(successMsg); // ✅ عرض رسالة النجاح الحقيقية
+
+        // ✅ تحديث عدد المنتجات في Badge الـ Navbar (مهم عشان يتحدث لما تضيف من الـ Home)
+        this._ECommerceService.getCart().subscribe({
+          next: (cartRes) => {
+            const items = cartRes?.data?.cart?.items ?? [];
+            const totalItems = items.reduce((sum: number, i: any) => sum + i.quantity, 0);
+            this._ECommerceService.updateCartCount(totalItems);
+          },
+          error: (err) => console.error('getCart error:', err)
+        });
       },
       error: (err) => {
         console.error('Error adding to cart:', err);
+
+        // ✅ استخراج رسالة الخطأ من الـ Backend (غالباً بتكون في err.error.message)
+        const errorMsg = err?.error?.message || err?.message || 'Failed to add to cart. Please try again.';
+
         this.addingToCartSku = null;
-        this._ToastrService.error('Failed to add to cart. Please try again.');
+        this._ToastrService.error(errorMsg); // ✅ عرض رسالة الخطأ الحقيقية
       },
     });
   }

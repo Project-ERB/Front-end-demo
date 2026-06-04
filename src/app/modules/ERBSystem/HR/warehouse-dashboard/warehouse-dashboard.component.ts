@@ -33,6 +33,9 @@ export class WarehouseDashboardComponent implements OnInit, AfterViewInit, OnDes
   searchProduct = '';
   searchLowStock = '';
 
+  // ── Mobile Sidebar State ──
+  isMobileSidebarOpen = false;
+
   // ── Data from API ──
   kpis: InventoryDashboardData['kpis'] | null = null;
   warehouseRows: StockByWarehouseNode[] = [];
@@ -60,6 +63,15 @@ export class WarehouseDashboardComponent implements OnInit, AfterViewInit, OnDes
     this.warehouseChartInstance?.destroy();
   }
 
+  // ── Mobile Sidebar Controls ──
+  openMobileSidebar(): void {
+    this.isMobileSidebarOpen = true;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
+
   setTimeRange(range: '7d' | '30d' | '90d'): void {
     this.activeTimeRange = range;
     const daysMap = { '7d': 7, '30d': 30, '90d': 90 };
@@ -83,7 +95,6 @@ export class WarehouseDashboardComponent implements OnInit, AfterViewInit, OnDes
           this.movementTrend = data.movementTrend;
           this.loading = false;
 
-          // Render charts after view is ready and data exists
           requestAnimationFrame(() => {
             this.renderMovementChart();
             this.renderWarehouseChart();
@@ -108,8 +119,6 @@ export class WarehouseDashboardComponent implements OnInit, AfterViewInit, OnDes
       };
     });
   }
-
-  // ── Helpers for template ──
 
   get filteredProducts(): typeof this.topProducts {
     if (!this.searchProduct) return this.topProducts;
@@ -143,8 +152,6 @@ export class WarehouseDashboardComponent implements OnInit, AfterViewInit, OnDes
       return dateStr;
     }
   }
-
-  // ── Charts ──
 
   private renderMovementChart(): void {
     if (!this.stockMovementCanvas?.nativeElement || !this.movementTrend.length) return;
@@ -233,7 +240,6 @@ export class WarehouseDashboardComponent implements OnInit, AfterViewInit, OnDes
     const ctx = this.warehouseCanvas.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    // Capture component references so arrow functions can access them
     const warehouseRows = this.warehouseRows;
     const formatCurrency = this.formatCurrency.bind(this);
     const formatNumber = this.formatNumber.bind(this);

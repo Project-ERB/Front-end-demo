@@ -331,17 +331,25 @@ export class RolemanagementComponent implements OnInit, OnDestroy {
     };
 
     this.adminService.updateRole(this.editId, body).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.isUpdating = false;
-        this.updateSuccess = 'Role updated successfully!';
+
+        // ✅ استخراج رسالة النجاح من الـ Response باستخدام الأقواس المربعة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Role updated successfully!';
+
+        this.updateSuccess = successMsg; // ← عرض الرسالة اللي رجعت من الباك اند
         setTimeout(() => {
           this.closeEditModal();
           this.loadRoles();
         }, 1200);
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.isUpdating = false;
-        this.updateError = err?.error?.message || 'Update failed. Please try again.';
+
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة
+        const errorMsg = err?.['error']?.['message'] || err?.['error']?.['errors']?.[0] || err?.['message'] || 'Update failed. Please try again.';
+
+        this.updateError = errorMsg; // ← عرض رسالة الخطأ الحقيقية
       },
     });
   }
@@ -404,14 +412,22 @@ export class RolemanagementComponent implements OnInit, OnDestroy {
     this.showDeleteConfirm = false;
 
     this.adminService.deleteRole(role.id).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.deletingId = '';
-        this.showToast(`"${role.name}" has been deleted`, 'delete', 'text-red-400');
+
+        // ✅ استخراج رسالة النجاح من الـ Response باستخدام الأقواس المربعة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || `"${role.name}" has been deleted`;
+
+        this.showToast(successMsg, 'delete', 'text-red-400');
         this.loadRoles('first'); // نرجع للصفحة الأولى بعد الحذف
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.deletingId = '';
-        this.showToast(err?.error?.message || 'Delete failed', 'error', 'text-red-400');
+
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Delete failed';
+
+        this.showToast(errorMsg, 'error', 'text-red-400');
       },
     });
     this.deleteTarget = null;

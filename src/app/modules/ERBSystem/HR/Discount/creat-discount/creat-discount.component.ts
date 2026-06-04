@@ -347,6 +347,7 @@ export class CreatDiscountComponent implements OnInit {
   }
 
   // ─── Submit ───────────────────────────────────────────────────────────────────
+  // ─── Submit ───────────────────────────────────────────────────────────────────
   submitForm(): void {
     const validationError = this.validateForm();
     if (validationError) {
@@ -360,12 +361,15 @@ export class CreatDiscountComponent implements OnInit {
     this.isLoading = true;
 
     this._DiscountService.AddDiscount(this.buildPayload()).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.isLoading = false;
         this._formTouched = false;
 
+        // ✅ استخراج رسالة النجاح من الـ Response باستخدام الأقواس المربعة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || `Discount "${this.discountName}" published successfully!`;
+
         this._Toastr.success(
-          `Discount "${this.discountName}" published successfully!`,
+          successMsg, // ← عرض الرسالة اللي رجعت من الباك اند
           'Published',
           {
             timeOut: 3000,
@@ -380,15 +384,17 @@ export class CreatDiscountComponent implements OnInit {
           this._Router.navigate(['/discount-management']);
         }, 2000);
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.isLoading = false;
 
-        const message =
-          err?.error?.errors?.[0] ??
-          err?.error?.message ??
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة عشان تتجنب خطأ الـ TS
+        const errorMsg =
+          err?.['error']?.['errors']?.[0] ||
+          err?.['error']?.['message'] ||
+          err?.['message'] ||
           'Something went wrong. Please try again.';
 
-        this._Toastr.error(message, 'Error', {
+        this._Toastr.error(errorMsg, 'Error', {
           timeOut: 5000,
           positionClass: 'toast-top-right',
           progressBar: true,

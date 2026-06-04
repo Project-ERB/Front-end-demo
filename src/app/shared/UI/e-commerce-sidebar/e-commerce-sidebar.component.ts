@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { CategoriesService } from '../../../core/services/categories/categories.service';
+import { AuthService } from '../../../core/services/Auth/auth.service';
 
 @Component({
   selector: 'app-e-commerce-sidebar',
@@ -13,6 +14,7 @@ export class ECommerceSidebarComponent implements OnInit {
 
   private readonly _CategoriesService = inject(CategoriesService);
   private readonly _Router = inject(Router);
+  private readonly _AuthService = inject(AuthService)
 
   categories: any[] = [];
   isCategoriesLoading = true;
@@ -75,5 +77,10 @@ export class ECommerceSidebarComponent implements OnInit {
   // 2. تحديث دالة الإغلاق لإرسال قيمة False للمكون الأب
   closeMobileSidebar(): void {
     this.isMobileSidebarOpenChange.emit(false);
+  }
+
+  logout(): void {
+    this._AuthService.logout();
+    this._Router.navigate(['/login']);
   }
 }

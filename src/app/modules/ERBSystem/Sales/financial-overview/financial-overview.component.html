@@ -1,10 +1,29 @@
 <div class="page-shell">
-  <!-- Sidebar -->
-  <app-sideba-sales></app-sideba-sales>
+
+  <!-- ── Desktop Sidebar ── -->
+  <div class="hidden lg:block relative z-10">
+    <app-sideba-sales></app-sideba-sales>
+  </div>
+
+  <!-- ── Mobile Sidebar Backdrop ── -->
+  <div class="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity duration-300 lg:hidden"
+    [class.opacity-100]="isMobileSidebarOpen" [class.opacity-0]="!isMobileSidebarOpen"
+    [class.pointer-events-auto]="isMobileSidebarOpen" [class.pointer-events-none]="!isMobileSidebarOpen"
+    (click)="closeMobileSidebar()">
+  </div>
+
+  <!-- ── Mobile Sidebar Drawer ── -->
+  <div class="fixed inset-y-0 left-0 z-40 w-72 max-w-[85vw] transition-transform duration-300 ease-out lg:hidden"
+    [class.translate-x-0]="isMobileSidebarOpen" [class.-translate-x-full]="!isMobileSidebarOpen">
+
+    <app-sideba-sales [isMobileOpen]="isMobileSidebarOpen" (closeMobile)="closeMobileSidebar()">
+    </app-sideba-sales>
+  </div>
 
   <!-- Main -->
   <main class="page-shell__main">
     <section class="fo" aria-label="Financial Overview">
+
       <!-- ── Loading ──────────────────────────────────────────────────────── -->
       <div class="fo__state fo__state--loading" *ngIf="loading">
         <div class="fo__spinner"></div>
@@ -13,57 +32,55 @@
 
       <!-- ── Error ────────────────────────────────────────────────────────── -->
       <div class="fo__state fo__state--error" *ngIf="!loading && error">
-        <i class="ti ti-alert-circle" aria-hidden="true"></i>
+        <span class="material-symbols-outlined" aria-hidden="true">alert_circle</span>
         <p>{{ error }}</p>
         <button (click)="retry()">Retry</button>
       </div>
 
       <!-- ── Content ──────────────────────────────────────────────────────── -->
       <ng-container *ngIf="!loading && !error">
+
         <!-- Page Header -->
         <div class="fo__header">
-          <div>
-            <h1 class="fo__title">Financial Overview</h1>
-            <p class="fo__subtitle">
-              Summary of invoices, payments and receivable accounts
-            </p>
+          <div class="flex items-center gap-3">
+
+            <!-- زرار الهامبرجر للموبايل -->
+            <button (click)="toggleMobileSidebar()"
+              class="lg:hidden flex-shrink-0 p-2 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-[#1e3b8a] hover:border-[#1e3b8a]/40 hover:shadow-md transition-all duration-200 active:scale-95">
+              <span class="material-symbols-outlined text-[20px]">menu</span>
+            </button>
+
+            <div>
+              <h1 class="fo__title">Financial Overview</h1>
+              <p class="fo__subtitle">
+                Summary of invoices, payments and receivable accounts
+              </p>
+            </div>
           </div>
-          <div>
-            <a
-              routerLink="/receivable-mangment"
-              routerLinkActive="bg-blue-700"
-              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            >
-              receivable
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <a routerLink="/receivable-mangment" routerLinkActive="bg-blue-700"
+              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm">
+              Receivable
             </a>
 
-            <a
-              routerLink="/paymentsmangement"
-              routerLinkActive="bg-blue-700"
-              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            >
+            <a routerLink="/paymentsmangement" routerLinkActive="bg-blue-700"
+              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm">
               Payments
             </a>
-            <a
-              routerLink="/InvoiceManagement"
-              routerLinkActive="bg-blue-700"
-              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            >
+            <a routerLink="/InvoiceManagement" routerLinkActive="bg-blue-700"
+              class="bg-sky-200 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full text-sm">
               Invoices
             </a>
           </div>
-          
+
         </div>
 
         <!-- KPI Cards -->
         <div class="fo__kpi-grid">
-          <div
-            class="fo__kpi"
-            *ngFor="let card of kpiCards"
-            [ngClass]="'fo__kpi--' + card.type"
-          >
+          <div class="fo__kpi" *ngFor="let card of kpiCards" [ngClass]="'fo__kpi--' + card.type">
             <div class="fo__kpi-icon">
-              <i class="ti ti-{{ card.icon }}" aria-hidden="true"></i>
+              <span class="material-symbols-outlined" aria-hidden="true">{{ card.icon }}</span>
             </div>
             <div class="fo__kpi-label">{{ card.label }}</div>
             <div class="fo__kpi-value">{{ card.value }}</div>
@@ -78,26 +95,16 @@
             <p class="fo__section-label">Invoice Distribution</p>
             <div class="fo__legend">
               <span class="fo__legend-item" *ngFor="let seg of donutSegments">
-                <span
-                  class="fo__legend-dot"
-                  [style.background]="seg.color"
-                ></span>
+                <span class="fo__legend-dot" [style.background]="seg.color"></span>
                 {{ seg.label }} {{ seg.percent }}%
               </span>
             </div>
             <div class="fo__chart-wrap fo__chart-wrap--donut">
-              <canvas
-                #donutCanvas
-                role="img"
-                aria-label="Donut chart showing invoice status distribution"
-              ></canvas>
+              <canvas #donutCanvas role="img" aria-label="Donut chart showing invoice status distribution"></canvas>
             </div>
             <div class="fo__progress-bar">
-              <span
-                *ngFor="let seg of donutSegments"
-                [style.width.%]="seg.percent"
-                [style.background]="seg.color"
-              ></span>
+              <span *ngFor="let seg of donutSegments" [style.width.%]="seg.percent"
+                [style.background]="seg.color"></span>
             </div>
           </div>
 
@@ -105,11 +112,7 @@
           <div class="fo__card">
             <p class="fo__section-label">Monthly Payments</p>
             <div class="fo__chart-wrap fo__chart-wrap--bar">
-              <canvas
-                #barCanvas
-                role="img"
-                aria-label="Bar chart of monthly payment totals"
-              ></canvas>
+              <canvas #barCanvas role="img" aria-label="Bar chart of monthly payment totals"></canvas>
             </div>
           </div>
         </div>
@@ -122,10 +125,7 @@
             <div class="fo__empty" *ngIf="receivableRows.length === 0">
               No receivable accounts found
             </div>
-            <table
-              *ngIf="receivableRows.length > 0"
-              aria-label="Receivable Accounts"
-            >
+            <table *ngIf="receivableRows.length > 0" aria-label="Receivable Accounts">
               <thead>
                 <tr>
                   <th scope="col">Customer</th>
@@ -147,17 +147,14 @@
                   <td class="text-right">
                     <span class="fo__badge fo__badge--partial">{{
                       row.accountCount
-                    }}</span>
+                      }}</span>
                   </td>
                   <td class="text-right">
-                    <span
-                      class="fo__badge"
-                      [ngClass]="
+                    <span class="fo__badge" [ngClass]="
                         row.isClosed
                           ? 'fo__badge--cancelled'
                           : 'fo__badge--paid'
-                      "
-                    >
+                      ">
                       {{ row.isClosed ? "Closed" : "Active" }}
                     </span>
                   </td>
@@ -172,10 +169,7 @@
             <div class="fo__empty" *ngIf="recentInvoices.length === 0">
               No invoices found
             </div>
-            <table
-              *ngIf="recentInvoices.length > 0"
-              aria-label="Recent Invoices"
-            >
+            <table *ngIf="recentInvoices.length > 0" aria-label="Recent Invoices">
               <thead>
                 <tr>
                   <th scope="col">Invoice #</th>
@@ -209,10 +203,7 @@
             <div class="fo__empty" *ngIf="recentPayments.length === 0">
               No payments found
             </div>
-            <table
-              *ngIf="recentPayments.length > 0"
-              aria-label="Recent Payments"
-            >
+            <table *ngIf="recentPayments.length > 0" aria-label="Recent Payments">
               <thead>
                 <tr>
                   <th scope="col">Date</th>

@@ -77,9 +77,6 @@ export class ProductMangementComponent implements OnInit, OnDestroy {
   private readonly _ApollocatoriesService = inject(ApollocatoriesService);
   private readonly _ToastrService = inject(ToastrService);
 
-  // ── Mobile Sidebar ──
-  isMobileSidebarOpen = false;
-
   // ── Products & Categories ──
   products: any[] = [];
   categories: any[] = [];
@@ -141,27 +138,42 @@ export class ProductMangementComponent implements OnInit, OnDestroy {
     this.isMobileFilterOpen = !this.isMobileFilterOpen;
   }
 
-  deleteProduct(product: any): void {
-    this.deleteTarget = product;
-    this.deleteMessage = `Are you sure you want to delete "${product.name}"?`;
-    this.showDeleteConfirm = true;
-  }
+  // deleteProduct(product: any): void {
+  //   this.deleteTarget = product;
+  //   this.deleteMessage = `Are you sure you want to delete "${product.name}"?`;
+  //   this.showDeleteConfirm = true;
+  // }
 
-  confirmDelete(): void {
-    if (!this.deleteTarget) return;
-    const id = this.deleteTarget.id;
-    this.showDeleteConfirm = false;
+  confirmDelete(product: any): void {
+
+    const id = product.id;
+    const name = product.name;
 
     this._ProductService.deleteProduct(id).subscribe({
-      next: () => {
+      next: (res: any) => {
+
+        const successMsg =
+          res?.message ||
+          res?.data?.message ||
+          `"${name}" has been deleted`;
+
         this.products = this.products.filter(p => p.id !== id);
-        this.selectedIds.delete(id);
-        this.showToast(`"${this.deleteTarget.name}" has been deleted`, 'delete', 'text-red-400');
-        this.deleteTarget = null;
+
+        this.showToast(successMsg, 'delete', 'text-red-400');
+        this._ToastrService.success(successMsg, 'Deleted ✅');
       },
-      error: () => {
-        this.showToast('Failed to delete product', 'error', 'text-red-400');
-        this.deleteTarget = null;
+
+      error: (err: any) => {
+
+        console.log('DELETE ERROR =>', err);
+
+        const errorMsg =
+          err?.error?.message ||
+          err?.message ||
+          'Failed to delete product';
+
+        this.showToast(errorMsg, 'error', 'text-red-400');
+        this._ToastrService.error(errorMsg, 'Error ❌');
       }
     });
   }
@@ -320,14 +332,6 @@ export class ProductMangementComponent implements OnInit, OnDestroy {
     }));
   }
 
-  // ── Sidebar ──
-  toggleMobileSidebar(): void {
-    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
-  }
-
-  closeMobileSidebar(): void {
-    this.isMobileSidebarOpen = false;
-  }
 
   // ── Hover ──
   onRowHover(id: string | null): void {
@@ -364,5 +368,17 @@ export class ProductMangementComponent implements OnInit, OnDestroy {
       this.isMobileSidebarOpen = false;
       this.isMobileFilterOpen = false;
     }
+  }
+
+  // ضف المتغير ده مع باقي المتغيرات بتاعتك
+  isMobileSidebarOpen: boolean = false;
+
+  // ضف الدوال دول في الـ Class
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
   }
 }

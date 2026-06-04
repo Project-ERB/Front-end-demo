@@ -6,6 +6,7 @@ import { SiedeAdminComponent } from '../../../../shared/UI/siede-admin/siede-adm
 import { AdminService, SystemHealth } from '../../../../core/services/Admin-service/admin.service';
 import { ApolloservicesService } from '../../../../core/services/apollo/apolloservices.service';
 import { interval, Subscription, switchMap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 export type UserRole = 'Super Admin' | 'Editor' | 'Manager' | 'Viewer';
 export type UserStatus = 'Active' | 'Inactive' | 'Suspended';
@@ -308,6 +309,8 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  private readonly _toastr = inject(ToastrService);
+
   // ── API: Create user ───────────────────────────────────────────────────
   createUser(): void {
     this.formError = '';
@@ -319,8 +322,7 @@ export class UserManagementComponent implements OnInit {
       return;
     }
 
-    // Build permissions dictionary matching the API contract:
-    // { "FullAccess": { allowCreate, allowDelete, allowUpdated, allowView }, ... }
+    // Build permissions dictionary matching the API contract
     const permissions: Record<string, object> = {};
     this.modules.forEach(m => {
       permissions[m.id] = {
@@ -340,14 +342,29 @@ export class UserManagementComponent implements OnInit {
 
     this._adminService.createAdminNewUser(payload).subscribe({
       next: (response) => {
+        // ✅ استخراج رسالة النجاح من الـ Response أو وضع رسالة افتراضية
+        const successMsg = response?.message || response?.data?.message || 'User created successfully!';
+
         console.log('User created successfully:', response);
         this.isSubmitting = false;
         this.closeModal();
-        this.loadUsers();
+        this.loadUsers('first'); // ← يفضل نعمل 'first' عشان يرجع لأول صفحة ويشوف المستخدم الجديد
+
+        // ✅ عرض رسالة النجاح للمستخدم
+        this._toastr.success(successMsg);
       },
       error: (error) => {
         console.error('Failed to create user:', error);
-        this.formError = error?.error?.message ?? 'Failed to create user. Please try again.';
+
+        // ✅ استخراج رسالة الخطأ من الـ Backend
+        const errorMsg = error?.error?.message || error?.error?.errors?.[0] || error?.message || 'Failed to create user. Please try again.';
+
+        // ✅ عرض رسالة الخطأ في الـ Toast (عشان المستخدم يشوفها لو قفل الـ Modal بسرعة)
+        this._toastr.error(errorMsg);
+
+        // ✅ عرض رسالة الخطأ داخل الـ Modal كمان (في المتغير الخاص بـ HTML)
+        this.formError = errorMsg;
+
         this.isSubmitting = false;
       },
     });

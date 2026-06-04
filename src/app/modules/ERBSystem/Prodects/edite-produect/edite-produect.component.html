@@ -46,20 +46,25 @@
                         Update product details, pricing, variants and more.
                     </p>
                 </div>
-                <div class="flex gap-2 sm:gap-3">
+                <!-- <div class="flex gap-2 sm:gap-3">
                     <button type="button" (click)="cancel()"
                         class="h-10 flex-1 sm:flex-none rounded-lg border px-4 text-sm font-bold hover:bg-slate-50 transition-colors">
                         Cancel
                     </button>
-                    <button type="button" (click)="submitEdit()" [disabled]="editLoading"
-                        class="h-10 flex-1 sm:flex-none rounded-lg bg-[#1e3b8a] px-5 text-sm font-bold text-white hover:bg-[#162d6e] disabled:opacity-50 transition-colors btn-submit">
-                        <span *ngIf="!editLoading">Save Changes</span>
-                        <span *ngIf="editLoading" class="flex items-center justify-center gap-2">
-                            <span class="spinner"></span>
-                            Saving...
-                        </span>
+                    <button *ngIf="isLastStep" type="button" (click)="submitEdit()" [disabled]="editLoading"
+                        class="rounded-lg bg-green-600 px-6 sm:px-8 py-2.5 font-bold text-white hover:bg-green-700 disabled:opacity-50 transition-colors text-sm sm:text-base btn-submit flex items-center justify-center gap-2">
+
+                        
+                        <svg *ngIf="editLoading" class="animate-spin h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                            </circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+
+                        {{ editLoading ? 'Saving...' : 'Save Changes' }}
                     </button>
-                </div>
+                </div> -->
             </div>
 
             <!-- ERROR BANNER -->
@@ -480,15 +485,17 @@
                         </button>
 
                         <button *ngIf="isLastStep" type="button" (click)="submitEdit()" [disabled]="editLoading"
-                            class="rounded-lg bg-green-600 px-6 sm:px-8 py-2.5 font-bold text-white hover:bg-green-700 disabled:opacity-50 transition-colors text-sm sm:text-base btn-submit">
-                            <span *ngIf="!editLoading" class="flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[18px]">save</span>
-                                Save Changes
-                            </span>
-                            <span *ngIf="editLoading" class="flex items-center gap-2">
-                                <span class="spinner"></span>
-                                Saving...
-                            </span>
+                            class="rounded-lg bg-green-600 px-6 sm:px-8 py-2.5 font-bold text-white hover:bg-green-700 disabled:opacity-50 transition-colors text-sm sm:text-base btn-submit flex items-center justify-center gap-2">
+
+                            <!-- أيقونة الـ Loading -->
+                            <svg *ngIf="editLoading" class="animate-spin h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                            </svg>
+
+                            {{ editLoading ? 'Saving...' : 'Save Changes' }}
                         </button>
                     </div>
                 </div>

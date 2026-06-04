@@ -101,10 +101,20 @@ export class ECommerceService {
   }
 
 
+
+
   addToCart(payload: AddToCartPayload): Observable<any> {
+    const token = this.getToken();
+
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
     return this._HttpClient.post<any>(
       `${Environment.baseUrl}/api/carts`,
       payload,
+      { headers }
     );
   }
 

@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebaSalesComponent } from "../../../../shared/UI/sidebar-sales/sideba-sales/sideba-sales.component";
 
-
 export interface Order {
   id: string;
   customer: {
@@ -33,9 +32,12 @@ export class OrdersComponent implements OnInit {
 
   searchQuery = '';
   selectAll = false;
-  darkMode = false;
+  // darkMode = false;  <--- تم الحذف
   isLoading = false;
   errorMessage = '';
+
+  // <--- تم الإضافة
+  isMobileSidebarOpen: boolean = false;
 
   stats = [
     { label: 'Total Orders Today', value: '1,240', trend: '+12%', up: true },
@@ -59,7 +61,6 @@ export class OrdersComponent implements OnInit {
       next: (res) => {
         const nodes = res?.data?.orders?.nodes ?? [];
 
-        // Use mock data if API returns empty (dev only)
         if (nodes.length === 0) {
           this.orders = this.mockOrders;
         } else {
@@ -74,6 +75,7 @@ export class OrdersComponent implements OnInit {
       }
     });
   }
+
   private mapToOrder(node: any): Order {
     const name = node.customerId ?? 'Unknown';
     const initials = name.substring(0, 2).toUpperCase();
@@ -82,7 +84,7 @@ export class OrdersComponent implements OnInit {
       id: node.orderNumber ?? '—',
       customer: {
         name: name,
-        email: '',           // not in query — add if your API supports it
+        email: '',
         initials: initials,
         avatarColor: 'bg-slate-200 text-slate-700',
       },
@@ -110,8 +112,6 @@ export class OrdersComponent implements OnInit {
     return 'Unfulfilled';
   }
 
-  // ── rest of your existing methods stay exactly the same ──
-
   get filteredOrders(): Order[] {
     const q = this.searchQuery.toLowerCase();
     if (!q) return this.orders;
@@ -125,7 +125,17 @@ export class OrdersComponent implements OnInit {
   get selectedCount(): number { return this.orders.filter(o => o.selected).length; }
 
   toggleSelectAll(): void { this.orders.forEach(o => (o.selected = this.selectAll)); }
-  toggleDarkMode(): void { this.darkMode = !this.darkMode; }
+
+  // toggleDarkMode(): void { this.darkMode = !this.darkMode; } <--- تم الحذف
+
+  // <--- تم الإضافة
+  toggleMobileSidebar(): void {
+    this.isMobileSidebarOpen = !this.isMobileSidebarOpen;
+  }
+
+  closeMobileSidebar(): void {
+    this.isMobileSidebarOpen = false;
+  }
 
   paymentBadgeClass(status: string): string {
     const map: Record<string, string> = {
@@ -149,6 +159,7 @@ export class OrdersComponent implements OnInit {
 
   trendClass(up: boolean): string { return up ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50'; }
   trendIcon(up: boolean): string { return up ? 'trending_up' : 'trending_down'; }
+
   formatCurrency(value: number): string {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
   }

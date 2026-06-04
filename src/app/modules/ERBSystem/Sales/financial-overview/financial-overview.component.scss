@@ -29,28 +29,22 @@ $bg-kpi: #f4f4f1;
 
 // status palette
 $colors: (
-  success: (
-    #eaf3de,
+  success: (#eaf3de,
     #3b6d11,
   ),
-  warning: (
-    #faeeda,
+  warning: (#faeeda,
     #854f0b,
   ),
-  danger: (
-    #fcebeb,
+  danger: (#fcebeb,
     #a32d2d,
   ),
-  partial: (
-    #e6f1fb,
+  partial: (#e6f1fb,
     #185fa5,
   ),
-  draft: (
-    #f1efe8,
+  draft: (#f1efe8,
     #5f5e5a,
   ),
-  cancelled: (
-    #f1efe8,
+  cancelled: (#f1efe8,
     #5f5e5a,
   ),
 );
@@ -143,6 +137,7 @@ $colors: (
     @media (max-width: 900px) {
       grid-template-columns: repeat(2, 1fr);
     }
+
     @media (max-width: 500px) {
       grid-template-columns: 1fr;
     }
@@ -165,9 +160,11 @@ $colors: (
     &--success &-value {
       color: #3b6d11;
     }
+
     &--warning &-value {
       color: #854f0b;
     }
+
     &--danger &-value {
       color: #a32d2d;
     }
@@ -183,8 +180,9 @@ $colors: (
     justify-content: center;
     margin-bottom: 10px;
 
-    i {
-      font-size: 18px;
+    // عدلنا i ل span عشان تشتغل مع Material Symbols
+    span {
+      font-size: 20px;
       color: $text-secondary;
     }
   }
@@ -260,6 +258,7 @@ $colors: (
     &--donut {
       height: 185px;
     }
+
     &--bar {
       height: 215px;
     }
@@ -358,14 +357,17 @@ $colors: (
     font-size: 12px;
     color: $text-secondary;
   }
+
   &__muted {
     color: $text-tertiary;
   }
+
   &__truncate {
     max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
   &__date {
     font-size: 12px;
     color: $text-secondary;
@@ -392,22 +394,27 @@ $colors: (
       background: #eaf3de;
       color: #3b6d11;
     }
+
     &--partial {
       background: #e6f1fb;
       color: #185fa5;
     }
+
     &--unpaid {
       background: #faeeda;
       color: #854f0b;
     }
+
     &--overdue {
       background: #fcebeb;
       color: #a32d2d;
     }
+
     &--draft {
       background: #f1efe8;
       color: #5f5e5a;
     }
+
     &--cancelled {
       background: #f1efe8;
       color: #5f5e5a;
@@ -423,89 +430,4 @@ $colors: (
   }
 }
 
-// ─── Dark Mode ────────────────────────────────────────────────────────────────
-
-@media (prefers-color-scheme: dark) {
-  .fo {
-    background: #1c1c1a;
-
-    &__kpi {
-      background: #2a2a28;
-    }
-    &__card {
-      background: #242422;
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-    &__spinner {
-      border-color: rgba(255, 255, 255, 0.1);
-      border-top-color: #378add;
-    }
-
-    &__kpi-value,
-    td {
-      color: #e8e8e4;
-    }
-
-    &__kpi-label,
-    th {
-      color: #888780;
-    }
-
-    &__kpi-sub,
-    &__section-label {
-      color: #666663;
-    }
-
-    &__mono,
-    &__date {
-      color: #888780;
-    }
-    &__muted {
-      color: #666663;
-    }
-
-    td {
-      border-color: rgba(255, 255, 255, 0.05);
-    }
-    th {
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-
-    &__badge {
-      &--paid {
-        background: #1e3a0d;
-        color: #97c459;
-      }
-      &--partial {
-        background: #0c2d52;
-        color: #85b7eb;
-      }
-      &--unpaid {
-        background: #3d2800;
-        color: #ef9f27;
-      }
-      &--overdue {
-        background: #3d0f0f;
-        color: #f09595;
-      }
-      &--draft,
-      &--cancelled {
-        background: #2a2a28;
-        color: #888780;
-      }
-    }
-
-    &__kpi--success .fo__kpi-value {
-      color: #97c459;
-    }
-    &__kpi--warning .fo__kpi-value {
-      color: #ef9f27;
-    }
-    &__kpi--danger .fo__kpi-value {
-      color: #f09595;
-    }
-    &__receivables {
-      margin-bottom: 12px;
-    }
-  }
-}
+// تم مسح جزء الـ Dark Mode من هنا نهائياً

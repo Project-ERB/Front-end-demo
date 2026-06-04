@@ -292,21 +292,28 @@ export class PermissionComponent implements OnInit, OnDestroy {
     };
 
     this.permissionService.updatePermission(payload).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.isUpdating = false;
-        this.updateSuccess = 'Permission updated successfully!';
+
+        // ✅ استخراج رسالة النجاح من الـ Response باستخدام الأقواس المربعة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || 'Permission updated successfully!';
+
+        this.updateSuccess = successMsg; // ← عرض الرسالة اللي رجعت من الباك اند
         setTimeout(() => {
           this.closeEditModal();
           this.loadPermissions();
         }, 1200);
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.isUpdating = false;
-        this.updateError = err?.error?.message || err?.message || 'Update failed. Please try again.';
+
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Update failed. Please try again.';
+
+        this.updateError = errorMsg; // ← عرض رسالة الخطأ الحقيقية
       },
     });
   }
-
   // ── Delete ──
   onDelete(perm: PermissionNode): void {
     this.deleteTarget = perm;
@@ -320,14 +327,22 @@ export class PermissionComponent implements OnInit, OnDestroy {
     this.showDeleteConfirm = false;
 
     this.permissionService.deletePermission(perm.id).subscribe({
-      next: () => {
+      next: (res: any) => { // ← أضف :any
         this.deletingId = '';
-        this.showToast(`"${perm.name}" has been deleted`, 'delete', 'text-red-400');
+
+        // ✅ استخراج رسالة النجاح من الـ Response باستخدام الأقواس المربعة
+        const successMsg = res?.['message'] || res?.['data']?.['message'] || `"${perm.name}" has been deleted`;
+
+        this.showToast(successMsg, 'delete', 'text-red-400');
         this.loadPermissions('first');
       },
-      error: (err) => {
+      error: (err: any) => { // ← أضف :any
         this.deletingId = '';
-        this.showToast(err?.error?.message || 'Delete failed', 'error', 'text-red-400');
+
+        // ✅ استخراج رسالة الخطأ باستخدام الأقواس المربعة
+        const errorMsg = err?.['error']?.['message'] || err?.['message'] || 'Delete failed';
+
+        this.showToast(errorMsg, 'error', 'text-red-400');
       },
     });
     this.deleteTarget = null;
