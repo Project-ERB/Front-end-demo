@@ -34,6 +34,19 @@ export class CandidateManagementComponent {
   private readonly _CandidateService = inject(CandidateService);
   private readonly _ToastrService = inject(ToastrService)
 
+  showMobileSearch = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    const sidebar = document.querySelector('.hr-sidebar') as HTMLElement;
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
   // ── State ──────────────────────────────────────────────────────────────────
   activeTab = signal<TabFilter>('All Candidates');
   filterText = signal<string>('');

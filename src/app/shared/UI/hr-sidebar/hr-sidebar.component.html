@@ -1,56 +1,69 @@
-<aside
-    class="w-64 bg-white border-r border-slate-200 flex flex-col h-screen flex-shrink-0 dark:bg-gray-900 dark:border-gray-800">
+<!-- زر الهامبرجر - يظهر على الموبايل فقط -->
+<button *ngIf="!isSidebarOpen"
+    class="fixed top-4 left-4 z-30 md:hidden bg-white border border-slate-200 rounded-xl p-2.5 shadow-lg hover:bg-gray-50 active:scale-95 transition-all"
+    (click)="toggleSidebar()">
+    <span class="material-symbols-outlined text-[#111318]">menu</span>
+</button>
 
-    <!-- Logo -->
-    <div class="flex h-16 items-center border-b border-[#e5e7eb] dark:border-gray-800 px-6">
+<!-- طبقة التعتيم - الموبايل فقط -->
+<div *ngIf="isSidebarOpen" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden" (click)="closeSidebar()">
+</div>
+
+<!-- الشريط الجانبي -->
+<aside
+    class="sidebar w-64 bg-white border-r border-slate-200 flex flex-col h-screen flex-shrink-0 fixed inset-y-0 left-0 z-50 md:static"
+    [class.open]="isSidebarOpen">
+
+    <!-- اللوجو -->
+    <div class="flex h-16 items-center justify-between border-b border-[#e5e7eb] px-6">
         <div class="flex items-center gap-2 text-main">
             <div class="flex items-center justify-center rounded-lg bg-main/10 p-1.5">
                 <span class="material-symbols-outlined text-main fill" style="font-size: 28px;">hr_resting</span>
             </div>
-            <h1 class="text-lg font-bold tracking-tight text-[#111318] dark:text-white">HR ERP</h1>
+            <h1 class="text-lg font-bold tracking-tight text-[#111318]">HR ERP</h1>
         </div>
+        <!-- زر الإغلاق - الموبايل فقط -->
+        <button class="md:hidden p-1.5 rounded-lg hover:bg-gray-100 transition-colors" (click)="closeSidebar()">
+            <span class="material-symbols-outlined text-[#616f89]">close</span>
+        </button>
     </div>
 
-    <!-- Links -->
-    <div class="flex flex-col gap-4 p-4">
+    <!-- الروابط -->
+    <div class="flex flex-col gap-4 p-4 overflow-y-auto flex-1">
 
         <!-- Main -->
         <div class="flex flex-col gap-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 mb-2">
+            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-[#616f89] mb-2">
                 Main
             </p>
 
             <a routerLink="/hr-dashboard" routerLinkActive="bg-main/10 text-main"
                 [routerLinkActiveOptions]="{ exact: true }"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined fill">dashboard</span>
                 <p class="text-sm font-medium">Dashboard</p>
             </a>
 
             <a routerLink="/employee-managment" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">group</span>
                 <p class="text-sm font-medium">Employees</p>
             </a>
 
             <a routerLink="/hr-department" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">domain</span>
                 <p class="text-sm font-medium">Departments</p>
             </a>
-            <!-- Attendance -->
+
             <a routerLink="/attendance-dashboard" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">event_available</span>
                 <p class="text-sm font-medium">Attendance</p>
             </a>
 
-            <!-- Payroll -->
             <a routerLink="/payroll-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">payments</span>
                 <p class="text-sm font-medium">Payroll</p>
             </a>
@@ -58,76 +71,56 @@
 
         <!-- Recruitment -->
         <div class="flex flex-col gap-1">
-            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 mb-2 mt-2">
+            <p class="px-3 text-xs font-semibold uppercase tracking-wider text-[#616f89] mb-2 mt-2">
                 Recruitment
             </p>
 
             <a routerLink="/requierments-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">badge</span>
                 <p class="text-sm font-medium">Recruitment</p>
             </a>
 
             <a routerLink="/candidate-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">person_search</span>
                 <p class="text-sm font-medium">Candidates</p>
             </a>
 
             <a routerLink="/application-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">badge</span>
                 <p class="text-sm font-medium">Applications</p>
             </a>
 
             <a routerLink="/interview-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">record_voice_over</span>
                 <p class="text-sm font-medium">Interviews</p>
             </a>
 
             <a routerLink="/offer-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">handshake</span>
                 <p class="text-sm font-medium">Offers</p>
             </a>
 
             <a routerLink="/contract-management" routerLinkActive="bg-main/10 text-main"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800 transition-all">
-
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] hover:bg-gray-100 transition-all">
                 <span class="material-symbols-outlined">edit_document</span>
                 <p class="text-sm font-medium">Contracts</p>
             </a>
-
-            <div class="p-4 border-t border-slate-100">
-                <button (click)="onLogout()"
-                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span class="font-medium text-sm">Logout</span>
-                </button>
-            </div>
-
         </div>
 
     </div>
 
-    <!-- User -->
-    <!-- <div class="mt-auto p-4 border-t border-[#e5e7eb] dark:border-gray-800">
-        <div class="flex items-center gap-3">
-            <div class="h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-                <img alt="Profile" class="h-full w-full object-cover"
-                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-pNbtJjKa4oLlCUGQztdxJmbDa5bbZ1SvOjs2CjDERxaaf3WS_ctEM706K8YBImlIIx3OvuA-gP3WeLJq03T5jLyxdgJhrgXvIU8uTUpWvbLN64Kx78IhmcCA1qkZozAtKhG4brDZnwWm3xIMlhDFx_B4dBA7AYbA-dfAHh1MalcfJTRY6fQtV-jjq6Gp_lDGKeEWHTW4GoyiDBfX7F7H1nGGCHtIxfT9n-FFqQjjC0-g_ITfEI9hzu_XcoqF5w7dYgzaitSDAWFH" />
-            </div>
-            <div class="flex flex-col">
-                <p class="text-sm font-medium text-[#111318] dark:text-white">Jane Cooper</p>
-                <p class="text-xs text-[#616f89]">HR Manager</p>
-            </div>
-        </div>
-    </div> -->
+    <!-- Logout - ثابت في الأسفل دايماً -->
+    <div class="p-4 border-t border-slate-100 flex-shrink-0">
+        <button (click)="onLogout()"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-lg w-full text-red-500 hover:bg-red-50 transition-colors cursor-pointer">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-medium text-sm">Logout</span>
+        </button>
+    </div>
 
 </aside>

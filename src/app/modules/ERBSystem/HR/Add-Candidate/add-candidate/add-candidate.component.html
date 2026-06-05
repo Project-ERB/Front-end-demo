@@ -8,192 +8,230 @@
 
         <!-- Header -->
         <header
-            class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white px-6 py-3 shrink-0">
-            <div class="flex items-center gap-4">
-                <label class="relative flex items-center">
+            class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white px-3 sm:px-6 py-2 sm:py-3 shrink-0 gap-2">
+
+            <!-- Left -->
+            <div class="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                <!-- Mobile Menu -->
+                <button (click)="toggleSidebar()"
+                    class="lg:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors -ml-0.5 flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+                </button>
+
+                <!-- Search — Desktop -->
+                <label class="hidden md:flex relative items-center flex-shrink-0">
                     <span class="material-symbols-outlined absolute left-3 text-slate-400">search</span>
                     <input type="text" placeholder="Search candidates..."
-                        class="w-64 rounded-xl border-none bg-slate-100 py-2 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        class="w-56 lg:w-64 rounded-xl border-none bg-slate-100 py-2 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </label>
             </div>
-            <div class="flex items-center gap-4">
-                <button class="rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100">
+
+            <!-- Right -->
+            <div class="flex items-center gap-1 sm:gap-4 flex-shrink-0">
+                <!-- Mobile Search Toggle -->
+                <button (click)="toggleMobileSearch()"
+                    class="md:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
+                </button>
+
+                <button class="hidden sm:block rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100">
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
-                <button class="rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100">
+                <button class="hidden sm:block rounded-xl p-2 text-slate-500 transition-colors hover:bg-slate-100">
                     <span class="material-symbols-outlined">settings</span>
                 </button>
-                <div class="size-10 overflow-hidden rounded-full border-2 border-blue-500 bg-slate-200">
+                <div
+                    class="size-8 sm:size-10 overflow-hidden rounded-full border-2 border-blue-500 bg-slate-200 flex-shrink-0">
                     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCfseZpwWzJvSKLSMrZMYjJxh_ZpRH_xhIGmDzu8-bX1kABWnJA5EK9tAYWK9EZMARktTL7TgDvAEI41vBwsJ0mlKJvEM5qfBz0qGJwBP7TtuY5uKNp4VvSU7CqDZTLRiP_Iplqz-wSLL44aFR1mVmMKMGfQuF9BVbR05SxEit0J9xxJ8aDsU1EkjOul_L1RKGOoxdS7-XVsM6QlAkuhaqRZQBaYfgGEUAh1LLU0Y_0AU8UXaMuJ3LN5qsq1w4j83VRiO6Gi6jA9_Js"
                         alt="Admin profile" class="h-full w-full object-cover" />
                 </div>
             </div>
         </header>
 
+        <!-- Mobile Search Bar -->
+        <div *ngIf="showMobileSearch" class="md:hidden bg-white border-b border-slate-200 px-3 py-2.5 shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input type="text" placeholder="Search candidates..."
+                        class="w-full rounded-xl border-none bg-slate-100 py-2 pl-10 pr-4 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <button (click)="showMobileSearch = false"
+                    class="text-xs font-semibold text-blue-500 flex-shrink-0 px-2">Cancel</button>
+            </div>
+        </div>
+
         <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-6 lg:p-10">
-            <div class="mx-auto max-w-4xl">
+        <main class="flex-1 overflow-y-auto">
+            <div class="mx-auto max-w-4xl p-4 sm:p-6 lg:p-10">
 
                 <!-- Page Header -->
-                <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
-                    <div>
-                        <h2 class="text-3xl font-extrabold tracking-tight text-slate-900">Add New Candidate</h2>
-                        <p class="mt-1 text-slate-500">Populate the pipeline with a new potential hire.</p>
-                    </div>
+                <div class="mb-6 sm:mb-8">
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">Add New
+                        Candidate</h2>
+                    <p class="mt-0.5 sm:mt-1 text-slate-500 text-xs sm:text-sm">Populate the pipeline with a new
+                        potential hire.</p>
                 </div>
 
                 <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-white shadow-sm">
 
                         <!-- Personal Information -->
-                        <div class="border-b border-slate-200 bg-slate-50/50 px-6 py-4 lg:px-8">
-                            <h3 class="flex items-center gap-2 text-lg font-bold">
-                                <span class="material-symbols-outlined text-blue-500">person</span>
+                        <div class="border-b border-slate-200 bg-slate-50/50 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+                            <h3 class="flex items-center gap-2 text-sm sm:text-lg font-bold">
+                                <span
+                                    class="material-symbols-outlined text-blue-500 text-xl sm:text-[22px]">person</span>
                                 Personal Information
                             </h3>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:p-8">
+                        <div class="grid grid-cols-1 gap-4 sm:gap-6 p-4 sm:p-6 lg:p-8">
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Full Name <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Full Name <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="fullName" type="text" placeholder="e.g. Johnathan Smith"
                                     [ngClass]="isInvalid('fullName') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('fullName')" class="text-xs text-red-500">Full name is required
-                                    (min. 2 chars).</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('fullName')" class="text-[11px] sm:text-xs text-red-500">Full name
+                                    is required (min. 2 chars).</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Email Address <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Email Address <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="email" type="email" placeholder="john.smith@example.com"
                                     [ngClass]="isInvalid('email') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('email')" class="text-xs text-red-500">A valid email address is
-                                    required.</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('email')" class="text-[11px] sm:text-xs text-red-500">A valid email
+                                    address is required.</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Country Code <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Country Code <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="countryCode" type="text" placeholder="e.g. +20"
                                     [ngClass]="isInvalid('countryCode') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('countryCode')" class="text-xs text-red-500">Country code is
-                                    required.</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('countryCode')" class="text-[11px] sm:text-xs text-red-500">Country
+                                    code is required.</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Phone Number <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Phone Number <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="phone" type="tel" placeholder="555 000-0000"
                                     [ngClass]="isInvalid('phone') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('phone')" class="text-xs text-red-500">Phone number is required.</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('phone')" class="text-[11px] sm:text-xs text-red-500">Phone number
+                                    is required.</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Street Address</label>
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Street Address</label>
                                 <input formControlName="addressStreet" type="text" placeholder="123 Modern Ave"
-                                    class="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                                    class="h-11 sm:h-12 w-full rounded-xl border border-slate-200 bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">City <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">City <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="addressCity" type="text" placeholder="e.g. Cairo"
                                     [ngClass]="isInvalid('addressCity') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('addressCity')" class="text-xs text-red-500">City is required.</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('addressCity')" class="text-[11px] sm:text-xs text-red-500">City is
+                                    required.</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">State / Province</label>
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">State / Province</label>
                                 <input formControlName="addressState" type="text" placeholder="e.g. California"
-                                    class="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                                    class="h-11 sm:h-12 w-full rounded-xl border border-slate-200 bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Postal Code</label>
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Postal Code</label>
                                 <input formControlName="addressPostalCode" type="text" placeholder="e.g. 10001"
-                                    class="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                                    class="h-11 sm:h-12 w-full rounded-xl border border-slate-200 bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Country <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2 md:col-span-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Country <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="addressCountry" type="text" placeholder="e.g. Egypt"
                                     [ngClass]="isInvalid('addressCountry') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('addressCountry')" class="text-xs text-red-500">Country is required.
-                                </p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('addressCountry')" class="text-[11px] sm:text-xs text-red-500">
+                                    Country is required.</p>
                             </div>
 
                         </div>
 
                         <!-- Professional Details -->
-                        <div class="border-y border-slate-200 bg-slate-50/50 px-6 py-4 lg:px-8">
-                            <h3 class="flex items-center gap-2 text-lg font-bold">
-                                <span class="material-symbols-outlined text-blue-500">badge</span>
+                        <div class="border-y border-slate-200 bg-slate-50/50 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+                            <h3 class="flex items-center gap-2 text-sm sm:text-lg font-bold">
+                                <span
+                                    class="material-symbols-outlined text-blue-500 text-xl sm:text-[22px]">badge</span>
                                 Professional Details
                             </h3>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-2 lg:p-8">
+                        <div class="grid grid-cols-1 gap-4 sm:gap-6 p-4 sm:p-6 lg:p-8">
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Target Job Title <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Target Job Title <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="jobTitle" type="text"
                                     placeholder="e.g. Senior Frontend Engineer"
                                     [ngClass]="isInvalid('jobTitle') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('jobTitle')" class="text-xs text-red-500">Job title is required.</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('jobTitle')" class="text-[11px] sm:text-xs text-red-500">Job title
+                                    is required.</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Experience Years <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Experience Years <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="expYears" type="number" min="0" placeholder="e.g. 5"
                                     [ngClass]="isInvalid('expYears') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('expYears')" class="text-xs text-red-500">Enter a valid number of
-                                    years (0–50).</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('expYears')" class="text-[11px] sm:text-xs text-red-500">Enter a
+                                    valid number of years (0–50).</p>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Expected Salary</label>
-                                <div class="flex gap-3">
+                            <div class="flex flex-col gap-1.5 sm:gap-2 md:col-span-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Expected Salary</label>
+                                <div class="flex gap-2 sm:gap-3">
                                     <input formControlName="currency" type="text" placeholder="USD"
-                                        class="h-12 w-24 shrink-0 rounded-xl border border-slate-200 bg-white px-4 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                                        class="h-11 sm:h-12 w-20 sm:w-24 shrink-0 rounded-xl border border-slate-200 bg-white px-3 sm:px-4 text-sm text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                                     <input formControlName="salary" type="text" placeholder="90,000"
-                                        class="h-12 flex-1 rounded-xl border border-slate-200 bg-white px-4 text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                                        class="h-11 sm:h-12 flex-1 rounded-xl border border-slate-200 bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500" />
                                 </div>
                             </div>
 
-                            <div class="flex flex-col gap-2">
-                                <label class="text-sm font-semibold text-slate-700">Resume URL <span
+                            <div class="flex flex-col gap-1.5 sm:gap-2 md:col-span-2">
+                                <label class="text-xs sm:text-sm font-semibold text-slate-700">Resume URL <span
                                         class="text-red-500">*</span></label>
                                 <input formControlName="resumeUrl" type="url"
                                     placeholder="https://drive.google.com/your-cv"
                                     [ngClass]="isInvalid('resumeUrl') ? 'border-red-400' : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500'"
-                                    class="h-12 w-full rounded-xl border bg-white px-4 text-slate-900 transition-all focus:outline-none focus:ring-1" />
-                                <p *ngIf="isInvalid('resumeUrl')" class="text-xs text-red-500">A valid resume URL is
-                                    required.</p>
+                                    class="h-11 sm:h-12 w-full rounded-xl border bg-white px-3.5 sm:px-4 text-sm text-slate-900 transition-all focus:outline-none focus:ring-1" />
+                                <p *ngIf="isInvalid('resumeUrl')" class="text-[11px] sm:text-xs text-red-500">A valid
+                                    resume URL is required.</p>
                             </div>
 
                         </div>
 
                         <!-- Form Footer -->
-                        <div class="flex justify-end gap-3 bg-slate-50 p-6 lg:p-8">
+                        <div
+                            class="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 bg-slate-50 p-4 sm:p-6 lg:p-8 border-t border-slate-200">
                             <button type="button" (click)="onReset()"
-                                class="rounded-xl border border-slate-300 px-8 py-3 font-bold text-slate-700 transition-colors hover:bg-white">Reset</button>
+                                class="w-full sm:w-auto rounded-xl border border-slate-300 px-6 sm:px-8 py-2.5 sm:py-3 text-sm font-bold text-slate-700 transition-colors hover:bg-white text-center">Reset</button>
                             <button type="submit" [disabled]="isSaving()"
-                                class="flex items-center gap-2 rounded-xl bg-blue-500 px-8 py-3 font-bold text-white shadow-xl shadow-blue-500/20 transition-all hover:bg-blue-600 disabled:opacity-60">
-                                <span class="material-symbols-outlined">{{ isSaving() ? 'hourglass_empty' : 'person_add'
-                                    }}</span>
+                                class="w-full sm:w-auto flex items-center justify-center gap-2 rounded-xl bg-blue-500 px-6 sm:px-8 py-2.5 sm:py-3 text-sm font-bold text-white shadow-xl shadow-blue-500/20 transition-all hover:bg-blue-600 disabled:opacity-60">
+                                <span class="material-symbols-outlined text-[18px] sm:text-[20px]">{{ isSaving() ?
+                                    'hourglass_empty' : 'person_add' }}</span>
                                 {{ isSaving() ? 'Saving…' : 'Create Candidate' }}
                             </button>
                         </div>

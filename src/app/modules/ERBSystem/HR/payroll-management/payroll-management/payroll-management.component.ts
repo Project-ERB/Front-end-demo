@@ -41,6 +41,19 @@ export class PayrollManagementComponent {
   private readonly _payrollService = inject(PayrollService);
   private readonly _employeeService = inject(EmployeeService);
 
+  showMobileSearch: boolean = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    const sidebar = document.querySelector('.hr-sidebar') as HTMLElement;
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
   searchQuery = signal('');
 
   currentPage = signal(1);

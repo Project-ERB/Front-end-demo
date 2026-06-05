@@ -7,20 +7,31 @@
 
         <!-- Top Navigation Bar -->
         <header
-            class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 px-6 py-3 bg-white sticky top-0 z-50">
-            <div class="flex items-center gap-8">
+            class="flex items-center justify-between border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-3 bg-white sticky top-0 z-50 gap-2">
+
+            <!-- Left side -->
+            <div class="flex items-center gap-2 sm:gap-8 min-w-0 flex-1">
+
+                <!-- Mobile Menu -->
+                <button (click)="toggleSidebar()"
+                    class="lg:hidden p-1.5 sm:p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors -ml-0.5 flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+                </button>
+
                 <!-- Logo -->
-                <div class="flex items-center gap-3 text-[#ec5b13]">
-                    <div class="size-8 flex items-center justify-center rounded-lg bg-blue-500">
-                        <span class="material-symbols-outlined text-white text-2xl">work_history</span>
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <div class="size-7 sm:size-8 flex items-center justify-center rounded-lg bg-blue-500">
+                        <span class="material-symbols-outlined text-white text-xl sm:text-2xl">work_history</span>
                     </div>
-                    <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">HR Core</h2>
+                    <h2
+                        class="text-slate-900 text-sm sm:text-lg font-bold leading-tight tracking-tight hidden sm:block">
+                        HR Core</h2>
                 </div>
 
-                <!-- Search -->
-                <label class="flex flex-col min-w-64 h-10">
+                <!-- Search — Desktop -->
+                <label class="hidden md:flex flex-col min-w-0 h-9 sm:h-10 flex-1 max-w-xs">
                     <div class="flex w-full flex-1 items-stretch rounded-xl h-full border border-slate-200 bg-slate-50">
-                        <div class="text-slate-400 flex items-center justify-center pl-4">
+                        <div class="text-slate-400 flex items-center justify-center pl-3.5">
                             <span class="material-symbols-outlined text-xl">search</span>
                         </div>
                         <input [(ngModel)]="searchQuery"
@@ -30,244 +41,357 @@
                 </label>
             </div>
 
-            <div class="flex items-center gap-4">
-                <!-- Add Button -->
+            <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
+
+                <!-- Mobile Search Toggle -->
+                <button (click)="toggleMobileSearch()"
+                    class="md:hidden p-1.5 sm:p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
+                </button>
+
+                <!-- Add Button — Desktop -->
                 <button (click)="onAddNew()"
-                    class="flex min-w-[180px] cursor-pointer items-center justify-center gap-2 rounded-xl h-10 px-5 bg-blue-500 text-white text-sm font-bold transition-all hover:bg-blue-600">
+                    class="hidden md:flex min-w-[170px] cursor-pointer items-center justify-center gap-2 rounded-xl h-9 sm:h-10 px-4 sm:px-5 bg-blue-500 text-white text-sm font-bold transition-all hover:bg-blue-600">
                     <span class="material-symbols-outlined text-lg">add</span>
-                    <span class="truncate">Add New Requirement</span>
+                    <span class="truncate">Add Requirement</span>
+                </button>
+
+                <!-- Add Button — Mobile -->
+                <button (click)="onAddNew()"
+                    class="md:hidden p-1.5 sm:p-2 cursor-pointer rounded-lg bg-blue-500 text-white transition-all hover:bg-blue-600">
+                    <span class="material-symbols-outlined text-xl">add</span>
                 </button>
 
                 <!-- Avatar -->
-                <div class="flex items-center gap-2 border-l border-slate-200 ml-2 pl-4">
-                    <div class="size-9 rounded-full border-2 border-[#ec5b13]/20 bg-cover bg-center bg-no-repeat"
+                <div class="flex items-center border-l border-slate-200 ml-1 sm:ml-2 pl-2.5 sm:pl-4">
+                    <div class="size-7 sm:size-9 rounded-full border-2 border-[#ec5b13]/20 bg-cover bg-center bg-no-repeat flex-shrink-0"
                         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCb5e19MTOTHpsj8V_ErHiUsTXvqHVAFUIMml5XUkzg4vJC9nro8mZxmlYjME6hU5_Z_4HQ5g75l6mube95MG-hnqueSVQF1FzQ5uJJL3inMkninmC6JrVisgtMb8e323LBOhHNYmx9aIoX0EgcEBt6ezcT48zk-gE4EPRZtzGqMzKh5oGWkqvDYPYFokf0YLTl_sQ6XXQvxjSvKne55wsvrAZuFCpGPxt9sriXBjrzNjQdRpRmFY7_ZxPfPWG3AxVRcTwbnid0dheF')">
                     </div>
                 </div>
             </div>
         </header>
 
-        <!-- Page Header -->
-        <div class="flex flex-wrap items-end justify-between gap-4 mb-8">
-            <div class="flex flex-col gap-1">
-                <h1 class="text-slate-900 text-3xl font-black tracking-tight">Job Requirements</h1>
-                <p class="text-slate-500 text-base">Manage and track active talent acquisition mandates across the
-                    organization.</p>
+        <!-- Mobile Search Bar -->
+        <div *ngIf="showMobileSearch" class="md:hidden bg-white border-b border-slate-200 px-3 py-2.5 flex-shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="flex flex-1 items-stretch rounded-xl h-9 border border-slate-200 bg-slate-50">
+                    <div class="text-slate-400 flex items-center justify-center pl-3">
+                        <span class="material-symbols-outlined text-lg">search</span>
+                    </div>
+                    <input #mobileSearchInput [(ngModel)]="searchQuery"
+                        class="flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-none focus:ring-0 text-sm px-2.5 placeholder:text-slate-400"
+                        placeholder="Search requirements..." />
+                </div>
+                <button (click)="showMobileSearch = false"
+                    class="text-xs font-semibold text-blue-500 flex-shrink-0 px-2">Cancel</button>
             </div>
         </div>
 
-        <!-- Filters -->
-        <div class="flex gap-3 mb-6 flex-wrap">
-            <button
-                class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white border border-slate-200 px-4 hover:border-[#ec5b13]/50 transition-colors">
-                <span class="material-symbols-outlined text-slate-500 text-lg">category</span>
-                <span class="text-slate-700 text-sm font-medium">Department</span>
-                <span class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
-            </button>
-            <button
-                class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white border border-slate-200 px-4 hover:border-[#ec5b13]/50 transition-colors">
-                <span class="material-symbols-outlined text-slate-500 text-lg">stairs</span>
-                <span class="text-slate-700 text-sm font-medium">Experience Level</span>
-                <span class="material-symbols-outlined text-slate-400 text-lg">expand_more</span>
-            </button>
-            <button
-                class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-white border border-slate-200 px-4 hover:border-[#ec5b13]/50 transition-colors ml-auto">
-                <span class="material-symbols-outlined text-slate-500 text-lg">filter_list</span>
-                <span class="text-slate-700 text-sm font-medium">More Filters</span>
-            </button>
-        </div>
+        <!-- Scrollable Body -->
+        <div class="flex-1 overflow-y-auto">
 
-        <!-- Data Table -->
-        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200">
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Title &amp;
-                                Description</th>
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Department
-                            </th>
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Currency
-                            </th>
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider">Salary Range
-                            </th>
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider text-center">
-                                Experience</th>
-                            <th class="px-6 py-4 text-slate-600 text-xs font-bold uppercase tracking-wider text-right">
-                                Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <!-- بدّل *ngFor دي -->
-                        <tr *ngFor="let req of paginatedRequirements" class="hover:bg-slate-50/50 transition-colors">
-
-                            <!-- Title & Description -->
-                            <td class="px-6 py-5">
-                                <div class="flex flex-col">
-                                    <span class="text-slate-900 font-semibold text-sm">{{ req.title }}</span>
-                                    <span class="text-slate-500 text-xs mt-1 line-clamp-1">{{ req.description }}</span>
-                                </div>
-                            </td>
-
-                            <!-- Department  -->
-                            <td class="px-6 py-5">
-                                <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-medium">
-                                    {{ getDepartmentName(req.departmentId) }}
-                                </span>
-                            </td>
-
-                            <!-- Currency -->
-                            <td class="px-6 py-5">
-                                <span class="text-slate-700 text-sm">{{ req.minSalaryCurrency }}</span>
-                            </td>
-
-                            <!-- Salary -->
-                            <td class="px-6 py-5">
-                                <span class="text-slate-900 text-sm font-medium">
-                                    {{ formatSalary(req.minSalaryAmount) }} – {{ formatSalary(req.maxSalaryAmount) }}
-                                </span>
-                                <span class="text-slate-400 text-xs ml-1 uppercase">{{ req.minSalaryCurrency }}</span>
-                            </td>
-
-                            <!-- Experience Badge -->
-                            <td class="px-6 py-5 text-center">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                                    [ngClass]="experienceBadgeClass(req.experienceLevel)">
-                                    {{ req.experienceLevel }}
-                                </span>
-                            </td>
-
-                            <!-- Actions -->
-                            <td class="px-6 py-5 text-right">
-                                <div class="flex items-center justify-end gap-1">
-                                    <button (click)="onView(req)" title="View Details"
-                                        class="p-2 text-slate-400 hover:text-[#ec5b13] transition-colors rounded-lg hover:bg-slate-100">
-                                        <span class="material-symbols-outlined text-xl">visibility</span>
-                                    </button>
-                                    <!-- ✏️ Edit Salary -->
-                                    <button (click)="openEditSalary(req)" title="Edit Salary"
-                                        class="p-2 text-slate-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-50">
-                                        <span class="material-symbols-outlined text-xl">edit</span>
-                                    </button>
-                                    <button (click)="onDelete(req)" title="Delete"
-                                        class="p-2 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
-                                        <span class="material-symbols-outlined text-xl">delete</span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <!-- Loading state -->
-                        <tr *ngIf="isLoading">
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
-                                Loading requirements...
-                            </td>
-                        </tr>
-
-                        <!-- Empty state -->
-                        <tr *ngIf="!isLoading && filteredRequirements.length === 0">
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
-                                No requirements found.
-                            </td>
-                        </tr>
-
-                        <!-- Empty state -->
-                        <tr *ngIf="filteredRequirements.length === 0">
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
-                                No requirements found matching "{{ searchQuery }}".
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <!-- Page Header -->
+            <div class="px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 lg:pt-8 pb-4 sm:pb-6 lg:pb-8">
+                <h1 class="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900">Job Requirements
+                </h1>
+                <p class="text-slate-500 text-xs sm:text-sm mt-1 max-w-lg">Manage and track active talent acquisition
+                    mandates across the organization.</p>
             </div>
 
-            <!-- Pagination -->
-            <div class="flex items-center justify-between px-6 py-4 bg-slate-50 border-t border-slate-200">
-                <span class="text-sm text-slate-500">
-                    Showing {{ (currentPage - 1) * pageSize + 1 }}–{{ currentPage * pageSize }} of {{ totalRequirements
-                    }} requirements
-                </span>
-                <div class="flex items-center gap-2">
-                    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
-                        class="flex size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                        <span class="material-symbols-outlined text-lg">chevron_left</span>
+            <!-- Filters -->
+            <div class="px-4 sm:px-6 lg:px-8 mb-4 sm:mb-6">
+                <div class="flex gap-2 overflow-x-auto no-scrollbar -mx-1 px-1 pb-1">
+                    <button
+                        class="flex h-8 sm:h-10 shrink-0 items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-white border border-slate-200 px-2.5 sm:px-4 hover:border-[#ec5b13]/50 transition-colors active:scale-[0.97]">
+                        <span class="material-symbols-outlined text-slate-500 text-[18px] sm:text-lg">category</span>
+                        <span class="text-slate-700 text-[11px] sm:text-sm font-medium">Department</span>
+                        <span class="material-symbols-outlined text-slate-400 text-[16px] sm:text-lg">expand_more</span>
                     </button>
-
-                    <ng-container *ngFor="let page of pages">
-                        <button (click)="goToPage(page)" [ngClass]="currentPage === page
-                ? 'bg-blue-500 text-white'
-                : 'border border-slate-200 text-slate-600 hover:bg-white'"
-                            class="flex size-8 items-center justify-center rounded-lg text-xs font-medium transition-colors">{{
-                            page }}</button>
-                    </ng-container>
-
-                    <span class="text-slate-400 px-1">...</span>
-
-                    <button (click)="goToPage(6)"
-                        class="flex size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 text-xs font-medium hover:bg-white transition-colors">6</button>
-
-                    <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
-                        class="flex size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    <button
+                        class="flex h-8 sm:h-10 shrink-0 items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-white border border-slate-200 px-2.5 sm:px-4 hover:border-[#ec5b13]/50 transition-colors active:scale-[0.97]">
+                        <span class="material-symbols-outlined text-slate-500 text-[18px] sm:text-lg">stairs</span>
+                        <span class="text-slate-700 text-[11px] sm:text-sm font-medium">Experience</span>
+                        <span class="material-symbols-outlined text-slate-400 text-[16px] sm:text-lg">expand_more</span>
+                    </button>
+                    <button
+                        class="flex h-8 sm:h-10 shrink-0 items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-white border border-slate-200 px-2.5 sm:px-4 hover:border-[#ec5b13]/50 transition-colors ml-auto active:scale-[0.97]">
+                        <span class="material-symbols-outlined text-slate-500 text-[18px] sm:text-lg">filter_list</span>
+                        <span class="text-slate-700 text-[11px] sm:text-sm font-medium">More</span>
                     </button>
                 </div>
             </div>
-        </div>
 
+            <!-- Data Table Container -->
+            <div class="px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
+                <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+
+                    <!-- ═══ Mobile Card View ═══ -->
+                    <div class="sm:hidden divide-y divide-slate-100">
+                        <ng-container *ngIf="!isLoading && paginatedRequirements.length > 0; else mobileEmptyOrLoading">
+                            <div *ngFor="let req of paginatedRequirements" class="p-3.5">
+                                <!-- Top row: Title + Actions -->
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-[13px] font-semibold text-slate-900 leading-snug">{{ req.title }}
+                                        </p>
+                                        <p class="text-[11px] text-slate-400 mt-0.5 line-clamp-1">{{ req.description }}
+                                        </p>
+                                    </div>
+                                    <div class="flex items-center gap-0.5 flex-shrink-0 -mr-1">
+                                        <button (click)="onView(req)"
+                                            class="p-1.5 text-slate-400 hover:text-[#ec5b13] rounded-lg active:bg-slate-50 transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        </button>
+                                        <button (click)="openEditSalary(req)"
+                                            class="p-1.5 text-slate-400 hover:text-blue-500 rounded-lg active:bg-blue-50 transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        </button>
+                                        <button (click)="onDelete(req)"
+                                            class="p-1.5 text-slate-400 hover:text-red-500 rounded-lg active:bg-red-50 transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Info row -->
+                                <div class="flex items-center gap-2 mt-2.5 flex-wrap">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium">
+                                        {{ getDepartmentName(req.departmentId) }}
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium"
+                                        [ngClass]="experienceBadgeClass(req.experienceLevel)">
+                                        {{ req.experienceLevel }}
+                                    </span>
+                                </div>
+                                <!-- Salary row -->
+                                <div class="flex items-baseline justify-between mt-2.5 pt-2.5 border-t border-slate-50">
+                                    <span
+                                        class="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Salary</span>
+                                    <p class="text-[13px] font-bold text-slate-900">
+                                        {{ formatSalary(req.minSalaryAmount) }} – {{ formatSalary(req.maxSalaryAmount)
+                                        }}
+                                        <span class="text-slate-400 font-normal text-[10px] uppercase ml-0.5">{{
+                                            req.minSalaryCurrency }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #mobileEmptyOrLoading>
+                            <div *ngIf="isLoading" class="py-12 text-center">
+                                <div
+                                    class="size-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-2.5">
+                                </div>
+                                <p class="text-slate-400 text-xs">Loading requirements...</p>
+                            </div>
+                            <div *ngIf="!isLoading && filteredRequirements.length === 0" class="py-12 text-center">
+                                <span class="material-symbols-outlined block mx-auto mb-2"
+                                    style="font-size:36px; opacity:0.25;">search_off</span>
+                                <p class="text-slate-400 text-xs">No requirements found{{ searchQuery ? ' for "' +
+                                    searchQuery + '"' : '' }}.</p>
+                            </div>
+                        </ng-template>
+                    </div>
+
+                    <!-- ═══ Desktop Table View ═══ -->
+                    <div class="hidden sm:block overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[780px]">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th
+                                        class="px-6 py-3.5 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                        Title &amp; Description</th>
+                                    <th
+                                        class="px-6 py-3.5 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                        Department</th>
+                                    <th
+                                        class="px-6 py-3.5 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                        Currency</th>
+                                    <th
+                                        class="px-6 py-3.5 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                                        Salary Range</th>
+                                    <th
+                                        class="px-6 py-3.5 text-slate-500 text-[11px] font-bold uppercase tracking-wider text-center">
+                                        Experience</th>
+                                    <th
+                                        class="px-6 py-3.5 text-slate-500 text-[11px] font-bold uppercase tracking-wider text-right">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr *ngFor="let req of paginatedRequirements"
+                                    class="hover:bg-slate-50/60 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col">
+                                            <span class="text-slate-900 font-semibold text-sm">{{ req.title }}</span>
+                                            <span class="text-slate-400 text-xs mt-0.5 line-clamp-1">{{ req.description
+                                                }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-medium">
+                                            {{ getDepartmentName(req.departmentId) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-slate-600 text-sm">{{ req.minSalaryCurrency }}</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-slate-900 text-sm font-medium">{{
+                                            formatSalary(req.minSalaryAmount) }} – {{ formatSalary(req.maxSalaryAmount)
+                                            }}</span>
+                                        <span class="text-slate-400 text-[11px] ml-1 uppercase">{{ req.minSalaryCurrency
+                                            }}</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                                            [ngClass]="experienceBadgeClass(req.experienceLevel)">
+                                            {{ req.experienceLevel }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-0.5">
+                                            <button (click)="onView(req)" title="View Details"
+                                                class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors rounded-lg hover:bg-orange-50">
+                                                <span class="material-symbols-outlined text-lg">visibility</span>
+                                            </button>
+                                            <button (click)="openEditSalary(req)" title="Edit Salary"
+                                                class="p-1.5 text-slate-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-50">
+                                                <span class="material-symbols-outlined text-lg">edit</span>
+                                            </button>
+                                            <button (click)="onDelete(req)" title="Delete"
+                                                class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+                                                <span class="material-symbols-outlined text-lg">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Loading -->
+                                <tr *ngIf="isLoading">
+                                    <td colspan="6" class="px-6 py-14 text-center text-slate-400 text-sm">
+                                        <div
+                                            class="size-5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-2.5">
+                                        </div>
+                                        Loading requirements...
+                                    </td>
+                                </tr>
+
+                                <!-- Empty -->
+                                <tr *ngIf="!isLoading && filteredRequirements.length === 0">
+                                    <td colspan="6" class="px-6 py-14 text-center text-slate-400 text-sm">
+                                        <span class="material-symbols-outlined block mx-auto mb-2"
+                                            style="font-size:40px; opacity:0.25;">search_off</span>
+                                        No requirements found{{ searchQuery ? ' matching "' + searchQuery + '"' : '' }}.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div
+                        class="flex flex-col sm:flex-row items-center justify-between px-3.5 sm:px-6 py-3 bg-slate-50 border-t border-slate-100 gap-2">
+                        <span class="text-[10px] sm:text-xs text-slate-400 order-2 sm:order-1">
+                            Showing {{ (currentPage - 1) * pageSize + 1 }}–{{ safeMax(currentPage * pageSize,
+                            totalRequirements) }} of {{ totalRequirements }}
+                        </span>
+                        <div class="flex items-center gap-1 order-1 sm:order-2">
+                            <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
+                                class="flex size-7 sm:size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                            </button>
+
+                            <ng-container *ngFor="let page of visiblePages">
+                                <ng-container *ngIf="page !== '...'; else ellipsis">
+                                    <button (click)="goToPage($any(page))" [ngClass]="currentPage === page
+
+                                            ? 'bg-blue-500 text-white border-blue-500'
+                                            : 'border border-slate-200 text-slate-600 hover:bg-white'"
+                                        class="flex size-7 sm:size-8 items-center justify-center rounded-lg text-[10px] sm:text-xs font-medium transition-colors">
+                                        {{ page }}
+                                    </button>
+                                </ng-container>
+                                <ng-template #ellipsis>
+                                    <span class="text-slate-300 w-4 sm:w-5 text-center text-xs select-none">…</span>
+                                </ng-template>
+                            </ng-container>
+
+                            <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
+                                class="flex size-7 sm:size-8 items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div><!-- /scrollable body -->
     </main>
 
     <!-- ══════════ Edit Salary Modal ══════════ -->
-    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+    <div *ngIf="showModal"
+        class="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm p-0 sm:p-4"
         (click)="closeModal()">
 
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+        <div class="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full sm:max-w-md mx-0 sm:mx-4 overflow-hidden max-h-[85vh] sm:max-h-[90vh] overflow-y-auto"
             (click)="$event.stopPropagation()">
 
+            <!-- Drag handle (mobile) -->
+            <div class="sm:hidden flex justify-center pt-2.5 pb-1">
+                <div class="w-9 h-1 rounded-full bg-slate-200"></div>
+            </div>
+
             <!-- Modal Header -->
-            <div class="flex items-center justify-between px-6 py-5 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <div class="size-9 rounded-xl bg-blue-50 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-blue-500 text-xl">payments</span>
+            <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-5 border-b border-slate-100">
+                <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                    <div
+                        class="size-8 sm:size-9 rounded-lg sm:rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+                        <span class="material-symbols-outlined text-blue-500 text-lg sm:text-xl">payments</span>
                     </div>
-                    <div>
-                        <h3 class="text-slate-900 font-bold text-base">Edit Salary</h3>
-                        <p class="text-slate-400 text-xs mt-0.5 line-clamp-1">{{ selectedReq?.title }}</p>
+                    <div class="min-w-0">
+                        <h3 class="text-slate-900 font-bold text-sm sm:text-base">Edit Salary</h3>
+                        <p class="text-slate-400 text-[10px] sm:text-xs mt-0.5 line-clamp-1">{{ selectedReq?.title }}
+                        </p>
                     </div>
                 </div>
                 <button (click)="closeModal()"
-                    class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    class="p-1.5 sm:p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>
 
             <!-- Modal Body -->
-            <form [formGroup]="salaryForm" class="px-6 py-6 space-y-5">
+            <form [formGroup]="salaryForm" class="px-4 sm:px-6 py-4 sm:py-6 space-y-4 sm:space-y-5">
 
                 <!-- Currency -->
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Currency</label>
+                    <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">Currency</label>
                     <div class="relative">
                         <select formControlName="salaryCurrency"
-                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 appearance-none pr-10 text-sm">
+                            class="w-full px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 appearance-none pr-10 text-sm">
                             <option *ngFor="let c of currencies" [value]="c.value">{{ c.label }}</option>
                         </select>
                         <span
-                            class="material-symbols-outlined absolute right-3 top-3.5 text-slate-400 pointer-events-none text-[18px]">expand_more</span>
+                            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-[18px]">expand_more</span>
                     </div>
                 </div>
 
                 <!-- Min & Max -->
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Min Salary</label>
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">Min Salary</label>
                         <input type="number" formControlName="minSalaryAmount" placeholder="0" min="0"
-                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm"
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm"
                             [ngClass]="salaryForm.get('minSalaryAmount')?.invalid && salaryForm.get('minSalaryAmount')?.touched ? 'border-red-400' : 'border-slate-200'" />
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-slate-700 mb-2">Max Salary</label>
+                        <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5">Max Salary</label>
                         <input type="number" formControlName="maxSalaryAmount" placeholder="0" min="0"
-                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm"
+                            class="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-500 text-sm"
                             [ngClass]="salaryForm.get('maxSalaryAmount')?.invalid && salaryForm.get('maxSalaryAmount')?.touched ? 'border-red-400' : 'border-slate-200'" />
                     </div>
                 </div>
@@ -275,13 +399,14 @@
             </form>
 
             <!-- Modal Footer -->
-            <div class="flex items-center justify-end gap-3 px-6 py-4 bg-slate-50 border-t border-slate-100">
+            <div
+                class="flex items-center justify-end gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 border-t border-slate-100">
                 <button (click)="closeModal()"
-                    class="px-5 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-xl transition-colors">
+                    class="px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-medium text-slate-600 hover:bg-slate-200 rounded-xl transition-colors">
                     Cancel
                 </button>
                 <button (click)="onSaveSalary()" [disabled]="salaryForm.invalid || isSaving"
-                    class="px-6 py-2.5 bg-blue-500 text-white text-sm font-bold rounded-xl hover:bg-blue-600 transition-all disabled:opacity-60 flex items-center gap-2">
+                    class="px-5 sm:px-6 py-2.5 bg-blue-500 text-white text-xs sm:text-sm font-bold rounded-xl hover:bg-blue-600 transition-all disabled:opacity-60 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">{{ isSaving ? 'hourglass_empty' : 'save'
                         }}</span>
                     {{ isSaving ? 'Saving…' : 'Save Changes' }}

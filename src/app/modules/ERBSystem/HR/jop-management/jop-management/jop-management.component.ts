@@ -19,6 +19,43 @@ export class JopManagementComponent implements OnInit {
   private readonly _ToastrService = inject(ToastrService);
   private readonly _fb = inject(FormBuilder);
 
+  showMobileSearch: boolean = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar') as HTMLElement;
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
+  safeMax(current: number, total: number): number {
+    return Math.min(current, total);
+  }
+
+  get visiblePages(): (number | string)[] {
+    const total = this.totalPages;
+    const current = this.currentPage;
+    const pages: (number | string)[] = [];
+
+    if (total <= 5) {
+      for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (current > 3) pages.push('...');
+      const start = Math.max(2, current - 1);
+      const end = Math.min(total - 1, current + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (current < total - 2) pages.push('...');
+      pages.push(total);
+    }
+
+    return pages;
+  }
+
   searchQuery = '';
   allRequirements: any[] = [];
   departmentMap: Record<string, string> = {};

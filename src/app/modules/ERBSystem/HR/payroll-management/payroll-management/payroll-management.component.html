@@ -8,10 +8,16 @@
 
         <!-- Header -->
         <header
-            class="h-16 flex items-center justify-between px-8 bg-white border-b border-slate-200 sticky top-0 z-10">
+            class="h-14 sm:h-16 flex items-center justify-between px-4 sm:px-8 bg-white border-b border-slate-200 sticky top-0 z-10 gap-3">
+
+            <!-- Mobile Menu -->
+            <button (click)="toggleSidebar()"
+                class="lg:hidden p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors -ml-1 flex-shrink-0">
+                <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+            </button>
 
             <!-- Search -->
-            <div class="flex items-center gap-4 flex-1 max-w-xl">
+            <div class="flex items-center gap-4 flex-1 max-w-xl hidden sm:flex">
                 <div class="relative w-full">
                     <span
                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
@@ -22,139 +28,242 @@
             </div>
 
             <!-- User / Actions -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 sm:gap-4 ml-auto">
+
+                <!-- Mobile Search Toggle -->
+                <button (click)="toggleMobileSearch()"
+                    class="sm:hidden p-2 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
+                </button>
 
                 <button class="p-2 text-slate-500 hover:bg-slate-50 rounded-lg relative">
                     <span class="material-symbols-outlined">notifications</span>
                     <span
                         class="absolute top-2 right-2.5 w-2 h-2 bg-[#ec5b13] rounded-full border-2 border-white"></span>
                 </button>
-                <div class="h-8 w-px bg-slate-200 mx-2"></div>
-                <div class="flex items-center gap-3 cursor-pointer group">
-                    <div class="text-right">
-                        <p class="text-sm font-semibold leading-none">Alex Rivera</p>
-                        <p class="text-xs text-slate-500 mt-1">HR Admin</p>
+
+                <div class="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+
+                <div class="flex items-center gap-2 sm:gap-3 cursor-pointer group">
+                    <div class="text-right hidden xs:block">
+                        <p class="text-xs sm:text-sm font-semibold leading-none">Alex Rivera</p>
+                        <p class="text-[10px] sm:text-xs text-slate-500 mt-1">HR Admin</p>
                     </div>
                     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB_3Wo08_xCfFFSCSnYwpeFSe8_KfAQKodYZ3N0mQXitpF0HHnX6zY5PuSFCx_-2FnXByiltVeFYpNLDDGg-bXK6tmVEg3WdQPUiXTRX4PeGTIP8EBXFqxK-P4142KaZ8HOM8C-g3GsOWI9gB4BDm82mA9MsDBGSFX9ugmbiSBCIndTnwRZ76ygktwMjcfQx3Nu543NibsVAw16Gp3s5Ab88H0fDqR1jCdxrE_M_4vtH9BYrHXpiWaC9NnBIpFpghbttfQPesV0khh-"
                         alt="Alex Rivera"
-                        class="w-10 h-10 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-orange-200 transition-all" />
+                        class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover ring-2 ring-slate-100 group-hover:ring-orange-200 transition-all flex-shrink-0" />
                 </div>
             </div>
         </header>
 
+        <!-- Mobile Search Bar -->
+        <div *ngIf="showMobileSearch" class="sm:hidden bg-white border-b border-slate-200 px-4 py-3 flex-shrink-0">
+            <div class="relative w-full">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+                <input type="text" [value]="searchQuery()" (input)="onSearch($any($event.target).value)"
+                    placeholder="Search payroll records..."
+                    class="w-full bg-slate-50 border-none rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-orange-200 placeholder:text-slate-400" />
+            </div>
+        </div>
+
         <!-- Content -->
-        <div class="p-8">
+        <div class="p-4 sm:p-6 lg:p-8">
 
             <!-- Page Title & Actions -->
-            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 sm:mb-8">
                 <div>
-                    <h2 class="text-3xl font-extrabold tracking-tight">Payroll Directory</h2>
-                    <p class="text-slate-500 mt-1">Overview of all processed employee payroll records for the current
+                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">Payroll Directory</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm mt-1">Overview of all processed employee payroll records
+                        for the current
                         fiscal year.</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <!-- <button (click)="onExportCSV()"
-                        class="flex items-center gap-2 px-4 py-2 border border-slate-200 bg-white rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">download</span>
-                        Export CSV
-                    </button>
-                    <button (click)="onPrintAll()"
-                        class="flex items-center gap-2 px-4 py-2 border border-slate-200 bg-white rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">
-                        <span class="material-symbols-outlined text-[18px]">print</span>
-                        Print All
-                    </button> -->
-                    <!-- New Record Button -->
-                    <div class="p-4 border-t border-slate-200">
-                        <button (click)="onNewRecord()"
-                            class="flex items-center gap-2 px-5 py-2.5 cursor-pointer rounded-xl text-white text-sm font-semibold transition-all shadow-lg"
-                            style="background:#2563EB; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
-                            <span class="material-symbols-outlined text-[20px]">add</span>
-                            <span>New Record</span>
-                        </button>
-                    </div>
-                </div>
+                <button (click)="onNewRecord()"
+                    class="flex items-center justify-center gap-2 px-5 py-2.5 cursor-pointer rounded-xl text-white text-sm font-semibold transition-all shadow-lg self-start sm:self-auto flex-shrink-0"
+                    style="background:#2563EB; box-shadow: 0 4px 14px rgba(37,99,235,0.25);">
+                    <span class="material-symbols-outlined text-[20px]">add</span>
+                    <span>New Record</span>
+                </button>
             </div>
 
             <!-- Filters -->
-            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-6 flex flex-wrap items-center gap-4">
-                <span class="text-sm font-semibold text-slate-500 whitespace-nowrap">Filter by:</span>
-                <div class="flex-1 flex flex-wrap gap-3">
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200">
-                        <span>Department: All</span>
-                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
-                    </button>
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200">
-                        <span>Period: Monthly</span>
-                        <span class="material-symbols-outlined text-[18px]">expand_more</span>
-                    </button>
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-lg text-sm font-medium border border-transparent hover:border-slate-200">
-                        <span>Date: Oct 2023</span>
-                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+            <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 mb-4 sm:mb-6">
+                <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar">
+                    <span class="text-xs sm:text-sm font-semibold text-slate-500 whitespace-nowrap flex-shrink-0">Filter
+                        by:</span>
+                    <div class="flex gap-2 sm:gap-3 flex-shrink-0">
+                        <button
+                            class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 bg-slate-50 rounded-lg text-xs sm:text-sm font-medium border border-transparent hover:border-slate-200 whitespace-nowrap">
+                            <span>Department: All</span>
+                            <span class="material-symbols-outlined text-[16px] sm:text-[18px]">expand_more</span>
+                        </button>
+                        <button
+                            class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 bg-slate-50 rounded-lg text-xs sm:text-sm font-medium border border-transparent hover:border-slate-200 whitespace-nowrap">
+                            <span>Period: Monthly</span>
+                            <span class="material-symbols-outlined text-[16px] sm:text-[18px]">expand_more</span>
+                        </button>
+                        <button
+                            class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 bg-slate-50 rounded-lg text-xs sm:text-sm font-medium border border-transparent hover:border-slate-200 whitespace-nowrap">
+                            <span>Date: Oct 2023</span>
+                            <span class="material-symbols-outlined text-[16px] sm:text-[18px]">calendar_today</span>
+                        </button>
+                    </div>
+                    <button (click)="clearFilters()"
+                        class="text-blue-500 text-xs sm:text-sm font-semibold hover:underline whitespace-nowrap ml-auto flex-shrink-0">
+                        Clear all
                     </button>
                 </div>
-                <button (click)="clearFilters()" class="text-blue-500 text-sm font-semibold hover:underline">
-                    Clear all filters
-                </button>
             </div>
 
             <!-- Employee Search -->
-            <div class="bg-white p-4 rounded-xl border border-slate-200 mb-4 flex items-center gap-4">
-                <span class="text-sm font-bold text-slate-500 whitespace-nowrap">Search Employee:</span>
+            <div class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 mb-3 sm:mb-4">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <span class="text-xs sm:text-sm font-bold text-slate-500 whitespace-nowrap flex-shrink-0">Search
+                        Employee:</span>
 
-                <div class="relative flex-1 max-w-sm">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                        style="font-size:18px;">person_search</span>
-                    <input type="text" [value]="searchEmployeeName"
-                        (input)="onSearchEmployeeName($any($event.target).value)" placeholder="Type National ID…"
-                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                    <div class="relative flex-1 max-w-full sm:max-w-sm">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                            style="font-size:18px;">person_search</span>
+                        <input type="text" [value]="searchEmployeeName"
+                            (input)="onSearchEmployeeName($any($event.target).value)" placeholder="Type National ID…"
+                            class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300" />
 
-                    <!-- Dropdown -->
-                    <div *ngIf="showDropdown"
-                        class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-52 overflow-y-auto">
-                        <button *ngFor="let emp of searchResults" (click)="selectEmployee(emp)" ...>
-                            <div>
-                                <p class="text-sm font-semibold text-slate-800">{{ emp.nationalID }}</p> <!-- ← -->
-                                <p class="text-xs text-slate-400">{{ emp.name }} · {{ emp.employeeLevel }}</p>
+                        <!-- Dropdown -->
+                        <div *ngIf="showDropdown"
+                            class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-20 overflow-hidden max-h-52 overflow-y-auto">
+                            <button *ngFor="let emp of searchResults" (click)="selectEmployee(emp)" ...>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-800">{{ emp.nationalID }}</p>
+                                    <p class="text-xs text-slate-400">{{ emp.name }} · {{ emp.employeeLevel }}</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        <!-- Selected badge -->
+                        <div *ngIf="selectedEmployee()"
+                            class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs sm:text-sm text-blue-700 font-semibold">
+                            <span class="material-symbols-outlined" style="font-size:16px;">badge</span>
+                            <span class="truncate max-w-[120px] sm:max-w-none">{{ selectedEmployee.name }}</span>
+                        </div>
+
+                        <!-- Loading -->
+                        <div *ngIf="searchingPayroll" class="flex items-center gap-2 text-slate-400 text-xs sm:text-sm">
+                            <div class="size-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin">
                             </div>
+                            <span class="hidden sm:inline">Loading…</span>
+                        </div>
+
+                        <!-- Clear -->
+                        <button *ngIf="selectedEmployee || searchEmployeeName" (click)="clearEmployeeSearch()"
+                            class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 border border-slate-200 rounded-xl text-xs sm:text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+                            <span class="hidden sm:inline">Clear</span>
                         </button>
                     </div>
                 </div>
-
-                <!-- Selected badge -->
-                <div *ngIf="selectedEmployee()"
-                    class="flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-sm text-blue-700 font-semibold">
-                    <span class="material-symbols-outlined" style="font-size:16px;">badge</span>
-                    {{ selectedEmployee.name }}
-                </div>
-
-                <!-- Loading -->
-                <div *ngIf="searchingPayroll" class="flex items-center gap-2 text-slate-400 text-sm">
-                    <div class="size-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
-                    Loading…
-                </div>
-
-                <!-- Clear -->
-                <button *ngIf="selectedEmployee || searchEmployeeName" (click)="clearEmployeeSearch()"
-                    class="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 rounded-xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined" style="font-size:16px;">close</span>
-                    Clear
-                </button>
             </div>
 
             <!-- Error -->
             <div *ngIf="payrollError"
-                class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm mb-4">
+                class="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-xs sm:text-sm mb-3 sm:mb-4">
                 <span class="material-symbols-outlined" style="font-size:18px;">error</span>
                 {{ payrollError }}
             </div>
 
             <!-- Payroll Table -->
-            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
+            <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+
+                <!-- Mobile Card View -->
+                <div class="sm:hidden divide-y divide-slate-100">
+                    @for (record of filteredRecords(); track record.id ?? $index) {
+                    <div class="p-4 space-y-3">
+                        <!-- Name row -->
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <div
+                                    class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs bg-orange-50 text-[#ec5b13] flex-shrink-0">
+                                    {{ selectedEmployee() ? selectedEmployee()!.name.charAt(0).toUpperCase() :
+                                    record.initials }}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold truncate">
+                                        {{ selectedEmployee() ? selectedEmployee()!.name : record.name }}
+                                    </p>
+                                    <p class="text-[10px] text-slate-500 truncate">
+                                        {{ selectedEmployee()
+                                        ? selectedEmployee()!.employeeLevel + ' · ' +
+                                        selectedEmployee()!.employeeType
+                                        : record.department }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-0.5 flex-shrink-0">
+                                <button (click)="viewPayrollDetails(record.id)"
+                                    class="p-1.5 hover:bg-blue-50 rounded-lg transition-colors text-slate-400 hover:text-blue-500">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                </button>
+                                <button (click)="openEditModal(record)"
+                                    class="p-1.5 hover:bg-amber-50 rounded-lg transition-colors text-slate-400 hover:text-amber-500">
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                </button>
+                                <button (click)="onDeleteRecord(record)"
+                                    class="p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-slate-400 hover:text-rose-500">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Details grid -->
+                        <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                            <div>
+                                <p class="text-slate-400">Payment Date</p>
+                                <p class="font-medium mt-0.5">{{ record.paymentDate | date:'MMM dd, yyyy' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400">Period</p>
+                                <p class="font-medium mt-0.5">{{ record.periodStart | date:'MMM dd' }} – {{
+                                    record.periodEnd | date:'MMM dd' }}</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400">Basic Salary</p>
+                                <p class="font-medium mt-0.5">{{ formatCurrency(record.basicSalary) }}</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-400">Bonus</p>
+                                <p class="font-medium mt-0.5"
+                                    [ngClass]="record.bonus > 0 ? 'text-green-600' : 'text-slate-400'">
+                                    {{ formatBonus(record.bonus) }}
+                                </p>
+                            </div>
+                        </div>
+                        <!-- Net salary -->
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Net Salary</span>
+                            <span class="text-sm font-bold text-slate-900">
+                                {{ formatCurrency(record.netSalary ?? (record.basicSalary + record.bonus)) }}
+                            </span>
+                        </div>
+                    </div>
+                    }
+
+                    <!-- Mobile Empty state -->
+                    @if (filteredRecords().length === 0) {
+                    <div class="px-4 py-10 text-center text-slate-400 text-xs sm:text-sm">
+                        <span class="material-symbols-outlined block mx-auto mb-2"
+                            style="font-size:36px; opacity:0.3;">search_off</span>
+                        @if (selectedEmployee()) {
+                        No payroll records found for <strong>{{ selectedEmployee.name }}</strong>.
+                        } @else {
+                        No records match your search.
+                        }
+                    </div>
+                    }
+                </div>
+
+                <!-- Desktop Table View -->
+                <div class="hidden sm:block overflow-x-auto">
+                    <table class="w-full text-left border-collapse min-w-[900px]">
                         <thead>
                             <tr class="bg-slate-50 border-b border-slate-200">
                                 <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Employee
@@ -235,18 +344,14 @@
                                 <!-- Actions -->
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-1">
-                                        <!-- View -->
                                         <button (click)="viewPayrollDetails(record.id)"
                                             class="p-1.5 hover:bg-blue-50 rounded-lg transition-colors text-slate-400 hover:text-blue-500">
                                             <span class="material-symbols-outlined text-[20px]">visibility</span>
                                         </button>
-                                        <!-- Edit -->
-                                        <!-- Edit -->
                                         <button (click)="openEditModal(record)"
                                             class="p-1.5 hover:bg-amber-50 rounded-lg transition-colors text-slate-400 hover:text-amber-500">
                                             <span class="material-symbols-outlined text-[20px]">edit</span>
                                         </button>
-                                        <!-- Delete -->
                                         <button (click)="onDeleteRecord(record)"
                                             class="p-1.5 hover:bg-rose-50 rounded-lg transition-colors text-slate-400 hover:text-rose-500">
                                             <span class="material-symbols-outlined text-[20px]">delete</span>
@@ -273,81 +378,81 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
-                    <p class="text-xs font-medium text-slate-500">{{ showingText }}</p>
-                    <div class="flex items-center gap-2">
+                <div
+                    class="px-4 sm:px-6 py-3 sm:py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+                    <p class="text-[10px] sm:text-xs font-medium text-slate-500 order-2 sm:order-1">{{ showingText }}
+                    </p>
+                    <div class="flex items-center gap-1 sm:gap-2 order-1 sm:order-2">
                         <!-- Prev -->
                         <button [disabled]="currentPage() === 1" (click)="setPage(currentPage() - 1)"
-                            class="p-1 border border-slate-200 rounded-lg text-slate-400 disabled:opacity-40">
-                            <span class="material-symbols-outlined">chevron_left</span>
+                            class="p-1 border border-slate-200 rounded-lg text-slate-400 disabled:opacity-40 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size:18px;">chevron_left</span>
                         </button>
 
                         <!-- Page buttons -->
                         <ng-container *ngFor="let page of pages; let i = index">
-                            <span *ngIf="i === 3" class="text-slate-400">...</span>
+                            <span *ngIf="i === 3" class="text-slate-400 text-sm">…</span>
                             <button (click)="setPage(page)" [ngClass]="currentPage() === page
-                  ? 'w-8 h-8 rounded-lg bg-blue-500 text-white text-xs font-bold'
-                  : 'w-8 h-8 rounded-lg hover:bg-slate-200 text-xs font-medium'">
+                  ? 'w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500 text-white text-[10px] sm:text-xs font-bold'
+                  : 'w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-slate-200 text-[10px] sm:text-xs font-medium'">
                                 {{ page }}
                             </button>
                         </ng-container>
 
                         <!-- Next -->
                         <button [disabled]="currentPage() === 9" (click)="setPage(currentPage() + 1)"
-                            class="p-1 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 disabled:opacity-40">
-                            <span class="material-symbols-outlined">chevron_right</span>
+                            class="p-1 border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size:18px;">chevron_right</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Summary Cards -->
-
-
         </div><!-- /content -->
     </main>
 
     <!-- ── New Record Modal ── -->
-    <div *ngIf="showNewRecordModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div *ngIf="showNewRecordModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         (click)="closeNewRecordModal()">
 
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
 
-        <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden"
+        <div class="relative w-full sm:max-w-lg bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             (click)="$event.stopPropagation()">
 
             <!-- Accent bar -->
             <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
 
             <!-- Header -->
-            <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
+            <div
+                class="flex items-center justify-between px-5 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-xl flex items-center justify-center text-white"
+                    <div class="size-9 sm:size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
                         style="background-color:#2563EB;">
-                        <span class="material-symbols-outlined" style="font-size:22px;">payments</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">payments</span>
                     </div>
                     <div>
-                        <h2 class="text-base font-bold text-slate-900">New Payroll Record</h2>
-                        <p class="text-xs text-slate-400">Fill in the details to add a new record</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">New Payroll Record</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-400">Fill in the details to add a new record</p>
                     </div>
                 </div>
                 <button (click)="closeNewRecordModal()"
-                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors flex-shrink-0">
                     <span class="material-symbols-outlined" style="font-size:20px;">close</span>
                 </button>
             </div>
 
             <!-- Body -->
-            <div class="px-6 py-5 space-y-4">
+            <div class="px-5 sm:px-6 py-4 sm:py-5 space-y-4">
 
                 <!-- Success -->
                 <div *ngIf="submitSuccess" class="flex flex-col items-center gap-3 py-6">
-                    <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <div class="size-14 sm:size-16 rounded-full bg-emerald-100 flex items-center justify-center">
                         <span class="material-symbols-outlined text-emerald-600"
-                            style="font-size:36px;">check_circle</span>
+                            style="font-size:32px;">check_circle</span>
                     </div>
-                    <p class="text-base font-bold text-slate-900">Payroll record added!</p>
-                    <p class="text-sm text-slate-500">Closing automatically…</p>
+                    <p class="text-sm sm:text-base font-bold text-slate-900">Payroll record added!</p>
+                    <p class="text-xs sm:text-sm text-slate-500">Closing automatically…</p>
                 </div>
 
                 <ng-container *ngIf="!submitSuccess">
@@ -363,7 +468,8 @@
 
                         <!-- Employee -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</label>
+                            <label
+                                class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -382,35 +488,35 @@
                         </div>
 
                         <!-- Period Start & End -->
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-3 sm:gap-4">
                             <div class="space-y-1.5">
-                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Period
-                                    Start</label>
+                                <label
+                                    class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Start</label>
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                                         style="font-size:18px;">calendar_today</span>
                                     <input type="date" [(ngModel)]="form.periodStart"
-                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
                                 </div>
                             </div>
                             <div class="space-y-1.5">
-                                <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Period
-                                    End</label>
+                                <label
+                                    class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">End</label>
                                 <div class="relative">
                                     <span
                                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                                         style="font-size:18px;">calendar_today</span>
                                     <input type="date" [(ngModel)]="form.periodEnd" [min]="form.periodStart"
-                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
+                                        class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3 py-2.5 text-sm focus:ring-2 focus:ring-blue-500" />
                                 </div>
                             </div>
                         </div>
 
                         <!-- Bonus Amount -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                Bonus Amount <span class="normal-case text-slate-400 font-normal">(optional)</span>
+                            <label class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                Bonus <span class="normal-case text-slate-400 font-normal">(optional)</span>
                             </label>
                             <div class="relative">
                                 <span
@@ -422,7 +528,7 @@
 
                         <!-- Error -->
                         <div *ngIf="submitError"
-                            class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                            class="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-xs sm:text-sm">
                             <span class="material-symbols-outlined" style="font-size:18px;">error</span>
                             {{ submitError }}
                         </div>
@@ -432,7 +538,7 @@
             </div>
 
             <!-- Footer -->
-            <div *ngIf="!submitSuccess && !loadingEmployees" class="px-6 pb-6 flex gap-3">
+            <div *ngIf="!submitSuccess && !loadingEmployees" class="px-5 sm:px-6 pb-5 sm:pb-6 flex gap-3">
                 <button (click)="closeNewRecordModal()"
                     class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
                     Cancel
@@ -452,59 +558,63 @@
 
 
     <!-- Edit Modal -->
-    <div *ngIf="showEditModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div *ngIf="showEditModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         (click)="closeEditModal()">
 
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
 
-        <div class="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+        <div class="relative w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden"
             (click)="$event.stopPropagation()">
 
             <!-- Accent bar -->
             <div class="h-1 w-full" style="background:linear-gradient(90deg,#F59E0B,#FCD34D)"></div>
 
             <!-- Header -->
-            <div class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
+            <div
+                class="flex items-center justify-between px-5 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-xl flex items-center justify-center text-white bg-amber-500">
-                        <span class="material-symbols-outlined" style="font-size:22px;">edit</span>
+                    <div
+                        class="size-9 sm:size-10 rounded-xl flex items-center justify-center text-white bg-amber-500 flex-shrink-0">
+                        <span class="material-symbols-outlined" style="font-size:20px;">edit</span>
                     </div>
                     <div>
-                        <h2 class="text-base font-bold text-slate-900">Edit Payroll Record</h2>
-                        <p class="text-xs text-slate-400">Update bonus for this record</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">Edit Payroll Record</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-400">Update bonus for this record</p>
                     </div>
                 </div>
                 <button (click)="closeEditModal()"
-                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors">
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors flex-shrink-0">
                     <span class="material-symbols-outlined" style="font-size:20px;">close</span>
                 </button>
             </div>
 
             <!-- Body -->
-            <div class="px-6 py-5 space-y-4">
+            <div class="px-5 sm:px-6 py-4 sm:py-5 space-y-4">
 
                 <!-- Success -->
                 <div *ngIf="editSuccess" class="flex flex-col items-center gap-3 py-6">
-                    <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <div class="size-14 sm:size-16 rounded-full bg-emerald-100 flex items-center justify-center">
                         <span class="material-symbols-outlined text-emerald-600"
-                            style="font-size:36px;">check_circle</span>
+                            style="font-size:32px;">check_circle</span>
                     </div>
-                    <p class="text-base font-bold text-slate-900">Record updated!</p>
-                    <p class="text-sm text-slate-500">Closing automatically…</p>
+                    <p class="text-sm sm:text-base font-bold text-slate-900">Record updated!</p>
+                    <p class="text-xs sm:text-sm text-slate-500">Closing automatically…</p>
                 </div>
 
                 <ng-container *ngIf="!editSuccess">
 
                     <!-- Payroll ID (readonly) -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Payroll ID</label>
+                        <label class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Payroll
+                            ID</label>
                         <input type="text" [value]="editForm.payrollId" readonly
                             class="w-full bg-slate-100 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-400 cursor-not-allowed" />
                     </div>
 
                     <!-- Bonus -->
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Bonus Amount</label>
+                        <label class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Bonus
+                            Amount</label>
                         <div class="relative">
                             <span
                                 class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-bold">$</span>
@@ -515,7 +625,7 @@
 
                     <!-- Error -->
                     <div *ngIf="editError"
-                        class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                        class="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-xs sm:text-sm">
                         <span class="material-symbols-outlined" style="font-size:18px;">error</span>
                         {{ editError }}
                     </div>
@@ -524,7 +634,7 @@
             </div>
 
             <!-- Footer -->
-            <div *ngIf="!editSuccess" class="px-6 pb-6 flex gap-3">
+            <div *ngIf="!editSuccess" class="px-5 sm:px-6 pb-5 sm:pb-6 flex gap-3">
                 <button (click)="closeEditModal()"
                     class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
                     Cancel

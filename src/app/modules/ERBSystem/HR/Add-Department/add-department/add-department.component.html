@@ -1,15 +1,13 @@
-<div
-    class="flex h-screen overflow-hidden font-[Public_Sans,sans-serif] bg-[#f8f6f6] dark:bg-[#221610] text-slate-900 dark:text-slate-100">
+<div class="flex h-screen overflow-hidden font-[Public_Sans,sans-serif] bg-[#f8f6f6] text-slate-900">
 
     <!-- ── Side Navigation ── -->
     <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ── Main Content ── -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50 dark:bg-[#221610]">
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-slate-50">
 
         <!-- Header -->
-        <header
-            class="h-16 flex items-center justify-between px-8 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+        <header class="h-16 flex items-center justify-between px-4 md:px-8 bg-white border-b border-slate-200">
             <div class="flex items-center gap-4">
                 <h2 class="text-xl font-bold">Add New Department</h2>
             </div>
@@ -19,14 +17,14 @@
                     <span
                         class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
                     <input type="text" placeholder="Search..."
-                        class="pl-10 pr-4 py-1.5 w-64 bg-slate-100 dark:bg-slate-800 border-none rounded-lg focus:ring-2 focus:ring-[#ec5b13]/20 text-sm outline-none" />
+                        class="pl-10 pr-4 py-1.5 w-64 bg-slate-100 border-none rounded-lg focus:ring-2 focus:ring-[#ec5b13]/20 text-sm outline-none" />
                 </div>
                 <!-- Notifications -->
-                <button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full">
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full">
                     <span class="material-symbols-outlined">notifications</span>
                 </button>
                 <!-- Avatar -->
-                <div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700">
+                <div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200">
                     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkccqlWX4B9NzRNTUkkgVkdiKPOy57vZt47sJIuAL51xDwD1REBwNpfF5YeRyoDvnb_JZSC0RJBjuoYs8goIj_9hVh15NPCfWbadNiw5btEpV7FQYRbMLuF-QKRbVoMJxylzm2iQuqrtsg2owp7etPVORbzPHpfkh3IPInHD_JJxaNJahg7bcu3MKR1ErBGzow5PiiuMeJ9rVH80ay0S5HV6rZ8LX7EyZrHD1PiNJT7IbO9mvvfxxOqYfX3CT01sp6Zl9v-ZotaRmu"
                         alt="User avatar" class="w-full h-full object-cover" />
                 </div>
@@ -34,14 +32,14 @@
         </header>
 
         <!-- Scrollable Content -->
-        <div class="flex-1 overflow-y-auto p-8">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8">
             <div class="max-w-4xl mx-auto">
 
                 <!-- Breadcrumbs -->
-                <nav class="flex mb-6 text-sm text-slate-500 dark:text-slate-400">
+                <nav class="flex mb-6 text-sm text-slate-500">
                     <a href="#" class="hover:text-[#ec5b13] transition-colors">Departments</a>
                     <span class="mx-2">/</span>
-                    <span class="text-slate-900 dark:text-slate-100 font-medium">Add New</span>
+                    <span class="text-slate-900 font-medium">Add New</span>
                 </nav>
 
                 <!-- Success Banner -->
@@ -52,14 +50,13 @@
                 </div>
 
                 <!-- Form Container -->
-                <div
-                    class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-                    <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()"
-                        class="divide-y divide-slate-100 dark:divide-slate-800" novalidate>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <form [formGroup]="departmentForm" (ngSubmit)="onSubmit()" class="divide-y divide-slate-100"
+                        novalidate>
 
                         <!-- Section 1: Department Details -->
                         <div class="p-6 md:p-8">
-                            <div class="flex items-center gap-2 mb-6 text-slate-900 dark:text-white">
+                            <div class="flex items-center gap-2 mb-6 text-slate-900">
                                 <span class="material-symbols-outlined text-blue-500">info</span>
                                 <h3 class="text-lg font-semibold">Department Details</h3>
                             </div>
@@ -68,14 +65,12 @@
 
                                 <!-- Department Name -->
                                 <div class="flex flex-col gap-2">
-                                    <label for="dept-name"
-                                        class="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                    <label for="dept-name" class="text-sm font-semibold text-slate-700">
                                         Department Name <span class="text-[#ec5b13]">*</span>
                                     </label>
                                     <input id="dept-name" type="text" formControlName="name"
-                                        placeholder="e.g. Engineering, Sales"
-                                        [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-blue-500 transition-all outline-none ' +
-                      (isFieldInvalid('name') ? 'border-red-400 dark:border-red-500' : 'border-slate-300 dark:border-slate-700')" />
+                                        placeholder="e.g. Engineering, Sales" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-[#ec5b13]/20 focus:border-blue-500 transition-all outline-none ' +
+                      (isFieldInvalid('name') ? 'border-red-400' : 'border-slate-300')" />
                                     <p *ngIf="isFieldInvalid('name')" class="text-xs text-red-500">
                                         <span *ngIf="nameControl?.errors?.['required']">Department name is
                                             required.</span>
@@ -84,60 +79,21 @@
                                     </p>
                                 </div>
 
-                                <!-- Department Code -->
-                                <!-- <div class="flex flex-col gap-2">
-                                    <label for="dept-code"
-                                        class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                        Department Code <span class="text-[#ec5b13]">*</span>
-                                    </label>
-                                    <input id="dept-code" type="text" formControlName="code" placeholder="e.g. ENG-01"
-                                        [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none ' +
-                      (isFieldInvalid('code') ? 'border-red-400 dark:border-red-500' : 'border-slate-300 dark:border-slate-700')" />
-                                    <p *ngIf="isFieldInvalid('code')" class="text-xs text-red-500">
-                                        <span *ngIf="codeControl?.errors?.['required']">Department code is
-                                            required.</span>
-                                        <span *ngIf="codeControl?.errors?.['pattern']">Use 2–10 uppercase letters,
-                                            numbers, or hyphens (e.g. ENG-01).</span>
-                                    </p>
-                                </div> -->
-
-                                <!-- Department Head -->
-                                <!-- <div class="flex flex-col gap-2 md:col-span-2">
-                                    <label for="dept-head"
-                                        class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-                                        Department Head
-                                    </label>
-                                    <div class="relative">
-                                        <span
-                                            class="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none appearance-none">
-                                            <option value="">Select a Department Head...</option>
-                                            <option *ngFor="let head of departmentHeads" [value]="head.id">
-                                                {{ head.name }} ({{ head.title }})
-                                            </option>
-                                        </select>
-                                        <span
-                                            class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">Assign a senior member to
-                                        manage this department.</p>
-                                </div> -->
-
                             </div>
                         </div>
 
                         <!-- Section 2: Additional Information -->
                         <div class="p-6 md:p-8">
-                            <div class="flex items-center gap-2 mb-6 text-slate-900 dark:text-white">
+                            <div class="flex items-center gap-2 mb-6 text-slate-900">
                                 <span class="material-symbols-outlined text-blue-500">notes</span>
                                 <h3 class="text-lg font-semibold">Additional Information</h3>
                             </div>
 
                             <div class="flex flex-col gap-2">
-                                <label for="dept-desc"
-                                    class="text-sm font-semibold text-slate-700 dark:text-slate-300">Description</label>
+                                <label for="dept-desc" class="text-sm font-semibold text-slate-700">Description</label>
                                 <textarea id="dept-desc" formControlName="description" rows="4"
                                     placeholder="Briefly describe the department's responsibilities and goals..."
-                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none resize-none"></textarea>
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all outline-none resize-none"></textarea>
                                 <div class="flex justify-between text-xs text-slate-400">
                                     <span *ngIf="isFieldInvalid('description')" class="text-red-500">Maximum 500
                                         characters exceeded.</span>
@@ -147,10 +103,9 @@
                         </div>
 
                         <!-- Form Footer / Actions -->
-                        <div
-                            class="p-6 md:p-8 bg-slate-50/50 dark:bg-slate-800/20 flex flex-col sm:flex-row items-center justify-end gap-4">
+                        <div class="p-6 md:p-8 bg-slate-50/50 flex flex-col sm:flex-row items-center justify-end gap-4">
                             <button type="button" (click)="onDiscard()"
-                                class="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
+                                class="w-full sm:w-auto px-6 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
                                 Discard Changes
                             </button>
                             <button type="submit" [disabled]="isSubmitting"
@@ -175,7 +130,7 @@
                     <span class="material-symbols-outlined text-blue-500">lightbulb</span>
                     <div>
                         <h4 class="text-sm font-semibold text-blue-500">Quick Tip</h4>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                        <p class="text-sm text-slate-600 mt-1 leading-relaxed">
                             Once a department is created, you can begin assigning employees and defining budget
                             allocations in the Department Overview dashboard.
                             Department codes should be unique within the organization.

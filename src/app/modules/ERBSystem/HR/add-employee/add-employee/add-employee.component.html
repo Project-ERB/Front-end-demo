@@ -1,5 +1,4 @@
-<div
-    class="flex min-h-screen font-[Public_Sans,sans-serif] bg-[#f8f6f6] dark:bg-[#221610] text-slate-900 dark:text-slate-100">
+<div class="flex min-h-screen font-[Public_Sans,sans-serif] bg-[#f8f6f6] text-slate-900">
 
     <!-- ── Sidebar ── -->
     <app-hr-sidebar></app-hr-sidebar>
@@ -8,36 +7,31 @@
     <main class="flex-1 flex flex-col overflow-hidden">
 
         <!-- Header -->
-        <header
-            class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8">
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8">
             <div class="flex items-center gap-2 text-slate-500">
                 <span class="text-sm">Employees</span>
                 <span class="material-symbols-outlined text-sm">chevron_right</span>
-                <span class="text-sm font-semibold text-slate-900 dark:text-white">Add New</span>
+                <span class="text-sm font-semibold text-slate-900">Add New</span>
             </div>
             <div class="flex items-center gap-4">
-                <button
-                    class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors relative">
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors relative">
                     <span class="material-symbols-outlined">notifications</span>
-                    <span
-                        class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
                 </button>
-                <button
-                    class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors">
                     <span class="material-symbols-outlined">help</span>
                 </button>
             </div>
         </header>
 
         <!-- Scrollable Form Area -->
-        <div class="flex-1 overflow-y-auto p-8">
+        <div class="flex-1 overflow-y-auto p-4 md:p-8">
             <div class="max-w-4xl mx-auto">
 
                 <!-- Page Title -->
                 <div class="mb-8">
-                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white">Add New Employee</h2>
-                    <p class="text-slate-500 dark:text-slate-400 mt-1">Register a new staff member into the company
-                        directory.</p>
+                    <h2 class="text-3xl font-bold text-slate-900">Add New Employee</h2>
+                    <p class="text-slate-500 mt-1">Register a new staff member into the company directory.</p>
                 </div>
 
                 <!-- Success Banner -->
@@ -60,9 +54,8 @@
                     <!-- ══════════════════════════════════════════════════ -->
                     <!-- Section: Personal Details                          -->
                     <!-- ══════════════════════════════════════════════════ -->
-                    <section
-                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100">
                             <span class="material-symbols-outlined text-blue-600">person</span>
                             <h3 class="text-lg font-semibold">Personal Details</h3>
                         </div>
@@ -70,12 +63,11 @@
 
                             <!-- Full Name -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Full Name <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="fullName" placeholder="e.g. Jane Smith"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('fullName') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="fullName" placeholder="e.g. Jane Smith" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('fullName') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('fullName')" class="text-xs text-red-500">
                                     <span *ngIf="f['fullName'].errors?.['required']">Full name is required.</span>
                                     <span *ngIf="f['fullName'].errors?.['minlength']">Minimum 2 characters.</span>
@@ -84,12 +76,12 @@
 
                             <!-- National ID -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     National ID <span class="text-blue-600">*</span>
                                 </label>
                                 <input type="text" formControlName="nationalId" placeholder="e.g. 29901011234567"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('nationalId') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('nationalId') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('nationalId')" class="text-xs text-red-500">
                                     National ID is required.
                                 </p>
@@ -97,12 +89,12 @@
 
                             <!-- Email -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Email Address <span class="text-blue-600">*</span>
                                 </label>
                                 <input type="email" formControlName="email" placeholder="jane.smith@company.com"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('email') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('email') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('email')" class="text-xs text-red-500">
                                     <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
                                     <span *ngIf="f['email'].errors?.['email']">Enter a valid email address.</span>
@@ -111,33 +103,19 @@
 
                             <!-- Phone Number (countryCode + number) -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Phone Number <span class="text-blue-600">*</span>
                                 </label>
                                 <div class="flex gap-2">
                                     <input type="text" formControlName="countryCode" placeholder="+20"
-                                        class="w-20 px-3 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all text-center" />
-                                    <input type="tel" formControlName="phoneNumber" placeholder="1012345678"
-                                        [class]="'flex-1 px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                        (isFieldInvalid('phoneNumber') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                        class="w-20 px-3 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all text-center" />
+                                    <input type="tel" formControlName="phoneNumber" placeholder="1012345678" [class]="'flex-1 px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                        (isFieldInvalid('phoneNumber') ? 'border-red-400' : 'border-slate-300')" />
                                 </div>
                                 <p *ngIf="isFieldInvalid('phoneNumber')" class="text-xs text-red-500">
                                     Phone number is required.
                                 </p>
                             </div>
-
-                            <!-- Birth Date -->
-                            <!-- <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
-                                    Birth Date <span class="text-blue-600">*</span>
-                                </label>
-                                <input type="date" formControlName="birthDate"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('birthDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
-                                <p *ngIf="isFieldInvalid('birthDate')" class="text-xs text-red-500">
-                                    Birth date is required.
-                                </p>
-                            </div> -->
 
                         </div>
                     </section>
@@ -145,9 +123,8 @@
                     <!-- ══════════════════════════════════════════════════ -->
                     <!-- Section: Address                                   -->
                     <!-- ══════════════════════════════════════════════════ -->
-                    <section
-                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100">
                             <span class="material-symbols-outlined text-blue-600">location_on</span>
                             <h3 class="text-lg font-semibold">Residential Address</h3>
                         </div>
@@ -155,57 +132,52 @@
 
                             <!-- Street -->
                             <div class="md:col-span-2 space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Street <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="street" placeholder="123 Main St"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('street') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="street" placeholder="123 Main St" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('street') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('street')" class="text-xs text-red-500">Street is required.</p>
                             </div>
 
                             <!-- City -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     City <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="city" placeholder="Cairo"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('city') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="city" placeholder="Cairo" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('city') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('city')" class="text-xs text-red-500">City is required.</p>
                             </div>
 
                             <!-- State -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     State / Governorate <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="state" placeholder="Cairo Governorate"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('state') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="state" placeholder="Cairo Governorate" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('state') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('state')" class="text-xs text-red-500">State is required.</p>
                             </div>
 
                             <!-- Postal Code -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Postal Code <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="postalCode" placeholder="11511"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('postalCode') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="postalCode" placeholder="11511" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('postalCode') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('postalCode')" class="text-xs text-red-500">Postal code is
                                     required.</p>
                             </div>
 
                             <!-- Country -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Country <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="text" formControlName="country" placeholder="Egypt"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('country') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="text" formControlName="country" placeholder="Egypt" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('country') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('country')" class="text-xs text-red-500">Country is required.
                                 </p>
                             </div>
@@ -216,9 +188,8 @@
                     <!-- ══════════════════════════════════════════════════ -->
                     <!-- Section: Job Information                           -->
                     <!-- ══════════════════════════════════════════════════ -->
-                    <section
-                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100">
                             <span class="material-symbols-outlined text-blue-600">work</span>
                             <h3 class="text-lg font-semibold">Job Information</h3>
                         </div>
@@ -226,31 +197,29 @@
 
                             <!-- Job Level -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Job Level</label>
+                                <label class="text-sm font-medium text-slate-700">Job Level</label>
                                 <select formControlName="jobLevel"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
                                     <option *ngFor="let l of jobLevels" [value]="l.value">{{ l.label }}</option>
                                 </select>
                             </div>
 
                             <!-- Employee Type -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Employee
-                                    Type</label>
+                                <label class="text-sm font-medium text-slate-700">Employee Type</label>
                                 <select formControlName="employeeType"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
                                     <option *ngFor="let t of employeeTypes" [value]="t.value">{{ t.label }}</option>
                                 </select>
                             </div>
 
                             <!-- Role (from API) -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Role <span class="text-blue-600">*</span>
                                 </label>
-                                <select formControlName="roleId"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('roleId') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')">
+                                <select formControlName="roleId" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('roleId') ? 'border-red-400' : 'border-slate-300')">
                                     <option value="">Select Role</option>
                                     <option *ngFor="let r of roles" [value]="r.id">{{ r.name }}</option>
                                 </select>
@@ -259,12 +228,11 @@
 
                             <!-- Salary Amount -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Annual Salary <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="number" formControlName="salaryAmount" placeholder="85000"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('salaryAmount') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="number" formControlName="salaryAmount" placeholder="85000" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('salaryAmount') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('salaryAmount')" class="text-xs text-red-500">
                                     <span *ngIf="f['salaryAmount'].errors?.['required']">Salary is required.</span>
                                     <span *ngIf="f['salaryAmount'].errors?.['min']">Must be greater than 0.</span>
@@ -273,36 +241,34 @@
 
                             <!-- Salary Currency -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Currency</label>
+                                <label class="text-sm font-medium text-slate-700">Currency</label>
                                 <select formControlName="salaryCurrency"
-                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
+                                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all">
                                     <option *ngFor="let c of currencies" [value]="c">{{ c }}</option>
                                 </select>
                             </div>
 
                             <!-- Hire Date -->
                             <div class="space-y-2">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">
+                                <label class="text-sm font-medium text-slate-700">
                                     Hire Date <span class="text-blue-600">*</span>
                                 </label>
-                                <input type="date" formControlName="hireDate"
-                                    [class]="'w-full px-4 py-2.5 rounded-lg border bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
-                                    (isFieldInvalid('hireDate') ? 'border-red-400' : 'border-slate-300 dark:border-slate-700')" />
+                                <input type="date" formControlName="hireDate" [class]="'w-full px-4 py-2.5 rounded-lg border bg-white focus:ring-2 focus:ring-blue-600/20 focus:border-blue-600 outline-none transition-all ' +
+                                    (isFieldInvalid('hireDate') ? 'border-red-400' : 'border-slate-300')" />
                                 <p *ngIf="isFieldInvalid('hireDate')" class="text-xs text-red-500">Hire date is
                                     required.</p>
                             </div>
 
                             <!-- Status Radio Group -->
                             <div class="space-y-2 md:col-span-3">
-                                <label class="text-sm font-medium text-slate-700 dark:text-slate-300">Current
-                                    Status</label>
-                                <div class="flex gap-6 mt-2">
+                                <label class="text-sm font-medium text-slate-700">Current Status</label>
+                                <div class="flex flex-wrap gap-6 mt-2">
                                     <label *ngFor="let s of statusOptions"
                                         class="flex items-center gap-2 cursor-pointer group">
                                         <input type="radio" [value]="s.value" formControlName="status"
                                             class="w-4 h-4 text-blue-600 focus:ring-blue-600 border-slate-300 accent-blue-600" />
                                         <span
-                                            class="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
+                                            class="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">
                                             {{ s.label }}
                                         </span>
                                     </label>
@@ -315,9 +281,8 @@
                     <!-- ══════════════════════════════════════════════════ -->
                     <!-- Section: Permissions                               -->
                     <!-- ══════════════════════════════════════════════════ -->
-                    <section
-                        class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <section class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-6 pb-2 border-b border-slate-100">
                             <span class="material-symbols-outlined text-blue-600">lock</span>
                             <h3 class="text-lg font-semibold">Permissions</h3>
                             <span class="ml-auto text-xs text-slate-400">{{ selectedPermissions.size }} selected</span>
@@ -329,13 +294,13 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                             <label *ngFor="let p of permissions" [class]="'flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-all ' +
-            (selectedPermissions.has(p.id)
-                ? 'bg-blue-50 border-blue-300 dark:bg-blue-900/20 dark:border-blue-600'
-                : 'border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800')">
+                            (selectedPermissions.has(p.id)
+                                ? 'bg-blue-50 border-blue-300'
+                                : 'border-slate-200 hover:bg-slate-50')">
                                 <input type="checkbox" [checked]="selectedPermissions.has(p.id)"
                                     (change)="togglePermission(p.id)" class="mt-0.5 w-4 h-4 rounded accent-blue-600" />
                                 <div class="min-w-0">
-                                    <p class="text-sm font-medium text-slate-800 dark:text-slate-100">{{ p.name }}</p>
+                                    <p class="text-sm font-medium text-slate-800">{{ p.name }}</p>
                                     <p *ngIf="p.description" class="text-xs text-slate-400 truncate">{{ p.description }}
                                     </p>
                                 </div>
@@ -354,7 +319,7 @@
                     <!-- ── Form Actions ── -->
                     <div class="flex items-center justify-end gap-4 pt-4">
                         <button type="button" (click)="onCancel()"
-                            class="px-6 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                            class="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-semibold hover:bg-slate-100 transition-colors">
                             Cancel
                         </button>
                         <button type="submit" [disabled]="isSubmitting"

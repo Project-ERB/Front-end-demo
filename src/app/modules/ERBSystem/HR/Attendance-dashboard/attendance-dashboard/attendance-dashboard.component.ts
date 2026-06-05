@@ -52,6 +52,21 @@ export class AttendanceDashboardComponent implements OnInit {
   private _attendanceService = inject(AttendanceService);
   private readonly _Router = inject(Router);
 
+  showMobileSearch: boolean = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
+
+
   // ── Table state ────────────────────────────────────────────────────────────
   searchQuery = '';
   activeTab: 'today' | 'yesterday' = 'today';

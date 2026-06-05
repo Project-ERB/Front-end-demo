@@ -8,18 +8,30 @@
 
         <!-- ── Header ── -->
         <header
-            class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 px-6 py-3 bg-white sticky top-0 z-50 shrink-0">
-            <div class="flex items-center gap-8">
-                <div class="flex items-center gap-3">
-                    <div class="size-8 flex items-center justify-center rounded-lg bg-blue-500">
-                        <span class="material-symbols-outlined text-white text-2xl">work_history</span>
+            class="flex items-center justify-between border-b border-slate-200 px-3 sm:px-6 py-2 sm:py-3 bg-white sticky top-0 z-50 shrink-0 gap-2">
+
+            <!-- Left -->
+            <div class="flex items-center gap-2 sm:gap-8 min-w-0 flex-1">
+                <!-- Mobile Menu -->
+                <button (click)="toggleSidebar()"
+                    class="lg:hidden p-1.5 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors -ml-0.5 flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+                </button>
+
+                <!-- Logo -->
+                <div class="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+                    <div class="size-7 sm:size-8 flex items-center justify-center rounded-lg bg-blue-500">
+                        <span class="material-symbols-outlined text-white text-xl sm:text-2xl">work_history</span>
                     </div>
-                    <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight">HR Core</h2>
+                    <h2
+                        class="text-slate-900 text-sm sm:text-lg font-bold leading-tight tracking-tight hidden sm:block">
+                        HR Core</h2>
                 </div>
 
-                <label class="flex flex-col min-w-64 h-10">
+                <!-- Search — Desktop -->
+                <label class="hidden md:flex flex-col min-w-0 h-9 sm:h-10 flex-1 max-w-xs">
                     <div class="flex w-full flex-1 items-stretch rounded-xl h-full border border-slate-200 bg-slate-50">
-                        <div class="text-slate-400 flex items-center justify-center pl-4">
+                        <div class="text-slate-400 flex items-center justify-center pl-3.5">
                             <span class="material-symbols-outlined text-xl">search</span>
                         </div>
                         <input
@@ -29,47 +41,74 @@
                 </label>
             </div>
 
-            <div class="flex items-center gap-4">
-                <div class="flex items-center gap-2 border-l border-slate-200 ml-2 pl-4">
-                    <div class="size-9 rounded-full border-2 border-[#ec5b13]/20 bg-cover bg-center bg-no-repeat"
+            <!-- Right -->
+            <div class="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+                <!-- Mobile Search Toggle -->
+                <button (click)="toggleMobileSearch()"
+                    class="md:hidden p-1.5 text-slate-500 hover:bg-slate-50 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
+                </button>
+
+                <!-- Avatar -->
+                <div class="flex items-center border-l border-slate-200 ml-1 sm:ml-2 pl-2.5 sm:pl-4">
+                    <div class="size-7 sm:size-9 rounded-full border-2 border-[#ec5b13]/20 bg-cover bg-center bg-no-repeat flex-shrink-0"
                         style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCb5e19MTOTHpsj8V_ErHiUsTXvqHVAFUIMml5XUkzg4vJC9nro8mZxmlYjME6hU5_Z_4HQ5g75l6mube95MG-hnqueSVQF1FzQ5uJJL3inMkninmC6JrVisgtMb8e323LBOhHNYmx9aIoX0EgcEBt6ezcT48zk-gE4EPRZtzGqMzKh5oGWkqvDYPYFokf0YLTl_sQ6XXQvxjSvKne55wsvrAZuFCpGPxt9sriXBjrzNjQdRpRmFY7_ZxPfPWG3AxVRcTwbnid0dheF')">
                     </div>
                 </div>
             </div>
         </header>
 
+        <!-- Mobile Search Bar -->
+        <div *ngIf="showMobileSearch" class="md:hidden bg-white border-b border-slate-200 px-3 py-2.5 shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="flex flex-1 items-stretch rounded-xl h-9 border border-slate-200 bg-slate-50">
+                    <div class="text-slate-400 flex items-center justify-center pl-3">
+                        <span class="material-symbols-outlined text-lg">search</span>
+                    </div>
+                    <input
+                        class="flex w-full min-w-0 flex-1 border-none bg-transparent focus:outline-none focus:ring-0 text-sm px-2.5 placeholder:text-slate-400"
+                        placeholder="Search candidates..." />
+                </div>
+                <button (click)="showMobileSearch = false"
+                    class="text-xs font-semibold text-blue-500 flex-shrink-0 px-2">Cancel</button>
+            </div>
+        </div>
+
         <!-- ── Main ── -->
-        <main class="flex-1 overflow-y-auto p-8">
-            <div class="max-w-6xl mx-auto flex flex-col gap-6">
+        <main class="flex-1 overflow-y-auto">
+            <div class="max-w-6xl mx-auto flex flex-col gap-4 sm:gap-6 p-4 sm:p-6 lg:p-8">
 
                 <!-- Page Title Row -->
-                <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <h1 class="text-3xl font-bold tracking-tight text-slate-900">Candidate Management</h1>
-                        <p class="mt-1 text-slate-500">Manage and track all job applicants across your organization.</p>
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">Candidate
+                            Management</h1>
+                        <p class="mt-0.5 sm:mt-1 text-slate-500 text-xs sm:text-sm">Manage and track all job applicants
+                            across your organization.</p>
                     </div>
                     <button (click)="GoToAddCandidate()"
-                        class="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700">
+                        class="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 self-start sm:self-auto flex-shrink-0">
                         <span class="material-symbols-outlined text-lg">person_add</span>
                         <span>Add Candidate</span>
                     </button>
                 </div>
 
                 <!-- Table Card -->
-                <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div class="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-white shadow-sm">
 
                     <!-- Toolbar -->
-                    <div
-                        class="flex flex-col items-center justify-between gap-4 border-b border-slate-100 p-4 md:flex-row">
-                        <div class="no-scrollbar flex w-full gap-2 overflow-x-auto pb-1 md:w-auto md:pb-0">
+                    <div class="flex flex-col gap-3 border-b border-slate-100 p-3 sm:p-4">
+                        <!-- Tabs -->
+                        <div class="no-scrollbar flex w-full gap-1.5 sm:gap-2 overflow-x-auto pb-0.5 sm:pb-0">
                             <button *ngFor="let tab of tabs" (click)="setTab(tab)"
                                 [ngClass]="activeTab() === tab ? 'bg-blue-600/10 text-blue-600 font-semibold' : 'text-slate-600 hover:bg-slate-50 font-medium'"
-                                class="whitespace-nowrap rounded-lg px-4 py-2 text-sm transition-colors">{{ tab
-                                }}</button>
+                                class="whitespace-nowrap rounded-lg px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm transition-colors flex-shrink-0">{{
+                                tab }}</button>
                         </div>
 
-                        <div class="flex w-full items-center gap-3 md:w-auto">
-                            <div class="relative flex-1 md:w-64">
+                        <!-- Filter + Sort -->
+                        <div class="flex items-center gap-2 sm:gap-3">
+                            <div class="relative flex-1 sm:w-64">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-slate-400">filter_alt</span>
                                 <input type="text" placeholder="Filter by name..." [ngModel]="filterText()"
@@ -77,39 +116,96 @@
                                     class="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600" />
                             </div>
                             <button
-                                class="flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50">
+                                class="flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 sm:px-3 py-2 text-xs sm:text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 flex-shrink-0">
                                 <span class="material-symbols-outlined text-lg">sort</span>
-                                <span>Sort</span>
+                                <span class="hidden sm:inline">Sort</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Table -->
-                    <div class="overflow-x-auto">
-                        <table class="w-full border-collapse text-left">
+                    <!-- ═══ Mobile Card View ═══ -->
+                    <div class="sm:hidden divide-y divide-slate-100">
+                        <ng-container *ngIf="pagedCandidates().length > 0; else mobileEmpty">
+                            <div *ngFor="let c of pagedCandidates()" class="p-3.5 space-y-2.5">
+                                <!-- Name + Actions -->
+                                <div class="flex items-start justify-between gap-2">
+                                    <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                        <div [ngClass]="c.initialsColor"
+                                            class="flex size-8 items-center justify-center rounded-full text-xs font-bold flex-shrink-0">
+                                            {{ c.initials }}</div>
+                                        <div class="min-w-0">
+                                            <p class="text-sm font-semibold text-slate-900 truncate">{{ c.name }}</p>
+                                            <p class="text-[11px] text-slate-400 truncate">{{ c.email }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-0.5 flex-shrink-0 -mr-1">
+                                        <button (click)="viewCandidate(c.id)"
+                                            class="p-1.5 text-slate-400 hover:text-blue-500 transition-colors active:bg-blue-50 rounded-lg"
+                                            title="View">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        </button>
+                                        <button (click)="deleteCandidate(c.id)"
+                                            class="p-1.5 text-slate-400 hover:text-red-500 transition-colors active:bg-red-50 rounded-lg"
+                                            title="Delete">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Info -->
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-[11px] text-slate-500">{{ c.jobTitle }}</span>
+                                    <span class="text-slate-300">·</span>
+                                    <span class="text-[11px] text-slate-500">{{ c.expYears }} yrs exp</span>
+                                </div>
+                                <!-- Status -->
+                                <div class="flex items-center justify-between pt-2 border-t border-slate-50">
+                                    <span [ngClass]="statusClasses(c.status)"
+                                        class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-medium">
+                                        {{ c.status }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #mobileEmpty>
+                            <div class="py-10 text-center text-slate-400 text-xs">
+                                <span class="material-symbols-outlined block mx-auto mb-1.5"
+                                    style="font-size:32px; opacity:0.3;">search_off</span>
+                                No candidates match your filter.
+                            </div>
+                        </ng-template>
+                    </div>
+
+                    <!-- ═══ Desktop Table View ═══ -->
+                    <div class="hidden sm:block overflow-x-auto">
+                        <table class="w-full border-collapse text-left min-w-[700px]">
                             <thead>
                                 <tr class="bg-slate-50">
-                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                                         Full Name</th>
-                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                                         Job Title</th>
-                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                                         Exp. Years</th>
-                                    <th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                                         Email</th>
                                     <th
-                                        class="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        class="px-6 py-3.5 text-center text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                                         Status</th>
                                     <th
-                                        class="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-slate-700">
+                                        class="px-6 py-3.5 text-right text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                                         Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-100">
 
                                 <tr *ngIf="pagedCandidates().length === 0">
-                                    <td colspan="6" class="px-6 py-12 text-center text-slate-400">
-                                        <span class="material-symbols-outlined text-4xl block mb-2">search_off</span>
+                                    <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                        <span class="material-symbols-outlined text-4xl block mb-2"
+                                            style="opacity:0.3;">search_off</span>
                                         No candidates match your filter.
                                     </td>
                                 </tr>
@@ -118,7 +214,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div [ngClass]="c.initialsColor"
-                                                class="flex size-8 items-center justify-center rounded-full text-xs font-bold">
+                                                class="flex size-8 items-center justify-center rounded-full text-xs font-bold flex-shrink-0">
                                                 {{ c.initials }}</div>
                                             <span class="text-sm font-medium text-slate-900">{{ c.name }}</span>
                                         </div>
@@ -137,14 +233,14 @@
                                     <td class="px-6 py-4 text-right">
                                         <div class="flex items-center justify-end gap-2">
                                             <button (click)="viewCandidate(c.id)"
-                                                class="text-slate-400 transition-colors hover:text-blue-500"
+                                                class="p-1.5 text-slate-400 transition-colors hover:text-blue-500 rounded-lg hover:bg-blue-50"
                                                 title="View candidate">
-                                                <span class="material-symbols-outlined">visibility</span>
+                                                <span class="material-symbols-outlined text-lg">visibility</span>
                                             </button>
                                             <button (click)="deleteCandidate(c.id)"
-                                                class="text-slate-400 transition-colors hover:text-red-500"
+                                                class="p-1.5 text-slate-400 transition-colors hover:text-red-500 rounded-lg hover:bg-red-50"
                                                 title="Delete candidate">
-                                                <span class="material-symbols-outlined">delete</span>
+                                                <span class="material-symbols-outlined text-lg">delete</span>
                                             </button>
                                         </div>
                                     </td>
@@ -155,15 +251,16 @@
                     </div>
 
                     <!-- Pagination -->
-                    <div class="flex items-center justify-between border-t border-slate-100 p-4">
-                        <span class="text-sm text-slate-500">
+                    <div
+                        class="flex flex-col sm:flex-row items-center justify-between border-t border-slate-100 px-3.5 sm:px-4 py-3 sm:py-4 gap-2">
+                        <span class="text-[10px] sm:text-sm text-slate-500 order-2 sm:order-1">
                             Showing {{ showingFrom() }} to {{ showingTo() }} of {{ totalCount() }} candidates
                         </span>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 order-1 sm:order-2">
                             <button (click)="prevPage()" [disabled]="currentPage() === 1"
-                                class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Previous</button>
+                                class="rounded-lg border border-slate-200 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-500 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Previous</button>
                             <button (click)="nextPage()" [disabled]="currentPage() >= totalPages()"
-                                class="rounded-lg border border-slate-200 px-3 py-1 text-sm text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Next</button>
+                                class="rounded-lg border border-slate-200 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-600 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50">Next</button>
                         </div>
                     </div>
 

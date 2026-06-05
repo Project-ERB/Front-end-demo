@@ -25,6 +25,19 @@ export class AddJopComponent implements OnInit {
   form: FormGroup;
   isSaving = signal(false);
 
+  showMobileSearch: boolean = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    const sidebar = document.querySelector('.hr-sidebar') as HTMLElement;
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
   // Loaded dynamically from GraphQL
   departments: SelectOption[] = [{ value: '', label: 'Select Department' }];
 

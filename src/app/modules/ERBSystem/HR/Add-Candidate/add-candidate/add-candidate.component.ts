@@ -23,6 +23,19 @@ export class AddCandidateComponent {
   private readonly _CandidateService = inject(CandidateService);
   private readonly _ToastrService = inject(ToastrService);
 
+  showMobileSearch = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+      sidebar.classList.toggle('open');
+    }
+  }
+
   uploadedFileName = signal<string | null>(null);
   submitted = signal(false);
   isSaving = signal(false);

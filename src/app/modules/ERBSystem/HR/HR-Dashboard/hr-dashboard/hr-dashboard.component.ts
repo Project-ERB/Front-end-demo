@@ -54,8 +54,8 @@ export class HrDashboardComponent {
   kpiCards: KpiCard[] = [
     {
       icon: 'group',
-      iconBg: 'bg-blue-50 dark:bg-blue-900/20',
-      iconColor: 'text-blue-600 dark:text-blue-400',
+      iconBg: 'bg-blue-50',
+      iconColor: 'text-blue-600',
       label: 'Total Employees',
       value: '1,248',
       badge: '+2.5%',
@@ -72,8 +72,8 @@ export class HrDashboardComponent {
     },
     {
       icon: 'hub',
-      iconBg: 'bg-purple-50 dark:bg-purple-900/20',
-      iconColor: 'text-purple-600 dark:text-purple-400',
+      iconBg: 'bg-purple-50',
+      iconColor: 'text-purple-600',
       label: 'Active Departments',
       value: '12',
       badge: 'Stable',
@@ -81,8 +81,8 @@ export class HrDashboardComponent {
     },
     {
       icon: 'pending_actions',
-      iconBg: 'bg-amber-50 dark:bg-amber-900/20',
-      iconColor: 'text-amber-600 dark:text-amber-400',
+      iconBg: 'bg-amber-50',
+      iconColor: 'text-amber-600',
       label: 'Pending Approvals',
       value: '8',
       badge: '+12%',
@@ -126,12 +126,11 @@ export class HrDashboardComponent {
   getStatusClasses(status: Department['status']): string {
     switch (status) {
       case 'Optimal':
-        return 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400';
+        return 'bg-emerald-100 text-emerald-600';
       case 'At Limit':
-        return 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400';
+        return 'bg-amber-100 text-amber-600';
       case 'Under':
-        return 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400';
+        return 'bg-blue-100 text-blue-600';
     }
   }
-
 }

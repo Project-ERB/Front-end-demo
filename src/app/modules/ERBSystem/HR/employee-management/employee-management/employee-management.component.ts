@@ -11,7 +11,6 @@ import { forkJoin } from 'rxjs';
 
 export type EmployeeStatus = 'Active' | 'On Leave' | 'Probation' | 'Terminated';
 
-// 1. Fix the interface — nationalID is now a plain string
 export interface EmployeeNode {
   id: string;
   name: string;
@@ -23,7 +22,7 @@ export interface EmployeeNode {
   employeeType: string;
   status: string;
   managerId: string;
-  nationalID?: string;        // ← plain string, not nested object
+  nationalID?: string;
   hiredate?: string;
   roleId?: string;
   email?: string;
@@ -35,6 +34,7 @@ export interface EmployeeNode {
     country: string;
   };
 }
+
 interface StatCard {
   icon: string; label: string; value: string; sub?: string;
   iconBg: string; iconColor: string;
@@ -61,7 +61,6 @@ export class EmployeeManagementComponent implements OnInit {
   private readonly _PermService = inject(PermissionService);
   private readonly _fb = inject(FormBuilder);
 
-  // ── Edit Modal State ────────────────────────────────
   showEditModal = false;
   isUpdating = false;
   editForm!: FormGroup;
@@ -88,7 +87,6 @@ export class EmployeeManagementComponent implements OnInit {
   ];
   currencies = ['USD', 'EGP', 'EUR', 'GBP'];
 
-  // ── Table / Pagination ──────────────────────────────
   currentPage = 1;
   pageSize = 10;
   totalEmployees = 0;
@@ -98,10 +96,11 @@ export class EmployeeManagementComponent implements OnInit {
   departments = ['Engineering', 'Design', 'Marketing', 'Sales'];
   statuses: EmployeeStatus[] = ['Active', 'On Leave', 'Probation', 'Terminated'];
 
+  // تم إزالة كلاسات dark: من هنا
   statCards: StatCard[] = [
     {
       icon: 'person_add', label: 'New Hires', value: '12', sub: '+4% this month',
-      iconBg: 'bg-blue-100 dark:bg-blue-900/30', iconColor: 'text-blue-600'
+      iconBg: 'bg-blue-100', iconColor: 'text-blue-600'
     },
     {
       icon: 'diversity_3', label: 'Retention Rate', value: '98.2%',
@@ -109,18 +108,18 @@ export class EmployeeManagementComponent implements OnInit {
     },
     {
       icon: 'hourglass_empty', label: 'Open Positions', value: '8',
-      iconBg: 'bg-purple-100 dark:bg-purple-900/30', iconColor: 'text-purple-600'
+      iconBg: 'bg-purple-100', iconColor: 'text-purple-600'
     },
   ];
 
-  // ── Lifecycle ───────────────────────────────────────
+  deletingEmployeeId: string | null = null;
+
   ngOnInit(): void {
     this.buildEditForm();
     this.getEmployees();
     this.loadRolesAndPermissions();
   }
 
-  // ── Form ────────────────────────────────────────────
   private buildEditForm(): void {
     this.editForm = this._fb.group({
       nationalId: ['', Validators.required],
@@ -150,7 +149,6 @@ export class EmployeeManagementComponent implements OnInit {
     return !!(c && c.invalid && (c.dirty || c.touched));
   }
 
-  // ── Roles & Permissions ─────────────────────────────
   private loadRolesAndPermissions(): void {
     forkJoin({
       roles: this._AdminService.getRoles(),
@@ -172,12 +170,8 @@ export class EmployeeManagementComponent implements OnInit {
   selectAllPermissions(): void { this.permissions.forEach(p => this.selectedPermissions.add(p.id)); }
   clearAllPermissions(): void { this.selectedPermissions.clear(); }
 
-  // ── Open / Close Modal ──────────────────────────────
-  // 2. Replace openEditModal with this fully-populated version
   openEditModal(emp: EmployeeNode): void {
     this.editingEmployee = emp;
-
-    // Parse phone
     let countryCode = '+20';
     let phoneNumber = emp.phoneNumber ?? '';
     const phoneMatch = phoneNumber.match(/^(\+\d{1,3})(\d+)$/);
@@ -186,20 +180,9 @@ export class EmployeeManagementComponent implements OnInit {
       phoneNumber = phoneMatch[2];
     }
 
-    // Map status string → numeric value
-    const statusStrToNum: Record<string, number> = {
-      Active: 1, Inactive: 2, Suspended: 3, Terminated: 4, None: 5,
-    };
-
-    // Map employeeLevel string → numeric value
-    const levelStrToNum: Record<string, number> = {
-      Junior: 1, Intermediate: 2, Senior: 3, Lead: 4, Chief: 5,
-    };
-
-    // Map employeeType string → numeric value
-    const typeStrToNum: Record<string, number> = {
-      'Full-time': 1, 'Part-time': 2, Contractor: 3, Intern: 4, Temporary: 5,
-    };
+    const statusStrToNum: Record<string, number> = { Active: 1, Inactive: 2, Suspended: 3, Terminated: 4, None: 5 };
+    const levelStrToNum: Record<string, number> = { Junior: 1, Intermediate: 2, Senior: 3, Lead: 4, Chief: 5 };
+    const typeStrToNum: Record<string, number> = { 'Full-time': 1, 'Part-time': 2, Contractor: 3, Intern: 4, Temporary: 5 };
 
     this.editForm.patchValue({
       fullName: emp.name ?? '',
@@ -207,28 +190,22 @@ export class EmployeeManagementComponent implements OnInit {
       email: emp.email ?? '',
       countryCode: countryCode,
       phoneNumber: phoneNumber,
-
       street: emp.address?.street ?? '',
       city: emp.address?.city ?? '',
       state: emp.address?.state ?? '',
       postalCode: emp.address?.postalCode ?? '',
       country: emp.address?.country ?? '',
-
-      // ✅ convert string → number using map, fallback to Number() if already numeric
       jobLevel: levelStrToNum[emp.employeeLevel] ?? Number(emp.employeeLevel) ?? 1,
       employeeType: typeStrToNum[emp.employeeType] ?? Number(emp.employeeType) ?? 1,
       salaryAmount: emp.salary,
       salaryCurrency: emp.currency || 'USD',
-      hireDate: emp.hiredate
-        ? new Date(emp.hiredate).toISOString().split('T')[0]
-        : new Date().toISOString().split('T')[0],
+      hireDate: emp.hiredate ? new Date(emp.hiredate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
       status: statusStrToNum[emp.status] ?? Number(emp.status) ?? 1,
       roleId: emp.roleId ?? '',
     });
 
     this.selectedPermissions.clear();
     this.permissions.forEach(p => this.selectedPermissions.add(p.id));
-
     this.showEditModal = true;
     document.body.style.overflow = 'hidden';
   }
@@ -237,18 +214,11 @@ export class EmployeeManagementComponent implements OnInit {
     this.showEditModal = false;
     this.editingEmployee = null;
     document.body.style.overflow = '';
-    this.editForm.reset({
-      jobLevel: 1, employeeType: 1, status: 1,
-      salaryCurrency: 'USD', countryCode: '+20',
-    });
+    this.editForm.reset({ jobLevel: 1, employeeType: 1, status: 1, salaryCurrency: 'USD', countryCode: '+20' });
   }
 
-  // ── Submit Update ───────────────────────────────────
   onUpdateSubmit(): void {
-    if (this.editForm.invalid) {
-      this.editForm.markAllAsTouched();
-      return;
-    }
+    if (this.editForm.invalid) { this.editForm.markAllAsTouched(); return; }
     if (!this.editingEmployee) return;
 
     const v = this.editForm.value;
@@ -259,10 +229,7 @@ export class EmployeeManagementComponent implements OnInit {
       .filter(p => this.selectedPermissions.has(p.id))
       .forEach(p => {
         if (!guidRegex.test(p.id)) return;
-        permissionsMap[p.id] = {
-          allowCreate: true, allowDelete: true,
-          allowUpdated: true, allowView: true,
-        };
+        permissionsMap[p.id] = { allowCreate: true, allowDelete: true, allowUpdated: true, allowView: true };
       });
 
     const payload = {
@@ -271,10 +238,7 @@ export class EmployeeManagementComponent implements OnInit {
       name: v.fullName,
       email: v.email,
       phoneNumber: { countryCode: v.countryCode, number: v.phoneNumber },
-      address: {
-        street: v.street, city: v.city, state: v.state,
-        postalCode: v.postalCode, country: v.country,
-      },
+      address: { street: v.street, city: v.city, state: v.state, postalCode: v.postalCode, country: v.country },
       salaryAmount: Number(v.salaryAmount),
       salaryCurrency: v.salaryCurrency,
       employeeLevel: Number(v.jobLevel),
@@ -288,36 +252,27 @@ export class EmployeeManagementComponent implements OnInit {
     };
 
     this.isUpdating = true;
-
     this._EmployeeService.updateEmployee(payload).subscribe({
       next: () => {
         this.isUpdating = false;
         this._ToastrService.success('Employee updated successfully!', 'Success!');
         this.closeEditModal();
-        this.getEmployees();          // refresh table
+        this.getEmployees();
       },
       error: (err) => {
         this.isUpdating = false;
-        const message =
-          err?.error?.reasons?.[0]?.message ||
-          err?.error?.errors?.[0]?.message ||
-          'Something went wrong';
+        const message = err?.error?.reasons?.[0]?.message || err?.error?.errors?.[0]?.message || 'Something went wrong';
         this._ToastrService.error(message, 'Failed!');
       },
     });
   }
 
-  // ── Table helpers ───────────────────────────────────
   gotoaddempoyee(): void { this._router.navigate(['/add-employee']); }
 
   getEmployees(): void {
     this.isLoading = true;
     this._EmployeeService.getEmployees().subscribe({
-      next: (res) => {
-        this.allEmployees = res;
-        this.totalEmployees = res.length;
-        this.isLoading = false;
-      },
+      next: (res) => { this.allEmployees = res; this.totalEmployees = res.length; this.isLoading = false; },
       error: (err) => { console.error(err); this.isLoading = false; },
     });
   }
@@ -337,48 +292,37 @@ export class EmployeeManagementComponent implements OnInit {
   get showingFrom(): number { return (this.currentPage - 1) * this.pageSize + 1; }
   get showingTo(): number { return Math.min(this.currentPage * this.pageSize, this.totalEmployees); }
 
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) this.currentPage = page;
-  }
+  goToPage(page: number): void { if (page >= 1 && page <= this.totalPages) this.currentPage = page; }
 
+  // تم إزالة كلاسات dark: من هنا
   getStatusClass(status: string): string {
     const map: Record<string, string> = {
-      Active: 'bg-green-100  text-green-700  dark:bg-green-900/30  dark:text-green-400',
-      'On Leave': 'bg-blue-100   text-blue-700   dark:bg-blue-900/30   dark:text-blue-400',
-      Probation: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-      Terminated: 'bg-red-100    text-red-700    dark:bg-red-900/30    dark:text-red-400',
+      Active: 'bg-green-100 text-green-700',
+      'On Leave': 'bg-blue-100 text-blue-700',
+      Probation: 'bg-yellow-100 text-yellow-700',
+      Terminated: 'bg-red-100 text-red-700',
     };
     return map[status] ?? 'bg-slate-100 text-slate-600';
   }
 
-  // أضف state للـ delete
-  deletingEmployeeId: string | null = null;
-
   onDelete(emp: EmployeeNode): void {
     if (!confirm(`Are you sure you want to delete "${emp.name}"?`)) return;
-
     this.deletingEmployeeId = emp.id;
-
     this._EmployeeService.deleteEmployee(emp.id).subscribe({
       next: () => {
         this.deletingEmployeeId = null;
         this._ToastrService.success(`${emp.name} deleted successfully!`, 'Deleted!');
-        this.getEmployees(); // refresh الجدول
+        this.getEmployees();
       },
       error: (err) => {
         this.deletingEmployeeId = null;
-        const message =
-          err?.error?.reasons?.[0]?.message ||
-          err?.error?.errors?.[0]?.message ||
-          'Failed to delete employee';
+        const message = err?.error?.reasons?.[0]?.message || err?.error?.errors?.[0]?.message || 'Failed to delete employee';
         this._ToastrService.error(message, 'Failed!');
       }
     });
   }
 
   onView(emp: EmployeeNode): void {
-    this._router.navigate(['/employee-details', emp.id], {
-      state: { employee: emp }   // ← بعت الـ object كامل في الـ state
-    });
+    this._router.navigate(['/employee-details', emp.id], { state: { employee: emp } });
   }
 }

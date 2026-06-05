@@ -1,163 +1,189 @@
-<div
-    class="flex h-screen overflow-hidden bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="flex h-screen overflow-hidden bg-gray-50 text-slate-900">
 
     <!-- ── Sidebar ── -->
     <app-hr-sidebar></app-hr-sidebar>
 
     <!-- ── Main Content ── -->
-    <main class="flex-1 flex flex-col overflow-hidden">
+    <main class="flex-1 flex flex-col overflow-hidden min-w-0">
 
         <!-- Header -->
         <header
-            class="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-8 flex-shrink-0">
+            class="h-14 sm:h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-8 flex-shrink-0 gap-3">
+
+            <!-- Mobile Menu Toggle -->
+            <button (click)="toggleSidebar()"
+                class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors -ml-1">
+                <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+            </button>
 
             <!-- Search -->
-            <div class="flex-1 max-w-md">
+            <div class="flex-1 max-w-md hidden sm:block">
                 <div class="relative group">
                     <span
-                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors"
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
                         style="font-size:20px;">search</span>
                     <input [(ngModel)]="searchQuery" type="text" placeholder="Search employees by name or ID..."
-                        class="w-full bg-slate-100 dark:bg-slate-800 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-primary transition-all" />
+                        class="w-full bg-slate-100 border-none rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 transition-all" />
                 </div>
             </div>
 
             <!-- Header Actions -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 sm:gap-4 ml-auto">
 
-                <button
-                    class="relative p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
-                    <span class="material-symbols-outlined">notifications</span>
-                    <span
-                        class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-slate-900"></span>
+                <!-- Mobile Search Icon -->
+                <button (click)="toggleMobileSearch()"
+                    class="sm:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
                 </button>
-                <button
-                    class="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+
+                <button class="relative p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">notifications</span>
+                    <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
+                </button>
+
+                <button class="hidden sm:flex p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
                     <span class="material-symbols-outlined">settings</span>
                 </button>
-                <div class="h-6 w-px bg-slate-200 dark:bg-slate-800 mx-1"></div>
-                <div class="flex items-center gap-2">
-                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Today</span>
+
+                <div class="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
+
+                <div class="flex items-center gap-1.5 sm:gap-2">
+                    <span class="text-xs sm:text-sm font-semibold text-slate-700 hidden xs:inline">Today</span>
                     <span class="material-symbols-outlined text-slate-400" style="font-size:20px;">calendar_month</span>
                 </div>
             </div>
 
         </header>
 
+        <!-- Mobile Search Bar (hidden by default) -->
+        <div *ngIf="showMobileSearch" class="sm:hidden bg-white border-b border-slate-200 px-4 py-3 flex-shrink-0">
+            <div class="relative group">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-600 transition-colors"
+                    style="font-size:20px;">search</span>
+                <input [(ngModel)]="searchQuery" type="text" placeholder="Search employees..."
+                    class="w-full bg-slate-100 border-none rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 transition-all" />
+            </div>
+        </div>
+
         <!-- Scrollable Dashboard Body -->
-        <div class="flex-1 overflow-y-auto p-8 space-y-6">
+        <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
 
             <!-- Page Title + Actions -->
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Attendance Dashboard</h2>
-                    <p class="text-slate-500 text-sm mt-1">Real-time status of employees checking in and out today.</p>
+                    <h2 class="text-lg sm:text-xl lg:text-2xl font-bold text-slate-900">Attendance Dashboard</h2>
+                    <p class="text-slate-500 text-xs sm:text-sm mt-1">Real-time status of employees checking in and out
+                        today.</p>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 sm:gap-3">
                     <button
-                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">
+                        class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-50 transition-colors">
                         <span class="material-symbols-outlined" style="font-size:18px;">filter_list</span>
-                        Filter
+                        <span class="hidden xs:inline">Filter</span>
                     </button>
                     <button
-                        class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-semibold hover:bg-slate-50 transition-colors">
+                        class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs sm:text-sm font-semibold hover:bg-slate-50 transition-colors">
                         <span class="material-symbols-outlined" style="font-size:18px;">file_download</span>
-                        Export
+                        <span class="hidden xs:inline">Export</span>
                     </button>
                 </div>
             </div>
 
             <!-- Quick Entry Console -->
             <div
-                class="bg-gradient-to-r from-blue-50 via-blue-50/50 to-transparent border border-blue-100 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="flex items-center gap-4">
-                    <div class="size-12 rounded-xl flex items-center justify-center text-white shadow-lg"
+                class="bg-gradient-to-r from-blue-50 via-blue-50/50 to-transparent border border-blue-100 rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="size-10 sm:size-12 rounded-xl flex items-center justify-center text-white shadow-lg flex-shrink-0"
                         style="background-color:#2563EB; box-shadow:0 8px 16px rgba(37,99,235,0.3);">
-                        <span class="material-symbols-outlined" style="font-size:24px;">swipe_vertical</span>
+                        <span class="material-symbols-outlined" style="font-size:22px;">swipe_vertical</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">Quick Entry Console</h3>
-                        <p class="text-slate-600 dark:text-slate-400 text-sm">Scan badge or enter employee ID for manual
+                        <h3 class="text-base sm:text-lg font-bold text-slate-900">Quick Entry Console</h3>
+                        <p class="text-slate-600 text-xs sm:text-sm mt-0.5">Scan badge or enter employee ID for manual
                             check-in/out.</p>
                     </div>
                 </div>
                 <button (click)="openCheckinModal()"
-                    class="text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg"
+                    class="w-full sm:w-auto text-white font-bold py-2.5 px-6 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-lg flex-shrink-0"
                     style="background-color:#2563EB; box-shadow:0 4px 12px rgba(37,99,235,0.25);">
                     <span>Check In / Out</span>
                     <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
                 </button>
             </div>
+
             <!-- Stats Row -->
-            <div class="flex flex-wrap gap-4">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 <div *ngFor="let stat of stats"
-                    class="flex-1 min-w-[200px] bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex items-center gap-4">
-                    <div class="size-10 rounded-lg flex items-center justify-center"
+                    class="bg-white p-3 sm:p-4 rounded-xl border border-slate-200 flex items-center gap-3 sm:gap-4">
+                    <div class="size-9 sm:size-10 rounded-lg flex items-center justify-center flex-shrink-0"
                         [ngClass]="[stat.colorBg, stat.colorText]">
-                        <span class="material-symbols-outlined">{{ stat.icon }}</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">{{ stat.icon }}</span>
                     </div>
-                    <div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ stat.label }}</p>
-                        <p class="text-xl font-bold">{{ stat.value }}</p>
+                    <div class="min-w-0">
+                        <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">{{
+                            stat.label }}</p>
+                        <p class="text-lg sm:text-xl font-bold">{{ stat.value }}</p>
                     </div>
                 </div>
             </div>
 
             <!-- Attendance Table -->
-            <div
-                class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div class="bg-white rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden">
 
                 <!-- Table Header -->
-                <div class="p-6 border-b border-slate-100 dark:border-slate-800 space-y-4">
+                <div class="p-4 sm:p-6 border-b border-slate-100 space-y-3 sm:space-y-4">
 
                     <!-- Row 1: Title + Tabs -->
-                    <div class="flex items-center justify-between">
-                        <h3 class="font-bold text-lg">Daily Attendance Logs</h3>
-                        <div class="flex gap-2">
+                    <div class="flex items-center justify-between gap-3">
+                        <h3 class="font-bold text-base sm:text-lg whitespace-nowrap">Daily Attendance Logs</h3>
+                        <div class="flex gap-1 sm:gap-2 flex-shrink-0">
                             <button (click)="setActiveTab('today')"
-                                class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'today'
-            ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-            : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Today</button>
+                                class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'today'
+            ? 'bg-slate-100 text-slate-700'
+            : 'text-slate-400 hover:bg-slate-50'">Today</button>
                             <button (click)="setActiveTab('yesterday')"
-                                class="px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'yesterday'
-            ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-            : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'">Yesterday</button>
+                                class="px-3 sm:px-4 py-1.5 rounded-lg text-xs font-bold transition-colors" [ngClass]="activeTab === 'yesterday'
+            ? 'bg-slate-100 text-slate-700'
+            : 'text-slate-400 hover:bg-slate-50'">Yesterday</button>
                         </div>
                     </div>
 
                     <!-- Row 2: Search by National ID -->
-                    <div class="flex gap-3 items-center">
-                        <div class="relative flex-1 max-w-sm">
+                    <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                        <div class="relative flex-1 max-w-full sm:max-w-sm">
                             <span
                                 class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                                 style="font-size:18px;">badge</span>
                             <input [(ngModel)]="searchNationalId" (keyup.enter)="searchByNationalId()" type="text"
                                 placeholder="Search by National ID…"
-                                class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                                class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                         </div>
 
-                        <button (click)="searchByNationalId()" [disabled]="!searchNationalId.trim() || searchLoading"
-                            class="flex items-center gap-2 px-4 py-2 text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                            style="background-color:#2563EB;">
-                            <div *ngIf="searchLoading"
-                                class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin">
-                            </div>
-                            <span class="material-symbols-outlined" *ngIf="!searchLoading"
-                                style="font-size:18px;">search</span>
-                            {{ searchLoading ? 'Searching…' : 'Search' }}
-                        </button>
+                        <div class="flex gap-2 flex-shrink-0">
+                            <button (click)="searchByNationalId()"
+                                [disabled]="!searchNationalId.trim() || searchLoading"
+                                class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 text-white text-sm font-bold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                style="background-color:#2563EB;">
+                                <div *ngIf="searchLoading"
+                                    class="size-4 border-2 border-white border-t-transparent rounded-full animate-spin">
+                                </div>
+                                <span class="material-symbols-outlined" *ngIf="!searchLoading"
+                                    style="font-size:18px;">search</span>
+                                {{ searchLoading ? 'Searching…' : 'Search' }}
+                            </button>
 
-                        <!-- Clear button — يظهر بس لو فيه نتائج -->
-                        <button *ngIf="attendanceRecords.length > 0 || searchNationalId" (click)="clearSearch()"
-                            class="flex items-center gap-1.5 px-4 py-2 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-500 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                            <span class="material-symbols-outlined" style="font-size:18px;">close</span>
-                            Clear
-                        </button>
+                            <button *ngIf="attendanceRecords.length > 0 || searchNationalId" (click)="clearSearch()"
+                                class="flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2.5 border border-slate-200 text-sm font-bold text-slate-500 rounded-xl hover:bg-slate-50 transition-colors">
+                                <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+                                <span class="hidden sm:inline">Clear</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Error message -->
                     <div *ngIf="searchError"
-                        class="flex items-center gap-2 px-4 py-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                        class="flex items-center gap-2 px-4 py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-sm">
                         <span class="material-symbols-outlined" style="font-size:18px;">error</span>
                         {{ searchError }}
                     </div>
@@ -165,74 +191,78 @@
                 </div>
 
                 <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800">
+                <div class="overflow-x-auto -mx-1 px-1">
+                    <table class="w-full text-left min-w-[640px]">
+                        <thead class="bg-slate-50 border-b border-slate-100">
                             <tr>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Employee
+                                <th
+                                    class="px-4 sm:px-6 py-3 sm:py-4 text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    Employee
                                     Name</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Check-in
+                                <th
+                                    class="px-4 sm:px-6 py-3 sm:py-4 text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    Check-in
                                     Time</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                <th
+                                    class="px-4 sm:px-6 py-3 sm:py-4 text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
                                     Check-out Time</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Status
+                                <th
+                                    class="px-4 sm:px-6 py-3 sm:py-4 text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    Status
                                 </th>
                                 <th
-                                    class="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">
+                                    class="px-4 sm:px-6 py-3 sm:py-4 text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider text-right">
                                     Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            <tr *ngFor="let emp of filteredEmployees"
-                                class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                        <tbody class="divide-y divide-slate-100">
+                            <tr *ngFor="let emp of filteredEmployees" class="hover:bg-slate-50 transition-colors">
                                 <!-- Employee Name -->
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <!-- <div class="size-8 rounded-full bg-slate-200 flex-shrink-0 overflow-hidden">
-                                            <img [src]="emp.avatar" [alt]="emp.name"
-                                                class="w-full h-full rounded-full object-cover" />
-                                        </div> -->
+                                <td class="px-4 sm:px-6 py-3 sm:py-4">
+                                    <div class="flex items-center gap-2.5 sm:gap-3">
                                         <div>
-                                            <p class="text-sm font-bold">{{ emp.name }}</p>
-                                            <p class="text-xs text-slate-400">{{ emp.role }} • {{ emp.empCode }}</p>
+                                            <p class="text-xs sm:text-sm font-bold">{{ emp.name }}</p>
+                                            <p class="text-[10px] sm:text-xs text-slate-400">{{ emp.role }} • {{
+                                                emp.empCode }}</p>
                                         </div>
                                     </div>
                                 </td>
 
                                 <!-- Check-in -->
-                                <td class="px-6 py-4">
+                                <td class="px-4 sm:px-6 py-3 sm:py-4">
                                     <ng-container *ngIf="emp.checkIn; else noCheckin">
-                                        <div class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined" style="font-size:18px;"
+                                        <div class="flex items-center gap-1.5 sm:gap-2">
+                                            <span class="material-symbols-outlined" style="font-size:16px;"
                                                 [ngClass]="checkInIconColor(emp.status)">login</span>
-                                            <span class="text-sm font-medium">{{ emp.checkIn }}</span>
+                                            <span class="text-xs sm:text-sm font-medium">{{ emp.checkIn }}</span>
                                         </div>
                                     </ng-container>
                                     <ng-template #noCheckin>
-                                        <span class="text-sm text-slate-400">—</span>
+                                        <span class="text-xs sm:text-sm text-slate-400">—</span>
                                     </ng-template>
                                 </td>
 
                                 <!-- Check-out -->
-                                <td class="px-6 py-4">
+                                <td class="px-4 sm:px-6 py-3 sm:py-4">
                                     <ng-container *ngIf="emp.checkOut; else checkoutFallback">
-                                        <div class="flex items-center gap-2">
+                                        <div class="flex items-center gap-1.5 sm:gap-2">
                                             <span class="material-symbols-outlined text-slate-400"
-                                                style="font-size:18px;">logout</span>
-                                            <span class="text-sm font-medium">{{ emp.checkOut }}</span>
+                                                style="font-size:16px;">logout</span>
+                                            <span class="text-xs sm:text-sm font-medium">{{ emp.checkOut }}</span>
                                         </div>
                                     </ng-container>
                                     <ng-template #checkoutFallback>
-                                        <span class="text-sm text-slate-400 italic" *ngIf="emp.checkIn">Still logged
+                                        <span class="text-xs sm:text-sm text-slate-400 italic" *ngIf="emp.checkIn">Still
+                                            logged
                                             in</span>
-                                        <span class="text-sm text-slate-400" *ngIf="!emp.checkIn">—</span>
+                                        <span class="text-xs sm:text-sm text-slate-400" *ngIf="!emp.checkIn">—</span>
                                     </ng-template>
                                 </td>
 
                                 <!-- Status Badge -->
-                                <td class="px-6 py-4">
+                                <td class="px-4 sm:px-6 py-3 sm:py-4">
                                     <span
-                                        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
+                                        class="inline-flex items-center gap-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold whitespace-nowrap"
                                         [ngClass]="statusBadgeClass(emp.status)">
                                         <span class="size-1.5 rounded-full"
                                             [ngClass]="statusDotClass(emp.status)"></span>
@@ -241,26 +271,28 @@
                                 </td>
 
                                 <!-- Action -->
-                                <td class="px-6 py-4 text-right">
-
+                                <td class="px-4 sm:px-6 py-3 sm:py-4 text-right whitespace-nowrap">
                                     <button (click)="viewRecord(emp)"
-                                        class="p-2 text-slate-400 hover:text-blue-500 transition-colors"
+                                        class="p-1.5 sm:p-2 text-slate-400 hover:text-blue-500 transition-colors"
                                         title="View details">
                                         <span class="material-symbols-outlined"
-                                            style="font-size:20px;">visibility</span>
+                                            style="font-size:18px;">visibility</span>
                                     </button>
 
                                     <button (click)="deleteAttendanceRecord(emp.id)"
-                                        class="p-2 text-slate-400 hover:text-rose-500 transition-colors"
+                                        class="p-1.5 sm:p-2 text-slate-400 hover:text-rose-500 transition-colors"
                                         title="Delete record">
-                                        <span class="material-symbols-outlined" style="font-size:20px;">delete</span>
+                                        <span class="material-symbols-outlined" style="font-size:18px;">delete</span>
                                     </button>
                                 </td>
                             </tr>
 
                             <!-- Empty state -->
                             <tr *ngIf="filteredEmployees.length === 0 && !loadingRecords">
-                                <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                <td colspan="5"
+                                    class="px-4 sm:px-6 py-10 sm:py-12 text-center text-slate-400 text-xs sm:text-sm">
+                                    <span class="material-symbols-outlined block mx-auto mb-2"
+                                        style="font-size:40px; opacity:0.3;">search_off</span>
                                     Search by National ID above to view attendance records.
                                 </td>
                             </tr>
@@ -270,16 +302,17 @@
                 </div>
 
                 <!-- Pagination -->
-                <div class="p-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <p class="text-sm text-slate-500">
+                <div
+                    class="p-4 sm:p-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <p class="text-xs sm:text-sm text-slate-500 text-center sm:text-left">
                         Showing <span class="font-bold">1 – {{ filteredEmployees.length }}</span>
                         of <span class="font-bold">{{ totalEmployees }}</span> employees
                     </p>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-1 sm:gap-2">
 
                         <!-- Prev -->
                         <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1"
-                            class="size-9 flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-lg text-slate-400 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="size-8 sm:size-9 flex items-center justify-center border border-slate-200 rounded-lg text-slate-400 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined" style="font-size:18px;">chevron_left</span>
                         </button>
 
@@ -287,20 +320,20 @@
                         <ng-container *ngFor="let page of visiblePages">
                             <ng-container *ngIf="page !== '...'; else ellipsis">
                                 <button (click)="setPage(page)"
-                                    class="size-9 flex items-center justify-center rounded-lg text-sm font-bold transition-colors"
+                                    class="size-8 sm:size-9 flex items-center justify-center rounded-lg text-xs sm:text-sm font-bold transition-colors"
                                     [ngClass]="currentPage === page
                     ? 'text-white shadow-md'
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'"
+                    : 'text-slate-600 hover:bg-slate-50'"
                                     [style.backgroundColor]="currentPage === page ? '#2563EB' : ''">{{ page }}</button>
                             </ng-container>
                             <ng-template #ellipsis>
-                                <span class="text-slate-400 mx-1">...</span>
+                                <span class="text-slate-400 mx-0.5 sm:mx-1 text-sm">…</span>
                             </ng-template>
                         </ng-container>
 
                         <!-- Next -->
                         <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages"
-                            class="size-9 flex items-center justify-center border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="size-8 sm:size-9 flex items-center justify-center border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                             <span class="material-symbols-outlined" style="font-size:18px;">chevron_right</span>
                         </button>
 
@@ -312,47 +345,47 @@
     </main>
 
     <!-- ── Check-in Modal ── -->
-    <div *ngIf="showCheckinModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div *ngIf="showCheckinModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         (click)="closeCheckinModal()">
         <!-- Overlay -->
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
 
         <!-- Card -->
-        <div class="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden"
+        <div class="relative w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
             style="animation: modalEnter 0.25s cubic-bezier(0.34,1.56,0.64,1) both;" (click)="$event.stopPropagation()">
             <!-- Accent bar -->
             <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
 
             <!-- Header -->
             <div
-                class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+                class="flex items-center justify-between px-5 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-xl flex items-center justify-center text-white"
+                    <div class="size-9 sm:size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
                         style="background-color:#2563EB;">
-                        <span class="material-symbols-outlined" style="font-size:22px;">swipe_vertical</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">swipe_vertical</span>
                     </div>
                     <div>
-                        <h2 class="text-base font-bold text-slate-900 dark:text-white">Check In / Out</h2>
-                        <p class="text-xs text-slate-400">Select employee and company to proceed</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">Check In / Out</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-400">Select employee and company to proceed</p>
                     </div>
                 </div>
                 <button (click)="closeCheckinModal()"
-                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors flex-shrink-0">
                     <span class="material-symbols-outlined" style="font-size:20px;">close</span>
                 </button>
             </div>
 
             <!-- Body -->
-            <div class="px-6 py-5 space-y-4">
+            <div class="px-5 sm:px-6 py-4 sm:py-5 space-y-4">
 
                 <!-- Success -->
                 <div *ngIf="submitSuccess" class="flex flex-col items-center gap-3 py-6">
-                    <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center">
+                    <div class="size-14 sm:size-16 rounded-full bg-emerald-100 flex items-center justify-center">
                         <span class="material-symbols-outlined text-emerald-600"
-                            style="font-size:36px;">check_circle</span>
+                            style="font-size:32px;">check_circle</span>
                     </div>
-                    <p class="text-base font-bold text-slate-900 dark:text-white">Check-in recorded!</p>
-                    <p class="text-sm text-slate-500">Closing automatically…</p>
+                    <p class="text-sm sm:text-base font-bold text-slate-900">Check-in recorded!</p>
+                    <p class="text-xs sm:text-sm text-slate-500">Closing automatically…</p>
                 </div>
 
                 <ng-container *ngIf="!submitSuccess">
@@ -368,13 +401,14 @@
 
                         <!-- Employee Select -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</label>
+                            <label
+                                class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Employee</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                                     style="font-size:18px;">person</span>
                                 <select [(ngModel)]="selectedEmployeeId"
-                                    class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer">
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer">
                                     <option value="" disabled>Select an employee…</option>
                                     <option *ngFor="let emp of modalEmployees" [value]="emp.id">
                                         {{ emp.name }} — {{ emp.nationalID ?? 'No ID' }}
@@ -388,10 +422,10 @@
 
                         <!-- Employee preview -->
                         <div *ngIf="selectedEmployee"
-                            class="flex items-center gap-3 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                            class="flex items-center gap-3 px-3 sm:px-4 py-2.5 sm:py-3 bg-blue-50 rounded-xl border border-blue-100">
                             <span class="material-symbols-outlined text-blue-500" style="font-size:20px;">badge</span>
-                            <div class="text-xs text-blue-700 dark:text-blue-300">
-                                <p class="font-bold">{{ selectedEmployee.name }}</p>
+                            <div class="text-[10px] sm:text-xs text-blue-700 min-w-0">
+                                <p class="font-bold truncate">{{ selectedEmployee.name }}</p>
                                 <p class="opacity-70">{{ selectedEmployee.employeeLevel }} · {{
                                     selectedEmployee.employeeType }}</p>
                             </div>
@@ -399,13 +433,14 @@
 
                         <!-- Company Select -->
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Company</label>
+                            <label
+                                class="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">Company</label>
                             <div class="relative">
                                 <span
                                     class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
                                     style="font-size:18px;">corporate_fare</span>
                                 <select [(ngModel)]="selectedCompanyId"
-                                    class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer">
+                                    class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-8 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none cursor-pointer">
                                     <option value="" disabled>Select a company…</option>
                                     <option *ngFor="let c of companies" [value]="c.id">
                                         {{ c.name }} — {{ c.branch }}
@@ -418,14 +453,14 @@
                         </div>
 
                         <!-- Location note -->
-                        <p class="text-xs text-slate-400 flex items-center gap-1.5">
+                        <p class="text-[10px] sm:text-xs text-slate-400 flex items-center gap-1.5">
                             <span class="material-symbols-outlined" style="font-size:14px;">my_location</span>
                             Location captured automatically from your device
                         </p>
 
                         <!-- Error -->
                         <div *ngIf="submitError || modalError"
-                            class="flex items-center gap-2 px-4 py-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-200 text-rose-600 text-sm">
+                            class="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-rose-50 rounded-xl border border-rose-200 text-rose-600 text-xs sm:text-sm">
                             <span class="material-symbols-outlined" style="font-size:18px;">error</span>
                             {{ submitError || modalError }}
                         </div>
@@ -435,9 +470,9 @@
             </div>
 
             <!-- Footer -->
-            <div *ngIf="!submitSuccess && !modalLoading" class="px-6 pb-6 flex gap-3">
+            <div *ngIf="!submitSuccess && !modalLoading" class="px-5 sm:px-6 pb-5 sm:pb-6 flex gap-3">
                 <button (click)="closeCheckinModal()"
-                    class="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                    class="flex-1 py-2.5 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
                     Cancel
                 </button>
                 <button (click)="submitCheckin()" [disabled]="!isModalValid || submitting"
@@ -455,30 +490,30 @@
 
 
     <!-- ── Search by National ID Modal ── -->
-    <div *ngIf="showSearchModal" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <div *ngIf="showSearchModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
         (click)="closeSearchModal()">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
 
-        <div class="relative w-full max-w-2xl bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden"
+        <div class="relative w-full sm:max-w-2xl bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden"
             (click)="$event.stopPropagation()">
             <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
 
             <!-- Header -->
             <div
-                class="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
+                class="flex items-center justify-between px-5 sm:px-6 pt-4 sm:pt-5 pb-3 sm:pb-4 border-b border-slate-100">
                 <div class="flex items-center gap-3">
-                    <div class="size-10 rounded-xl flex items-center justify-center text-white"
+                    <div class="size-9 sm:size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
                         style="background-color:#2563EB;">
-                        <span class="material-symbols-outlined" style="font-size:22px;">manage_search</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">manage_search</span>
                     </div>
                     <div>
-                        <h2 class="text-base font-bold text-slate-900 dark:text-white">Search Attendance by National ID
-                        </h2>
-                        <p class="text-xs text-slate-400">Enter the employee's National ID to view their records</p>
+                        <h2 class="text-sm sm:text-base font-bold text-slate-900">Search Attendance by National ID</h2>
+                        <p class="text-[10px] sm:text-xs text-slate-400">Enter the employee's National ID to view their
+                            records</p>
                     </div>
                 </div>
                 <button (click)="closeSearchModal()"
-                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                    class="size-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 transition-colors flex-shrink-0">
                     <span class="material-symbols-outlined" style="font-size:20px;">close</span>
                 </button>
             </div>
@@ -488,58 +523,61 @@
 
 
     <!-- ── Redirect Modal ── -->
-    <div *ngIf="showRedirectModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div *ngIf="showRedirectModal" class="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
         <!-- Overlay -->
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
 
         <!-- Card -->
-        <div class="relative w-full max-w-sm bg-white dark:bg-slate-900 rounded-2xl shadow-2xl overflow-hidden"
+        <div class="relative w-full sm:max-w-sm bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden"
             style="animation: modalEnter 0.25s cubic-bezier(0.34,1.56,0.64,1) both;">
 
             <!-- Accent bar -->
             <div class="h-1 w-full" style="background:linear-gradient(90deg,#2563EB,#60a5fa)"></div>
 
             <!-- Header -->
-            <div class="px-6 pt-6 pb-4 text-center">
-                <div class="size-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined text-emerald-600" style="font-size:36px;">check_circle</span>
+            <div class="px-5 sm:px-6 pt-5 sm:pt-6 pb-3 sm:pb-4 text-center">
+                <div
+                    class="size-14 sm:size-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <span class="material-symbols-outlined text-emerald-600" style="font-size:32px;">check_circle</span>
                 </div>
-                <h2 class="text-lg font-bold text-slate-900 dark:text-white">Check-in Successful!</h2>
-                <p class="text-sm text-slate-500 mt-1">Where would you like to go next?</p>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900">Check-in Successful!</h2>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">Where would you like to go next?</p>
             </div>
 
             <!-- Options -->
-            <div class="px-6 pb-6 flex flex-col gap-3">
+            <div class="px-5 sm:px-6 pb-5 sm:pb-6 flex flex-col gap-2.5 sm:gap-3">
 
                 <!-- Access Camera -->
                 <button (click)="navigateTo('access-camera')"
-                    class="w-full flex items-center gap-4 px-5 py-4 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group">
-                    <div class="size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
+                    class="w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl border-2 border-blue-100 hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                    <div class="size-9 sm:size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
                         style="background-color:#2563EB;">
-                        <span class="material-symbols-outlined" style="font-size:22px;">photo_camera</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">photo_camera</span>
                     </div>
-                    <div class="text-left">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white">Access Camera</p>
-                        <p class="text-xs text-slate-400">Take a photo for attendance verification</p>
+                    <div class="text-left min-w-0">
+                        <p class="text-xs sm:text-sm font-bold text-slate-800">Access Camera</p>
+                        <p class="text-[10px] sm:text-xs text-slate-400 truncate">Take a photo for attendance
+                            verification</p>
                     </div>
                     <span
-                        class="material-symbols-outlined text-slate-300 group-hover:text-blue-500 ml-auto transition-colors"
+                        class="material-symbols-outlined text-slate-300 group-hover:text-blue-500 ml-auto transition-colors flex-shrink-0"
                         style="font-size:20px;">chevron_right</span>
                 </button>
 
                 <!-- Insert QR -->
                 <button (click)="navigateTo('insertqr')"
-                    class="w-full flex items-center gap-4 px-5 py-4 rounded-xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group">
-                    <div class="size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
+                    class="w-full flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4 rounded-xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50 transition-all group">
+                    <div class="size-9 sm:size-10 rounded-xl flex items-center justify-center text-white flex-shrink-0"
                         style="background-color:#7c3aed;">
-                        <span class="material-symbols-outlined" style="font-size:22px;">qr_code_scanner</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">qr_code_scanner</span>
                     </div>
-                    <div class="text-left">
-                        <p class="text-sm font-bold text-slate-800 dark:text-white">Insert QR Code</p>
-                        <p class="text-xs text-slate-400">Scan or upload a QR code for check-in</p>
+                    <div class="text-left min-w-0">
+                        <p class="text-xs sm:text-sm font-bold text-slate-800">Insert QR Code</p>
+                        <p class="text-[10px] sm:text-xs text-slate-400 truncate">Scan or upload a QR code for check-in
+                        </p>
                     </div>
                     <span
-                        class="material-symbols-outlined text-slate-300 group-hover:text-blue-500 ml-auto transition-colors"
+                        class="material-symbols-outlined text-slate-300 group-hover:text-blue-500 ml-auto transition-colors flex-shrink-0"
                         style="font-size:20px;">chevron_right</span>
                 </button>
 
