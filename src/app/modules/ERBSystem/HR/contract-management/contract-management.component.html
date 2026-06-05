@@ -1,230 +1,290 @@
-<div class="relative flex min-h-screen flex-col overflow-x-hidden bg-slate-50 font-sans text-slate-900">
+<div class="flex h-screen overflow-hidden bg-[#f8f6f6] font-sans text-slate-900">
 
+    <!-- ── Sidebar ── -->
+    <app-hr-sidebar></app-hr-sidebar>
 
-    <!-- Header -->
-    <header
-        class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-md px-6 py-3 lg:px-10">
-        <div class="flex items-center gap-8">
-            <!-- Logo -->
-            <!-- <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2563EB] text-white">
-                    <span class="material-symbols-outlined">shield_person</span>
-                </div>
-                <h2 class="hidden text-xl font-bold tracking-tight text-slate-900 sm:block">Nexus ERP</h2>
-            </div> -->
-            <!-- Search -->
-            <div class="hidden md:flex">
-                <label class="relative flex h-10 w-72 items-center">
-                    <span class="material-symbols-outlined absolute left-3 text-slate-400 text-lg">search</span>
-                    <input [(ngModel)]="searchQuery"
-                        class="h-full w-full rounded-xl border-none bg-slate-100 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-200 outline-none placeholder:text-slate-500"
-                        placeholder="Search contracts, employees..." type="text" />
-                </label>
-            </div>
-        </div>
+    <!-- ── Main Content ── -->
+    <main class="flex-1 flex flex-col overflow-hidden min-w-0">
 
-        <!-- Right side -->
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 border-r border-slate-200 pr-4">
-                <button
-                    class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
-                    <span class="material-symbols-outlined">notifications</span>
+        <!-- Header -->
+        <header
+            class="sticky top-0 z-50 flex items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-md px-3 sm:px-6 lg:px-10 py-2 sm:py-3 shrink-0 gap-2">
+
+            <!-- Left -->
+            <div class="flex items-center gap-2 sm:gap-8 min-w-0 flex-1">
+                <!-- Mobile Menu -->
+                <button (click)="toggleSidebar()"
+                    class="lg:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors -ml-0.5 flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
                 </button>
-                <button
-                    class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
-                    <span class="material-symbols-outlined">settings</span>
+
+                <!-- Search — Desktop -->
+                <div class="hidden md:flex">
+                    <label class="relative flex h-9 sm:h-10 w-64 lg:w-72 items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-slate-400 text-lg">search</span>
+                        <input [(ngModel)]="searchQuery"
+                            class="h-full w-full rounded-xl border-none bg-slate-100 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-200 outline-none placeholder:text-slate-500"
+                            placeholder="Search contracts..." type="text" />
+                    </label>
+                </div>
+            </div>
+
+            <!-- Right -->
+            <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
+                <!-- Mobile Search Toggle -->
+                <button (click)="toggleMobileSearch()"
+                    class="md:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
                 </button>
-            </div>
-            <div class="flex items-center gap-3 pl-2">
-                <div class="hidden text-right lg:block">
-                    <p class="text-sm font-semibold text-slate-900">Alex Rivera</p>
-                    <p class="text-xs text-slate-500">HR Administrator</p>
-                </div>
-                <div class="h-10 w-10 rounded-full bg-slate-200 ring-2 ring-blue-100 overflow-hidden">
-                    <img alt="Profile" class="h-full w-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuACnNI9EySlraG1Xg5Iq2Y9ct3ykcFhUyeaGtDkQJZZWrHsVxKH8NIfytiMs0H5Mbrnr4XWvhYyVouXZYHSARDTXuH3p7fN45HaDYn7f3hgGFR7DKmiZ3QDeUsY0_gkOdFHMDJD943pq9UmtJPKpGyzNW3fXnEQY4bQ0NjtOzJ1VwoC-QkXhvp5aFtPlXC1ATXhfe7_PTueWGg-wnCKbDtOb1wzXxBd4zq_v4jmMDC5guIere2kkbT7nf9d9YrKyzu7ry2p9-J_MDuh" />
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <div class="flex flex-1">
-
-        <app-hr-sidebar></app-hr-sidebar>
-
-        <!-- Main Content -->
-        <main class="flex-1 p-6 lg:p-10">
-
-            <!-- Page Header -->
-            <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-                <div>
-                    <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Contract Management</h1>
-                    <p class="text-slate-500 mt-1">Monitor and manage employee employment agreements across the
-                        organization.</p>
-                </div>
-                <button routerLink="/add-contract"
-                    class="inline-flex items-center justify-center cursor-pointer gap-2 rounded-xl bg-[#2563EB] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95">
-                    <span class="material-symbols-outlined text-[20px]">add</span>
-                    Add New Contract
-                </button>
-            </div>
-
-            <!-- Filter Bar -->
-            <div class="mb-6 flex flex-wrap items-center gap-3">
-                <div class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1">
-                    <!-- Filter buttons -->
-                    <button *ngFor="let f of statusFilters" (click)="setFilter(f.value)" [class]="activeFilter === f.value
-    ? 'rounded-lg bg-slate-100 px-4 py-1.5 text-sm font-semibold text-slate-900'
-    : 'rounded-lg px-4 py-1.5 text-sm font-medium text-slate-500 hover:text-slate-900'">
-                        {{ f.label }}
+                <div class="hidden sm:flex items-center gap-2 border-r border-slate-200 pr-3 sm:pr-4">
+                    <button
+                        class="flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <button
+                        class="flex h-9 sm:h-10 w-9 sm:w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100 transition-colors">
+                        <span class="material-symbols-outlined">settings</span>
                     </button>
                 </div>
-
-                <button
-                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                    Advanced Filters
-                </button>
-
-                <!-- <button 
-                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">file_download</span>
-                    Export
-                </button> -->
-            </div>
-
-            <!-- Table Card -->
-            <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead class="bg-slate-50">
-                            <tr>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Employee
-                                    Name</th>
-                                <!-- <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Contract
-                                    Type</th> -->
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Start
-                                    Date</th>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">End Date
-                                </th>
-                                <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Salary
-                                </th>
-                                <th
-                                    class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
-                                    Status</th>
-                                <th
-                                    class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            <tr *ngFor="let contract of filteredContracts"
-                                class="group hover:bg-slate-50 transition-colors">
-
-                                <!-- Employee -->
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <p class="text-sm font-semibold text-slate-900">{{
-                                        getEmployeeName(contract.employeeId) }}</p>
-                                </td>
-
-                                <!-- Contract Type -->
-                                <!-- <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                    {{ getContractTypeLabel(contract.typee) }}
-                                </td> -->
-
-                                <!-- Start Date -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                    {{ contract.startDate | date:'mediumDate' }}
-                                </td>
-
-                                <!-- End Date -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
-                                    {{ contract.endDate ? (contract.endDate | date:'mediumDate') : '—' }}
-                                </td>
-
-                                <!-- Salary -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900">
-                                    {{ contract.salaryAmount | number }} {{ contract.salaryCurrency }}
-                                </td>
-
-                                <!-- Status -->
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex justify-center">
-                                        <span
-                                            [class]="'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ' + getStatusClasses(contract.status)">
-                                            <span
-                                                [class]="'mr-1 h-1.5 w-1.5 rounded-full ' + getDotClasses(contract.status)"></span>
-                                            {{ getStatusLabel(contract.status) }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <!-- Actions -->
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="flex items-center justify-center gap-1">
-
-                                        <!-- View Details -->
-                                        <button [routerLink]="['/contract-details', contract.id]"
-                                            class="p-1.5 text-slate-400 hover:text-[#2563EB] hover:bg-blue-50 rounded-lg transition-colors"
-                                            title="View Details">
-                                            <span class="material-symbols-outlined text-lg">visibility</span>
-                                        </button>
-
-                                        <!-- Delete -->
-                                        <button (click)="deleteContract(contract.id)"
-                                            class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
-                                            title="Delete Contract">
-                                            <span class="material-symbols-outlined text-lg">delete</span>
-                                        </button>
-
-                                    </div>
-                                </td>
-
-                            </tr>
-
-                            <!-- Empty state -->
-                            <tr *ngIf="filteredContracts.length === 0">
-                                <td colspan="7" class="px-6 py-12 text-center text-sm text-slate-400">
-                                    No contracts match the current filter.
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="border-t border-slate-200 bg-slate-50/50 px-6 py-4">
-                    <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
-                        <p class="text-sm text-slate-500">
-                            Showing
-                            <span class="font-semibold text-slate-900">1</span>
-                            to
-                            <span class="font-semibold text-slate-900">{{ filteredContracts.length }}</span>
-                            of
-                            <span class="font-semibold text-slate-900">12</span>
-                            entries
-                        </p>
-                        <div class="flex items-center gap-2">
-                            <button
-                                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white p-2 text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
-                            </button>
-                            <button
-                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#2563EB] text-sm font-bold text-white">1</button>
-                            <button
-                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 bg-white text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">2</button>
-                            <button
-                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-300 bg-white text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">3</button>
-                            <button
-                                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white p-2 text-slate-600 hover:bg-slate-50 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
-                            </button>
-                        </div>
+                <div class="flex items-center gap-2 sm:gap-3 pl-1 sm:pl-2">
+                    <div class="hidden text-right lg:block">
+                        <p class="text-sm font-semibold text-slate-900">Alex Rivera</p>
+                        <p class="text-xs text-slate-500">HR Administrator</p>
+                    </div>
+                    <div
+                        class="h-8 sm:h-10 w-8 sm:w-10 rounded-full bg-slate-200 ring-2 ring-blue-100 overflow-hidden flex-shrink-0">
+                        <img alt="Profile" class="h-full w-full object-cover"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuACnNI9EySlraG1Xg5Iq2Y9ct3ykcFhUyeaGtDkQJZZWrHsVxKH8NIfytiMs0H5Mbrnr4XWvhYyVouXZYHSARDTXuH3p7fN45HaDYn7f3hgGFR7DKmiZ3QDeUsY0_gkOdFHMDJD943pq9UmtJPKpGyzNW3fXnEQY4bQ0NjtOzJ1VwoC-QkXhvp5aFtPlXC1ATXhfe7_PTueWGg-wnCKbDtOb1wzXxBd4zq_v4jmMDC5guIere2kkbT7nf9d9YrKyzu7ry2p9-J_MDuh" />
                     </div>
                 </div>
             </div>
+        </header>
 
-        </main>
-    </div>
+        <!-- Mobile Search Bar -->
+        <div *ngIf="showMobileSearch" class="md:hidden bg-white border-b border-slate-200 px-3 py-2.5 shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input [(ngModel)]="searchQuery"
+                        class="w-full h-9 rounded-xl border-none bg-slate-100 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-200 outline-none placeholder:text-slate-500"
+                        placeholder="Search contracts..." type="text" />
+                </div>
+                <button (click)="showMobileSearch = false"
+                    class="text-xs font-semibold text-blue-500 flex-shrink-0 px-2">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto">
+
+            <!-- Page Header -->
+            <div class="px-4 sm:px-6 lg:px-10 pt-5 sm:pt-6 lg:pt-10 pb-4 sm:pb-6 lg:pb-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
+                            Contract Management</h1>
+                        <p class="text-slate-500 text-xs sm:text-sm mt-0.5 sm:mt-1">Monitor and manage employee
+                            employment agreements across the organization.</p>
+                    </div>
+                    <button routerLink="/add-contract"
+                        class="inline-flex items-center justify-center cursor-pointer gap-2 rounded-xl bg-[#2563EB] px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold text-white shadow-lg shadow-blue-200 hover:bg-blue-700 transition-all active:scale-95 self-start sm:self-auto flex-shrink-0">
+                        <span class="material-symbols-outlined text-[18px] sm:text-[20px]">add</span>
+                        <span class="hidden xs:inline">Add New Contract</span>
+                        <span class="xs:hidden">Add</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Bar -->
+            <div class="px-4 sm:px-6 lg:px-10 mb-4 sm:mb-6">
+                <div class="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar -mx-1 px-1 pb-0.5">
+                    <div
+                        class="flex items-center gap-1 sm:gap-2 rounded-lg sm:rounded-xl border border-slate-200 bg-white p-0.5 sm:p-1 flex-shrink-0">
+                        <button *ngFor="let f of statusFilters" (click)="setFilter(f.value)"
+                            [class]="activeFilter === f.value
+            ? 'rounded-md sm:rounded-lg bg-slate-100 px-2.5 sm:px-4 py-1.5 text-[11px] sm:text-sm font-semibold text-slate-900 whitespace-nowrap'
+            : 'rounded-md sm:rounded-lg px-2.5 sm:px-4 py-1.5 text-[11px] sm:text-sm font-medium text-slate-500 hover:text-slate-900 whitespace-nowrap transition-colors'">
+                            {{ f.label }}
+                        </button>
+                    </div>
+
+                    <button
+                        class="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl border border-slate-200 bg-white px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors flex-shrink-0 whitespace-nowrap">
+                        <span class="material-symbols-outlined text-[16px] sm:text-[18px]">filter_list</span>
+                        <span class="hidden xs:inline">Advanced Filters</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="px-4 sm:px-6 lg:px-10 pb-6 sm:pb-8">
+                <div class="overflow-hidden rounded-xl sm:rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+                    <!-- ═══ Mobile Card View ═══ -->
+                    <div class="sm:hidden divide-y divide-slate-100">
+                        <ng-container *ngIf="filteredContracts.length > 0; else mobileEmpty">
+                            <div *ngFor="let contract of filteredContracts" class="p-3.5 space-y-2.5">
+                                <!-- Name + Actions -->
+                                <div class="flex items-start justify-between gap-2">
+                                    <p class="text-sm font-semibold text-slate-900 leading-snug">{{
+                                        getEmployeeName(contract.employeeId) }}</p>
+                                    <div class="flex items-center gap-0.5 flex-shrink-0 -mr-1">
+                                        <button [routerLink]="['/contract-details', contract.id]"
+                                            class="p-1.5 text-slate-400 hover:text-[#2563EB] active:bg-blue-50 rounded-lg transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        </button>
+                                        <button (click)="deleteContract(contract.id)"
+                                            class="p-1.5 text-slate-400 hover:text-rose-500 active:bg-rose-50 rounded-lg transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- Dates -->
+                                <div class="flex items-center gap-3 text-[11px] text-slate-500">
+                                    <div class="flex items-center gap-1">
+                                        <span
+                                            class="material-symbols-outlined text-slate-400 text-[14px]">calendar_today</span>
+                                        <span>{{ contract.startDate | date:'MMM dd, yyyy' }}</span>
+                                    </div>
+                                    <span class="text-slate-300">→</span>
+                                    <span>{{ contract.endDate ? (contract.endDate | date:'MMM dd, yyyy') : '—' }}</span>
+                                </div>
+                                <!-- Salary + Status -->
+                                <div class="flex items-center justify-between pt-2 border-t border-slate-50">
+                                    <span class="text-sm font-bold text-slate-900">
+                                        {{ contract.salaryAmount | number }} {{ contract.salaryCurrency }}
+                                    </span>
+                                    <span
+                                        [class]="'inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold ' + getStatusClasses(contract.status)">
+                                        <span
+                                            [class]="'mr-1 h-1.5 w-1.5 rounded-full ' + getDotClasses(contract.status)"></span>
+                                        {{ getStatusLabel(contract.status) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #mobileEmpty>
+                            <div class="py-10 text-center text-slate-400 text-xs">
+                                <span class="material-symbols-outlined block mx-auto mb-1.5"
+                                    style="font-size:32px; opacity:0.3;">search_off</span>
+                                No contracts match the current filter.
+                            </div>
+                        </ng-template>
+                    </div>
+
+                    <!-- ═══ Desktop Table View ═══ -->
+                    <div class="hidden sm:block overflow-x-auto">
+                        <table class="w-full text-left min-w-[700px]">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        Employee Name</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        Start Date</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        End Date</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        Salary</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                <tr *ngFor="let contract of filteredContracts"
+                                    class="group hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <p class="text-sm font-semibold text-slate-900">{{
+                                            getEmployeeName(contract.employeeId) }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                        {{ contract.startDate | date:'mediumDate' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                        {{ contract.endDate ? (contract.endDate | date:'mediumDate') : '—' }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-slate-900">
+                                        {{ contract.salaryAmount | number }} {{ contract.salaryCurrency }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex justify-center">
+                                            <span
+                                                [class]="'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ' + getStatusClasses(contract.status)">
+                                                <span
+                                                    [class]="'mr-1 h-1.5 w-1.5 rounded-full ' + getDotClasses(contract.status)"></span>
+                                                {{ getStatusLabel(contract.status) }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <div class="flex items-center justify-center gap-1">
+                                            <button [routerLink]="['/contract-details', contract.id]"
+                                                class="p-1.5 text-slate-400 hover:text-[#2563EB] hover:bg-blue-50 rounded-lg transition-colors"
+                                                title="View Details">
+                                                <span class="material-symbols-outlined text-lg">visibility</span>
+                                            </button>
+                                            <button (click)="deleteContract(contract.id)"
+                                                class="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                                                title="Delete Contract">
+                                                <span class="material-symbols-outlined text-lg">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- Empty state -->
+                                <tr *ngIf="filteredContracts.length === 0">
+                                    <td colspan="6" class="px-6 py-12 text-center text-sm text-slate-400">
+                                        <span class="material-symbols-outlined block mx-auto mb-2"
+                                            style="font-size:40px; opacity:0.3;">search_off</span>
+                                        No contracts match the current filter.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="border-t border-slate-200 bg-slate-50/50 px-3.5 sm:px-6 py-3 sm:py-4">
+                        <div class="flex flex-col items-center justify-between gap-2 sm:gap-4 sm:flex-row">
+                            <p class="text-[10px] sm:text-sm text-slate-500 order-2 sm:order-1">
+                                Showing <span class="font-semibold text-slate-900">1</span> to
+                                <span class="font-semibold text-slate-900">{{ filteredContracts.length }}</span> of
+                                <span class="font-semibold text-slate-900">12</span> entries
+                            </p>
+                            <div class="flex items-center gap-1.5 sm:gap-2 order-1 sm:order-2">
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white p-1.5 sm:p-2 text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_left</span>
+                                </button>
+                                <button
+                                    class="inline-flex h-7 sm:h-9 w-7 sm:w-9 items-center justify-center rounded-lg bg-[#2563EB] text-[10px] sm:text-sm font-bold text-white">1</button>
+                                <button
+                                    class="inline-flex h-7 sm:h-9 w-7 sm:w-9 items-center justify-center rounded-lg border border-slate-300 bg-white text-[10px] sm:text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">2</button>
+                                <button
+                                    class="inline-flex h-7 sm:h-9 w-7 sm:w-9 items-center justify-center rounded-lg border border-slate-300 bg-white text-[10px] sm:text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">3</button>
+                                <button
+                                    class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white p-1.5 sm:p-2 text-slate-600 hover:bg-slate-50 transition-colors">
+                                    <span
+                                        class="material-symbols-outlined text-[16px] sm:text-[18px]">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </main>
 </div>

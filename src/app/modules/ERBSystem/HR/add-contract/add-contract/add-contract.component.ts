@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ApplicationsService, CreateContractPayload } from '../../../../../core/services/Applications/applications.service';
 import { inject } from '@angular/core';
 import { EmployeeService } from '../../../../../core/services/employee/employee.service';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 export interface Employee {
   id: string;
@@ -18,7 +19,7 @@ export interface Manager {
 
 @Component({
   selector: 'app-add-contract',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HrSidebarComponent],
   templateUrl: './add-contract.component.html',
   styleUrl: './add-contract.component.scss',
 })
@@ -26,6 +27,9 @@ export class AddContractComponent implements OnInit {
   private readonly _appService = inject(ApplicationsService);
   private readonly _employeeService = inject(EmployeeService);
 
+  toggleSidebar() {
+    // حسب طريقة السايدبار عندك
+  }
   isLoading = false;
 
   employees: Employee[] = [];
@@ -132,6 +136,6 @@ export class AddContractComponent implements OnInit {
   getStatusBorderClass(value: number): string {
     return this.form.status === value
       ? 'border-[#2563EB] bg-[#2563EB]/5'
-      : 'border-slate-200 dark:border-slate-700';
+      : 'border-slate-200';
   }
 }

@@ -9,10 +9,11 @@ import { Environment } from '../../../../../shared/UI/environment/env';
 import { Router, RouterLink } from "@angular/router";
 import { CandidateService } from '../../../../../core/services/candidate/candidate.service';
 import { ToastrService } from 'ngx-toastr';
+import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 @Component({
   selector: 'app-schedule-interview',
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, HrSidebarComponent],
   templateUrl: './schedule-interview.component.html',
   styleUrl: './schedule-interview.component.scss',
 })
@@ -20,6 +21,16 @@ export class ScheduleInterviewComponent implements OnInit {
   private readonly _applicationsService = inject(ApplicationsService);
   private readonly _http = inject(HttpClient);
   private readonly _candidateService = inject(CandidateService);
+
+  showMobileSearch = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    // حسب طريقة السايدبار عندك
+  }
 
   workPreference = signal<'OFFICE' | 'REMOTE'>('OFFICE');
   isSubmitting = false;

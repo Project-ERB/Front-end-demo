@@ -7,153 +7,250 @@
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#f8f6f6]">
 
         <!-- Top Bar -->
-        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
-            <div class="flex-1 max-w-xl">
-                <div class="relative">
-                    <span
-                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
-                    <input type="text" placeholder="Search applications, candidates or job requirements..."
-                        class="w-full bg-slate-100 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 outline-none transition-all" />
+        <header
+            class="h-14 sm:h-16 bg-white border-b border-slate-200 flex items-center justify-between px-3 sm:px-8 shrink-0 gap-2">
+
+            <!-- Left -->
+            <div class="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                <!-- Mobile Menu -->
+                <button (click)="toggleSidebar()"
+                    class="lg:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors -ml-0.5 flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+                </button>
+
+                <!-- Search — Desktop -->
+                <div class="hidden sm:block flex-1 max-w-xl">
+                    <div class="relative">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input type="text" placeholder="Search applications, candidates or job requirements..."
+                            class="w-full bg-slate-100 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 outline-none transition-all" />
+                    </div>
                 </div>
             </div>
-            <div class="flex items-center gap-4 ml-4">
-                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg relative transition-colors">
+
+            <!-- Right -->
+            <div class="flex items-center gap-1.5 sm:gap-4 flex-shrink-0">
+                <!-- Mobile Search Toggle -->
+                <button (click)="toggleMobileSearch()"
+                    class="sm:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined" style="font-size:22px;">search</span>
+                </button>
+
+                <button
+                    class="hidden sm:flex p-2 text-slate-500 hover:bg-slate-100 rounded-lg relative transition-colors">
                     <span class="material-symbols-outlined">notifications</span>
                     <span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white"></span>
                 </button>
-                <button class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
+                <button class="hidden sm:flex p-2 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors">
                     <span class="material-symbols-outlined">help</span>
                 </button>
-                <div class="h-6 w-px bg-slate-200 mx-2"></div>
+                <div class="h-6 w-px bg-slate-200 mx-1 sm:mx-2 hidden sm:block"></div>
+
+                <!-- New Application — Desktop -->
                 <button routerLink="/add-application"
-                    class="flex items-center gap-2 cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+                    class="hidden sm:flex items-center gap-2 cursor-pointer bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
                     <span class="material-symbols-outlined text-sm">add</span>
                     New Application
+                </button>
+                <!-- New Application — Mobile -->
+                <button routerLink="/add-application"
+                    class="sm:flex hidden p-2 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    title="New Application">
+                    <span class="material-symbols-outlined text-xl">add</span>
                 </button>
             </div>
         </header>
 
+        <!-- Mobile Search Bar -->
+        <div *ngIf="showMobileSearch" class="sm:hidden bg-white border-b border-slate-200 px-3 py-2.5 shrink-0">
+            <div class="flex items-center gap-2">
+                <div class="relative flex-1">
+                    <span
+                        class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+                    <input type="text" placeholder="Search applications..."
+                        class="w-full bg-slate-100 border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-600/50 outline-none transition-all" />
+                </div>
+                <button (click)="showMobileSearch = false"
+                    class="text-xs font-semibold text-blue-500 flex-shrink-0 px-2">Cancel</button>
+            </div>
+        </div>
+
         <!-- Page Content -->
-        <div class="flex-1 overflow-y-auto p-8">
+        <div class="flex-1 overflow-y-auto">
 
             <!-- Page Header -->
-            <div class="mb-8">
-                <h2 class="text-3xl font-extrabold tracking-tight text-slate-900 mb-2">Application Processes Management
-                </h2>
-                <p class="text-slate-500">Track and manage recruitment workflows for all active candidates across
-                    departments.</p>
+            <div class="px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 lg:pt-8 pb-4 sm:pb-6">
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">Application
+                    Processes Management</h2>
+                <p class="text-slate-500 text-xs sm:text-sm mt-0.5 sm:mt-2">Track and manage recruitment workflows for
+                    all active candidates across departments.</p>
             </div>
 
             <!-- Filters & Actions -->
-            <div class="flex flex-wrap items-center gap-4 mb-6">
-                <!-- Filter Tabs -->
-                <div class="flex bg-white p-1 rounded-xl border border-slate-200 shadow-sm">
-                    <button *ngFor="let filter of filters" (click)="setFilter(filter.key)" [class]="activeFilter === filter.key
-              ? 'px-4 py-1.5 text-sm font-semibold bg-blue-600 text-white rounded-lg'
-              : 'px-4 py-1.5 text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors'">
-                        {{ filter.label }} ({{ filter.count }})
-                    </button>
-                </div>
+            <div class="px-4 sm:px-6 lg:px-8 mb-4 sm:mb-6">
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <!-- Filter Tabs -->
+                    <div
+                        class="flex bg-white p-1 rounded-lg sm:rounded-xl border border-slate-200 shadow-sm overflow-x-auto no-scrollbar -mx-1 px-1">
+                        <button *ngFor="let filter of filters" (click)="setFilter(filter.key)"
+                            [class]="activeFilter === filter.key
+                  ? 'px-3 sm:px-4 py-1.5 text-[11px] sm:text-sm font-semibold bg-blue-600 text-white rounded-md sm:rounded-lg whitespace-nowrap flex-shrink-0'
+                  : 'px-3 sm:px-4 py-1.5 text-[11px] sm:text-sm font-medium text-slate-600 hover:text-blue-600 transition-colors whitespace-nowrap flex-shrink-0'">
+                            {{ filter.label }} ({{ filter.count }})
+                        </button>
+                    </div>
 
-                <!-- Action Buttons -->
-                <div class="flex items-center gap-2 ml-auto">
-                    <button
-                        class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
-                        <span class="material-symbols-outlined text-sm">filter_list</span> Filter
-                    </button>
-                    <button
-                        class="flex items-center gap-2 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
-                        <span class="material-symbols-outlined text-sm">download</span> Export
-                    </button>
+                    <!-- Action Buttons -->
+                    <div class="flex items-center gap-2 sm:ml-auto flex-shrink-0">
+                        <button
+                            class="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 bg-white border border-slate-200 rounded-lg text-[11px] sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-outlined text-sm">filter_list</span>
+                            <span class="hidden xs:inline">Filter</span>
+                        </button>
+                        <button
+                            class="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 bg-white border border-slate-200 rounded-lg text-[11px] sm:text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors">
+                            <span class="material-symbols-outlined text-sm">download</span>
+                            <span class="hidden xs:inline">Export</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <!-- Data Table -->
-            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50 border-b border-slate-200">
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Candidate
-                                Name</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Job Title
-                            </th>
-                            <!-- <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">Start Date
-                            </th> -->
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
-                                Current Stage</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">
-                                Status</th>
-                            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">
-                                Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        <tr *ngFor="let app of filteredApplications" class="hover:bg-slate-50/50 transition-colors">
+            <div class="px-4 sm:px-6 lg:px-8 pb-6 sm:pb-8">
+                <div class="bg-white border border-slate-200 rounded-xl sm:rounded-2xl shadow-sm overflow-hidden">
 
-                            <!-- Candidate ID -->
-                            <td class="px-6 py-4">
-                                <p class="text-sm font-semibold text-slate-900">{{ app.candidateName }}</p>
-                                <!-- <p class="text-xs text-slate-400 font-mono">{{ app.id | slice:0:8 }}...</p> -->
-                            </td>
-
-                            <td class="px-6 py-4">
-                                <p class="text-sm text-slate-700">{{ app.jobTitle }}</p>
-                            </td>
-
-                            <!-- Start Date — مش في الـ query، شيلها أو خليها فاضية -->
-                            <!-- <td class="px-6 py-4 text-sm text-slate-600">—</td> -->
-
-                            <!-- Current Stage -->
-                            <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-                                    [ngClass]="getStageClasses(app.currentStage)">
-                                    <span class="size-1.5 rounded-full mr-2"
-                                        [ngClass]="getStageDotClasses(app.currentStage)"></span>
-                                    {{ stageLabels[app.currentStage] ?? 'Unknown' }}
-                                </span>
-                            </td>
-
-                            <!-- Status -->
-                            <td class="px-6 py-4 text-center">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-                                    [ngClass]="getStatusClasses(app.appStatus)">
-                                    {{ statusLabels[app.appStatus] ?? 'Unknown' }}
-                                </span>
-                            </td>
-
-                            <!-- Actions -->
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button (click)="onView(app)" title="View Details"
-                                        class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-600/10 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                                    </button>
-                                    <button (click)="onDelete(app)" title="Delete"
-                                        class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                    </button>
+                    <!-- ═══ Mobile Card View ═══ -->
+                    <div class="sm:hidden divide-y divide-slate-100">
+                        <ng-container *ngIf="filteredApplications.length > 0; else mobileEmpty">
+                            <div *ngFor="let app of filteredApplications" class="p-3.5 space-y-2.5">
+                                <!-- Name + Actions -->
+                                <div class="flex items-start justify-between gap-2">
+                                    <p class="text-sm font-semibold text-slate-900 leading-snug">{{ app.candidateName }}
+                                    </p>
+                                    <div class="flex items-center gap-0.5 flex-shrink-0 -mr-1">
+                                        <button (click)="onView(app)" title="View"
+                                            class="p-1.5 text-slate-400 hover:text-blue-600 active:bg-blue-50 rounded-lg transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        </button>
+                                        <button (click)="onDelete(app)" title="Delete"
+                                            class="p-1.5 text-slate-400 hover:text-rose-600 active:bg-rose-50 rounded-lg transition-colors">
+                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        </button>
+                                    </div>
                                 </div>
-                            </td>
-
-                        </tr>
-                    </tbody>
-                </table>
-
-                <!-- Pagination -->
-                <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                    <p class="text-xs text-slate-500 font-medium">Showing 1 to 4 of 124 results</p>
-                    <div class="flex items-center gap-2">
-                        <button disabled
-                            class="p-1 border border-slate-200 rounded hover:bg-white disabled:opacity-50 transition-colors">
-                            <span class="material-symbols-outlined text-sm">chevron_left</span>
-                        </button>
-                        <span class="text-xs font-bold text-blue-600 px-2">1</span>
-                        <span class="text-xs font-medium text-slate-400 px-2">2</span>
-                        <span class="text-xs font-medium text-slate-400 px-2">3</span>
-                        <button class="p-1 border border-slate-200 rounded hover:bg-white transition-colors">
-                            <span class="material-symbols-outlined text-sm">chevron_right</span>
-                        </button>
+                                <!-- Job Title -->
+                                <p class="text-[11px] text-slate-500">{{ app.jobTitle }}</p>
+                                <!-- Badges -->
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium"
+                                        [ngClass]="getStageClasses(app.currentStage)">
+                                        <span class="size-1.5 rounded-full mr-1.5"
+                                            [ngClass]="getStageDotClasses(app.currentStage)"></span>
+                                        {{ stageLabels[app.currentStage] ?? 'Unknown' }}
+                                    </span>
+                                    <span
+                                        class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium"
+                                        [ngClass]="getStatusClasses(app.appStatus)">
+                                        {{ statusLabels[app.appStatus] ?? 'Unknown' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #mobileEmpty>
+                            <div class="py-10 text-center text-slate-400 text-xs">
+                                <span class="material-symbols-outlined block mx-auto mb-1.5"
+                                    style="font-size:32px; opacity:0.3;">search_off</span>
+                                No applications found.
+                            </div>
+                        </ng-template>
                     </div>
+
+                    <!-- ═══ Desktop Table View ═══ -->
+                    <div class="hidden sm:block overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        Candidate Name</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                        Job Title</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center">
+                                        Current Stage</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center">
+                                        Status</th>
+                                    <th
+                                        class="px-6 py-3.5 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-right">
+                                        Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr *ngFor="let app of filteredApplications"
+                                    class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <p class="text-sm font-semibold text-slate-900">{{ app.candidateName }}</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-sm text-slate-700">{{ app.jobTitle }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                                            [ngClass]="getStageClasses(app.currentStage)">
+                                            <span class="size-1.5 rounded-full mr-2"
+                                                [ngClass]="getStageDotClasses(app.currentStage)"></span>
+                                            {{ stageLabels[app.currentStage] ?? 'Unknown' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                                            [ngClass]="getStatusClasses(app.appStatus)">
+                                            {{ statusLabels[app.appStatus] ?? 'Unknown' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <div class="flex items-center justify-end gap-2">
+                                            <button (click)="onView(app)" title="View Details"
+                                                class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-600/10 rounded-lg transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                            </button>
+                                            <button (click)="onDelete(app)" title="Delete"
+                                                class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div
+                        class="flex flex-col sm:flex-row items-center justify-between px-3.5 sm:px-6 py-3 sm:py-4 bg-slate-50 border-t border-slate-100 gap-2">
+                        <p class="text-[10px] sm:text-xs text-slate-500 font-medium order-2 sm:order-1">Showing 1 to 4
+                            of 124 results</p>
+                        <div class="flex items-center gap-1.5 sm:gap-2 order-1 sm:order-2">
+                            <button disabled
+                                class="p-1 border border-slate-200 rounded-lg hover:bg-white disabled:opacity-50 transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                            </button>
+                            <span class="text-[10px] sm:text-xs font-bold text-blue-600 px-1.5 sm:px-2">1</span>
+                            <span class="text-[10px] sm:text-xs font-medium text-slate-400 px-1.5 sm:px-2">2</span>
+                            <span class="text-[10px] sm:text-xs font-medium text-slate-400 px-1.5 sm:px-2">3</span>
+                            <button class="p-1 border border-slate-200 rounded-lg hover:bg-white transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

@@ -1,223 +1,250 @@
-<div class="flex h-full grow flex-col font-sans text-slate-900 min-h-screen bg-[#f8f6f6]">
+<div class="flex h-screen overflow-hidden bg-[#f8f6f6] font-sans text-slate-900">
 
-    <!-- Top Navigation Bar -->
-    <header
-        class="flex items-center justify-between whitespace-nowrap border-b border-slate-200 bg-white px-6 md:px-10 py-3 sticky top-0 z-50">
-        <div class="flex items-center gap-4">
-            <div class="text-[#0066FF] flex items-center justify-center">
-                <span class="material-symbols-outlined text-3xl">corporate_fare</span>
-            </div>
-            <h2 class="text-slate-900 text-lg font-bold leading-tight tracking-[-0.015em]">HR Portal</h2>
-        </div>
-        <button type="button" routerLink="/interview-management"
-            class="flex items-center gap-2 px-10 py-3 rounded-lg cursor-pointer bg-[#0066FF] text-white font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all">
+    <!-- ── Sidebar ── -->
+    <app-hr-sidebar></app-hr-sidebar>
 
-            <span class="material-symbols-outlined">west</span>
-            Back
-        </button>
-    </header>
+    <!-- ── Main Content ── -->
+    <main class="flex-1 flex flex-col overflow-hidden min-w-0">
 
-    <!-- Main Content -->
-    <main class="flex flex-1 justify-center py-10 px-4 md:px-0">
-        <div class="flex flex-col max-w-[800px] flex-1">
+        <!-- Top Navigation Bar -->
+        <header
+            class="h-14 sm:h-16 flex items-center justify-between border-b border-slate-200 bg-white px-3 sm:px-6 lg:px-10 py-2 sm:py-3 sticky top-0 z-50 shrink-0 gap-2">
+            <div class="flex items-center gap-2 sm:gap-4 min-w-0 flex-1">
+                <!-- Mobile Menu -->
+                <button (click)="toggleSidebar()"
+                    class="lg:hidden p-1.5 text-slate-500 hover:bg-slate-100 rounded-lg transition-colors -ml-0.5 flex-shrink-0">
+                    <span class="material-symbols-outlined" style="font-size:22px;">menu</span>
+                </button>
 
-            <!-- Page Header -->
-            <div class="flex flex-col gap-2 mb-8 px-4">
-                <h1 class="text-slate-900 text-3xl font-bold leading-tight">Schedule New Interview</h1>
-                <p class="text-slate-500 text-sm font-normal">Configure the details for the upcoming candidate
-                    evaluation session.</p>
+                <div class="text-[#0066FF] flex items-center justify-center flex-shrink-0">
+                    <span class="material-symbols-outlined text-2xl sm:text-3xl">corporate_fare</span>
+                </div>
+                <h2
+                    class="text-slate-900 text-sm sm:text-lg font-bold leading-tight tracking-[-0.015em] hidden sm:block truncate">
+                    HR Portal</h2>
             </div>
 
-            <!-- Form Card -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8">
-                <form (ngSubmit)="onSubmit()" #interviewForm="ngForm" class="space-y-6">
+            <button type="button" routerLink="/interview-management"
+                class="flex items-center gap-1.5 sm:gap-2 px-4 sm:px-10 py-2 sm:py-3 rounded-lg cursor-pointer bg-[#0066FF] text-white text-xs sm:text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all flex-shrink-0">
+                <span class="material-symbols-outlined text-lg sm:text-[20px]">west</span>
+                <span class="hidden xs:inline">Back</span>
+            </button>
+        </header>
 
-                    <!-- Candidate & Stage -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Application Process</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">person_search</span>
-                                <select name="applicationProccessId" [(ngModel)]="form.applicationProccessId"
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none appearance-none">
-                                    <option value="" disabled>Select application process...</option>
-                                    <option *ngFor="let app of applications" [value]="app.id">
-                                        {{ app.candidateName }} — Stage: {{ app.currentStage }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Stage Name</label>
-                            <select name="stageName" [(ngModel)]="form.stageName"
-                                class="w-full px-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none">
-                                <option [ngValue]="0">Initial Screening</option>
-                                <option [ngValue]="1">Technical Assessment</option>
-                                <option [ngValue]="2">Cultural Fit</option>
-                                <option [ngValue]="3">Final Management Round</option>
-                            </select>
-                        </div>
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto">
+            <div class="flex flex-col justify-center py-6 sm:py-10 px-4 sm:px-4 md:px-0">
+                <div class="flex flex-col max-w-[800px] flex-1 mx-auto w-full">
+
+                    <!-- Page Header -->
+                    <div class="flex flex-col gap-1.5 sm:gap-2 mb-5 sm:mb-8 px-0 sm:px-4">
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold leading-tight text-slate-900">Schedule New
+                            Interview</h1>
+                        <p class="text-slate-500 text-xs sm:text-sm font-normal">Configure the details for the upcoming
+                            candidate
+                            evaluation session.</p>
                     </div>
 
-                    <!-- Interviewer & Type -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Form Card -->
+                    <div class="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6 lg:p-8">
+                        <form (ngSubmit)="onSubmit()" #interviewForm="ngForm" class="space-y-4 sm:space-y-6">
 
-                        <!-- Interviewer Name -->
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Interviewer Name</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">badge</span>
-                                <input type="text" name="interviewer" [(ngModel)]="form.interviewer"
-                                    placeholder="Enter interviewer name"
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            <!-- Candidate & Stage -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Application
+                                        Process</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">person_search</span>
+                                        <select name="applicationProccessId" [(ngModel)]="form.applicationProccessId"
+                                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none appearance-none">
+                                            <option value="" disabled>Select application process...</option>
+                                            <option *ngFor="let app of applications" [value]="app.id">
+                                                {{ app.candidateName }} — Stage: {{ app.currentStage }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Stage Name</label>
+                                    <select name="stageName" [(ngModel)]="form.stageName"
+                                        class="w-full px-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none">
+                                        <option [ngValue]="0">Initial Screening</option>
+                                        <option [ngValue]="1">Technical Assessment</option>
+                                        <option [ngValue]="2">Cultural Fit</option>
+                                        <option [ngValue]="3">Final Management Round</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Interview Type -->
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Interview Type</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">category</span>
-                                <select name="interviewType" [(ngModel)]="form.interviewType"
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none">
-                                    <option [ngValue]="0">Video Call</option>
-                                    <option [ngValue]="1">In-Person</option>
-                                    <option [ngValue]="2">Phone Call</option>
-                                </select>
+                            <!-- Interviewer & Type -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Interviewer
+                                        Name</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">badge</span>
+                                        <input type="text" name="interviewer" [(ngModel)]="form.interviewer"
+                                            placeholder="Enter interviewer name"
+                                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Interview
+                                        Type</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">category</span>
+                                        <select name="interviewType" [(ngModel)]="form.interviewType"
+                                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none">
+                                            <option [ngValue]="0">Video Call</option>
+                                            <option [ngValue]="1">In-Person</option>
+                                            <option [ngValue]="2">Phone Call</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                    </div>
-
-                    <!-- Date & Time -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Date</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">calendar_today</span>
-                                <input type="date" name="date" [(ngModel)]="form.date"
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            <!-- Date & Time -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Date</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">calendar_today</span>
+                                        <input type="date" name="date" [(ngModel)]="form.date"
+                                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Time</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">schedule</span>
+                                        <input type="time" name="time" [(ngModel)]="form.time"
+                                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Time</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">schedule</span>
-                                <input type="time" name="time" [(ngModel)]="form.time"
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                            <!-- Work Preference & Location -->
+                            <div class="flex flex-col gap-3 sm:gap-4 py-3 sm:py-4 border-y border-slate-100">
+
+                                <div class="flex items-center justify-between gap-3">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700 flex-shrink-0">Work
+                                        Preference</label>
+                                    <div class="flex items-center bg-slate-100 p-1 rounded-lg flex-shrink-0">
+                                        <button type="button" (click)="setWorkPreference('OFFICE')"
+                                            [class]="workPreference() === 'OFFICE'
+                            ? 'px-3 sm:px-4 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all bg-white shadow-sm text-[#0066FF]'
+                            : 'px-3 sm:px-4 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all text-slate-500 hover:text-slate-700'">
+                                            OFFICE
+                                        </button>
+                                        <button type="button" (click)="setWorkPreference('REMOTE')"
+                                            [class]="workPreference() === 'REMOTE'
+                            ? 'px-3 sm:px-4 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all bg-white shadow-sm text-[#0066FF]'
+                            : 'px-3 sm:px-4 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all text-slate-500 hover:text-slate-700'">
+                                            REMOTE
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col gap-1.5 sm:gap-2">
+                                    <label class="text-xs sm:text-sm font-semibold text-slate-700">Location / Meeting
+                                        Link</label>
+                                    <div class="relative">
+                                        <span
+                                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                                            {{ workPreference() === 'OFFICE' ? 'location_on' : 'videocam' }}
+                                        </span>
+                                        <input type="text" name="location" [(ngModel)]="form.location"
+                                            [placeholder]="workPreference() === 'OFFICE' ? 'Office room or address' : 'Paste Zoom/Teams/Meet link'"
+                                            class="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Work Preference & Location -->
-                    <div class="flex flex-col gap-4 py-4 border-y border-slate-100">
+                            @if (successMessage) {
+                            <div
+                                class="p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg text-xs sm:text-sm text-green-800 flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-green-600 text-lg sm:text-[20px]">check_circle</span>
+                                {{ successMessage }}
+                            </div>
+                            }
+                            @if (errorMessage) {
+                            <div
+                                class="p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg text-xs sm:text-sm text-red-800 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-red-600 text-lg sm:text-[20px]">error</span>
+                                {{ errorMessage }}
+                            </div>
+                            }
 
-                        <div class="flex items-center justify-between">
-                            <label class="text-sm font-semibold text-slate-700">Work Preference</label>
-                            <div class="flex items-center bg-slate-100 p-1 rounded-lg">
-                                <button type="button" (click)="setWorkPreference('OFFICE')" [class]="workPreference() === 'OFFICE'
-                    ? 'px-4 py-1.5 rounded-md text-xs font-bold transition-all bg-white shadow-sm text-[#0066FF]'
-                    : 'px-4 py-1.5 rounded-md text-xs font-bold transition-all text-slate-500 hover:text-slate-700'">
-                                    OFFICE
+                            <!-- Action Buttons -->
+                            <div
+                                class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2.5 sm:gap-4 pt-3 sm:pt-4">
+                                <button type="button" (click)="onCancel()"
+                                    class="w-full sm:w-auto px-6 py-2.5 sm:py-3 rounded-lg text-slate-600 text-sm font-semibold hover:bg-slate-100 transition-all text-center">
+                                    Cancel
                                 </button>
-                                <button type="button" (click)="setWorkPreference('REMOTE')" [class]="workPreference() === 'REMOTE'
-                    ? 'px-4 py-1.5 rounded-md text-xs font-bold transition-all bg-white shadow-sm text-[#0066FF]'
-                    : 'px-4 py-1.5 rounded-md text-xs font-bold transition-all text-slate-500 hover:text-slate-700'">
-                                    REMOTE
+                                <button type="submit" [disabled]="isSubmitting"
+                                    class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 sm:px-10 py-2.5 sm:py-3 rounded-lg bg-[#0066FF] text-white text-sm font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60">
+                                    <span class="material-symbols-outlined text-lg sm:text-[20px]"
+                                        [class.animate-spin]="isSubmitting">
+                                        {{ isSubmitting ? 'progress_activity' : 'event' }}
+                                    </span>
+                                    {{ isSubmitting ? 'Saving…' : 'Schedule Interview' }}
                                 </button>
                             </div>
-                        </div>
 
-                        <div class="flex flex-col gap-2">
-                            <label class="text-sm font-semibold text-slate-700">Location / Meeting Link</label>
-                            <div class="relative">
-                                <span
-                                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                                    {{ workPreference() === 'OFFICE' ? 'location_on' : 'videocam' }}
-                                </span>
-                                <input type="text" name="location" [(ngModel)]="form.location"
-                                    [placeholder]="workPreference() === 'OFFICE' ? 'Office room number or address' : 'Paste Zoom/Teams/Meet link'"
-                                    class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-[#0066FF] focus:border-transparent transition-all outline-none" />
+                        </form>
+                    </div>
+
+                    <!-- Info Footer Tiles -->
+                    <div class="mt-5 sm:mt-8 px-0 sm:px-4 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 opacity-70">
+                        <div class="flex items-center gap-3 p-3 sm:p-4 bg-slate-100 rounded-lg">
+                            <span class="material-symbols-outlined text-[#0066FF] text-xl sm:text-[22px]">info</span>
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-500">
+                                    Automation</p>
+                                <p class="text-[11px] sm:text-xs font-medium truncate">Invites sent via email</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 sm:p-4 bg-slate-100 rounded-lg">
+                            <span
+                                class="material-symbols-outlined text-[#0066FF] text-xl sm:text-[22px]">event_repeat</span>
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-500">
+                                    Calendar Sync</p>
+                                <p class="text-[11px] sm:text-xs font-medium truncate">Synced with Outlook/Google</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 sm:p-4 bg-slate-100 rounded-lg">
+                            <span class="material-symbols-outlined text-[#0066FF] text-xl sm:text-[22px]">lock</span>
+                            <div class="flex flex-col min-w-0">
+                                <p class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold text-slate-500">
+                                    Visibility</p>
+                                <p class="text-[11px] sm:text-xs font-medium truncate">Private to HR & Interviewer</p>
                             </div>
                         </div>
                     </div>
 
-                    @if (successMessage) {
-                    <div
-                        class="p-4 bg-green-50 border border-green-200 rounded-lg text-sm text-green-800 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-green-600">check_circle</span>
-                        {{ successMessage }}
-                    </div>
-                    }
-                    @if (errorMessage) {
-                    <div
-                        class="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-red-600">error</span>
-                        {{ errorMessage }}
-                    </div>
-                    }
-
-                    <!-- Action Buttons -->
-                    <div class="flex items-center justify-end gap-4 pt-4">
-                        <button type="button" (click)="onCancel()"
-                            class="px-6 py-3 rounded-lg text-slate-600 font-semibold hover:bg-slate-100 transition-all">
-                            Cancel
-                        </button>
-                        <button type="submit" [disabled]="isSubmitting"
-                            class="flex items-center gap-2 px-10 py-3 rounded-lg bg-[#0066FF] text-white font-bold shadow-lg shadow-blue-200 hover:bg-blue-600 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-60">
-                            <span class="material-symbols-outlined" [class.animate-spin]="isSubmitting">
-                                {{ isSubmitting ? 'progress_activity' : 'event' }}
-                            </span>
-                            {{ isSubmitting ? 'Saving…' : 'Schedule Interview' }}
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- Info Footer Tiles -->
-            <div class="mt-8 px-4 grid grid-cols-1 md:grid-cols-3 gap-4 opacity-70">
-                <div class="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                    <span class="material-symbols-outlined text-[#0066FF]">info</span>
-                    <div class="flex flex-col">
-                        <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Automation</p>
-                        <p class="text-xs font-medium">Invites will be sent via email</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                    <span class="material-symbols-outlined text-[#0066FF]">event_repeat</span>
-                    <div class="flex flex-col">
-                        <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Calendar Sync</p>
-                        <p class="text-xs font-medium">Synced with Outlook/Google</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3 p-4 bg-slate-100 rounded-lg">
-                    <span class="material-symbols-outlined text-[#0066FF]">lock</span>
-                    <div class="flex flex-col">
-                        <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Visibility</p>
-                        <p class="text-xs font-medium">Private to HR &amp; Interviewer</p>
-                    </div>
                 </div>
             </div>
-
         </div>
+
+        <!-- Footer -->
+        <footer
+            class="border-t border-slate-200 py-4 sm:py-6 px-4 sm:px-10 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4 text-slate-500 text-[10px] sm:text-xs shrink-0">
+            <p>© 2023 Enterprise HR Management System</p>
+            <div class="flex gap-4 sm:gap-6">
+                <a href="#" class="hover:text-[#0066FF] transition-colors">Help Center</a>
+                <a href="#" class="hover:text-[#0066FF] transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-[#0066FF] transition-colors">Terms of Service</a>
+            </div>
+        </footer>
+
     </main>
-
-    <!-- Footer -->
-    <footer
-        class="mt-auto border-t border-slate-200 py-6 px-10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-xs">
-        <p>© 2023 Enterprise HR Management System</p>
-        <div class="flex gap-6">
-            <a href="#" class="hover:text-[#0066FF] transition-colors">Help Center</a>
-            <a href="#" class="hover:text-[#0066FF] transition-colors">Privacy Policy</a>
-            <a href="#" class="hover:text-[#0066FF] transition-colors">Terms of Service</a>
-        </div>
-    </footer>
-
 </div>

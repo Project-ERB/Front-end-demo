@@ -41,10 +41,7 @@ export class CandidateManagementComponent {
   }
 
   toggleSidebar() {
-    const sidebar = document.querySelector('.hr-sidebar') as HTMLElement;
-    if (sidebar) {
-      sidebar.classList.toggle('open');
-    }
+    // حسب طريقة السايدبار عندك
   }
 
   // ── State ──────────────────────────────────────────────────────────────────

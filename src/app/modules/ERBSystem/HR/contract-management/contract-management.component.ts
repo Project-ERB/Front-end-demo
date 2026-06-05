@@ -15,6 +15,16 @@ import { EmployeeService } from '../../../../core/services/employee/employee.ser
 export class ContractManagementComponent implements OnInit {
   private readonly _appService = inject(ApplicationsService);
 
+  showMobileSearch = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    // حسب طريقة السايدبار عندك
+  }
+
   searchQuery = '';
   activeFilter: string | 'All' = 'All';
 

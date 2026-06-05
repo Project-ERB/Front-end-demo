@@ -31,6 +31,16 @@ export class ApplicationManagementComponent implements OnInit {
   private readonly _candidateService = inject(CandidateService);
   private readonly _jobService = inject(JopService);
 
+  showMobileSearch = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    // حسب طريقة السايدبار عندك
+  }
+
   activeFilter = 'all';
   applications: Application[] = [];
 

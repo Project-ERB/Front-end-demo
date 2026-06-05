@@ -30,7 +30,17 @@ export interface Interview {
 export class InterviewManagementComponent implements OnInit {
   private readonly _http = inject(HttpClient);
   private readonly _applicationsService = inject(ApplicationsService);
-  private readonly _ToastrService = inject(ToastrService)
+  private readonly _ToastrService = inject(ToastrService);
+
+  showMobileSearch = false;
+
+  toggleMobileSearch() {
+    this.showMobileSearch = !this.showMobileSearch;
+  }
+
+  toggleSidebar() {
+    // حسب طريقة السايدبار عندك
+  }
 
   searchQuery = '';
   activeFilter = signal<FilterTab>('All Interviews');
