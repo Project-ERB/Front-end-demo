@@ -131,8 +131,7 @@ export class ApplicationsService {
 
   deleteInterview(id: string) {
     return this._HttpClient.delete(
-      `${Environment.baseUrl}/api/interviews/delete`,
-      { body: { id } }
+      `${Environment.baseUrl}/api/interviews/delete?id=${id}`
     );
   }
 
@@ -164,9 +163,10 @@ export class ApplicationsService {
     );
   }
 
+  // ✅ الصح
   deleteContract(id: string) {
     return this._HttpClient.delete(
-      `${Environment.baseUrl}/api/contracts/add`,
+      `${Environment.baseUrl}/api/contracts/Delete`,
       { params: { id } }
     );
   }

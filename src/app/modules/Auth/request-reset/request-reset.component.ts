@@ -27,7 +27,7 @@ export class RequestResetComponent implements OnInit {
   private readonly _activatedRoute = inject(ActivatedRoute);
 
   isLoading: WritableSignal<boolean> = signal(false);
-  isLinkSent: WritableSignal<boolean> = signal(false);
+  // isLinkSent مش هنعملها signal عشان هننتقل تاني على طول
 
   private userEmail: string = '';
 
@@ -36,7 +36,6 @@ export class RequestResetComponent implements OnInit {
   });
 
   ngOnInit() {
-    // ملء الإيميل أوتوماتيكياً لو جاي من صفحة التحقق
     this._activatedRoute.queryParams.subscribe(params => {
       this.userEmail = params['email'] || '';
       if (this.userEmail) {
@@ -54,8 +53,10 @@ export class RequestResetComponent implements OnInit {
     this._authService.ForgotPassword(email).subscribe({
       next: () => {
         this.isLoading.set(false);
-        this.isLinkSent.set(true);
-        this._toastr.success('Reset link sent to your email!', 'Success');
+        this._toastr.success('If this email exists, a reset link has been sent.', 'Check Your Inbox 📧');
+
+        // ✅ التعديل هنا: التوجيه لصفحة "تفقد إيميلك"
+        this._router.navigate(['/email-confirmed']);
       },
       error: (err) => {
         this.isLoading.set(false);

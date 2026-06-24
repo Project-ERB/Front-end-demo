@@ -1,3 +1,43 @@
+<div class="absolute top-6 left-6 z-50">
+    <a
+        class="flex items-center gap-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/50 dark:border-gray-700/50 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+
+        <svg width="170" height="32" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+            <!-- رسم عربة التسوق (Cart) -->
+            <path d="M 5 14 L 9 29 L 31 29 L 35 14" fill="none" stroke="#2463eb" stroke-width="2.5"
+                stroke-linejoin="round" stroke-linecap="round" />
+            <path d="M 11 14 C 11 4 29 4 31 14" fill="none" stroke="#2463eb" stroke-width="2.5"
+                stroke-linecap="round" />
+            <circle cx="14" cy="33" r="2" fill="#2463eb" />
+            <circle cx="26" cy="33" r="2" fill="#2463eb" />
+
+            <!-- رسم الـ Stack (المربعات داخل العربة) -->
+            <rect x="13" y="21" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.9" />
+            <rect x="19" y="14" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.5" />
+
+            <!-- كلمة Commerce -->
+            <text x="45" y="27" font-family="Inter, system-ui, sans-serif" font-size="19" font-weight="500"
+                fill="#334155">
+                Commerce
+            </text>
+
+            <!-- كلمة Stack (زودت المسافة بزيادة الـ x ليكون 148 بدل 140) -->
+            <text x="148" y="27" font-family="Inter, system-ui, sans-serif" font-size="19" font-weight="800"
+                fill="url(#cartStackGrad)">
+                Stack
+            </text>
+
+            <defs>
+                <linearGradient id="cartStackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#2463eb" />
+                    <stop offset="100%" stop-color="#6366f1" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+    </a>
+</div>
+
 <div
     class="auth-photo-bg relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden p-4 font-display text-slate-800 dark:text-slate-200">
 
@@ -20,8 +60,7 @@
                     </div>
                 </div>
 
-                @if (!isLinkSent()) {
-                <!-- حالة طلب اللينك -->
+                <!-- شلنا الـ if وبقينا على حالة طلب اللينك بس -->
                 <span
                     class="mx-auto w-fit rounded-full bg-green-100 px-3 py-1 text-xs font-semibold tracking-wide text-green-700">
                     Account Verified
@@ -32,23 +71,9 @@
                 <p class="text-base text-slate-500 dark:text-slate-400">
                     Your email is verified! Enter your email to receive a link to set your new password.
                 </p>
-                } @else {
-                <!-- حالة لما اللينك يتبعت -->
-                <span
-                    class="mx-auto w-fit rounded-full bg-[#2463eb]/10 px-3 py-1 text-xs font-semibold tracking-wide text-[#2463eb]">
-                    Check Your Inbox
-                </span>
-                <h1 class="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                    Link Sent!
-                </h1>
-                <p class="text-base text-slate-500 dark:text-slate-400">
-                    We've sent a password reset link to <span class="font-semibold text-slate-800 dark:text-white">{{
-                        requestForm.value.email }}</span>
-                </p>
-                }
             </div>
 
-            @if (!isLinkSent()) {
+            <!-- شلنا الـ if وبقينا على الفورم بس -->
             <form [formGroup]="requestForm" (ngSubmit)="onRequestLink()" class="flex w-full flex-col gap-6">
                 <label class="flex flex-col gap-2">
                     <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Email Address</span>
@@ -77,15 +102,6 @@
                     }
                 </button>
             </form>
-            } @else {
-            <div class="flex flex-col gap-4">
-                <div
-                    class="rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">mark_email_read</span>
-                    Please check your inbox and spam folder.
-                </div>
-            </div>
-            }
         </div>
 
         <button (click)="ToLogin()"

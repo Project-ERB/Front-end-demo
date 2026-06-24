@@ -1,3 +1,41 @@
+<div class="absolute top-6 left-6 z-50">
+  <a
+    class="flex items-center gap-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md rounded-2xl px-5 py-3 border border-white/50 dark:border-gray-700/50 shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105">
+
+    <svg width="170" height="32" viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg">
+      <!-- رسم عربة التسوق (Cart) -->
+      <path d="M 5 14 L 9 29 L 31 29 L 35 14" fill="none" stroke="#2463eb" stroke-width="2.5" stroke-linejoin="round"
+        stroke-linecap="round" />
+      <path d="M 11 14 C 11 4 29 4 31 14" fill="none" stroke="#2463eb" stroke-width="2.5" stroke-linecap="round" />
+      <circle cx="14" cy="33" r="2" fill="#2463eb" />
+      <circle cx="26" cy="33" r="2" fill="#2463eb" />
+
+      <!-- رسم الـ Stack (المربعات داخل العربة) -->
+      <rect x="13" y="21" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.9" />
+      <rect x="19" y="14" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.5" />
+
+      <!-- كلمة Commerce -->
+      <text x="45" y="27" font-family="Inter, system-ui, sans-serif" font-size="19" font-weight="500" fill="#334155">
+        Commerce
+      </text>
+
+      <!-- كلمة Stack (زودت المسافة بزيادة الـ x ليكون 148 بدل 140) -->
+      <text x="148" y="27" font-family="Inter, system-ui, sans-serif" font-size="19" font-weight="800"
+        fill="url(#cartStackGrad)">
+        Stack
+      </text>
+
+      <defs>
+        <linearGradient id="cartStackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#2463eb" />
+          <stop offset="100%" stop-color="#6366f1" />
+        </linearGradient>
+      </defs>
+    </svg>
+
+  </a>
+</div>
+
 <main
   class="relative flex flex-1 justify-center items-center p-4 sm:p-6 lg:p-8 min-h-screen bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-950 font-display overflow-hidden">
   <div
@@ -27,11 +65,11 @@
       <div class="flex flex-col justify-center p-8 sm:p-12 lg:p-16">
 
         <!-- ── Step 1: Register Form ── -->
-        @if (currentStep() === 1) {
-        <form @stepTransition [formGroup]="registerForm" (ngSubmit)="onSubmit()"
-          class="flex flex-col gap-8 w-full max-w-md mx-auto">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-8 w-full max-w-md mx-auto">
+
           <div class="flex flex-col gap-3 text-center lg:text-left">
-            <span class="inline-flex w-fit px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-main/10 text-main">Create
+            <span
+              class="inline-flex w-fit px-3 py-1 rounded-full text-xs font-semibold tracking-wide bg-main/10 text-main">Create
               account</span>
             <h1 class="text-3xl sm:text-4xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
               Create Your Account
@@ -42,42 +80,140 @@
           </div>
 
           <div class="flex flex-col gap-4">
+
+            <!-- Name Field -->
             <label class="flex flex-col">
               <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Name</span>
               <input formControlName="name" type="text" placeholder="Enter your name"
+                [class.border-red-500]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+                [class.focus:ring-red-500/20]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+                [class.dark:border-red-500]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
                 class="w-full rounded-xl border-gray-300 border dark:border-gray-600 dark:bg-gray-700/80 dark:text-white focus:ring-4 focus:ring-main/20 focus:border-main h-12 p-3 transition-all duration-300 hover:border-main/60 hover:-translate-y-0.5" />
+              @if (nameErrors) {
+              <p class="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">error</span>
+                {{ nameErrors }}
+              </p>
+              }
             </label>
 
+            <!-- Phone Field -->
             <label class="flex flex-col">
               <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Phone Number</span>
-              <input formControlName="phoneNumber" type="tel" placeholder="Enter your phone number"
+              <input formControlName="phoneNumber" type="tel" placeholder="01xxxxxxxxx"
+                [class.border-red-500]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched"
+                [class.focus:ring-red-500/20]="registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched"
                 class="w-full rounded-xl border-gray-300 border dark:border-gray-600 dark:bg-gray-700/80 dark:text-white focus:ring-4 focus:ring-main/20 focus:border-main h-12 p-3 transition-all duration-300 hover:border-main/60 hover:-translate-y-0.5" />
+              @if (phoneErrors) {
+              <p class="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">error</span>
+                {{ phoneErrors }}
+              </p>
+              }
             </label>
 
+            <!-- Email Field -->
             <label class="flex flex-col">
               <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Email</span>
-              <input formControlName="email" type="email" placeholder="Enter your email"
+              <input formControlName="email" type="email" placeholder="example@email.com"
+                [class.border-red-500]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+                [class.focus:ring-red-500/20]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
                 class="w-full rounded-xl border-gray-300 border dark:border-gray-600 dark:bg-gray-700/80 dark:text-white focus:ring-4 focus:ring-main/20 focus:border-main h-12 p-3 transition-all duration-300 hover:border-main/60 hover:-translate-y-0.5" />
+              @if (emailErrors) {
+              <p class="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">error</span>
+                {{ emailErrors }}
+              </p>
+              }
             </label>
 
+            <!-- Password Field -->
             <label class="flex flex-col">
               <span class="pb-2 text-sm font-medium text-gray-900 dark:text-gray-200">Password</span>
               <div class="flex relative">
                 <input [type]="showPassword() ? 'text' : 'password'" formControlName="password"
                   placeholder="Enter your password"
+                  [class.border-red-500]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+                  [class.focus:ring-red-500/20]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
                   class="w-full rounded-xl border-gray-300 border dark:border-gray-600 dark:bg-gray-700/80 dark:text-white focus:ring-4 focus:ring-main/20 focus:border-main h-12 p-3 pr-12 transition-all duration-300 hover:border-main/60 hover:-translate-y-0.5" />
                 <button type="button" (click)="togglePassword()"
                   class="absolute right-3 top-3 text-gray-400 hover:text-main transition-colors">
                   <span class="material-symbols-outlined">{{ showPassword() ? 'visibility_off' : 'visibility' }}</span>
                 </button>
               </div>
-              <p class="text-xs text-gray-500 mt-1.5">Must be at least 8 characters long.</p>
+              @if (passwordErrors) {
+              <p class="text-xs text-red-500 mt-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">error</span>
+                {{ passwordErrors }}
+              </p>
+              }
+              <!-- Password Requirements Hint -->
+              <div
+                class="mt-2 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600">
+                <p class="text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">Password requirements:</p>
+                <div class="grid grid-cols-2 gap-1">
+                  <span class="text-xs flex items-center gap-1" [class.text-green-600]="hasMinLength()"
+                    [class.text-gray-400]="!hasMinLength()">
+                    <span class="material-symbols-outlined text-sm">{{ hasMinLength() ? 'check_circle' :
+                      'radio_button_unchecked' }}</span>
+                    8+ characters
+                  </span>
+                  <span class="text-xs flex items-center gap-1" [class.text-green-600]="hasUppercase()"
+                    [class.text-gray-400]="!hasUppercase()">
+                    <span class="material-symbols-outlined text-sm">{{ hasUppercase() ? 'check_circle' :
+                      'radio_button_unchecked' }}</span>
+                    Uppercase
+                  </span>
+                  <span class="text-xs flex items-center gap-1" [class.text-green-600]="hasLowercase()"
+                    [class.text-gray-400]="!hasLowercase()">
+                    <span class="material-symbols-outlined text-sm">{{ hasLowercase() ? 'check_circle' :
+                      'radio_button_unchecked' }}</span>
+                    Lowercase
+                  </span>
+                  <span class="text-xs flex items-center gap-1" [class.text-green-600]="hasNumber()"
+                    [class.text-gray-400]="!hasNumber()">
+                    <span class="material-symbols-outlined text-sm">{{ hasNumber() ? 'check_circle' :
+                      'radio_button_unchecked' }}</span>
+                    Number
+                  </span>
+                  <span class="text-xs flex items-center gap-1 col-span-2" [class.text-green-600]="hasSpecialChar()"
+                    [class.text-gray-400]="!hasSpecialChar()">
+                    <span class="material-symbols-outlined text-sm">{{ hasSpecialChar() ? 'check_circle' :
+                      'radio_button_unchecked' }}</span>
+                    Special character (!@#$%^&*)
+                  </span>
+                </div>
+              </div>
             </label>
           </div>
 
+          <!-- Password Strength Bar -->
+          @if (registerForm.get('password')?.value) {
+          <div class="flex flex-col gap-2">
+            <div class="flex gap-1 h-1.5">
+              @for (i of [1,2,3,4,5]; track i) {
+              <div class="flex-1 rounded-full transition-all duration-300" [class]="passwordStrength() >= i * 20 ? 
+          (passwordStrength() <= 40 ? 'bg-red-500' : 
+           passwordStrength() <= 60 ? 'bg-yellow-500' : 
+           passwordStrength() <= 80 ? 'bg-blue-500' : 'bg-green-500') 
+          : 'bg-gray-200 dark:bg-gray-600'">
+              </div>
+              }
+            </div>
+            <p class="text-xs text-right" [class.text-red-500]="passwordStrength() <= 40"
+              [class.text-yellow-500]="passwordStrength() > 40 && passwordStrength() <= 60"
+              [class.text-blue-500]="passwordStrength() > 60 && passwordStrength() <= 80"
+              [class.text-green-500]="passwordStrength() > 80">
+              @switch (true) {
+              @case (passwordStrength() <= 40) { Weak } @case (passwordStrength() <=60) { Fair } @case
+                (passwordStrength() <=80) { Good } @default { Strong } } </p>
+          </div>
+          }
+
           <div class="flex flex-col gap-4">
             @if (errorMessages().length > 0) {
-            <ul class="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3 flex flex-col gap-1">
+            <ul
+              class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex flex-col gap-1">
               @for (msg of errorMessages(); track msg) {
               <li class="flex items-start gap-2"><span class="mt-0.5">•</span><span>{{ msg }}</span></li>
               }
@@ -85,84 +221,25 @@
             }
             <button type="submit" [disabled]="registerForm.invalid || isLoading()"
               class="h-12 w-full bg-gradient-to-r from-main to-indigo-500 hover:from-hover-main hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-main/30 hover:-translate-y-0.5">
-              {{ isLoading() ? 'Creating Account...' : 'Create Account' }}
+              @if (isLoading()) {
+              <span class="flex items-center justify-center gap-2">
+                <svg class="h-5 w-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                Creating Account...
+              </span>
+              } @else {
+              Create Account
+              }
             </button>
           </div>
 
           <p class="text-sm text-center text-gray-500 dark:text-gray-300">
             Already have an account?
-            <span class="font-semibold text hover:underline cursor-pointer" (click)="ToLogin()">Log In</span>
+            <span class="font-semibold text-main hover:underline cursor-pointer" (click)="ToLogin()">Log In</span>
           </p>
         </form>
-        }
-
-        <!-- ── Step 2: OTP Verification ── -->
-        @if (currentStep() === 2) {
-        <div @stepTransition class="flex flex-col gap-8 w-full max-w-md mx-auto">
-          <div class="flex flex-col items-center gap-3 text-center">
-            <div class="p-3 bg-main/10 rounded-full animate-pulse">
-              <svg class="h-8 w-8 text-main" fill="currentColor" viewBox="0 0 24 24">
-                <path
-                  d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z" />
-              </svg>
-            </div>
-            <h1 class="text-3xl font-black leading-tight tracking-tight text-gray-900 dark:text-white">
-              Check your email
-            </h1>
-            <p class="text-base text-gray-500 dark:text-gray-300">
-              We've sent a 6-digit code to
-              <span class="font-medium text-gray-900 dark:text-white">{{ registerForm.value.email }}</span>
-            </p>
-          </div>
-
-          <!-- OTP Inputs -->
-          <div class="flex gap-2 sm:gap-3 justify-center w-full">
-            @for (control of otpControls; track $index) {
-            <label [for]="'otpInput' + $index" class="sr-only">Digit {{ $index + 1 }}</label>
-            <input #otpInput [id]="'otpInput' + $index" type="text" inputmode="numeric" maxlength="1"
-              autocomplete="one-time-code" [formControl]="control" (input)="onInput($event, $index)"
-              (keydown)="onKeyDown($event, $index)"
-              class="flex h-14 w-full text-center text-xl font-semibold focus:outline-none focus:ring-4 focus:ring-main/25 bg-slate-50 dark:bg-gray-700 border border-slate-300 dark:border-gray-600 rounded-xl text-slate-900 dark:text-white transition-all duration-200 hover:border-main/60 focus:border-main" />
-            }
-          </div>
-
-          <div class="flex flex-col gap-4">
-            @if (errorMessages().length > 0) {
-            <ul class="text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg p-3 flex flex-col gap-1">
-              @for (msg of errorMessages(); track msg) {
-              <li class="flex items-start gap-2"><span class="mt-0.5">•</span><span>{{ msg }}</span></li>
-              }
-            </ul>
-            }
-            @if (successMessage()) {
-            <p class="text-sm text-green-600 text-center">{{ successMessage() }}</p>
-            }
-
-            <button (click)="onVerify()" [disabled]="otpForm.invalid || isLoading()"
-              class="h-12 w-full bg-gradient-to-r from-main to-indigo-500 hover:from-hover-main hover:to-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl transition-all duration-300 cursor-pointer hover:shadow-lg hover:shadow-main/30 hover:-translate-y-0.5">
-              {{ isLoading() ? 'Verifying...' : 'Verify Account' }}
-            </button>
-          </div>
-
-          <div class="flex flex-col items-center gap-3">
-            <p class="text-sm text-gray-500 dark:text-gray-300">
-              Didn't receive the code?
-              @if (resendCooldown() > 0) {
-              <span class="text-gray-400">Resend in {{ resendCooldown() }}s</span>
-              } @else {
-              <button (click)="onResend()" [disabled]="isResending()"
-                class="font-semibold text-main hover:underline disabled:opacity-50 cursor-pointer bg-transparent border-none">
-                {{ isResending() ? 'Sending...' : 'Resend code' }}
-              </button>
-              }
-            </p>
-            <button (click)="goBackToRegister()"
-              class="text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex items-center gap-1 cursor-pointer bg-transparent border-none">
-              ← Back to register
-            </button>
-          </div>
-        </div>
-        }
 
       </div>
     </div>

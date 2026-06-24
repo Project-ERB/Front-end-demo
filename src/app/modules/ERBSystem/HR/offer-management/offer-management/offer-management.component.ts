@@ -149,21 +149,32 @@ export class OfferManagementComponent implements OnInit {
   }
 
   acceptOffer(offer: ApplicationOffer): void {
+    if (this.isExpired(offer.expireDate)) {
+      alert('Cannot accept an expired offer.');
+      return;
+    }
+
     this._appService.acceptOffer(offer.id).subscribe({
-      next: () => {
-        offer.offerStatus = 2; // Accepted
-      },
+      next: () => offer.offerStatus = 2,
       error: (err) => console.error('Error accepting offer:', err),
     });
   }
 
   rejectOffer(offer: ApplicationOffer): void {
+    if (this.isExpired(offer.expireDate)) {
+      alert('Cannot reject an expired offer.');
+      return;
+    }
+
     this._appService.rejectOffer(offer.id).subscribe({
-      next: () => {
-        offer.offerStatus = 3; // Rejected
-      },
+      next: () => offer.offerStatus = 3,
       error: (err) => console.error('Error rejecting offer:', err),
     });
+  }
+
+  // helper
+  isExpired(expireDate: string): boolean {
+    return new Date(expireDate) < new Date();
   }
 
   interviewerMap: Record<string, string> = {};

@@ -1,8 +1,9 @@
 import { AuthService } from './../../../core/services/Auth/auth.service';
-import { Component, ElementRef, inject, QueryList, signal, ViewChildren, WritableSignal } from '@angular/core';
-import { FormBuilder, FormArray, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -16,64 +17,126 @@ import { animate, style, transition, trigger } from '@angular/animations';
         animate('600ms ease-out', style({ opacity: 1, transform: 'translateX(0) scale(1)' })),
       ]),
     ]),
-    trigger('stepTransition', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(16px) scale(0.98)' }),
-        animate('380ms cubic-bezier(0.22, 1, 0.36, 1)', style({ opacity: 1, transform: 'translateY(0) scale(1)' })),
-      ]),
-      transition(':leave', [
-        animate('220ms ease-in', style({ opacity: 0, transform: 'translateY(-10px) scale(0.98)' })),
-      ]),
-    ]),
+    // ✅ شلت stepTransition خالص
   ],
 })
 export class RegisterComponent {
-  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
-
+  // ✅ شلت الـ ViewChildren بتاعة الـ OTP
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _router = inject(Router);
   private readonly _authService = inject(AuthService);
+  private readonly _toastr = inject(ToastrService);
 
-  // Steps: 1 = register form, 2 = OTP
-  currentStep: WritableSignal<number> = signal(1);
-
+  // ✅ شلت currentStep
   showPassword: WritableSignal<boolean> = signal(false);
   isLoading: WritableSignal<boolean> = signal(false);
-  isResending: WritableSignal<boolean> = signal(false);
   errorMessages: WritableSignal<string[]> = signal([]);
-  successMessage: WritableSignal<string> = signal('');
-  resendCooldown: WritableSignal<number> = signal(0);
-  private cooldownInterval: any;
+
+  // ✅ شلت الـ variables بتاعة الـ OTP (isResending, successMessage, resendCooldown, cooldownInterval)
 
   // Step 1 - Register Form
   registerForm: FormGroup = this._FormBuilder.group({
-    name: ['', [Validators.required, Validators.minLength(3)]],
-    email: ['', [Validators.required, Validators.email]],
-    phoneNumber: ['', [Validators.required]],
-    password: [null, [
+    name: ['', [
       Validators.required,
+      Validators.minLength(3),
+      Validators.maxLength(50),
+      Validators.pattern(/^[a-zA-Z\u0600-\u06FF\s]+$/)
+    ]],
+    email: ['', [
+      Validators.required,
+      Validators.email,
+      Validators.pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
+    ]],
+    phoneNumber: ['', [
+      Validators.required,
+      Validators.pattern(/^01[0-2,5]{1}[0-9]{8}$/)
+    ]],
+    password: ['', [
+      Validators.required,
+      Validators.minLength(8),
+      Validators.maxLength(100),
       Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^a-zA-Z0-9]).{8,}$/)
     ]],
   });
 
-  // Step 2 - OTP Form
-  otpForm = new FormArray(
-    Array(6).fill(0).map(() =>
-      new FormControl('', [Validators.required, Validators.pattern('^[0-9]$')])
-    )
-  );
+  // Validation Errors
+  get nameErrors(): string {
+    const control = this.registerForm.get('name');
+    if (control?.errors && control?.touched) {
+      if (control.errors['required']) return 'Name is required';
+      if (control.errors['minlength']) return 'Name must be at least 3 characters';
+      if (control.errors['maxlength']) return 'Name must not exceed 50 characters';
+      if (control.errors['pattern']) return 'Name should contain letters only';
+    }
+    return '';
+  }
 
-  get otpControls() {
-    return this.otpForm.controls as FormControl[];
+  get emailErrors(): string {
+    const control = this.registerForm.get('email');
+    if (control?.errors && control?.touched) {
+      if (control.errors['required']) return 'Email is required';
+      if (control.errors['email'] || control.errors['pattern']) return 'Please enter a valid email';
+    }
+    return '';
+  }
+
+  get phoneErrors(): string {
+    const control = this.registerForm.get('phoneNumber');
+    if (control?.errors && control?.touched) {
+      if (control.errors['required']) return 'Phone number is required';
+      if (control.errors['pattern']) return 'Enter a valid Egyptian number (01xxxxxxxxx)';
+    }
+    return '';
+  }
+
+  get passwordErrors(): string {
+    const control = this.registerForm.get('password');
+    if (control?.errors && control?.touched) {
+      if (control.errors['required']) return 'Password is required';
+      if (control.errors['minlength']) return 'Password must be at least 8 characters';
+      if (control.errors['pattern']) return 'Must include: uppercase, lowercase, number & special character';
+    }
+    return '';
+  }
+
+  // Password strength indicators
+  hasMinLength(): boolean {
+    return (this.registerForm.get('password')?.value || '').length >= 8;
+  }
+  hasUppercase(): boolean {
+    return /[A-Z]/.test(this.registerForm.get('password')?.value || '');
+  }
+  hasLowercase(): boolean {
+    return /[a-z]/.test(this.registerForm.get('password')?.value || '');
+  }
+  hasNumber(): boolean {
+    return /\d/.test(this.registerForm.get('password')?.value || '');
+  }
+  hasSpecialChar(): boolean {
+    return /[^a-zA-Z0-9]/.test(this.registerForm.get('password')?.value || '');
+  }
+
+  passwordStrength(): number {
+    let strength = 0;
+    if (this.hasMinLength()) strength += 20;
+    if (this.hasUppercase()) strength += 20;
+    if (this.hasLowercase()) strength += 20;
+    if (this.hasNumber()) strength += 20;
+    if (this.hasSpecialChar()) strength += 20;
+    return strength;
   }
 
   togglePassword() {
     this.showPassword.set(!this.showPassword());
   }
 
-  // ─── Step 1: Register ───────────────────────────────
   onSubmit() {
-    if (this.registerForm.invalid) return;
+    this.registerForm.markAllAsTouched();
+
+    if (this.registerForm.invalid) {
+      this._toastr.warning('Please fill all required fields correctly', 'Validation Error');
+      return;
+    }
 
     this.isLoading.set(true);
     this.errorMessages.set([]);
@@ -81,120 +144,28 @@ export class RegisterComponent {
     const { name, email, password, phoneNumber } = this.registerForm.value;
 
     this._authService.RegisterCustomer({ name, email, password, phoneNumber }).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.isLoading.set(false);
+        const msg = response?.message || response?.data?.message || 'Account created! Check your email to verify.';
+        this._toastr.success(msg, 'Welcome! 🎉');
         this._router.navigate(['/email-confirmed']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading.set(false);
-        if (Array.isArray(err?.error)) {
-          this.errorMessages.set(err.error.map((e: any) => e.message));
-        } else {
-          this.errorMessages.set([err?.error?.message || 'Registration failed. Please try again.']);
+        const errors = err?.error?.errors || [err?.error?.message || 'Registration failed.'];
+        this._toastr.error(errors[0] || 'Registration failed.', 'Error', { timeOut: 5000 });
+        if (errors.length > 1) {
+          this.errorMessages.set(errors);
         }
       },
     });
   }
 
-  // ─── Step 2: OTP ────────────────────────────────────
-  onInput(event: any, index: number) {
-    const value = event.target.value;
-    if (value.length > 1) {
-      const digits = value.replace(/\D/g, '').slice(0, 6).split('');
-      digits.forEach((digit: string, i: number) => {
-        if (this.otpForm.at(index + i)) {
-          this.otpForm.at(index + i).setValue(digit);
-        }
-      });
-      const nextIndex = Math.min(index + digits.length, 5);
-      this.otpInputs.toArray()[nextIndex]?.nativeElement.focus();
-      return;
-    }
-    if (value && index < 5) {
-      this.otpInputs.toArray()[index + 1].nativeElement.focus();
-    }
-  }
-
-  onKeyDown(event: KeyboardEvent, index: number) {
-    if (event.key === 'Backspace' && !this.otpForm.at(index).value && index > 0) {
-      this.otpInputs.toArray()[index - 1].nativeElement.focus();
-    } else if (event.key === 'ArrowLeft' && index > 0) {
-      this.otpInputs.toArray()[index - 1].nativeElement.focus();
-    } else if (event.key === 'ArrowRight' && index < 5) {
-      this.otpInputs.toArray()[index + 1].nativeElement.focus();
-    }
-  }
-
-  onVerify() {
-    if (this.otpForm.invalid) return;
-
-    this.isLoading.set(true);
-    this.errorMessages.set([]);
-
-    const otp = Number(this.otpForm.value.join(''));
-    const email = this.registerForm.value.email;
-
-    this._authService.VerifyCustomerEmail({ otp, email }).subscribe({
-      next: () => {
-        this.isLoading.set(false);
-        this._router.navigate(['/login']);
-      },
-      error: (err) => {
-        this.isLoading.set(false);
-        this.errorMessages.set([err?.error?.message || 'Invalid code. Please try again.']);
-        this.otpForm.reset();
-        this.otpInputs.toArray()[0]?.nativeElement.focus();
-      },
-    });
-  }
-
-  onResend() {
-    if (this.resendCooldown() > 0 || this.isResending()) return;
-
-    this.isResending.set(true);
-    this.errorMessages.set([]);
-
-    const email = this.registerForm.value.email;
-
-    this._authService.ResendVerificationCode(email).subscribe({
-      next: () => {
-        this.isResending.set(false);
-        this.successMessage.set('Code resent successfully!');
-        this.startResendCooldown();
-        setTimeout(() => this.successMessage.set(''), 3000);
-      },
-      error: (err) => {
-        this.isResending.set(false);
-        this.errorMessages.set([err?.error?.message || 'Failed to resend code.']);
-      },
-    });
-  }
-
-  startResendCooldown(seconds = 60) {
-    this.resendCooldown.set(seconds);
-    clearInterval(this.cooldownInterval);
-    this.cooldownInterval = setInterval(() => {
-      const current = this.resendCooldown();
-      if (current <= 1) {
-        this.resendCooldown.set(0);
-        clearInterval(this.cooldownInterval);
-      } else {
-        this.resendCooldown.set(current - 1);
-      }
-    }, 1000);
-  }
-
-  goBackToRegister() {
-    this.currentStep.set(1);
-    this.otpForm.reset();
-    this.errorMessages.set([]);
-  }
+  // ✅ شلت كل دوال الـ OTP (onInput, onKeyDown, onVerify, onResend, startResendCooldown, goBackToRegister)
 
   ToLogin() {
     this._router.navigate(['/login']);
   }
 
-  ngOnDestroy() {
-    clearInterval(this.cooldownInterval);
-  }
+  // ✅ شلت ngOnDestroy لأنه مفيش interval يمسحه
 }

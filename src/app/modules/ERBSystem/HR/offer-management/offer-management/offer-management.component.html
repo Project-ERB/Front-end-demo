@@ -169,13 +169,11 @@
                                             class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                                             <span class="material-symbols-outlined text-[20px]">visibility</span>
                                         </button>
-                                        <button (click)="acceptOffer(offer)"
-                                            [disabled]="offer.offerStatus === 2 || offer.offerStatus === 3"
+                                        <button (click)="acceptOffer(offer)" [disabled]="isExpired(offer.expireDate)"
                                             class="p-1.5 rounded-lg transition-colors text-emerald-500 hover:bg-emerald-50 disabled:opacity-30 disabled:cursor-not-allowed">
                                             <span class="material-symbols-outlined text-lg">check_circle</span>
                                         </button>
-                                        <button (click)="rejectOffer(offer)"
-                                            [disabled]="offer.offerStatus === 2 || offer.offerStatus === 3"
+                                        <button (click)="rejectOffer(offer)" [disabled]="isExpired(offer.expireDate)"
                                             class="p-1.5 rounded-lg transition-colors text-rose-500 hover:bg-rose-50 disabled:opacity-30 disabled:cursor-not-allowed">
                                             <span class="material-symbols-outlined text-lg">cancel</span>
                                         </button>

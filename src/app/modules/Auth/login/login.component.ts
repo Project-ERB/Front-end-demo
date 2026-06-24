@@ -79,6 +79,6 @@ export class LoginComponent {
   }
 
   ToForgotPassword() {
-    this._router.navigate(['/verify-email']);
+    this._router.navigate(['/request-reset']);
   }
 }

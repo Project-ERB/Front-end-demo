@@ -66,20 +66,13 @@ export class VerifyEmailComponent implements OnInit {
 
     this._authService.ConfirmEmail(this.urlToken, enteredEmail).subscribe({
       next: (res) => {
-        console.log(res)
         this.isLoading.set(false);
-        this._toastr.success(res?.message || 'Email verified successfully!', 'Success');
+        this._toastr.success(res?.message || 'Email verified successfully!', 'Account Ready ✅');
 
-        // ✅ تغيير المسار لصفحة طلب لينك الباسورد الجديد
-        this._router.navigate(['/request-reset'], {
-          queryParams: {
-            email: enteredEmail
-            // مش بنبعت الـ token هنا لأنه خلص!
-          }
-        });
+        // ✅ التعديل الوحيد: التوجيه مباشرة لصفحة تسجيل الدخول
+        this._router.navigate(['/login']);
       },
       error: (err) => {
-        console.log(err);
         this.isLoading.set(false);
         this._toastr.error(err?.error?.message || 'Verification failed. The link may have expired.', 'Error');
       }

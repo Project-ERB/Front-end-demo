@@ -150,19 +150,19 @@ export class ProductService {
       ? new HttpHeaders().set('Authorization', `Bearer ${token}`)
       : undefined;
     return this._HttpClient.post<any>(
-      `${Environment.baseUrl}/api/products/AddProduct`,
+      `${Environment.baseUrl}/api/Products `,
       data,
       { headers },
     );
   }
 
-  ubdateProduct(id: string, data: object): Observable<any> {
+  ubdateProduct(productid: string, data: object): Observable<any> {
     const token = this.getToken();
     const headers = new HttpHeaders({
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
     return this._HttpClient.put(
-      `${Environment.baseUrl}/api/products/update/${id}`,
+      `${Environment.baseUrl}api/products/{productid}`,
       data,
       { headers },
     );
@@ -191,5 +191,5 @@ export class ProductService {
     });
   }
 
- 
+
 }

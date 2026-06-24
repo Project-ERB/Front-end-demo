@@ -2,11 +2,35 @@
 
     <!-- Header -->
     <div class="flex h-16 items-center justify-between border-b border-[#e2e8f0] px-6">
-        <div class="flex items-center gap-2">
-            <div class="flex size-8 items-center justify-center rounded-lg bg-[#1e3b8a] text-white">
-                <span class="material-symbols-outlined text-xl">analytics</span>
-            </div>
-            <span class="text-lg font-bold text-[#0f172a]">Acme Corp</span>
+        <!-- Logo -->
+        <div class="p-6 ">
+            <a class="flex items-center gap-3 group transition-all duration-300">
+
+                <!-- أيقونة الـ Stack والكارت لوحدها (من غير الكلام) -->
+                <div class="flex-shrink-0">
+                    <svg width="36" height="36" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 5 14 L 9 29 L 31 29 L 35 14" fill="none" stroke="#2463eb" stroke-width="2.8"
+                            stroke-linejoin="round" stroke-linecap="round" />
+                        <path d="M 11 14 C 11 4 29 4 31 14" fill="none" stroke="#2463eb" stroke-width="2.8"
+                            stroke-linecap="round" />
+                        <circle cx="14" cy="33" r="2" fill="#2463eb" />
+                        <circle cx="26" cy="33" r="2" fill="#2463eb" />
+                        <rect x="13" y="21" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.9" />
+                        <rect x="19" y="14" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.5" />
+                    </svg>
+                </div>
+
+                <!-- الكلام (Commerce Stack) -->
+                <div class="flex flex-col">
+                    <span class="text-lg font-bold text-slate-800 group-hover:text-[#2463eb] transition-colors">
+                        Commerce
+                        <span class="bg-gradient-to-r from-[#2463eb] to-indigo-500 bg-clip-text text-transparent">
+                            Stack</span>
+                    </span>
+                    <span class="text-[10px] font-medium text-slate-400 uppercase tracking-widest">sales</span>
+                </div>
+
+            </a>
         </div>
 
         <!-- زرار إغلاق بيظهر على الموبايل بس -->
@@ -26,13 +50,13 @@
             </p>
 
             <!-- Dashboard -->
-            <a routerLink="/sales-dashboard" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+            <!-- <a routerLink="/sales-dashboard" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
                 (click)="onLinkClick()">
                 <span class="material-symbols-outlined text-[20px]">grid_view</span>
                 Sales-Dashboard
-            </a>
+            </a> -->
 
             <!-- Sales Analysis -->
             <a routerLink="/sales-analysis" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
