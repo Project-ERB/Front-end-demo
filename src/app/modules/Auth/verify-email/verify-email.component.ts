@@ -29,6 +29,13 @@ export class VerifyEmailComponent implements OnInit {
   isLoading: WritableSignal<boolean> = signal(false);
   emailMismatch: WritableSignal<boolean> = signal(false);
 
+  // ✅ نفس النمط هنا كمان
+  apiResponse: WritableSignal<{
+    type: 'success' | 'error';
+    message: string;
+    details?: string[];
+  } | null> = signal(null);
+
   private urlToken: string = '';
   private urlEmail: string = '';
 
@@ -57,24 +64,35 @@ export class VerifyEmailComponent implements OnInit {
 
     if (enteredEmail.toLowerCase() !== this.urlEmail.toLowerCase()) {
       this.emailMismatch.set(true);
+      this.apiResponse.set({
+        type: 'error',
+        message: 'This email does not match the account we are verifying.',
+      });
       this._toastr.error('This email does not match the account we are verifying.', 'Mismatch');
       return;
     }
 
     this.emailMismatch.set(false);
     this.isLoading.set(true);
+    this.apiResponse.set(null);
 
     this._authService.ConfirmEmail(this.urlToken, enteredEmail).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading.set(false);
-        this._toastr.success(res?.message || 'Email verified successfully!', 'Account Ready ✅');
-
-        // ✅ التعديل الوحيد: التوجيه مباشرة لصفحة تسجيل الدخول
+        const msg = res?.message || 'Email verified successfully!';
+        this.apiResponse.set({ type: 'success', message: msg });
+        this._toastr.success(msg, 'Account Ready ✅');
         this._router.navigate(['/login']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading.set(false);
-        this._toastr.error(err?.error?.message || 'Verification failed. The link may have expired.', 'Error');
+        const errors: string[] = err?.error?.errors || [err?.error?.message || 'Verification failed. The link may have expired.'];
+        this.apiResponse.set({
+          type: 'error',
+          message: err?.error?.message || 'Verification failed. The link may have expired.',
+          details: errors,
+        });
+        this._toastr.error(errors[0], 'Error');
       }
     });
   }

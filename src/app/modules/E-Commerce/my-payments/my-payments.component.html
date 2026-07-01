@@ -1,280 +1,308 @@
 <div
-    class="relative flex min-h-screen w-full bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-950 overflow-hidden font-sans">
+    class="relative flex h-screen w-full flex-col bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-950 overflow-hidden font-sans">
 
-    <div
-        class="pointer-events-none absolute left-0 top-0 h-[22rem] w-[22rem] rounded-full bg-main/15 blur-3xl -translate-x-1/3 -translate-y-1/3">
-    </div>
-    <div
-        class="pointer-events-none absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
-    </div>
+    <!-- الناف: ثابت فوق دايمًا -->
+    <app-navbar-e-commerce (searchChanged)="handleSearch($event)"></app-navbar-e-commerce>
 
-    <app-e-commerce-sidebar [(isMobileSidebarOpen)]="isMobileSidebarOpen"></app-e-commerce-sidebar>
+    <!-- الصف اللي تحت الناف: سايدبار + main -->
+    <div class="relative z-10 flex flex-1 overflow-hidden">
 
-    <main class="relative z-10 flex-1 overflow-x-hidden">
-
-        <!-- Mobile Top Bar -->
         <div
-            class="sticky top-0 z-10 flex items-center gap-4 border-b border-gray-200 dark:border-white/5 bg-white/80 dark:bg-gray-950/80 px-6 py-4 backdrop-blur-xl lg:hidden">
-            <button (click)="isMobileSidebarOpen = true"
-                class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition">
-                <span class="material-symbols-outlined text-xl">menu</span>
-            </button>
-            <h1 class="text-base font-semibold text-gray-800 dark:text-white">My Payments</h1>
+            class="pointer-events-none absolute left-0 top-0 h-[22rem] w-[22rem] rounded-full bg-main/15 blur-3xl -translate-x-1/3 -translate-y-1/3">
+        </div>
+        <div
+            class="pointer-events-none absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
         </div>
 
-        <div class="px-6 py-8 lg:px-10 lg:py-10 max-w-6xl mx-auto">
+        <!-- السايدبار: ثابت بارتفاع كامل -->
+        <app-e-commerce-sidebar [(isMobileSidebarOpen)]="isMobileSidebarOpen"
+            class="h-full overflow-y-auto"></app-e-commerce-sidebar>
 
-            <!-- Page Header -->
-            <div class="mb-8 hidden lg:block">
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-main mb-1">Payment Center</p>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Payments</h1>
-                <p class="mt-1 text-sm text-gray-500">Track all payment records and transaction history</p>
+        <!-- المحتوى: العنصر الوحيد اللي بيعمل scroll -->
+        <main class="relative z-10 flex-1 overflow-y-auto overflow-x-hidden">
+
+            <!-- Mobile Top Bar -->
+            <div
+                class="sticky top-0 z-10 flex items-center gap-4 border-b border-gray-200 dark:border-white/5 bg-white/80 dark:bg-gray-950/80 px-6 py-4 backdrop-blur-xl lg:hidden">
+                <button (click)="isMobileSidebarOpen = true"
+                    class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition">
+                    <span class="material-symbols-outlined text-xl">menu</span>
+                </button>
+                <h1 class="text-base font-semibold text-gray-800 dark:text-white">My Payments</h1>
             </div>
 
-            <!-- Loading -->
-            <div *ngIf="loading()" class="flex flex-col items-center justify-center py-32 gap-4">
-                <span class="material-symbols-outlined text-4xl text-main animate-spin">progress_activity</span>
-                <p class="text-sm text-gray-500">Loading your payments…</p>
-            </div>
+            <div class="px-6 py-8 lg:px-10 lg:py-10 max-w-6xl mx-auto">
 
-            <!-- Error -->
-            <div *ngIf="!loading() && error()"
-                class="rounded-2xl border border-red-200 dark:border-rose-500/20 bg-red-50 dark:bg-rose-500/5 px-6 py-5 flex items-center gap-4">
-                <span class="material-symbols-outlined text-red-500 dark:text-rose-400 text-3xl">error_outline</span>
-                <div>
-                    <p class="text-sm font-semibold text-red-700 dark:text-rose-300">Something went wrong</p>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ error() }}</p>
-                </div>
-                <button (click)="loadPayments()"
-                    class="ml-auto text-xs text-main hover:opacity-75 transition font-medium">Retry</button>
-            </div>
-
-            <!-- Empty -->
-            <div *ngIf="!loading() && !error() && payments().length === 0"
-                class="flex flex-col items-center justify-center py-32 gap-3">
-                <div class="rounded-full bg-gray-100 dark:bg-white/5 p-5 mb-2">
-                    <span class="material-symbols-outlined text-4xl text-gray-400">payments</span>
-                </div>
-                <p class="text-base font-semibold text-gray-700 dark:text-gray-300">No payments found</p>
-                <p class="text-sm text-gray-400">Your payment records will appear here.</p>
-            </div>
-
-            <ng-container *ngIf="!loading() && !error() && payments().length > 0">
-
-                <!-- Summary Cards -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div
-                        class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total Records
-                        </p>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalSummary().count }}</p>
-                    </div>
-                    <div
-                        class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total Invoiced
-                        </p>
-                        <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ totalSummary().totalInvoiced |
-                            number:'1.2-2' }}</p>
-                    </div>
-                    <div class="rounded-2xl border border-main/20 bg-main/5 px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-main/70 mb-1">Total Paid</p>
-                        <p class="text-2xl font-bold text-main">{{ totalSummary().totalPaid | number:'1.2-2' }}</p>
-                    </div>
-                    <div
-                        class="rounded-2xl border border-red-200 dark:border-rose-500/10 bg-red-50 dark:bg-rose-500/5 px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-red-600 mb-1">Outstanding</p>
-                        <p class="text-2xl font-bold text-red-500 dark:text-rose-400">{{ totalSummary().totalRemaining |
-                            number:'1.2-2' }}</p>
-                    </div>
+                <!-- Page Header -->
+                <div class="mb-8 hidden lg:block">
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-main mb-1">Payment Center</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Payments</h1>
+                    <p class="mt-1 text-sm text-gray-500">Track all payment records and transaction history</p>
                 </div>
 
-                <!-- Filter Tabs -->
-                <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
-                    <button *ngFor="let f of filters" (click)="setFilter(f)"
-                        class="shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all"
-                        [ngClass]="activeFilter() === f
+                <!-- Loading -->
+                <div *ngIf="loading()" class="flex flex-col items-center justify-center py-32 gap-4">
+                    <span class="material-symbols-outlined text-4xl text-main animate-spin">progress_activity</span>
+                    <p class="text-sm text-gray-500">Loading your payments…</p>
+                </div>
+
+                <!-- Error -->
+                <div *ngIf="!loading() && error()"
+                    class="rounded-2xl border border-red-200 dark:border-rose-500/20 bg-red-50 dark:bg-rose-500/5 px-6 py-5 flex items-center gap-4">
+                    <span
+                        class="material-symbols-outlined text-red-500 dark:text-rose-400 text-3xl">error_outline</span>
+                    <div>
+                        <p class="text-sm font-semibold text-red-700 dark:text-rose-300">Something went wrong</p>
+                        <p class="text-xs text-gray-500 mt-0.5">{{ error() }}</p>
+                    </div>
+                    <button (click)="loadPayments()"
+                        class="ml-auto text-xs text-main hover:opacity-75 transition font-medium">Retry</button>
+                </div>
+
+                <!-- Empty -->
+                <div *ngIf="!loading() && !error() && payments().length === 0"
+                    class="flex flex-col items-center justify-center py-32 gap-3">
+                    <div class="rounded-full bg-gray-100 dark:bg-white/5 p-5 mb-2">
+                        <span class="material-symbols-outlined text-4xl text-gray-400">payments</span>
+                    </div>
+                    <p class="text-base font-semibold text-gray-700 dark:text-gray-300">No payments found</p>
+                    <p class="text-sm text-gray-400">Your payment records will appear here.</p>
+                </div>
+
+                <ng-container *ngIf="!loading() && !error() && payments().length > 0">
+
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div
+                            class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total
+                                Records
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalSummary().count }}</p>
+                        </div>
+                        <div
+                            class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total
+                                Invoiced
+                            </p>
+                            <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{
+                                totalSummary().totalInvoiced |
+                                number:'1.2-2' }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-main/20 bg-main/5 px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-main/70 mb-1">Total Paid
+                            </p>
+                            <p class="text-2xl font-bold text-main">{{ totalSummary().totalPaid | number:'1.2-2' }}</p>
+                        </div>
+                        <div
+                            class="rounded-2xl border border-red-200 dark:border-rose-500/10 bg-red-50 dark:bg-rose-500/5 px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-red-600 mb-1">Outstanding
+                            </p>
+                            <p class="text-2xl font-bold text-red-500 dark:text-rose-400">{{
+                                totalSummary().totalRemaining |
+                                number:'1.2-2' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+                        <button *ngFor="let f of filters" (click)="setFilter(f)"
+                            class="shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all"
+                            [ngClass]="activeFilter() === f
               ? 'bg-main text-white shadow-lg shadow-main/20'
               : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-transparent hover:bg-gray-50 dark:hover:bg-white/10'">
-                        {{ f }}
-                    </button>
-                </div>
-
-                <!-- Payments List -->
-                <div class="flex flex-col gap-4">
-
-                    <div *ngIf="filteredPayments().length === 0" class="text-center py-16 text-sm text-gray-400">
-                        No payments match the selected filter.
+                            {{ f }}
+                        </button>
                     </div>
 
-                    <div *ngFor="let payment of filteredPayments()"
-                        class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm overflow-hidden transition-all duration-200 hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-0.5">
+                    <!-- Payments List -->
+                    <div class="flex flex-col gap-4">
 
-                        <!-- Payment Header -->
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5">
-                            <div class="flex items-center gap-4 flex-1 min-w-0">
-                                <div
-                                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-main/10 border border-main/20">
-                                    <span class="material-symbols-outlined text-main text-xl">payments</span>
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="text-xs text-gray-500 uppercase tracking-wider font-medium">Payment ID</p>
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white font-mono truncate">{{
-                                        payment.id }}</p>
-                                    <p class="text-[11px] text-gray-400 font-mono mt-0.5 truncate">Invoice: {{
-                                        payment.invoiceId }}</p>
-                                </div>
-                            </div>
-                            <div class="hidden sm:flex flex-col shrink-0">
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Currency</p>
-                                <p class="text-sm font-bold text-gray-700 dark:text-gray-300">{{ payment.currency }}</p>
-                            </div>
-                            <div class="hidden md:flex flex-col shrink-0">
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Invoice Total
-                                </p>
-                                <p class="text-sm font-bold text-gray-700 dark:text-gray-300">{{
-                                    payment.invoiceTotalAmount | number:'1.2-2' }}</p>
-                            </div>
-                            <div class="flex flex-col items-end sm:items-start shrink-0">
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Paid</p>
-                                <p class="text-sm font-bold text-main">{{ payment.totalPaid | number:'1.2-2' }}</p>
-                            </div>
-                            <span
-                                class="self-start sm:self-center shrink-0 text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border flex items-center gap-1.5"
-                                [ngClass]="getStatusClass(getPaymentStatus(payment))">
-                                <span class="w-1.5 h-1.5 rounded-full"
-                                    [ngClass]="getStatusDot(getPaymentStatus(payment))"></span>
-                                {{ getPaymentStatus(payment) }}
-                            </span>
-                            <button (click)="togglePayment(payment.id)"
-                                class="shrink-0 flex items-center gap-1.5 text-xs text-gray-500 hover:text-main transition-colors font-medium">
-                                <span class="hidden sm:inline">{{ isExpanded(payment.id) ? 'Hide' : 'Details' }}</span>
-                                <span class="material-symbols-outlined text-lg transition-transform duration-300"
-                                    [class.rotate-180]="isExpanded(payment.id)">expand_more</span>
-                            </button>
+                        <div *ngIf="filteredPayments().length === 0" class="text-center py-16 text-sm text-gray-400">
+                            No payments match the selected filter.
                         </div>
 
-                        <!-- Progress Bar -->
-                        <div class="px-6 pb-4 border-b border-gray-100 dark:border-white/5">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <p class="text-[11px] text-gray-500">
-                                    Paid <span class="text-gray-700 dark:text-gray-400 font-semibold">{{
-                                        payment.totalPaid | number:'1.2-2' }}</span>
-                                    / {{ payment.invoiceTotalAmount | number:'1.2-2' }}
-                                </p>
-                                <p class="text-[11px] font-bold"
-                                    [ngClass]="getPaidPercent(payment) >= 100 ? 'text-green-600 dark:text-emerald-400' : 'text-gray-500'">
-                                    {{ getPaidPercent(payment) }}%
-                                </p>
-                            </div>
-                            <div class="h-1.5 w-full rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-700"
-                                    [style.width.%]="getPaidPercent(payment)"
-                                    [ngClass]="getBarColor(getPaidPercent(payment))"></div>
-                            </div>
-                        </div>
+                        <div *ngFor="let payment of filteredPayments()"
+                            class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm overflow-hidden transition-all duration-200 hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-0.5">
 
-                        <!-- Expanded -->
-                        <div *ngIf="isExpanded(payment.id)">
-
-                            <div class="grid grid-cols-3 gap-px bg-gray-100 dark:bg-white/5">
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
-                                        Invoice Total</p>
-                                    <p class="text-sm font-bold text-gray-700 dark:text-gray-300">
-                                        {{ payment.invoiceTotalAmount | number:'1.2-2' }}
-                                        <span class="text-xs font-normal text-gray-400 ml-1">{{ payment.currency
-                                            }}</span>
+                            <!-- Payment Header -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div
+                                        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-main/10 border border-main/20">
+                                        <span class="material-symbols-outlined text-main text-xl">payments</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider font-medium">Payment ID
+                                        </p>
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white font-mono truncate">{{
+                                            payment.id }}</p>
+                                        <p class="text-[11px] text-gray-400 font-mono mt-0.5 truncate">Invoice: {{
+                                            payment.invoiceId }}</p>
+                                    </div>
+                                </div>
+                                <div class="hidden sm:flex flex-col shrink-0">
+                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Currency
+                                    </p>
+                                    <p class="text-sm font-bold text-gray-700 dark:text-gray-300">{{ payment.currency }}
                                     </p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">Total
-                                        Paid</p>
+                                <div class="hidden md:flex flex-col shrink-0">
+                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Invoice
+                                        Total
+                                    </p>
+                                    <p class="text-sm font-bold text-gray-700 dark:text-gray-300">{{
+                                        payment.invoiceTotalAmount | number:'1.2-2' }}</p>
+                                </div>
+                                <div class="flex flex-col items-end sm:items-start shrink-0">
+                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Paid</p>
                                     <p class="text-sm font-bold text-main">{{ payment.totalPaid | number:'1.2-2' }}</p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
-                                        Remaining</p>
-                                    <p class="text-sm font-bold"
-                                        [ngClass]="payment.remainingAmount > 0 ? 'text-red-500 dark:text-rose-400' : 'text-green-600 dark:text-emerald-400'">
-                                        {{ payment.remainingAmount | number:'1.2-2' }}
+                                <span
+                                    class="self-start sm:self-center shrink-0 text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border flex items-center gap-1.5"
+                                    [ngClass]="getStatusClass(getPaymentStatus(payment))">
+                                    <span class="w-1.5 h-1.5 rounded-full"
+                                        [ngClass]="getStatusDot(getPaymentStatus(payment))"></span>
+                                    {{ getPaymentStatus(payment) }}
+                                </span>
+                                <button (click)="togglePayment(payment.id)"
+                                    class="shrink-0 flex items-center gap-1.5 text-xs text-gray-500 hover:text-main transition-colors font-medium">
+                                    <span class="hidden sm:inline">{{ isExpanded(payment.id) ? 'Hide' : 'Details'
+                                        }}</span>
+                                    <span class="material-symbols-outlined text-lg transition-transform duration-300"
+                                        [class.rotate-180]="isExpanded(payment.id)">expand_more</span>
+                                </button>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="px-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <p class="text-[11px] text-gray-500">
+                                        Paid <span class="text-gray-700 dark:text-gray-400 font-semibold">{{
+                                            payment.totalPaid | number:'1.2-2' }}</span>
+                                        / {{ payment.invoiceTotalAmount | number:'1.2-2' }}
                                     </p>
+                                    <p class="text-[11px] font-bold"
+                                        [ngClass]="getPaidPercent(payment) >= 100 ? 'text-green-600 dark:text-emerald-400' : 'text-gray-500'">
+                                        {{ getPaidPercent(payment) }}%
+                                    </p>
+                                </div>
+                                <div class="h-1.5 w-full rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-700"
+                                        [style.width.%]="getPaidPercent(payment)"
+                                        [ngClass]="getBarColor(getPaidPercent(payment))"></div>
                                 </div>
                             </div>
 
-                            <!-- Transactions -->
-                            <div class="border-t border-gray-100 dark:border-white/5">
-                                <div class="px-6 py-3 bg-gray-50 dark:bg-white/[0.02] flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm text-main">swap_horiz</span>
-                                    <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                        Transactions</p>
-                                    <span
-                                        class="text-[11px] font-bold text-main bg-main/10 border border-main/20 rounded-full px-2 py-0.5">
-                                        {{ payment.transactions?.length ?? 0 }}
-                                    </span>
+                            <!-- Expanded -->
+                            <div *ngIf="isExpanded(payment.id)">
+
+                                <div class="grid grid-cols-3 gap-px bg-gray-100 dark:bg-white/5">
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Invoice Total</p>
+                                        <p class="text-sm font-bold text-gray-700 dark:text-gray-300">
+                                            {{ payment.invoiceTotalAmount | number:'1.2-2' }}
+                                            <span class="text-xs font-normal text-gray-400 ml-1">{{ payment.currency
+                                                }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Total
+                                            Paid</p>
+                                        <p class="text-sm font-bold text-main">{{ payment.totalPaid | number:'1.2-2' }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Remaining</p>
+                                        <p class="text-sm font-bold"
+                                            [ngClass]="payment.remainingAmount > 0 ? 'text-red-500 dark:text-rose-400' : 'text-green-600 dark:text-emerald-400'">
+                                            {{ payment.remainingAmount | number:'1.2-2' }}
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <div *ngIf="!payment.transactions || payment.transactions.length === 0"
-                                    class="px-6 py-6 text-center text-sm text-gray-400">No transactions recorded.</div>
+                                <!-- Transactions -->
+                                <div class="border-t border-gray-100 dark:border-white/5">
+                                    <div class="px-6 py-3 bg-gray-50 dark:bg-white/[0.02] flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm text-main">swap_horiz</span>
+                                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                            Transactions</p>
+                                        <span
+                                            class="text-[11px] font-bold text-main bg-main/10 border border-main/20 rounded-full px-2 py-0.5">
+                                            {{ payment.transactions?.length ?? 0 }}
+                                        </span>
+                                    </div>
 
-                                <div *ngIf="payment.transactions && payment.transactions.length > 0"
-                                    class="overflow-x-auto">
-                                    <table class="w-full text-sm">
-                                        <thead>
-                                            <tr class="bg-gray-50 dark:bg-white/[0.02]">
-                                                <th
-                                                    class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Date</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Type</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Method</th>
-                                                <th
-                                                    class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Amount</th>
-                                                <th
-                                                    class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 hidden md:table-cell">
-                                                    Ref ID</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-100 dark:divide-white/5">
-                                            <tr *ngFor="let tx of payment.transactions"
-                                                class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-                                                <td class="px-6 py-4 text-gray-500 whitespace-nowrap font-mono text-xs">
-                                                    {{ tx.transactionDate | date:'dd MMM yyyy' }}</td>
-                                                <td class="px-6 py-4">
-                                                    <span
-                                                        class="text-xs font-semibold capitalize px-2.5 py-1 rounded-full border"
-                                                        [ngClass]="getTypeColor(tx.type) + ' bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'">
-                                                        {{ tx.type }}
-                                                    </span>
-                                                </td>
-                                                <td class="px-6 py-4">
-                                                    <div class="flex items-center gap-2 text-gray-500">
-                                                        <span class="material-symbols-outlined text-base text-main">{{
-                                                            getMethodIcon(tx.method) }}</span>
-                                                        <span class="text-xs font-medium capitalize">{{ tx.method || '—'
-                                                            }}</span>
-                                                    </div>
-                                                </td>
-                                                <td class="px-6 py-4 text-right font-bold font-mono text-sm"
-                                                    [ngClass]="getTypeColor(tx.type)">
-                                                    {{ tx.amount | number:'1.2-2' }}
-                                                </td>
-                                                <td
-                                                    class="px-6 py-4 text-[11px] text-gray-400 font-mono hidden md:table-cell truncate max-w-[150px]">
-                                                    {{ tx.relatedTransactionId || '—' }}
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div *ngIf="!payment.transactions || payment.transactions.length === 0"
+                                        class="px-6 py-6 text-center text-sm text-gray-400">No transactions recorded.
+                                    </div>
+
+                                    <div *ngIf="payment.transactions && payment.transactions.length > 0"
+                                        class="overflow-x-auto">
+                                        <table class="w-full text-sm">
+                                            <thead>
+                                                <tr class="bg-gray-50 dark:bg-white/[0.02]">
+                                                    <th
+                                                        class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Date</th>
+                                                    <th
+                                                        class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Type</th>
+                                                    <th
+                                                        class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Method</th>
+                                                    <th
+                                                        class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Amount</th>
+                                                    <th
+                                                        class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500 hidden md:table-cell">
+                                                        Ref ID</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                                                <tr *ngFor="let tx of payment.transactions"
+                                                    class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+                                                    <td
+                                                        class="px-6 py-4 text-gray-500 whitespace-nowrap font-mono text-xs">
+                                                        {{ tx.transactionDate | date:'dd MMM yyyy' }}</td>
+                                                    <td class="px-6 py-4">
+                                                        <span
+                                                            class="text-xs font-semibold capitalize px-2.5 py-1 rounded-full border"
+                                                            [ngClass]="getTypeColor(tx.type) + ' bg-gray-50 dark:bg-white/5 border-gray-200 dark:border-white/10'">
+                                                            {{ tx.type }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-6 py-4">
+                                                        <div class="flex items-center gap-2 text-gray-500">
+                                                            <span
+                                                                class="material-symbols-outlined text-base text-main">{{
+                                                                getMethodIcon(tx.method) }}</span>
+                                                            <span class="text-xs font-medium capitalize">{{ tx.method ||
+                                                                '—'
+                                                                }}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-6 py-4 text-right font-bold font-mono text-sm"
+                                                        [ngClass]="getTypeColor(tx.type)">
+                                                        {{ tx.amount | number:'1.2-2' }}
+                                                    </td>
+                                                    <td
+                                                        class="px-6 py-4 text-[11px] text-gray-400 font-mono hidden md:table-cell truncate max-w-[150px]">
+                                                        {{ tx.relatedTransactionId || '—' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </ng-container>
-        </div>
-    </main>
+                </ng-container>
+            </div>
+        </main>
+    </div>
 </div>

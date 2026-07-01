@@ -41,7 +41,7 @@ import {
           opacity: 0,
           transform: 'translateY(20px)'
         }),
-        animate('400ms 200ms cubic-bezier(0.16, 1, 0.3, 1)', // 注意 الـ delay هنا
+        animate('400ms 200ms cubic-bezier(0.16, 1, 0.3, 1)',
           style({
             opacity: 1,
             transform: 'translateY(0)'
@@ -63,7 +63,13 @@ export class ForgetPasswordComponent implements OnInit {
   isLoading: WritableSignal<boolean> = signal(false);
   showPassword: WritableSignal<boolean> = signal(false);
 
-  // هنجيبهم من query params بدل localStorage
+  // ✅ نفس النمط
+  apiResponse: WritableSignal<{
+    type: 'success' | 'error';
+    message: string;
+    details?: string[];
+  } | null> = signal(null);
+
   private email: string = '';
   private token: string = '';
 
@@ -78,8 +84,6 @@ export class ForgetPasswordComponent implements OnInit {
   });
 
   ngOnInit() {
-    // الباكند بيبعت لينك زي:
-    // yourapp.com/reset-password?email=xxx&token=yyy
     this._activatedRoute.queryParams.subscribe(params => {
       this.email = params['email'] || localStorage.getItem('resetEmail') || '';
       this.token = params['token'] || '';
@@ -90,21 +94,30 @@ export class ForgetPasswordComponent implements OnInit {
     if (this.resetForm.invalid) return;
 
     this.isLoading.set(true);
+    this.apiResponse.set(null);
 
     this._authService.VerifyPassword(
       this.email,
       this.token,
       this.resetForm.value.newPassword
     ).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.isLoading.set(false);
-        this._toastr.success('Password reset successfully!', 'Success');
+        const msg = res?.message || 'Password reset successfully!';
+        this.apiResponse.set({ type: 'success', message: msg });
+        this._toastr.success(msg, 'Success');
         localStorage.removeItem('resetEmail');
         this._router.navigate(['/login']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading.set(false);
-        this._toastr.error(err?.error?.message || 'Something went wrong', 'Error');
+        const errors: string[] = err?.error?.errors || [err?.error?.message || 'Something went wrong'];
+        this.apiResponse.set({
+          type: 'error',
+          message: err?.error?.message || 'Something went wrong',
+          details: errors,
+        });
+        this._toastr.error(errors[0], 'Error');
       }
     });
   }

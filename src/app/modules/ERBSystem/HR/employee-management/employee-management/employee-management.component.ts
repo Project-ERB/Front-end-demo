@@ -3,37 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 import { Router, RouterLink } from '@angular/router';
-import { EmployeeService } from '../../../../../core/services/employee/employee.service';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/employee/employee.service';
 import { ToastrService } from 'ngx-toastr';
 import { AdminService, Role } from '../../../../../core/services/Admin-service/admin.service';
 import { PermissionService, PermissionNode } from '../../../../../core/services/permission/permission.service';
 import { forkJoin } from 'rxjs';
+import { Environment } from '../../../../../shared/UI/environment/env';
 
 export type EmployeeStatus = 'Active' | 'On Leave' | 'Probation' | 'Terminated';
-
-export interface EmployeeNode {
-  id: string;
-  name: string;
-  phoneNumber: string;
-  salary: number;
-  currency: string;
-  employeeLevel: string;
-  departmentId: string;
-  employeeType: string;
-  status: string;
-  managerId: string;
-  nationalID?: string;
-  hiredate?: string;
-  roleId?: string;
-  email?: string;
-  address?: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-}
 
 interface StatCard {
   icon: string; label: string; value: string; sub?: string;
@@ -44,7 +21,7 @@ interface RoleOption { id: string; name: string; description: string; }
 
 @Component({
   selector: 'app-employee-management',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, HrSidebarComponent, RouterLink],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, HrSidebarComponent],
   templateUrl: './employee-management.component.html',
   styleUrl: './employee-management.component.scss',
 })
@@ -87,16 +64,23 @@ export class EmployeeManagementComponent implements OnInit {
   ];
   currencies = ['USD', 'EGP', 'EUR', 'GBP'];
 
-  currentPage = 1;
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Cursor-Based Pagination State
+  // ══════════════════════════════════════════════════════════════════════════
   pageSize = 10;
-  totalEmployees = 0;
   allEmployees: EmployeeNode[] = [];
   isLoading = false;
+
+  /** Stack of cursors — index 0 is always null (first page) */
+  private cursorStack: (string | null)[] = [null];
+  private cursorIndex = 0;
+
+  hasNextPage = false;
+  hasPreviousPage = false;
 
   departments = ['Engineering', 'Design', 'Marketing', 'Sales'];
   statuses: EmployeeStatus[] = ['Active', 'On Leave', 'Probation', 'Terminated'];
 
-  // تم إزالة كلاسات dark: من هنا
   statCards: StatCard[] = [
     {
       icon: 'person_add', label: 'New Hires', value: '12', sub: '+4% this month',
@@ -113,13 +97,111 @@ export class EmployeeManagementComponent implements OnInit {
   ];
 
   deletingEmployeeId: string | null = null;
+  downloadingQrId: string | null = null;
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Lifecycle
+  // ══════════════════════════════════════════════════════════════════════════
   ngOnInit(): void {
     this.buildEditForm();
-    this.getEmployees();
+    this.fetchEmployees();
     this.loadRolesAndPermissions();
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Cursor-Based Pagination Methods
+  // ══════════════════════════════════════════════════════════════════════════
+
+  /** Fetch employees using the cursor at the current stack index */
+  fetchEmployees(): void {
+    this.isLoading = true;
+    const after = this.cursorStack[this.cursorIndex] ?? undefined;
+
+    this._EmployeeService.getEmployees(this.pageSize, after).subscribe({
+      next: (res) => {
+        this.allEmployees = res.nodes;
+        this.hasNextPage = res.pageInfo.hasNextPage;
+        this.hasPreviousPage = res.pageInfo.hasPreviousPage;
+
+        // ── Edge case: if the current page is empty (e.g. after delete), go back ──
+        if (this.allEmployees.length === 0 && this.cursorIndex > 0) {
+          this.cursorIndex--;
+          this.fetchEmployees();
+          return;
+        }
+
+        // ── Store endCursor for potential forward navigation ──
+        if (res.pageInfo.endCursor) {
+          if (this.cursorIndex + 1 >= this.cursorStack.length) {
+            this.cursorStack.push(res.pageInfo.endCursor);
+          } else {
+            this.cursorStack[this.cursorIndex + 1] = res.pageInfo.endCursor;
+          }
+        }
+
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  /** Navigate to next page */
+  nextPage(): void {
+    if (!this.hasNextPage) return;
+    this.cursorIndex++;
+    this.fetchEmployees();
+  }
+
+  /** Navigate to previous page */
+  prevPage(): void {
+    if (this.cursorIndex <= 0) return;
+    this.cursorIndex--;
+    this.fetchEmployees();
+  }
+
+  // ── Computed pagination info ──────────────────────────────────────────────
+  get currentPageLabel(): number {
+    return this.cursorIndex + 1;
+  }
+
+  get showingFrom(): number {
+    return this.cursorIndex * this.pageSize + 1;
+  }
+
+  get showingTo(): number {
+    return this.showingFrom + this.allEmployees.length - 1;
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Client-Side Search / Filter  (filters current page only)
+  //  ⚠️ For full search across ALL employees, add filter args to the GraphQL query
+  // ══════════════════════════════════════════════════════════════════════════
+  get filteredEmployees(): EmployeeNode[] {
+    const q = this.searchQuery.toLowerCase();
+    return this.allEmployees.filter(e => {
+      const matchesSearch = !q
+        || e.name?.toLowerCase().includes(q)
+        || e.phoneNumber?.includes(q)
+        || e.email?.toLowerCase().includes(q);
+      const matchesDept = !this.selectedDepartment || e.departmentId === this.selectedDepartment;
+      const matchesStatus = !this.selectedStatus || e.status === this.selectedStatus;
+      return matchesSearch && matchesDept && matchesStatus;
+    });
+  }
+
+  /** Reset to first page when filters change */
+  onFilterChange(): void {
+    this.cursorStack = [null];
+    this.cursorIndex = 0;
+    this.fetchEmployees();
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Edit Form
+  // ══════════════════════════════════════════════════════════════════════════
   private buildEditForm(): void {
     this.editForm = this._fb.group({
       nationalId: ['', Validators.required],
@@ -149,6 +231,9 @@ export class EmployeeManagementComponent implements OnInit {
     return !!(c && c.invalid && (c.dirty || c.touched));
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Roles & Permissions
+  // ══════════════════════════════════════════════════════════════════════════
   private loadRolesAndPermissions(): void {
     forkJoin({
       roles: this._AdminService.getRoles(),
@@ -167,9 +252,13 @@ export class EmployeeManagementComponent implements OnInit {
       ? this.selectedPermissions.delete(id)
       : this.selectedPermissions.add(id);
   }
+
   selectAllPermissions(): void { this.permissions.forEach(p => this.selectedPermissions.add(p.id)); }
   clearAllPermissions(): void { this.selectedPermissions.clear(); }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Edit Modal
+  // ══════════════════════════════════════════════════════════════════════════
   openEditModal(emp: EmployeeNode): void {
     this.editingEmployee = emp;
     let countryCode = '+20';
@@ -257,7 +346,7 @@ export class EmployeeManagementComponent implements OnInit {
         this.isUpdating = false;
         this._ToastrService.success('Employee updated successfully!', 'Success!');
         this.closeEditModal();
-        this.getEmployees();
+        this.fetchEmployees();
       },
       error: (err) => {
         this.isUpdating = false;
@@ -267,34 +356,11 @@ export class EmployeeManagementComponent implements OnInit {
     });
   }
 
+  // ══════════════════════════════════════════════════════════════════════════
+  //  Actions
+  // ══════════════════════════════════════════════════════════════════════════
   gotoaddempoyee(): void { this._router.navigate(['/add-employee']); }
 
-  getEmployees(): void {
-    this.isLoading = true;
-    this._EmployeeService.getEmployees().subscribe({
-      next: (res) => { this.allEmployees = res; this.totalEmployees = res.length; this.isLoading = false; },
-      error: (err) => { console.error(err); this.isLoading = false; },
-    });
-  }
-
-  get filteredEmployees(): EmployeeNode[] {
-    const q = this.searchQuery.toLowerCase();
-    return this.allEmployees.filter(e => {
-      const matchesSearch = !q || e.name.toLowerCase().includes(q) || e.phoneNumber?.includes(q);
-      const matchesDept = !this.selectedDepartment || e.departmentId === this.selectedDepartment;
-      const matchesStatus = !this.selectedStatus || e.status === this.selectedStatus;
-      return matchesSearch && matchesDept && matchesStatus;
-    });
-  }
-
-  get totalPages(): number { return Math.ceil(this.totalEmployees / this.pageSize); }
-  get visiblePages(): number[] { return [1, 2, 3]; }
-  get showingFrom(): number { return (this.currentPage - 1) * this.pageSize + 1; }
-  get showingTo(): number { return Math.min(this.currentPage * this.pageSize, this.totalEmployees); }
-
-  goToPage(page: number): void { if (page >= 1 && page <= this.totalPages) this.currentPage = page; }
-
-  // تم إزالة كلاسات dark: من هنا
   getStatusClass(status: string): string {
     const map: Record<string, string> = {
       Active: 'bg-green-100 text-green-700',
@@ -312,7 +378,7 @@ export class EmployeeManagementComponent implements OnInit {
       next: () => {
         this.deletingEmployeeId = null;
         this._ToastrService.success(`${emp.name} deleted successfully!`, 'Deleted!');
-        this.getEmployees();
+        this.fetchEmployees(); // will auto-go-back if page becomes empty
       },
       error: (err) => {
         this.deletingEmployeeId = null;
@@ -324,5 +390,23 @@ export class EmployeeManagementComponent implements OnInit {
 
   onView(emp: EmployeeNode): void {
     this._router.navigate(['/employee-details', emp.id], { state: { employee: emp } });
+  }
+
+  downloadQrCode(emp: EmployeeNode): void {
+    if (!emp.qrCodePath) {
+      this._ToastrService.warning('No QR code available for this employee.', 'Warning');
+      return;
+    }
+    const url = emp.qrCodePath.startsWith('http')
+      ? emp.qrCodePath
+      : `${Environment.baseUrl}${emp.qrCodePath.startsWith('/') ? '' : '/'}${emp.qrCodePath}`;
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${emp.name.replace(/\s+/g, '_')}_QR.png`;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

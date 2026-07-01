@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
 import { ECommerceSidebarComponent } from '../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component';
+import { NavbarECommerceComponent } from "../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component";
 
 interface Transaction {
   amount: number;
@@ -25,7 +26,7 @@ interface ReceivableAccount {
 @Component({
   selector: 'app-my-receivable',
   standalone: true,
-  imports: [CommonModule, ECommerceSidebarComponent],
+  imports: [CommonModule, ECommerceSidebarComponent, NavbarECommerceComponent],
   templateUrl: './my-receivable.component.html',
   styleUrl: './my-receivable.component.scss',
 })
@@ -33,11 +34,19 @@ export class MyReceivableComponent implements OnInit {
 
   isMobileSidebarOpen = false;
 
+  // ✅ كل الداتا الأصلية (من غير فلترة)
+  allAccounts: ReceivableAccount[] = [];
+
+  // ✅ الداتا المعروضة فعليًا (بعد الفلترة)
   accounts = signal<ReceivableAccount[]>([]);
+
   loading = signal(true);
   error = signal<string | null>(null);
   selectedAccount = signal<ReceivableAccount | null>(null);
   expandedTransactions = signal<Set<string>>(new Set());
+
+  // ✅ مصطلح البحث الحالي
+  searchTerm = '';
 
   constructor(private eCommerceService: ECommerceService) { }
 
@@ -52,7 +61,8 @@ export class MyReceivableComponent implements OnInit {
     this.eCommerceService.getReceivableAccounts().subscribe({
       next: (res) => {
         const data: ReceivableAccount[] = res?.data?.myReceivableAccounts?.nodes ?? [];
-        this.accounts.set(data);
+        this.allAccounts = data;           // ← خزّن النسخة الكاملة
+        this.applyFilters();               // ← طبّق أي سيرش لسه موجود
         if (data.length > 0) {
           this.selectedAccount.set(data[0]);
         }
@@ -63,6 +73,25 @@ export class MyReceivableComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  // ─── Search ───────────────────────────────────────────────
+  handleSearch(term: string): void {
+    this.searchTerm = term.trim().toLowerCase();
+    this.applyFilters();
+  }
+
+  private applyFilters(): void {
+    let result = [...this.allAccounts];
+
+    if (this.searchTerm) {
+      result = result.filter(acc =>
+        acc.customerId?.toLowerCase().includes(this.searchTerm) ||
+        acc.currency?.toLowerCase().includes(this.searchTerm)
+      );
+    }
+
+    this.accounts.set(result);
   }
 
   selectAccount(account: ReceivableAccount): void {

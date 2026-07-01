@@ -122,14 +122,33 @@
                                 <td class="px-6 py-4 text-sm text-slate-600">{{ emp.currency }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex justify-end gap-2">
+                                        <!-- زرار تحميل QR -->
+                                        <button (click)="downloadQrCode(emp)"
+                                            [disabled]="downloadingQrId === emp.id || !emp.qrCodePath"
+                                            class="p-1.5 text-slate-400 hover:text-green-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                                            title="Download QR Code">
+                                            <svg *ngIf="downloadingQrId === emp.id"
+                                                class="animate-spin h-5 w-5 text-green-500"
+                                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z">
+                                                </path>
+                                            </svg>
+                                            <span *ngIf="downloadingQrId !== emp.id"
+                                                class="material-symbols-outlined text-[20px]">qr_code_2</span>
+                                        </button>
+                                        <!-- View -->
                                         <button (click)="onView(emp)"
                                             class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors">
                                             <span class="material-symbols-outlined text-[20px]">visibility</span>
                                         </button>
+                                        <!-- Edit -->
                                         <button (click)="openEditModal(emp)"
                                             class="p-1.5 text-slate-400 hover:text-[#ec5b13] transition-colors">
                                             <span class="material-symbols-outlined text-[20px]">edit</span>
                                         </button>
+                                        <!-- Delete -->
                                         <button (click)="onDelete(emp)" [disabled]="deletingEmployeeId === emp.id"
                                             class="p-1.5 text-slate-400 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                                             <svg *ngIf="deletingEmployeeId === emp.id"
@@ -154,26 +173,25 @@
                 <div
                     class="px-4 md:px-6 py-4 bg-white border-t border-slate-200 flex flex-col md:flex-row items-center justify-between gap-3">
                     <p class="text-sm text-slate-500">
-                        Showing <span class="font-medium">{{ showingFrom }}</span> to
-                        <span class="font-medium">{{ showingTo }}</span> of
-                        <span class="font-medium">{{ totalEmployees }}</span> employees
+                        Showing <span class="font-medium">{{ showingFrom }}</span>–
+                        <span class="font-medium">{{ showingTo }}</span> employees
                     </p>
                     <div class="flex items-center gap-2">
-                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1"
-                            class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <!-- Previous -->
+                        <button (click)="prevPage()" [disabled]="!hasPreviousPage || isLoading"
+                            class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                             <span class="material-symbols-outlined">chevron_left</span>
                         </button>
-                        <ng-container *ngFor="let p of visiblePages">
-                            <button (click)="goToPage(p)"
-                                [class]="p === currentPage ? 'px-4 py-2 rounded-lg bg-blue-500 text-white font-medium text-sm' : 'px-4 py-2 rounded-lg hover:bg-slate-50 text-sm font-medium'">{{
-                                p }}</button>
-                        </ng-container>
-                        <span class="text-slate-400">...</span>
-                        <button (click)="goToPage(totalPages)"
-                            [class]="totalPages === currentPage ? 'px-4 py-2 rounded-lg bg-blue-500 text-white font-medium text-sm' : 'px-4 py-2 rounded-lg hover:bg-slate-50 text-sm font-medium'">{{
-                            totalPages }}</button>
-                        <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages"
-                            class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">
+
+                        <!-- Current Page Indicator -->
+                        <span
+                            class="min-w-[44px] text-center px-3 py-2 rounded-lg bg-blue-500 text-white font-medium text-sm select-none">
+                            {{ currentPageLabel }}
+                        </span>
+
+                        <!-- Next -->
+                        <button (click)="nextPage()" [disabled]="!hasNextPage || isLoading"
+                            class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                             <span class="material-symbols-outlined">chevron_right</span>
                         </button>
                     </div>

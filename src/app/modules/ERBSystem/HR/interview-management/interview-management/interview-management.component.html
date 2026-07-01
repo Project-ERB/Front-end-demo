@@ -140,9 +140,20 @@
                                         class="p-1.5 text-slate-400 hover:text-amber-600 active:bg-amber-50 rounded-lg transition-colors">
                                         <span class="material-symbols-outlined text-[18px]">edit</span>
                                     </button>
-                                    <button (click)="onDelete(interview)" title="Delete"
-                                        class="p-1.5 text-slate-400 hover:text-rose-600 active:bg-rose-50 rounded-lg transition-colors">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                    <button (click)="onDelete(interview)"
+                                        [disabled]="deletingInterviewId === interview.id" title="Delete"
+                                        class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+
+                                        @if (deletingInterviewId !== interview.id) {
+                                        <span class="material-symbols-outlined text-[20px]">
+                                            delete
+                                        </span>
+                                        } @else {
+                                        <span class="material-symbols-outlined text-[20px] animate-spin">
+                                            progress_activity
+                                        </span>
+                                        }
+
                                     </button>
                                 </div>
                             </div>
@@ -264,9 +275,20 @@
                                                 class="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors">
                                                 <span class="material-symbols-outlined text-[20px]">edit</span>
                                             </button>
-                                            <button (click)="onDelete(interview)" title="Delete"
-                                                class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
-                                                <span class="material-symbols-outlined text-[20px]">delete</span>
+                                            <button (click)="onDelete(interview)"
+                                                [disabled]="deletingInterviewId === interview.id" title="Delete"
+                                                class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+
+                                                @if (deletingInterviewId !== interview.id) {
+                                                <span class="material-symbols-outlined text-[20px]">
+                                                    delete
+                                                </span>
+                                                } @else {
+                                                <span class="material-symbols-outlined text-[20px] animate-spin">
+                                                    progress_activity
+                                                </span>
+                                                }
+
                                             </button>
                                         </div>
                                     </td>

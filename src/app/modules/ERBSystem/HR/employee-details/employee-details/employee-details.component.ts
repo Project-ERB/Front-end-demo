@@ -21,28 +21,21 @@ export class EmployeeDetailsComponent implements OnInit {
   activeTab = 'Overview';
   tabs: TabItem[] = [
     { label: 'Overview', active: true },
-    // { label: 'Employment', active: false },
-    // { label: 'Documents', active: false },
-    // { label: 'Performance', active: false },
-    // { label: 'Assets', active: false },
   ];
 
-  // ── Personal ────────────────────────────────────────
   get personal() {
     const addr = this.employee?.address;
-
     return {
       fullName: this.employee?.name ?? '—',
       email: this.employee?.email ?? '—',
       phone: this.employee?.phoneNumber ?? '—',
-      birthDate: '—',   // no longer available from nationalID string
+      birthDate: '—',
       address: addr
         ? `${addr.street}, ${addr.city}, ${addr.state} ${addr.postalCode}, ${addr.country}`
         : '—',
     };
   }
 
-  // ── Employment ──────────────────────────────────────
   get employment() {
     return {
       department: this.employee?.departmentId ?? '—',
@@ -55,7 +48,6 @@ export class EmployeeDetailsComponent implements OnInit {
     };
   }
 
-  // ── Financials ──────────────────────────────────────
   get financials() {
     return {
       salary: this.employee?.salary?.toString() ?? '—',
@@ -65,15 +57,10 @@ export class EmployeeDetailsComponent implements OnInit {
     };
   }
 
-  // ── National ID Info (extra card) ───────────────────
   get nationalInfo() {
     const natId = this.employee?.nationalID;
     if (!natId) return null;
-
-    // nationalID is now just the raw ID string e.g. "29901011234567"
-    return {
-      value: natId,
-    };
+    return { value: natId };
   }
 
   timeOff: TimeOffBand[] = [
@@ -99,11 +86,9 @@ export class EmployeeDetailsComponent implements OnInit {
     const stateEmp = nav?.extras?.state?.['employee'] as EmployeeNode | undefined;
     const routeId = this._route.snapshot.paramMap.get('id');
 
-    // جيب الـ departments أولاً، وبعدين جيب الـ employee
     this._EmployeeService.getDepartments().subscribe({
       next: (deps) => {
         this.departments = deps;
-
         if (stateEmp) {
           this.fetchByNationalId(stateEmp);
         } else if (routeId) {
@@ -115,7 +100,6 @@ export class EmployeeDetailsComponent implements OnInit {
       },
       error: (err) => {
         console.error(err);
-        // حتى لو الـ departments فشلت، كمّل وجيب الـ employee
         if (stateEmp) {
           this.fetchByNationalId(stateEmp);
         } else if (routeId) {
@@ -129,16 +113,15 @@ export class EmployeeDetailsComponent implements OnInit {
   }
 
   private fetchById(id: string): void {
-    // بنستخدم getEmployees ونفلتر بالـ id
     this._EmployeeService.getEmployees().subscribe({
       next: (employees) => {
-        const found = employees.find(e => e.id === id);
+        // ✅ FIX: employees is EmployeeConnection, use .nodes
+        const found = employees.nodes.find((e: EmployeeNode) => e.id === id);
         if (!found) {
           this.error = 'Employee not found.';
           this.isLoading = false;
           return;
         }
-        // لو لقيناه، نجيب التفاصيل الكاملة
         this.fetchByNationalId(found);
       },
       error: (err) => {
@@ -150,8 +133,7 @@ export class EmployeeDetailsComponent implements OnInit {
   }
 
   private fetchByNationalId(emp: EmployeeNode): void {
-    // nationalID is now a plain string, not a nested object
-    const natIdValue = emp.nationalID;   // ← was (emp as any).nationalID?.value
+    const natIdValue = emp.nationalID;
 
     if (!natIdValue) {
       this.employee = emp;
@@ -178,7 +160,6 @@ export class EmployeeDetailsComponent implements OnInit {
     this.tabs = this.tabs.map(t => ({ ...t, active: t.label === label }));
   }
 
-  // ── Label Helpers ───────────────────────────────────
   private levelLabel(val?: string): string {
     const map: Record<string, string> = {
       '1': 'Junior', '2': 'Intermediate', '3': 'Senior', '4': 'Lead', '5': 'Chief',

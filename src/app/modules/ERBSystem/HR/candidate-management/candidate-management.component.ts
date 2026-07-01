@@ -127,17 +127,32 @@ export class CandidateManagementComponent {
     this._Router.navigate(['/add-candidate']);
   }
 
+  deletingCandidateId: string | null = null;
+
   // ── Delete ─────────────────────────────────────────────────────────────────
   deleteCandidate(id: string): void {
     if (!confirm('Are you sure you want to delete this candidate?')) return;
 
+    this.deletingCandidateId = id;
+
     this._CandidateService.deleteCandidate(id).subscribe({
       next: () => {
-        this._ToastrService.success('Candidate Delete successfully', 'Success !')
+        this._ToastrService.success(
+          'Candidate deleted successfully',
+          'Success!'
+        );
+
         this.allCandidates.update(list => list.filter(c => c.id !== id));
+
+        this.deletingCandidateId = null;
       },
-      error: (err) => {
-        this._ToastrService.error('Candidate Delete Failed', 'Failed !')
+      error: () => {
+        this._ToastrService.error(
+          'Candidate delete failed',
+          'Failed!'
+        );
+
+        this.deletingCandidateId = null;
       },
     });
   }

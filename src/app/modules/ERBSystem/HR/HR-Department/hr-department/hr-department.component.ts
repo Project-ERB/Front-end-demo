@@ -114,10 +114,9 @@ export class HrDepartmentComponent implements OnInit {
     const inactive = data.length - active;
     this.statCards[0].value = data.length.toString();
     this.statCards[1].value = active.toString();
-    this.statCards[2].value = inactive.toString();
-    this.statCards[2].progress = data.length
-      ? Math.round((inactive / data.length) * 100)
-      : 0;
+    // ✅ شيل أو علّق السطرين دول لأن statCards[2] مش موجود
+    // this.statCards[2].value = inactive.toString();
+    // this.statCards[2].progress = data.length ? Math.round((inactive / data.length) * 100) : 0;
   }
 
   // ── Helpers ───────────────────────────────────────────

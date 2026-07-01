@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
 import { ECommerceSidebarComponent } from '../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component';
+import { NavbarECommerceComponent } from '../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component';
+
 interface InvoiceLine {
   productId: string;
   description: string;
@@ -30,7 +32,7 @@ interface Invoice {
 @Component({
   selector: 'app-my-invoices',
   standalone: true,
-  imports: [CommonModule, ECommerceSidebarComponent],
+  imports: [CommonModule, ECommerceSidebarComponent, NavbarECommerceComponent],
   templateUrl: './my-invoices.component.html',
   styleUrl: './my-invoices.component.scss',
 })
@@ -43,6 +45,9 @@ export class MyInvoicesComponent implements OnInit {
   error = signal<string | null>(null);
   expandedInvoices = signal<Set<string>>(new Set());
   activeFilter = signal<string>('all');
+
+  // ✅ مصطلح البحث الحالي (جاي من الـ navbar)
+  searchTerm = signal<string>('');
 
   readonly filters = ['all', 'paid', 'unpaid', 'partial', 'overdue'];
 
@@ -84,10 +89,32 @@ export class MyInvoicesComponent implements OnInit {
     this.activeFilter.set(filter);
   }
 
+  // ─── Search ───────────────────────────────────────────────
+  // ✅ الدالة اللي هتنادي عليها الـ navbar عبر (searchChanged)
+  handleSearch(term: string): void {
+    this.searchTerm.set(term.trim().toLowerCase());
+  }
+
   filteredInvoices = computed(() => {
     const f = this.activeFilter();
-    if (f === 'all') return this.invoices();
-    return this.invoices().filter(inv => inv.status?.toLowerCase() === f);
+    const term = this.searchTerm();
+
+    let result = this.invoices();
+
+    // 1. فلتر الحالة (Status Tabs)
+    if (f !== 'all') {
+      result = result.filter(inv => inv.status?.toLowerCase() === f);
+    }
+
+    // 2. فلتر السيرش (رقم الفاتورة أو العملة)
+    if (term) {
+      result = result.filter(inv =>
+        inv.invoiceNumber?.toLowerCase().includes(term) ||
+        inv.defaultCurrency?.toLowerCase().includes(term)
+      );
+    }
+
+    return result;
   });
 
   totalSummary = computed(() => {
@@ -126,6 +153,4 @@ export class MyInvoicesComponent implements OnInit {
     if (percent >= 50) return 'bg-amber-500';
     return 'bg-rose-500';
   }
-
-
 }

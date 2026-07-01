@@ -16,7 +16,7 @@ export interface Interview {
   applicationProcessId: string;
   interviewerName: string;
   interviewDate: string;
-  location: string;
+  location: string | null | undefined;
   interviewType: string; // بدل number
   stage: string;         // بدل number
 }
@@ -67,19 +67,19 @@ export class InterviewManagementComponent implements OnInit {
     { label: 'Avg. Completion Rate', icon: 'query_stats', value: '94%', sub: 'Last 30 days', subColor: 'text-slate-400' },
   ];
 
-  readonly interviewTypeLabels: Record<string, string> = {
+  readonly interviewTypeLabels: { [key: string]: string | undefined } = {
     'VideoCall': 'Video Call',
     'InPerson': 'In-Person',
     'Phone': 'Phone Call',
   };
 
-  readonly interviewTypeColors: Record<string, string> = {
+  readonly interviewTypeColors: { [key: string]: string | undefined } = {
     'VideoCall': 'bg-blue-100 text-blue-700',
     'InPerson': 'bg-orange-100 text-orange-700',
     'Phone': 'bg-purple-100 text-purple-700',
   };
 
-  readonly stageLabels: Record<string, string> = {
+  readonly stageLabels: { [key: string]: string | undefined } = {
     'InitialScreening': 'Initial Screening',
     'TechnicalAssessment': 'Technical Assessment',
     'CulturalFit': 'Cultural Fit',
@@ -139,9 +139,9 @@ export class InterviewManagementComponent implements OnInit {
   onEdit(interview: Interview): void {
     const dateObj = new Date(interview.interviewDate);
     this.editForm = {
-      interviewId: interview.id,
-      interviewer: interview.interviewerName,
-      location: interview.location,
+      interviewId: interview.id ?? '',
+      interviewer: interview.interviewerName ?? '',
+      location: interview.location ?? '',
       date: dateObj.toISOString().split('T')[0],
       time: dateObj.toTimeString().slice(0, 5),
     };
@@ -193,18 +193,37 @@ export class InterviewManagementComponent implements OnInit {
     });
   }
 
+  deletingInterviewId: string | null = null;
+
   onDelete(interview: Interview): void {
     if (!confirm('Are you sure you want to delete this interview?')) return;
 
+    this.deletingInterviewId = interview.id;
+
     this._applicationsService.deleteInterview(interview.id).subscribe({
       next: (res) => {
-        console.log(res)
-        this._ToastrService.success('Interview details Deleted successfully!', 'Success !');
-        this.allInterviews.update(list => list.filter(i => i.id !== interview.id));
+        console.log(res);
+
+        this._ToastrService.success(
+          'Interview deleted successfully!',
+          'Success!'
+        );
+
+        this.allInterviews.update(list =>
+          list.filter(i => i.id !== interview.id)
+        );
+
+        this.deletingInterviewId = null;
       },
       error: (err) => {
-        this._ToastrService.error('Interview details Deleted Failed !', 'Failed !');
-        console.error('Delete failed:', err);
+        console.error(err);
+
+        this._ToastrService.error(
+          'Interview delete failed!',
+          'Failed!'
+        );
+
+        this.deletingInterviewId = null;
       },
     });
   }

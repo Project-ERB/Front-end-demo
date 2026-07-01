@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { ApplicationContract, ApplicationsService } from '../../../../../core/services/Applications/applications.service';
-import { EmployeeService } from '../../../../../core/services/employee/employee.service';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/employee/employee.service';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 @Component({
@@ -14,11 +14,12 @@ import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sideb
 export class ContractDetailsComponent implements OnInit {
   private readonly _route = inject(ActivatedRoute);
   private readonly _appService = inject(ApplicationsService);
+  private readonly _employeeService = inject(EmployeeService);
 
   contractData: ApplicationContract | null = null;
   isLoading = true;
+  employeeName = '';
 
-  // باقي الـ static data زي ما هي
   contract = { id: '', status: '', type: '', issuedOn: '' };
   employee = {
     name: 'Johnathan Doe',
@@ -39,7 +40,6 @@ export class ContractDetailsComponent implements OnInit {
     probationStatus: 'Completed',
   };
 
-  // باقي الـ milestones و documents زي ما هم
   milestones = [
     { date: 'Jan 15, 2024', title: 'Contract Signed', description: 'Digitally signed', status: 'completed' as const },
     { date: 'Apr 15, 2024', title: 'Probation Passed', description: 'Confirmed by manager', status: 'completed' as const },
@@ -59,9 +59,11 @@ export class ContractDetailsComponent implements OnInit {
       this._appService.getContractById(id).subscribe({
         next: (data) => {
           this.contractData = data;
+
           this._employeeService.getEmployees().subscribe({
             next: (emps) => {
-              const emp = emps.find(e => e.id === data.employeeId);
+              // ✅ FIX: emps is EmployeeConnection, use .nodes
+              const emp = emps.nodes.find((e: EmployeeNode) => e.id === data.employeeId);
               this.employeeName = emp ? emp.name : 'Unknown';
             }
           });
@@ -98,7 +100,6 @@ export class ContractDetailsComponent implements OnInit {
       Expired: 'Expired',
       PartTime: 'Part Time',
     };
-
     return map[status] ?? 'Unknown';
   }
 
@@ -109,7 +110,6 @@ export class ContractDetailsComponent implements OnInit {
       FixedTerm: 'Fixed-term Contract',
       Internship: 'Internship',
     };
-
     return map[type] ?? 'Unknown';
   }
 
@@ -122,8 +122,4 @@ export class ContractDetailsComponent implements OnInit {
       ? 'text-xs font-bold text-[#2563EB] uppercase tracking-tighter mb-0.5'
       : 'text-xs font-bold text-slate-400 uppercase tracking-tighter mb-0.5';
   }
-
-  private readonly _employeeService = inject(EmployeeService);
-
-  employeeName = '';
 }

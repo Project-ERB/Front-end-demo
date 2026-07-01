@@ -2,24 +2,40 @@
   class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-800 px-6 py-3 bg-white dark:bg-background-dark/50 backdrop-blur-sm z-10 shrink-0">
   <div class="flex items-center gap-8">
     <div class="flex items-center gap-3 text-gray-900 dark:text-white">
-      <div class="size-8 text-main">
-        <svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M24 45.8096C19.6865 45.8096 15.4698 44.5305 11.8832 42.134C8.29667 39.7376 5.50128 36.3314 3.85056 32.3462C2.19985 28.361 1.76794 23.9758 2.60947 19.7452C3.451 15.5145 5.52816 11.6284 8.57829 8.5783C11.6284 5.52817 15.5145 3.45101 19.7452 2.60948C23.9758 1.76795 28.361 2.19986 32.3462 3.85057C36.3314 5.50129 39.7376 8.29668 42.134 11.8833C44.5305 15.4698 45.8096 19.6865 45.8096 24L24 24L24 45.8096Z">
-          </path>
-        </svg>
-      </div>
-      <a routerLink="/home" class="text-xl font-bold leading-tight tracking-[-0.015em]">
-        E-Commerce ERP
+      <a routerLink="/home" class="flex items-center gap-3 group transition-all duration-300">
+
+        <!-- أيقونة الـ Cart/Stack -->
+        <div class="flex-shrink-0">
+          <svg width="36" height="36" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 5 14 L 9 29 L 31 29 L 35 14" fill="none" stroke="#2463eb" stroke-width="2.8"
+              stroke-linejoin="round" stroke-linecap="round" />
+            <path d="M 11 14 C 11 4 29 4 31 14" fill="none" stroke="#2463eb" stroke-width="2.8"
+              stroke-linecap="round" />
+            <circle cx="14" cy="33" r="2" fill="#2463eb" />
+            <circle cx="26" cy="33" r="2" fill="#2463eb" />
+            <rect x="13" y="21" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.9" />
+            <rect x="19" y="14" width="8" height="7" rx="1.5" fill="#2463eb" opacity="0.5" />
+          </svg>
+        </div>
+
+        <!-- النص -->
+        <div class="flex flex-col">
+          <span
+            class="text-lg font-bold text-slate-800 dark:text-white group-hover:text-[#2463eb] transition-colors leading-tight">
+            Commerce
+            <span class="bg-gradient-to-r from-[#2463eb] to-indigo-500 bg-clip-text text-transparent">Stack</span>
+          </span>
+          <span class="text-[10px] font-medium text-slate-400 dark:text-gray-500 uppercase tracking-widest">ERP</span>
+        </div>
+
       </a>
     </div>
   </div>
   <div class="flex flex-1 justify-end gap-4 items-center">
     <label class="flex flex-col min-w-40 !h-10 max-w-sm w-full">
-      <div class="flex w-full flex-1 items-stretch rounded-lg h-full" >
-        <div
-          class="text-gray-500 dark:text-gray-400 flex bg-gray-100 dark:bg-white/10 items-center justify-center
-           pl-4 rounded-l-lg border-r-0" >
+      <div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+        <div class="text-gray-500 dark:text-gray-400 flex bg-gray-100 dark:bg-white/10 items-center justify-center
+           pl-4 rounded-l-lg border-r-0">
           <span class="material-symbols-outlined text-xl">search</span>
         </div>
         <input
@@ -32,16 +48,16 @@
         class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300">
         <span class="material-symbols-outlined">notifications</span>
       </button>
-      <a
-        class="relative flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300"
-         routerLink="/cart">
+      <a class="relative flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 w-10 bg-transparent hover:bg-gray-100 dark:hover:bg-white/10 text-gray-600 dark:text-gray-300"
+        routerLink="/cart">
         <span class="material-symbols-outlined">shopping_cart</span>
         <!-- ← اعرض الـ badge بس لو عنده items -->
-         @if (cartCount > 0) { 
-          <div class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-main text-xs font-bold text-white">
+        @if (cartCount > 0) {
+        <div
+          class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-main text-xs font-bold text-white">
           {{ cartCount > 99 ? '99+' : cartCount }}
         </div>}
-       
+
       </a>
       <div class="flex items-center gap-3 pl-2">
         <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image"

@@ -4,6 +4,19 @@ import { map, Observable } from 'rxjs';
 import { Environment } from '../../../shared/UI/environment/env';
 import { isPlatformBrowser } from '@angular/common';
 
+// ── Interfaces ──────────────────────────────────────────────────────────────
+export interface PageInfo {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor: string | null;
+  endCursor: string | null;
+}
+
+export interface EmployeesConnection {
+  nodes: EmployeeNode[];
+  pageInfo: PageInfo;
+}
+
 export interface EmployeeNode {
   id: string;
   name: string;
@@ -15,10 +28,11 @@ export interface EmployeeNode {
   employeeType: string;
   status: string;
   managerId: string;
-  nationalID?: string;   // ← was a nested object, now just a string
+  nationalID?: string;
   hiredate?: string;
   roleId?: string;
   email?: string;
+  qrCodePath?: string;
   address?: {
     street: string;
     city: string;
@@ -28,6 +42,10 @@ export interface EmployeeNode {
   };
 }
 
+const EMPTY_CONNECTION: EmployeesConnection = {
+  nodes: [],
+  pageInfo: { hasNextPage: false, hasPreviousPage: false, startCursor: null, endCursor: null },
+};
 
 @Injectable({
   providedIn: 'root',
@@ -75,12 +93,84 @@ export class EmployeeService {
     );
   }
 
-  // ── Get All Employees (GraphQL) ───────────────────────────────────────────
-  getEmployees(): Observable<EmployeeNode[]> {
+  // ── Get All Employees (GraphQL) — Cursor-Based Pagination ─────────────────
+  getEmployees(
+    first?: number,
+    after?: string | null,
+    last?: number,
+    before?: string | null
+  ): Observable<EmployeesConnection> {
+    const args: string[] = [];
+    if (first != null) args.push(`first: ${first}`);
+    if (after) args.push(`after: "${after}"`);
+    if (last != null) args.push(`last: ${last}`);
+    if (before) args.push(`before: "${before}"`);
+    const argsStr = args.length ? `(${args.join(', ')})` : '';
+
     const query = `
-        query {
-      employees {
-        nodes {
+      query {
+        employees${argsStr} {
+          pageInfo {
+            hasNextPage
+            hasPreviousPage
+            startCursor
+            endCursor
+          }
+          nodes {
+            id
+            hiredate
+            employeeType
+            status
+            roleId
+            managerId
+            name
+            nationalID
+            phoneNumber
+            address {
+              street
+              city
+              state
+              postalCode
+              country
+            }
+            email
+            salary
+            currency
+            employeeLevel
+            departmentId
+            qrCodePath
+          }
+        }
+      }
+    `;
+
+    return this._HttpClient
+      .post<{ data: { employees: EmployeesConnection | null } | null; errors?: any[] }>(
+        `${Environment.baseUrl}/graphql?t=${Date.now()}`,
+        { query },
+        { headers: this.headers }
+      )
+      .pipe(map(res => {
+        if (res?.errors?.length) {
+          console.error('GraphQL errors (getEmployees):', res.errors);
+        }
+        // ✅ Defensive fallback: never let consumers receive/crash on null
+        // (can happen if an invalid/stale cursor is sent, auth fails, or
+        // the resolver throws and GraphQL still returns HTTP 200 with data:null)
+        const connection = res?.data?.employees;
+        if (!connection) {
+          console.warn('getEmployees: backend returned null employees connection. Falling back to empty list.', res);
+          return EMPTY_CONNECTION;
+        }
+        return connection;
+      }));
+  }
+
+  // ── Get Employee By ID ────────────────────────────────────────────────────
+  getEmployeeById(nationalId: string): Observable<EmployeeNode> {
+    const query = `
+      query {
+        employee(nationalId: "${nationalId}") {
           id
           hiredate
           employeeType
@@ -104,46 +194,7 @@ export class EmployeeService {
           departmentId
         }
       }
-    }
-  `;
-
-    return this._HttpClient
-      .post<{ data: { employees: { nodes: EmployeeNode[] } } }>(
-        `${Environment.baseUrl}/graphql?t=${Date.now()}`,
-        { query },
-        { headers: this.headers }
-      )
-      .pipe(map(res => res.data.employees.nodes));
-  }
-
-  getEmployeeById(nationalId: string): Observable<EmployeeNode> {
-    const query = `
-    query {
-        employee(nationalId: "${nationalId}") {
-            id
-            hiredate
-            employeeType
-            status
-            roleId
-            managerId
-            name
-            nationalID
-            phoneNumber
-            address {
-              street
-              city
-              state
-              postalCode
-              country
-            }
-            email
-            salary
-            currency
-            employeeLevel
-            departmentId
-      }
-    }
-  `;
+    `;
 
     return this._HttpClient
       .post<{ data: { employee: EmployeeNode } }>(
@@ -154,25 +205,25 @@ export class EmployeeService {
       .pipe(map(res => res.data.employee));
   }
 
+  // ── Get Departments ───────────────────────────────────────────────────────
   getDepartments(): Observable<{ id: string; name: string }[]> {
     const query = `
-    query {
-      departments {
-        nodes {
-          id
-          name
+      query {
+        departments {
+          nodes {
+            id
+            name
+          }
         }
       }
-    }
-  `;
+    `;
 
     return this._HttpClient
-      .post<{ data: { departments: { nodes: { id: string; name: string }[] } } }>(
+      .post<{ data: { departments: { nodes: { id: string; name: string }[] } | null } | null }>(
         `${Environment.baseUrl}/graphql`,
         { query },
         { headers: this.headers }
       )
-      .pipe(map(res => res.data.departments.nodes));
+      .pipe(map(res => res?.data?.departments?.nodes ?? []));
   }
-
 }

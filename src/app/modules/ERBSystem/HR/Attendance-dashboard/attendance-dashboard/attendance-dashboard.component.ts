@@ -1,9 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EmployeeService } from '../../../../../core/services/employee/employee.service';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/employee/employee.service';
 import { AttendanceService, CheckInRequest, COMPANIES } from '../../../../../core/services/Attendance/attendance.service';
-import { EmployeeNode } from '../../employee-management/employee-management/employee-management.component';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -36,7 +35,7 @@ export interface AttendanceRecord {
   bookingHours: number;
   lateMinutes: number;
   overtimeMinutes: number;
-  attendanceStatus: number; // 0 = present, غيره حسب الـ API
+  attendanceStatus: number;
   nationalId: string;
 }
 
@@ -65,25 +64,19 @@ export class AttendanceDashboardComponent implements OnInit {
     }
   }
 
-
-
-  // ── Table state ────────────────────────────────────────────────────────────
   searchQuery = '';
   activeTab: 'today' | 'yesterday' = 'today';
   currentPage = 1;
   totalEmployees = 144;
   pageSize = 4;
 
-  // ── Modal state ────────────────────────────────────────────────────────────
   showCheckinModal = false;
 
-
-  // Modal - employees list
+  // ✅ FIX: typed as EmployeeNode[] (already correct, just ensure import is from service)
   modalEmployees: EmployeeNode[] = [];
   modalLoading = false;
   modalError = '';
 
-  // Modal - form fields
   selectedEmployeeId = '';
   selectedCompanyId = '';
   companies = COMPANIES;
@@ -93,15 +86,12 @@ export class AttendanceDashboardComponent implements OnInit {
   searchLoading = false;
   searchError = '';
 
-  // Modal - submission
   submitting = false;
   submitSuccess = false;
   submitError = '';
 
-  // Modal - geolocation
   private userLat = 0;
   private userLng = 0;
-
 
   attendanceRecords: AttendanceRecord[] = [];
   loadingRecords = false;
@@ -130,7 +120,7 @@ export class AttendanceDashboardComponent implements OnInit {
 
       return {
         id: record.id,
-        name: employee?.name ?? record.nationalId,  // اسم الموظف أو الـ ID كـ fallback
+        name: employee?.name ?? record.nationalId,
         role: employee?.employeeLevel ?? '',
         empCode: record.nationalId,
         avatar: '',
@@ -140,7 +130,7 @@ export class AttendanceDashboardComponent implements OnInit {
       };
     });
   }
-  // حول الـ ISO date لـ وقت بس  "08:52 AM"
+
   formatTime(isoString: string | null): string {
     if (!isoString) return '—';
     return new Date(isoString).toLocaleTimeString('en-US', {
@@ -150,7 +140,6 @@ export class AttendanceDashboardComponent implements OnInit {
     });
   }
 
-  // حول attendanceStatus number لـ AttendanceStatus string
   mapStatus(statusCode: number): AttendanceStatus {
     const map: Record<number, AttendanceStatus> = {
       0: 'present',
@@ -160,13 +149,10 @@ export class AttendanceDashboardComponent implements OnInit {
     return map[statusCode] ?? 'absent';
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
-
   ngOnInit(): void {
     this.loadModalEmployees();
   }
 
-  // ── Modal open/close ───────────────────────────────────────────────────────
   openCheckinModal(): void {
     this.showCheckinModal = true;
     this.selectedEmployeeId = '';
@@ -187,7 +173,8 @@ export class AttendanceDashboardComponent implements OnInit {
     this.modalLoading = true;
     this._employeeService.getEmployees().subscribe({
       next: (data) => {
-        this.modalEmployees = data;
+        // ✅ FIX: data is EmployeeConnection, extract .nodes
+        this.modalEmployees = data.nodes;
         this.modalLoading = false;
       },
       error: () => {
@@ -201,7 +188,7 @@ export class AttendanceDashboardComponent implements OnInit {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         pos => { this.userLat = pos.coords.latitude; this.userLng = pos.coords.longitude; },
-        () => { /* denied → sends 0,0 */ }
+        () => { }
       );
     }
   }
@@ -260,7 +247,6 @@ export class AttendanceDashboardComponent implements OnInit {
     this._Router.navigate([`/${route}`]);
   }
 
-  // ── Table helpers ──────────────────────────────────────────────────────────
   get totalPages(): number {
     return Math.ceil(this.totalEmployees / this.pageSize);
   }
@@ -278,8 +264,6 @@ export class AttendanceDashboardComponent implements OnInit {
     { icon: 'history', label: 'Late', value: 12, colorBg: 'bg-amber-100 dark:bg-amber-900/30', colorText: 'text-amber-600' },
     { icon: 'person_off', label: 'Absent', value: 8, colorBg: 'bg-rose-100 dark:bg-rose-900/30', colorText: 'text-rose-600' },
   ];
-
-
 
   get filteredEmployees(): Employee[] {
     if (!this.searchQuery.trim()) return this.attendanceAsEmployees;
@@ -332,7 +316,6 @@ export class AttendanceDashboardComponent implements OnInit {
 
     this._attendanceService.deleteAttendance(id).subscribe({
       next: () => {
-        // ✅ فلتر من attendanceRecords مش employees
         this.attendanceRecords = this.attendanceRecords.filter(r => r.id !== id);
       },
       error: (err) => {

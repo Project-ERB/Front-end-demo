@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HrSidebarComponent } from '../../../../shared/UI/hr-sidebar/hr-sidebar.component';
 import { ApplicationContract, ApplicationsService } from '../../../../core/services/Applications/applications.service';
-import { EmployeeService } from '../../../../core/services/employee/employee.service';
+import { EmployeeService, EmployeeNode } from '../../../../core/services/employee/employee.service';
 
 @Component({
   selector: 'app-contract-management',
@@ -14,6 +14,7 @@ import { EmployeeService } from '../../../../core/services/employee/employee.ser
 })
 export class ContractManagementComponent implements OnInit {
   private readonly _appService = inject(ApplicationsService);
+  private readonly _employeeService = inject(EmployeeService);
 
   showMobileSearch = false;
 
@@ -21,9 +22,7 @@ export class ContractManagementComponent implements OnInit {
     this.showMobileSearch = !this.showMobileSearch;
   }
 
-  toggleSidebar() {
-    // حسب طريقة السايدبار عندك
-  }
+  toggleSidebar() { }
 
   searchQuery = '';
   activeFilter: string | 'All' = 'All';
@@ -37,6 +36,7 @@ export class ContractManagementComponent implements OnInit {
   ];
 
   allContracts: ApplicationContract[] = [];
+  employees: EmployeeNode[] = [];
 
   ngOnInit(): void {
     this.loadContracts();
@@ -78,9 +78,8 @@ export class ContractManagementComponent implements OnInit {
       Active: 'Active',
       Pending: 'Pending',
       Expired: 'Expired',
-      PartTime: 'Part Time', // أو حسب الدومين عندك
+      PartTime: 'Part Time',
     };
-
     return map[status] ?? 'Unknown';
   }
 
@@ -115,13 +114,10 @@ export class ContractManagementComponent implements OnInit {
     });
   }
 
-  private readonly _employeeService = inject(EmployeeService);
-
-  employees: any[] = [];
-
   loadEmployees(): void {
     this._employeeService.getEmployees().subscribe({
-      next: (res) => this.employees = res,
+      // ✅ FIX: res is EmployeeConnection, use .nodes
+      next: (res) => this.employees = res.nodes,
       error: (err) => console.error(err)
     });
   }

@@ -2,9 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AttendanceService } from '../../../../core/services/Attendance/attendance.service';
-import { EmployeeService } from '../../../../core/services/employee/employee.service';
+import { EmployeeNode, EmployeeService } from '../../../../core/services/employee/employee.service';
 import { AttendanceRecord } from '../Attendance-dashboard/attendance-dashboard/attendance-dashboard.component';
-import { EmployeeNode } from '../employee-management/employee-management/employee-management.component';
+
 
 
 @Component({

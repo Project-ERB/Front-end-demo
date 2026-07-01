@@ -193,18 +193,33 @@ export class JopManagementComponent implements OnInit {
     this._Router.navigate(['/jop-details', req.id]);
   }
 
+  deletingRequirementId: string | null = null;
 
   onDelete(req: any): void {
     if (!confirm(`Delete "${req.title}"?`)) return;
 
+    this.deletingRequirementId = req.id;
+
     this._JopService.deleteRecruitment(req.id).subscribe({
       next: () => {
         this.allRequirements = this.allRequirements.filter(r => r.id !== req.id);
-        this._ToastrService.success('Requirement deleted successfully!', 'Success');
+
+        this._ToastrService.success(
+          'Requirement deleted successfully!',
+          'Success'
+        );
+
+        this.deletingRequirementId = null;
       },
       error: (err) => {
         console.error(err);
-        this._ToastrService.error('Failed to delete requirement.', 'Error');
+
+        this._ToastrService.error(
+          'Failed to delete requirement.',
+          'Error'
+        );
+
+        this.deletingRequirementId = null;
       },
     });
   }

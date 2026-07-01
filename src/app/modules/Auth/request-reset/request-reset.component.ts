@@ -27,7 +27,13 @@ export class RequestResetComponent implements OnInit {
   private readonly _activatedRoute = inject(ActivatedRoute);
 
   isLoading: WritableSignal<boolean> = signal(false);
-  // isLinkSent مش هنعملها signal عشان هننتقل تاني على طول
+
+  // ✅ نفس النمط
+  apiResponse: WritableSignal<{
+    type: 'success' | 'error';
+    message: string;
+    details?: string[];
+  } | null> = signal(null);
 
   private userEmail: string = '';
 
@@ -48,19 +54,27 @@ export class RequestResetComponent implements OnInit {
     if (this.requestForm.invalid) return;
 
     this.isLoading.set(true);
+    this.apiResponse.set(null);
+
     const email = this.requestForm.value.email;
 
     this._authService.ForgotPassword(email).subscribe({
-      next: () => {
+      next: (res: any) => {
         this.isLoading.set(false);
-        this._toastr.success('If this email exists, a reset link has been sent.', 'Check Your Inbox 📧');
-
-        // ✅ التعديل هنا: التوجيه لصفحة "تفقد إيميلك"
+        const msg = res?.message || 'If this email exists, a reset link has been sent.';
+        this.apiResponse.set({ type: 'success', message: msg });
+        this._toastr.success(msg, 'Check Your Inbox 📧');
         this._router.navigate(['/email-confirmed']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading.set(false);
-        this._toastr.error(err?.error?.message || 'Failed to send link.', 'Error');
+        const errors: string[] = err?.error?.errors || [err?.error?.message || 'Failed to send link.'];
+        this.apiResponse.set({
+          type: 'error',
+          message: err?.error?.message || 'Failed to send link.',
+          details: errors,
+        });
+        this._toastr.error(errors[0], 'Error');
       }
     });
   }

@@ -145,9 +145,20 @@
                                             <span class="material-symbols-outlined text-[18px]">visibility</span>
                                         </button>
                                         <button (click)="deleteCandidate(c.id)"
-                                            class="p-1.5 text-slate-400 hover:text-red-500 transition-colors active:bg-red-50 rounded-lg"
-                                            title="Delete">
-                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                            [disabled]="deletingCandidateId === c.id"
+                                            class="p-1.5 text-slate-400 transition-colors hover:text-red-500 rounded-lg hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed"
+                                            title="Delete candidate">
+
+                                            <span *ngIf="deletingCandidateId !== c.id"
+                                                class="material-symbols-outlined text-lg">
+                                                delete
+                                            </span>
+
+                                            <span *ngIf="deletingCandidateId === c.id"
+                                                class="material-symbols-outlined text-lg animate-spin">
+                                                progress_activity
+                                            </span>
+
                                         </button>
                                     </div>
                                 </div>
@@ -238,9 +249,20 @@
                                                 <span class="material-symbols-outlined text-lg">visibility</span>
                                             </button>
                                             <button (click)="deleteCandidate(c.id)"
-                                                class="p-1.5 text-slate-400 transition-colors hover:text-red-500 rounded-lg hover:bg-red-50"
+                                                [disabled]="deletingCandidateId === c.id"
+                                                class="p-1.5 text-slate-400 transition-colors hover:text-red-500 rounded-lg hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed"
                                                 title="Delete candidate">
-                                                <span class="material-symbols-outlined text-lg">delete</span>
+
+                                                <span *ngIf="deletingCandidateId !== c.id"
+                                                    class="material-symbols-outlined text-lg">
+                                                    delete
+                                                </span>
+
+                                                <span *ngIf="deletingCandidateId === c.id"
+                                                    class="material-symbols-outlined text-lg animate-spin">
+                                                    progress_activity
+                                                </span>
+
                                             </button>
                                         </div>
                                     </td>

@@ -1,284 +1,310 @@
 <div
-    class="relative flex min-h-screen w-full bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-950 overflow-hidden font-sans">
-    <div
-        class="pointer-events-none absolute left-0 top-0 h-[22rem] w-[22rem] rounded-full bg-main/15 blur-3xl -translate-x-1/3 -translate-y-1/3">
-    </div>
-    <div
-        class="pointer-events-none absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
-    </div>
+    class="relative flex h-screen w-full flex-col bg-gradient-to-br from-slate-100 via-indigo-50 to-cyan-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-950 overflow-hidden font-sans">
 
-    <app-e-commerce-sidebar [(isMobileSidebarOpen)]="isMobileSidebarOpen"></app-e-commerce-sidebar>
+    <!-- الناف: ثابت فوق دايمًا -->
+    <app-navbar-e-commerce (searchChanged)="handleSearch($event)"></app-navbar-e-commerce>
 
-    <main class="relative z-10 flex-1 overflow-x-hidden">
+    <!-- الصف اللي تحت الناف: سايدبار + main -->
+    <div class="relative z-10 flex flex-1 overflow-hidden">
 
-        <!-- Mobile Top Bar -->
         <div
-            class="sticky top-0 z-10 flex items-center gap-4 border-b border-gray-200 dark:border-white/5 bg-white/80 dark:bg-gray-950/80 px-6 py-4 backdrop-blur-xl lg:hidden">
-            <button (click)="isMobileSidebarOpen = true"
-                class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition">
-                <span class="material-symbols-outlined text-xl">menu</span>
-            </button>
-            <h1 class="text-base font-semibold text-gray-800 dark:text-white">My Invoices</h1>
+            class="pointer-events-none absolute left-0 top-0 h-[22rem] w-[22rem] rounded-full bg-main/15 blur-3xl -translate-x-1/3 -translate-y-1/3">
+        </div>
+        <div
+            class="pointer-events-none absolute right-0 bottom-0 h-[24rem] w-[24rem] rounded-full bg-cyan-400/20 blur-3xl translate-x-1/4 translate-y-1/4">
         </div>
 
-        <div class="px-6 py-8 lg:px-10 lg:py-10 max-w-6xl mx-auto">
+        <!-- السايدبار: ثابت بارتفاع كامل -->
+        <app-e-commerce-sidebar [(isMobileSidebarOpen)]="isMobileSidebarOpen"
+            class="h-full overflow-y-auto"></app-e-commerce-sidebar>
 
-            <!-- Page Header -->
-            <div class="mb-8 hidden lg:block">
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-main mb-1">Billing Center</p>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Invoices</h1>
-                <p class="mt-1 text-sm text-gray-500">Review all your invoices, payment status, and line items</p>
+        <!-- المحتوى: العنصر الوحيد اللي بيعمل scroll -->
+        <main class="relative z-10 flex-1 overflow-y-auto overflow-x-hidden">
+
+            <!-- Mobile Top Bar -->
+            <div
+                class="sticky top-0 z-10 flex items-center gap-4 border-b border-gray-200 dark:border-white/5 bg-white/80 dark:bg-gray-950/80 px-6 py-4 backdrop-blur-xl lg:hidden">
+                <button (click)="isMobileSidebarOpen = true"
+                    class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-white/10 transition">
+                    <span class="material-symbols-outlined text-xl">menu</span>
+                </button>
+                <h1 class="text-base font-semibold text-gray-800 dark:text-white">My Invoices</h1>
             </div>
 
-            <!-- Loading -->
-            <div *ngIf="loading()" class="flex flex-col items-center justify-center py-32 gap-4">
-                <span class="material-symbols-outlined text-4xl text-main animate-spin">progress_activity</span>
-                <p class="text-sm text-gray-500">Loading your invoices…</p>
-            </div>
+            <div class="px-6 py-8 lg:px-10 lg:py-10 max-w-6xl mx-auto">
 
-            <!-- Error -->
-            <div *ngIf="!loading() && error()"
-                class="rounded-2xl border border-red-200 dark:border-rose-500/20 bg-red-50 dark:bg-rose-500/5 px-6 py-5 flex items-center gap-4">
-                <span class="material-symbols-outlined text-red-500 dark:text-rose-400 text-3xl">error_outline</span>
-                <div>
-                    <p class="text-sm font-semibold text-red-700 dark:text-rose-300">Something went wrong</p>
-                    <p class="text-xs text-gray-500 mt-0.5">{{ error() }}</p>
-                </div>
-                <button (click)="loadInvoices()"
-                    class="ml-auto text-xs text-main hover:opacity-75 transition font-medium">Retry</button>
-            </div>
-
-            <!-- Empty -->
-            <div *ngIf="!loading() && !error() && invoices().length === 0"
-                class="flex flex-col items-center justify-center py-32 gap-3">
-                <div class="rounded-full bg-gray-100 dark:bg-white/5 p-5 mb-2">
-                    <span class="material-symbols-outlined text-4xl text-gray-400">receipt_long</span>
-                </div>
-                <p class="text-base font-semibold text-gray-700 dark:text-gray-300">No invoices found</p>
-                <p class="text-sm text-gray-400">Your invoices will appear here once available.</p>
-            </div>
-
-            <ng-container *ngIf="!loading() && !error() && invoices().length > 0">
-
-                <!-- Summary Cards -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div
-                        class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total Invoices
-                        </p>
-                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalSummary().count }}</p>
-                    </div>
-                    <div
-                        class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total Amount
-                        </p>
-                        <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ totalSummary().total |
-                            number:'1.2-2' }}</p>
-                    </div>
-                    <div
-                        class="rounded-2xl border border-green-200 dark:border-emerald-500/10 bg-green-50 dark:bg-emerald-500/5 px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-green-600 mb-1">Total Paid</p>
-                        <p class="text-2xl font-bold text-green-600 dark:text-emerald-400">{{ totalSummary().paid |
-                            number:'1.2-2' }}</p>
-                    </div>
-                    <div
-                        class="rounded-2xl border border-red-200 dark:border-rose-500/10 bg-red-50 dark:bg-rose-500/5 px-5 py-4">
-                        <p class="text-[11px] font-semibold uppercase tracking-wider text-red-600 mb-1">Outstanding</p>
-                        <p class="text-2xl font-bold text-red-500 dark:text-rose-400">{{ totalSummary().remaining |
-                            number:'1.2-2' }}</p>
-                    </div>
+                <!-- Page Header -->
+                <div class="mb-8 hidden lg:block">
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-main mb-1">Billing Center</p>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">My Invoices</h1>
+                    <p class="mt-1 text-sm text-gray-500">Review all your invoices, payment status, and line items</p>
                 </div>
 
-                <!-- Filter Tabs -->
-                <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
-                    <button *ngFor="let f of filters" (click)="setFilter(f)"
-                        class="shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all"
-                        [ngClass]="activeFilter() === f
+                <!-- Loading -->
+                <div *ngIf="loading()" class="flex flex-col items-center justify-center py-32 gap-4">
+                    <span class="material-symbols-outlined text-4xl text-main animate-spin">progress_activity</span>
+                    <p class="text-sm text-gray-500">Loading your invoices…</p>
+                </div>
+
+                <!-- Error -->
+                <div *ngIf="!loading() && error()"
+                    class="rounded-2xl border border-red-200 dark:border-rose-500/20 bg-red-50 dark:bg-rose-500/5 px-6 py-5 flex items-center gap-4">
+                    <span
+                        class="material-symbols-outlined text-red-500 dark:text-rose-400 text-3xl">error_outline</span>
+                    <div>
+                        <p class="text-sm font-semibold text-red-700 dark:text-rose-300">Something went wrong</p>
+                        <p class="text-xs text-gray-500 mt-0.5">{{ error() }}</p>
+                    </div>
+                    <button (click)="loadInvoices()"
+                        class="ml-auto text-xs text-main hover:opacity-75 transition font-medium">Retry</button>
+                </div>
+
+                <!-- Empty -->
+                <div *ngIf="!loading() && !error() && invoices().length === 0"
+                    class="flex flex-col items-center justify-center py-32 gap-3">
+                    <div class="rounded-full bg-gray-100 dark:bg-white/5 p-5 mb-2">
+                        <span class="material-symbols-outlined text-4xl text-gray-400">receipt_long</span>
+                    </div>
+                    <p class="text-base font-semibold text-gray-700 dark:text-gray-300">No invoices found</p>
+                    <p class="text-sm text-gray-400">Your invoices will appear here once available.</p>
+                </div>
+
+                <ng-container *ngIf="!loading() && !error() && invoices().length > 0">
+
+                    <!-- Summary Cards -->
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div
+                            class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total
+                                Invoices
+                            </p>
+                            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ totalSummary().count }}</p>
+                        </div>
+                        <div
+                            class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-1">Total
+                                Amount
+                            </p>
+                            <p class="text-2xl font-bold text-gray-800 dark:text-gray-200">{{ totalSummary().total |
+                                number:'1.2-2' }}</p>
+                        </div>
+                        <div
+                            class="rounded-2xl border border-green-200 dark:border-emerald-500/10 bg-green-50 dark:bg-emerald-500/5 px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-green-600 mb-1">Total Paid
+                            </p>
+                            <p class="text-2xl font-bold text-green-600 dark:text-emerald-400">{{ totalSummary().paid |
+                                number:'1.2-2' }}</p>
+                        </div>
+                        <div
+                            class="rounded-2xl border border-red-200 dark:border-rose-500/10 bg-red-50 dark:bg-rose-500/5 px-5 py-4">
+                            <p class="text-[11px] font-semibold uppercase tracking-wider text-red-600 mb-1">Outstanding
+                            </p>
+                            <p class="text-2xl font-bold text-red-500 dark:text-rose-400">{{ totalSummary().remaining |
+                                number:'1.2-2' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs -->
+                    <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-1">
+                        <button *ngFor="let f of filters" (click)="setFilter(f)"
+                            class="shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all"
+                            [ngClass]="activeFilter() === f
               ? 'bg-main text-white shadow-lg shadow-main/20'
               : 'bg-white dark:bg-white/5 text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-transparent hover:bg-gray-50 dark:hover:bg-white/10'">
-                        {{ f }}
-                    </button>
-                </div>
-
-                <!-- Invoices List -->
-                <div class="flex flex-col gap-4">
-
-                    <div *ngIf="filteredInvoices().length === 0" class="text-center py-16 text-sm text-gray-400">
-                        No invoices match the selected filter.
+                            {{ f }}
+                        </button>
                     </div>
 
-                    <div *ngFor="let inv of filteredInvoices()"
-                        class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm overflow-hidden transition-all duration-200 hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-0.5">
+                    <!-- Invoices List -->
+                    <div class="flex flex-col gap-4">
 
-                        <!-- Invoice Header -->
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5">
-                            <div class="flex items-center gap-4 flex-1 min-w-0">
-                                <div
-                                    class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-main/10 border border-main/20">
-                                    <span class="material-symbols-outlined text-main text-xl">receipt_long</span>
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="text-xs text-gray-500 uppercase tracking-wider font-medium">Invoice</p>
-                                    <p class="text-sm font-bold text-gray-900 dark:text-white font-mono truncate">{{
-                                        inv.invoiceNumber }}</p>
-                                </div>
-                            </div>
-                            <div class="hidden sm:flex flex-col">
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Date</p>
-                                <p class="text-sm text-gray-600 dark:text-gray-300 font-mono">{{ inv.invoiceDate |
-                                    date:'dd MMM yyyy' }}</p>
-                            </div>
-                            <div class="hidden md:flex flex-col">
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Currency</p>
-                                <p class="text-sm text-gray-700 dark:text-gray-300 font-bold">{{ inv.defaultCurrency }}
-                                </p>
-                            </div>
-                            <div class="flex flex-col items-end sm:items-start">
-                                <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Total</p>
-                                <p class="text-sm font-bold text-gray-900 dark:text-white">{{ inv.totalAmount |
-                                    number:'1.2-2' }}</p>
-                            </div>
-                            <span
-                                class="self-start sm:self-center shrink-0 text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border flex items-center gap-1.5"
-                                [ngClass]="getStatusClass(inv.status)">
-                                <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStatusDot(inv.status)"></span>
-                                {{ inv.status }}
-                            </span>
-                            <button (click)="toggleInvoice(inv.invoiceNumber)"
-                                class="shrink-0 flex items-center gap-1.5 text-xs text-gray-500 hover:text-main transition-colors font-medium">
-                                <span class="hidden sm:inline">{{ isExpanded(inv.invoiceNumber) ? 'Hide' : 'Details'
-                                    }}</span>
-                                <span class="material-symbols-outlined text-lg transition-transform duration-300"
-                                    [class.rotate-180]="isExpanded(inv.invoiceNumber)">expand_more</span>
-                            </button>
+                        <div *ngIf="filteredInvoices().length === 0" class="text-center py-16 text-sm text-gray-400">
+                            No invoices match the selected filter.
                         </div>
 
-                        <!-- Progress Bar -->
-                        <div class="px-6 pb-4 border-b border-gray-100 dark:border-white/5">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <p class="text-[11px] text-gray-500">
-                                    Paid <span class="text-gray-700 dark:text-gray-400 font-semibold">{{ inv.paidAmount
-                                        | number:'1.2-2' }}</span>
-                                    / {{ inv.totalAmount | number:'1.2-2' }}
-                                </p>
-                                <p class="text-[11px] font-bold"
-                                    [ngClass]="getPaidPercent(inv) >= 100 ? 'text-green-600 dark:text-emerald-400' : 'text-gray-500'">
-                                    {{ getPaidPercent(inv) }}%
-                                </p>
-                            </div>
-                            <div class="h-1.5 w-full rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
-                                <div class="h-full rounded-full transition-all duration-700"
-                                    [style.width.%]="getPaidPercent(inv)" [ngClass]="getBarColor(getPaidPercent(inv))">
-                                </div>
-                            </div>
-                        </div>
+                        <div *ngFor="let inv of filteredInvoices()"
+                            class="rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white/90 dark:bg-white/[0.03] backdrop-blur-sm overflow-hidden transition-all duration-200 hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-0.5">
 
-                        <!-- Expanded Details -->
-                        <div *ngIf="isExpanded(inv.invoiceNumber)">
-                            <div
-                                class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-px bg-gray-100 dark:bg-white/5">
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
-                                        Subtotal</p>
-                                    <p class="text-sm font-bold text-gray-700 dark:text-gray-300">{{ inv.subtotal |
+                            <!-- Invoice Header -->
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 py-5">
+                                <div class="flex items-center gap-4 flex-1 min-w-0">
+                                    <div
+                                        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-main/10 border border-main/20">
+                                        <span class="material-symbols-outlined text-main text-xl">receipt_long</span>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider font-medium">Invoice
+                                        </p>
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white font-mono truncate">{{
+                                            inv.invoiceNumber }}</p>
+                                    </div>
+                                </div>
+                                <div class="hidden sm:flex flex-col">
+                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Date</p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 font-mono">{{ inv.invoiceDate |
+                                        date:'dd MMM yyyy' }}</p>
+                                </div>
+                                <div class="hidden md:flex flex-col">
+                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Currency
+                                    </p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 font-bold">{{ inv.defaultCurrency
+                                        }}
+                                    </p>
+                                </div>
+                                <div class="flex flex-col items-end sm:items-start">
+                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium">Total</p>
+                                    <p class="text-sm font-bold text-gray-900 dark:text-white">{{ inv.totalAmount |
                                         number:'1.2-2' }}</p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">Tax
+                                <span
+                                    class="self-start sm:self-center shrink-0 text-[11px] font-bold uppercase tracking-widest px-3 py-1 rounded-full border flex items-center gap-1.5"
+                                    [ngClass]="getStatusClass(inv.status)">
+                                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="getStatusDot(inv.status)"></span>
+                                    {{ inv.status }}
+                                </span>
+                                <button (click)="toggleInvoice(inv.invoiceNumber)"
+                                    class="shrink-0 flex items-center gap-1.5 text-xs text-gray-500 hover:text-main transition-colors font-medium">
+                                    <span class="hidden sm:inline">{{ isExpanded(inv.invoiceNumber) ? 'Hide' : 'Details'
+                                        }}</span>
+                                    <span class="material-symbols-outlined text-lg transition-transform duration-300"
+                                        [class.rotate-180]="isExpanded(inv.invoiceNumber)">expand_more</span>
+                                </button>
+                            </div>
+
+                            <!-- Progress Bar -->
+                            <div class="px-6 pb-4 border-b border-gray-100 dark:border-white/5">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <p class="text-[11px] text-gray-500">
+                                        Paid <span class="text-gray-700 dark:text-gray-400 font-semibold">{{
+                                            inv.paidAmount
+                                            | number:'1.2-2' }}</span>
+                                        / {{ inv.totalAmount | number:'1.2-2' }}
                                     </p>
-                                    <p class="text-sm font-bold text-amber-500">{{ inv.totalTax | number:'1.2-2' }}</p>
-                                </div>
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
-                                        Discount</p>
-                                    <p class="text-sm font-bold text-green-600 dark:text-emerald-400">{{
-                                        inv.totalDiscount | number:'1.2-2' }}</p>
-                                </div>
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">Paid
+                                    <p class="text-[11px] font-bold"
+                                        [ngClass]="getPaidPercent(inv) >= 100 ? 'text-green-600 dark:text-emerald-400' : 'text-gray-500'">
+                                        {{ getPaidPercent(inv) }}%
                                     </p>
-                                    <p class="text-sm font-bold text-green-600 dark:text-emerald-400">{{ inv.paidAmount
-                                        | number:'1.2-2' }}</p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-950 px-5 py-4 col-span-2 sm:col-span-1">
-                                    <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
-                                        Remaining</p>
-                                    <p class="text-sm font-bold"
-                                        [ngClass]="inv.remainingAmount > 0 ? 'text-red-500 dark:text-rose-400' : 'text-green-600 dark:text-emerald-400'">
-                                        {{ inv.remainingAmount | number:'1.2-2' }}
-                                    </p>
+                                <div class="h-1.5 w-full rounded-full bg-gray-100 dark:bg-white/5 overflow-hidden">
+                                    <div class="h-full rounded-full transition-all duration-700"
+                                        [style.width.%]="getPaidPercent(inv)"
+                                        [ngClass]="getBarColor(getPaidPercent(inv))">
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Line Items -->
-                            <div class="border-t border-gray-100 dark:border-white/5">
-                                <div class="px-6 py-3 bg-gray-50 dark:bg-white/[0.02] flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-sm text-main">list_alt</span>
-                                    <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Line
-                                        Items</p>
-                                    <span
-                                        class="text-[11px] font-bold text-main bg-main/10 border border-main/20 rounded-full px-2 py-0.5">
-                                        {{ inv.lines?.length ?? 0 }}
-                                    </span>
+                            <!-- Expanded Details -->
+                            <div *ngIf="isExpanded(inv.invoiceNumber)">
+                                <div
+                                    class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-px bg-gray-100 dark:bg-white/5">
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Subtotal</p>
+                                        <p class="text-sm font-bold text-gray-700 dark:text-gray-300">{{ inv.subtotal |
+                                            number:'1.2-2' }}</p>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Tax
+                                        </p>
+                                        <p class="text-sm font-bold text-amber-500">{{ inv.totalTax | number:'1.2-2' }}
+                                        </p>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Discount</p>
+                                        <p class="text-sm font-bold text-green-600 dark:text-emerald-400">{{
+                                            inv.totalDiscount | number:'1.2-2' }}</p>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Paid
+                                        </p>
+                                        <p class="text-sm font-bold text-green-600 dark:text-emerald-400">{{
+                                            inv.paidAmount
+                                            | number:'1.2-2' }}</p>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-950 px-5 py-4 col-span-2 sm:col-span-1">
+                                        <p class="text-[11px] text-gray-500 uppercase tracking-wider font-medium mb-1">
+                                            Remaining</p>
+                                        <p class="text-sm font-bold"
+                                            [ngClass]="inv.remainingAmount > 0 ? 'text-red-500 dark:text-rose-400' : 'text-green-600 dark:text-emerald-400'">
+                                            {{ inv.remainingAmount | number:'1.2-2' }}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div *ngIf="!inv.lines || inv.lines.length === 0"
-                                    class="px-6 py-6 text-center text-sm text-gray-400">No line items.</div>
-                                <div *ngIf="inv.lines && inv.lines.length > 0" class="overflow-x-auto">
-                                    <table class="w-full text-sm">
-                                        <thead>
-                                            <tr class="bg-gray-50 dark:bg-white/[0.02]">
-                                                <th
-                                                    class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Description</th>
-                                                <th
-                                                    class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Qty</th>
-                                                <th
-                                                    class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Unit Price</th>
-                                                <th
-                                                    class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 hidden md:table-cell">
-                                                    Tax</th>
-                                                <th
-                                                    class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 hidden md:table-cell">
-                                                    Discount</th>
-                                                <th
-                                                    class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                                                    Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="divide-y divide-gray-100 dark:divide-white/5">
-                                            <tr *ngFor="let line of inv.lines"
-                                                class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
-                                                <td class="px-6 py-4">
-                                                    <p class="text-sm text-gray-800 dark:text-gray-200 font-medium">{{
-                                                        line.description || '—' }}</p>
-                                                    <p class="text-[11px] text-gray-400 font-mono mt-0.5">{{
-                                                        line.productId }}</p>
-                                                </td>
-                                                <td class="px-6 py-4 text-right text-sm text-gray-500 font-mono">{{
-                                                    line.quantity }}</td>
-                                                <td
-                                                    class="px-6 py-4 text-right text-sm text-gray-700 dark:text-gray-300 font-mono font-medium">
-                                                    {{ line.unitPrice | number:'1.2-2' }}</td>
-                                                <td
-                                                    class="px-6 py-4 text-right text-sm text-amber-500 font-mono hidden md:table-cell">
-                                                    {{ line.taxAmount | number:'1.2-2' }}</td>
-                                                <td
-                                                    class="px-6 py-4 text-right text-sm text-green-600 dark:text-emerald-400 font-mono hidden md:table-cell">
-                                                    {{ line.discountAmount | number:'1.2-2' }}</td>
-                                                <td
-                                                    class="px-6 py-4 text-right text-sm font-bold text-gray-900 dark:text-white font-mono">
-                                                    {{ line.lineTotal | number:'1.2-2' }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+
+                                <!-- Line Items -->
+                                <div class="border-t border-gray-100 dark:border-white/5">
+                                    <div class="px-6 py-3 bg-gray-50 dark:bg-white/[0.02] flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-sm text-main">list_alt</span>
+                                        <p class="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Line
+                                            Items</p>
+                                        <span
+                                            class="text-[11px] font-bold text-main bg-main/10 border border-main/20 rounded-full px-2 py-0.5">
+                                            {{ inv.lines?.length ?? 0 }}
+                                        </span>
+                                    </div>
+                                    <div *ngIf="!inv.lines || inv.lines.length === 0"
+                                        class="px-6 py-6 text-center text-sm text-gray-400">No line items.</div>
+                                    <div *ngIf="inv.lines && inv.lines.length > 0" class="overflow-x-auto">
+                                        <table class="w-full text-sm">
+                                            <thead>
+                                                <tr class="bg-gray-50 dark:bg-white/[0.02]">
+                                                    <th
+                                                        class="px-6 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Description</th>
+                                                    <th
+                                                        class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Qty</th>
+                                                    <th
+                                                        class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Unit Price</th>
+                                                    <th
+                                                        class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 hidden md:table-cell">
+                                                        Tax</th>
+                                                    <th
+                                                        class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500 hidden md:table-cell">
+                                                        Discount</th>
+                                                    <th
+                                                        class="px-6 py-3 text-right text-[11px] font-semibold uppercase tracking-wider text-gray-500">
+                                                        Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                                                <tr *ngFor="let line of inv.lines"
+                                                    class="hover:bg-gray-50 dark:hover:bg-white/[0.03] transition-colors">
+                                                    <td class="px-6 py-4">
+                                                        <p class="text-sm text-gray-800 dark:text-gray-200 font-medium">
+                                                            {{
+                                                            line.description || '—' }}</p>
+                                                        <p class="text-[11px] text-gray-400 font-mono mt-0.5">{{
+                                                            line.productId }}</p>
+                                                    </td>
+                                                    <td class="px-6 py-4 text-right text-sm text-gray-500 font-mono">{{
+                                                        line.quantity }}</td>
+                                                    <td
+                                                        class="px-6 py-4 text-right text-sm text-gray-700 dark:text-gray-300 font-mono font-medium">
+                                                        {{ line.unitPrice | number:'1.2-2' }}</td>
+                                                    <td
+                                                        class="px-6 py-4 text-right text-sm text-amber-500 font-mono hidden md:table-cell">
+                                                        {{ line.taxAmount | number:'1.2-2' }}</td>
+                                                    <td
+                                                        class="px-6 py-4 text-right text-sm text-green-600 dark:text-emerald-400 font-mono hidden md:table-cell">
+                                                        {{ line.discountAmount | number:'1.2-2' }}</td>
+                                                    <td
+                                                        class="px-6 py-4 text-right text-sm font-bold text-gray-900 dark:text-white font-mono">
+                                                        {{ line.lineTotal | number:'1.2-2' }}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </ng-container>
-        </div>
-    </main>
+                </ng-container>
+            </div>
+        </main>
+    </div>
 </div>

@@ -146,9 +146,20 @@
                                             class="p-1.5 text-slate-400 hover:text-blue-500 rounded-lg active:bg-blue-50 transition-colors">
                                             <span class="material-symbols-outlined text-[18px]">edit</span>
                                         </button>
-                                        <button (click)="onDelete(req)"
-                                            class="p-1.5 text-slate-400 hover:text-red-500 rounded-lg active:bg-red-50 transition-colors">
-                                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        <button (click)="onDelete(req)" [disabled]="deletingRequirementId === req.id"
+                                            title="Delete"
+                                            class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 disabled:opacity-60 disabled:cursor-not-allowed">
+
+                                            <span *ngIf="deletingRequirementId !== req.id"
+                                                class="material-symbols-outlined text-lg">
+                                                delete
+                                            </span>
+
+                                            <span *ngIf="deletingRequirementId === req.id"
+                                                class="material-symbols-outlined text-lg animate-spin">
+                                                progress_activity
+                                            </span>
+
                                         </button>
                                     </div>
                                 </div>
@@ -261,9 +272,20 @@
                                                 class="p-1.5 text-slate-400 hover:text-blue-500 transition-colors rounded-lg hover:bg-blue-50">
                                                 <span class="material-symbols-outlined text-lg">edit</span>
                                             </button>
-                                            <button (click)="onDelete(req)" title="Delete"
-                                                class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
-                                                <span class="material-symbols-outlined text-lg">delete</span>
+                                            <button (click)="onDelete(req)"
+                                                [disabled]="deletingRequirementId === req.id"
+                                                class="p-1.5 text-slate-400 hover:text-red-500 rounded-lg active:bg-red-50 transition-colors disabled:opacity-60">
+
+                                                <span *ngIf="deletingRequirementId !== req.id"
+                                                    class="material-symbols-outlined text-[18px]">
+                                                    delete
+                                                </span>
+
+                                                <span *ngIf="deletingRequirementId === req.id"
+                                                    class="material-symbols-outlined text-[18px] animate-spin">
+                                                    progress_activity
+                                                </span>
+
                                             </button>
                                         </div>
                                     </td>

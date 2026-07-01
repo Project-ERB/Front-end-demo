@@ -13,6 +13,10 @@ import { EmployeeService } from '../../../../../core/services/employee/employee.
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
+import {
+  DepartmentService,
+  DepartmentNode
+} from '../../../../../core/services/department/department.service';
 
 
 
@@ -30,6 +34,8 @@ interface RoleOption {
 })
 export class AddEmployeeComponent implements OnInit {
 
+  departments: DepartmentNode[] = [];
+
   employeeForm!: FormGroup;
   isSubmitting = false;
   submitSuccess = false;
@@ -42,8 +48,10 @@ export class AddEmployeeComponent implements OnInit {
   selectedPermissions = new Set<string>();
 
   // ── Fixed IDs ──────────────────────────────────────────
+  // ⚠️ لازم يكون ده GUID فعلي لموظف موجود في جدول الـ Employees في نفس
+  // البيئة (Environment) اللي بتشتغل عليها، وإلا هيحصل Foreign Key /
+  // Reference constraint violation عند الـ Create.
   readonly MANAGER_ID = '6730cfb3-8a7f-4b5e-9b8f-884dddfa01e0';
-  readonly DEPARTMENT_ID = '6a32ef0d-908a-4127-a256-52cbe7728f09';
 
   navItems = [
     { icon: 'dashboard', label: 'Dashboard', active: false },
@@ -84,6 +92,7 @@ export class AddEmployeeComponent implements OnInit {
     private adminService: AdminService,
     private _EmployeeService: EmployeeService,
     private permissionService: PermissionService,
+    private departmentService: DepartmentService,
     private _Router: Router,
     private _ToastrService: ToastrService
   ) { }
@@ -91,6 +100,7 @@ export class AddEmployeeComponent implements OnInit {
   ngOnInit(): void {
     this.buildForm();
     this.loadRolesAndPermissions();
+    this.loadDepartments();
   }
 
   private buildForm(): void {
@@ -115,6 +125,18 @@ export class AddEmployeeComponent implements OnInit {
       hireDate: [new Date().toISOString().split('T')[0], Validators.required],
       status: [1],          // Active
       roleId: ['', Validators.required],
+      departmentId: ['', Validators.required],
+    });
+  }
+
+  private loadDepartments(): void {
+    this.departmentService.getDepartments().subscribe({
+      next: (res) => {
+        this.departments = res.filter(d => d.isActive);
+      },
+      error: (err) => {
+        console.error(err);
+      }
     });
   }
 
@@ -204,11 +226,11 @@ export class AddEmployeeComponent implements OnInit {
       salaryAmount: Number(v.salaryAmount),
       salaryCurrency: v.salaryCurrency,
       employeeLevel: Number(v.jobLevel),
-      departmentId: this.DEPARTMENT_ID,
+      departmentId: v.departmentId,
       hireDate: v.hireDate,
       employeeType: Number(v.employeeType),
       employeeStatus: Number(v.status),
-      roleid: v.roleId,
+      roleId: v.roleId,
       permissions: permissionsMap,
       managerId: this.MANAGER_ID,
     };
@@ -256,11 +278,24 @@ export class AddEmployeeComponent implements OnInit {
       error: (err) => {
         this.isSubmitting = false;
 
+        // 🔍 اطبع تفاصيل الخطأ الكاملة زي ما راجعة من الباك إند عشان تعرف
+        // بالظبط أي Foreign Key سبب الـ Reference constraint violation
+        console.error('createEmployee failed. Full backend response:', err?.error);
+
+        const isReferenceConstraint =
+          err?.error?.title === 'Reference constraint violation' ||
+          err?.error?.errors?.some((e: string) =>
+            e?.toLowerCase().includes('reference') || e?.toLowerCase().includes('depend')
+          );
+
         const message =
           err?.error?.reasons?.[0]?.message ||
           err?.error?.errors?.[0]?.message ||
-          'Something went wrong';
+          (isReferenceConstraint
+            ? 'One of the selected values (Department, Role, or Manager) is invalid or no longer exists. Please re-check your selections.'
+            : 'Something went wrong');
 
+        this.errorMessage = message;
         this._ToastrService.error(message, 'Failed!');
       }
     });

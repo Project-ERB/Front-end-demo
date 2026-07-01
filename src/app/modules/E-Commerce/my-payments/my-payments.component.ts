@@ -2,6 +2,7 @@ import { Component, computed, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ECommerceSidebarComponent } from '../../../shared/UI/e-commerce-sidebar/e-commerce-sidebar.component';
 import { ECommerceService } from '../../../core/services/e-commerce/e-commerce.service';
+import { NavbarECommerceComponent } from '../../../shared/UI/navbar-e-commerce/navbar-e-commerce.component';
 
 
 interface PaymentTransaction {
@@ -19,13 +20,13 @@ interface Payment {
   invoiceTotalAmount: number;
   totalPaid: number;
   remainingAmount: number;
-  transactions: PaymentTransaction[];
+  transactions: PaymentTransaction[] | null; // أو: transactions?: PaymentTransaction[];
 }
 
 @Component({
   selector: 'app-my-payments',
   standalone: true,
-  imports: [CommonModule, ECommerceSidebarComponent],
+  imports: [CommonModule, ECommerceSidebarComponent, NavbarECommerceComponent],
   templateUrl: './my-payments.component.html',
   styleUrl: './my-payments.component.scss',
 })
@@ -38,6 +39,9 @@ export class MyPaymentsComponent implements OnInit {
   error = signal<string | null>(null);
   expandedPayments = signal<Set<string>>(new Set());
   activeFilter = signal<string>('all');
+
+  // ✅ مصطلح البحث الحالي (جاي من الـ navbar)
+  searchTerm = signal<string>('');
 
   readonly filters = ['all', 'paid', 'partial', 'unpaid'];
 
@@ -78,6 +82,12 @@ export class MyPaymentsComponent implements OnInit {
     this.activeFilter.set(f);
   }
 
+  // ─── Search ───────────────────────────────────────────────
+  // ✅ الدالة اللي هتنادي عليها الـ navbar عبر (searchChanged)
+  handleSearch(term: string): void {
+    this.searchTerm.set(term.trim().toLowerCase());
+  }
+
   getPaymentStatus(p: Payment): string {
     if (p.remainingAmount <= 0) return 'paid';
     if (p.totalPaid > 0) return 'partial';
@@ -86,8 +96,25 @@ export class MyPaymentsComponent implements OnInit {
 
   filteredPayments = computed(() => {
     const f = this.activeFilter();
-    if (f === 'all') return this.payments();
-    return this.payments().filter(p => this.getPaymentStatus(p) === f);
+    const term = this.searchTerm();
+
+    let result = this.payments();
+
+    // 1. فلتر الحالة (Status Tabs)
+    if (f !== 'all') {
+      result = result.filter(p => this.getPaymentStatus(p) === f);
+    }
+
+    // 2. فلتر السيرش (Payment ID / Invoice ID / Currency)
+    if (term) {
+      result = result.filter(p =>
+        p.id?.toLowerCase().includes(term) ||
+        p.invoiceId?.toLowerCase().includes(term) ||
+        p.currency?.toLowerCase().includes(term)
+      );
+    }
+
+    return result;
   });
 
   totalSummary = computed(() => {

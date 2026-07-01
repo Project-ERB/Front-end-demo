@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApplicationsService, CreateContractPayload } from '../../../../../core/services/Applications/applications.service';
 import { inject } from '@angular/core';
-import { EmployeeService } from '../../../../../core/services/employee/employee.service';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/employee/employee.service';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 
 export interface Employee {
@@ -27,11 +27,9 @@ export class AddContractComponent implements OnInit {
   private readonly _appService = inject(ApplicationsService);
   private readonly _employeeService = inject(EmployeeService);
 
-  toggleSidebar() {
-    // حسب طريقة السايدبار عندك
-  }
-  isLoading = false;
+  toggleSidebar() { }
 
+  isLoading = false;
   employees: Employee[] = [];
 
   ngOnInit(): void {
@@ -41,23 +39,19 @@ export class AddContractComponent implements OnInit {
   loadEmployees(): void {
     this._employeeService.getEmployees().subscribe({
       next: (res) => {
-
-        this.employees = res.map(emp => ({
+        // ✅ FIX: res is EmployeeConnection, use .nodes
+        this.employees = res.nodes.map((emp: EmployeeNode) => ({
           id: emp.id,
           name: emp.name,
-          empId: emp.nationalID || emp.id // لو عايز تعرض National ID بدل ID
+          empId: emp.nationalID || emp.id,
         }));
-
         console.log(this.employees);
       },
-
       error: (err) => {
         console.error('Error loading employees:', err);
       }
     });
   }
-
-
 
   contractTypes = [
     { value: 0, label: 'Full-time Permanent' },
@@ -72,7 +66,6 @@ export class AddContractComponent implements OnInit {
     { value: 'claire', label: 'Claire Redfield (Security)' },
   ];
 
-  // status mapped to number: draft = 0, active = 1
   statusOptions = [
     { value: 0, label: 'Draft' },
     { value: 1, label: 'Active' },
@@ -85,7 +78,7 @@ export class AddContractComponent implements OnInit {
     endDate: '',
     salary: null as number | null,
     currency: 'USD',
-    status: 0,   // 0 = Draft, 1 = Active
+    status: 0,
     managerId: 'jane',
   };
 
@@ -111,7 +104,6 @@ export class AddContractComponent implements OnInit {
       next: (res) => {
         console.log('Contract created:', res);
         this.isLoading = false;
-        // TODO: navigate or show success toast
       },
       error: (err) => {
         console.error('Error creating contract:', err);

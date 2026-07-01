@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HrSidebarComponent } from "../../../../../shared/UI/hr-sidebar/hr-sidebar.component";
 import { AddPayrollRequest, PayrollService } from '../../../../../core/services/payroll/payroll.service';
-import { EmployeeService } from '../../../../../core/services/employee/employee.service';
-import { EmployeeNode } from '../../employee-management/employee-management/employee-management.component';
+import { EmployeeService, EmployeeNode } from '../../../../../core/services/employee/employee.service';
 
 export interface PayrollRecord {
   id: string;
@@ -91,8 +90,9 @@ export class PayrollManagementComponent {
 
     this._employeeService.getEmployees().subscribe({
       next: (data) => {
-        console.log('employees:', data.map(e => ({ id: e.id, nationalID: e.nationalID, name: e.name })));
-        this.modalEmployees = data;
+        // ✅ FIX: data is EmployeeConnection, use .nodes
+        console.log('employees:', data.nodes.map((e: EmployeeNode) => ({ id: e.id, nationalID: e.nationalID, name: e.name })));
+        this.modalEmployees = data.nodes;
         this.loadingEmployees = false;
       },
       error: () => { this.loadingEmployees = false; },
@@ -138,7 +138,6 @@ export class PayrollManagementComponent {
     { icon: 'description', label: 'Reports', active: false },
     { icon: 'settings', label: 'Settings', active: false },
   ];
-
 
   readonly summaryCards: SummaryCard[] = [
     { label: 'Total Monthly Payout', value: '$452,890.00', badge: '+4.2% vs last mo', badgeColor: 'green' },
@@ -229,7 +228,7 @@ export class PayrollManagementComponent {
 
     const q = value.toLowerCase();
     this.searchResults = this.modalEmployees.filter(e =>
-      e.nationalID?.toLowerCase().includes(q)  // ← nationalID بدل name
+      e.nationalID?.toLowerCase().includes(q)
     );
     this.showDropdown = this.searchResults.length > 0;
   }
@@ -238,7 +237,7 @@ export class PayrollManagementComponent {
     this.selectedEmployee.set(emp);
     this.searchEmployeeName = emp.name;
     this.showDropdown = false;
-    this.loadPayrollByEmployee(emp.nationalID!); // ← nationalID بدل id
+    this.loadPayrollByEmployee(emp.nationalID!);
   }
 
   loadPayrollByEmployee(nationalId: string): void {
@@ -267,14 +266,14 @@ export class PayrollManagementComponent {
     this.selectedEmployee.set(null);
     this.searchResults = [];
     this.showDropdown = false;
-    this.payrollRecords.set([]); // ← set مش =
+    this.payrollRecords.set([]);
     this.payrollError = '';
   }
 
-  // أضف في الـ class
   constructor() {
     this._employeeService.getEmployees().subscribe({
-      next: (data) => { this.modalEmployees = data; },
+      // ✅ FIX: data is EmployeeConnection, use .nodes
+      next: (data) => { this.modalEmployees = data.nodes; },
       error: () => { }
     });
   }
@@ -313,7 +312,6 @@ export class PayrollManagementComponent {
       next: () => {
         this.editSubmitting = false;
         this.editSuccess = true;
-        // refresh records
         if (this.selectedEmployee()) {
           this.loadPayrollByEmployee(this.selectedEmployee()!.nationalID!);
         }
@@ -328,7 +326,6 @@ export class PayrollManagementComponent {
 
   onDeleteRecord(record: any): void {
     const id = record.id ?? record.payrollId;
-
     if (!id) return;
 
     const confirmDelete = confirm('Are you sure you want to delete this payroll?');
@@ -336,7 +333,6 @@ export class PayrollManagementComponent {
 
     this._payrollService.deletePayroll(id).subscribe({
       next: () => {
-        // refresh data بعد الحذف
         if (this.selectedEmployee()) {
           this.loadPayrollByEmployee(this.selectedEmployee()!.nationalID!);
         }
@@ -352,7 +348,7 @@ export class PayrollManagementComponent {
 
   viewPayrollDetails(payrollId: string): void {
     this._router.navigate(['/payroll-details', payrollId], {
-      state: { employee: this.selectedEmployee() }  // ✅ مرر الـ employee
+      state: { employee: this.selectedEmployee() }
     });
   }
 }

@@ -50,7 +50,9 @@
         <path
           d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z"
           fill="currentColor"></path>
-        <path clip-rule="evenodd" d="M10.4485 13.8519..." fill="currentColor" fill-rule="evenodd"></path>
+        <path
+          d="M24 5.44351C20.737 5.44351 17.7086 5.79299 15.2073 6.39014C11.1227 7.36533 8.44365 9.00111 8.44365 10.8546C8.44365 12.7081 11.1227 14.3438 15.2073 15.319C17.7086 15.9161 20.737 16.2656 24 16.2656C27.263 16.2656 30.2914 15.9161 32.7927 15.319C36.8773 14.3438 39.5563 12.7081 39.5563 10.8546C39.5563 9.00111 36.8773 7.36533 32.7927 6.39014C30.2914 5.79299 27.263 5.44351 24 5.44351Z"
+          fill="currentColor"></path>
       </svg>
     </div>
     <h2 class="text-[#111318] dark:text-white text-lg font-bold">
@@ -113,6 +115,22 @@
             <a (click)="ToForgotPassword()" class="text-sm font-medium text-main hover:underline cursor-pointer">Forgot
               Password?</a>
           </div>
+
+          <!-- ✅ عرض الريسبونس (نجاح / خطأ) -->
+          @if (apiResponse() && apiResponse()!.type === 'error') {
+          <div
+            class="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex flex-col gap-1">
+            @for (msg of (apiResponse()!.details ?? [apiResponse()!.message]); track msg) {
+            <div class="flex items-start gap-2"><span class="mt-0.5">•</span><span>{{ msg }}</span></div>
+            }
+          </div>
+          }
+          @if (apiResponse() && apiResponse()!.type === 'success') {
+          <div
+            class="text-sm text-green-600 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-3 flex items-start gap-2">
+            <span class="mt-0.5">✓</span><span>{{ apiResponse()!.message }}</span>
+          </div>
+          }
 
           <button type="submit" [disabled]="loginForm.invalid || isLoading"
             class="flex w-full items-center justify-center gap-2 cursor-pointer rounded-xl h-12 bg-gradient-to-r from-main to-indigo-500 text-white text-base font-bold transition-all duration-300 hover:from-hover-main hover:to-indigo-600 focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:-translate-y-0.5 hover:shadow-lg hover:shadow-main/30 active:scale-95">

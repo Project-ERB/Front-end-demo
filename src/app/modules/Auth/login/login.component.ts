@@ -34,7 +34,13 @@ export class LoginComponent {
 
   isPasswordVisible: WritableSignal<boolean> = signal(false);
   isLoading: boolean = false;
-  errorMessage: WritableSignal<string> = signal('');
+
+  // ✅ بدّلنا errorMessage بـ apiResponse عشان نوحّد الشكل مع باقي الكومبوننتس
+  apiResponse: WritableSignal<{
+    type: 'success' | 'error';
+    message: string;
+    details?: string[];
+  } | null> = signal(null);
 
   loginForm: FormGroup = this._formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
@@ -56,20 +62,28 @@ export class LoginComponent {
     }
 
     this.isLoading = true;
-    this.errorMessage.set('');
+    this.apiResponse.set(null);
 
     const { email, password } = this.loginForm.value;
 
     this._authService.AdminLogin({ email, password, confirmPassword: password }).subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.isLoading = false;
         this._authService.saveAuthData(res);
-        this._ToastrService.success('Login successful', 'Success');
+        const msg = res?.message || 'Login successful';
+        this.apiResponse.set({ type: 'success', message: msg });
+        this._ToastrService.success(msg, 'Success');
         this._router.navigate(['/home']);
       },
-      error: (err) => {
+      error: (err: any) => {
         this.isLoading = false;
-        this._ToastrService.error('Login failed', 'Error');
+        const errors: string[] = err?.error?.errors || [err?.error?.message || 'Login failed'];
+        this.apiResponse.set({
+          type: 'error',
+          message: err?.error?.message || 'Login failed',
+          details: errors,
+        });
+        this._ToastrService.error(errors[0], 'Error');
       },
     });
   }

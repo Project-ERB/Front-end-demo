@@ -17,24 +17,24 @@ import { ToastrService } from 'ngx-toastr';
         animate('600ms ease-out', style({ opacity: 1, transform: 'translateX(0) scale(1)' })),
       ]),
     ]),
-    // ✅ شلت stepTransition خالص
   ],
 })
 export class RegisterComponent {
-  // ✅ شلت الـ ViewChildren بتاعة الـ OTP
   private readonly _FormBuilder = inject(FormBuilder);
   private readonly _router = inject(Router);
   private readonly _authService = inject(AuthService);
   private readonly _toastr = inject(ToastrService);
 
-  // ✅ شلت currentStep
   showPassword: WritableSignal<boolean> = signal(false);
   isLoading: WritableSignal<boolean> = signal(false);
-  errorMessages: WritableSignal<string[]> = signal([]);
 
-  // ✅ شلت الـ variables بتاعة الـ OTP (isResending, successMessage, resendCooldown, cooldownInterval)
+  // ✅ بديل لـ errorMessages: بيحمل شكل الريسبونس بالكامل (نجاح أو خطأ)
+  apiResponse: WritableSignal<{
+    type: 'success' | 'error';
+    message: string;
+    details?: string[];
+  } | null> = signal(null);
 
-  // Step 1 - Register Form
   registerForm: FormGroup = this._FormBuilder.group({
     name: ['', [
       Validators.required,
@@ -59,7 +59,6 @@ export class RegisterComponent {
     ]],
   });
 
-  // Validation Errors
   get nameErrors(): string {
     const control = this.registerForm.get('name');
     if (control?.errors && control?.touched) {
@@ -99,7 +98,6 @@ export class RegisterComponent {
     return '';
   }
 
-  // Password strength indicators
   hasMinLength(): boolean {
     return (this.registerForm.get('password')?.value || '').length >= 8;
   }
@@ -139,7 +137,7 @@ export class RegisterComponent {
     }
 
     this.isLoading.set(true);
-    this.errorMessages.set([]);
+    this.apiResponse.set(null); // ريسيت قبل أي طلب جديد
 
     const { name, email, password, phoneNumber } = this.registerForm.value;
 
@@ -147,25 +145,24 @@ export class RegisterComponent {
       next: (response: any) => {
         this.isLoading.set(false);
         const msg = response?.message || response?.data?.message || 'Account created! Check your email to verify.';
+        this.apiResponse.set({ type: 'success', message: msg });
         this._toastr.success(msg, 'Welcome! 🎉');
         this._router.navigate(['/email-confirmed']);
       },
       error: (err: any) => {
         this.isLoading.set(false);
-        const errors = err?.error?.errors || [err?.error?.message || 'Registration failed.'];
+        const errors: string[] = err?.error?.errors || [err?.error?.message || 'Registration failed.'];
+        this.apiResponse.set({
+          type: 'error',
+          message: err?.error?.message || 'Registration failed.',
+          details: errors,
+        });
         this._toastr.error(errors[0] || 'Registration failed.', 'Error', { timeOut: 5000 });
-        if (errors.length > 1) {
-          this.errorMessages.set(errors);
-        }
       },
     });
   }
 
-  // ✅ شلت كل دوال الـ OTP (onInput, onKeyDown, onVerify, onResend, startResendCooldown, goBackToRegister)
-
   ToLogin() {
     this._router.navigate(['/login']);
   }
-
-  // ✅ شلت ngOnDestroy لأنه مفيش interval يمسحه
 }
