@@ -258,6 +258,58 @@
                 </button>
 
             </form>
+            <!-- Demo Accounts Panel -->
+            <div class="mt-8 border-t border-slate-100 pt-6">
+                <p class="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+                    <span class="material-symbols-outlined text-sm">badge</span>
+                    Demo Accounts (Read Only)
+                </p>
+
+                <div class="space-y-3">
+                    @for (account of demoAccounts; track account.role) {
+                    <div class="rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+                        <div class="mb-2 flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-sm font-bold text-slate-700">
+                                <span class="material-symbols-outlined text-base text-[#2463eb]">{{ account.icon
+                                    }}</span>
+                                {{ account.label }}
+                            </div>
+                            <button type="button" (click)="fillDemoAccount(account)"
+                                class="rounded-lg bg-[#2463eb]/10 px-3 py-1 text-xs font-bold text-[#2463eb] transition-all hover:bg-[#2463eb]/20">
+                                استخدم هذا الحساب
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            <!-- Email (disabled) -->
+                            <div class="relative">
+                                <input type="text" [value]="account.email" disabled
+                                    class="w-full rounded-lg border border-slate-200 bg-white/70 py-2 pl-3 pr-8 text-xs text-slate-600 outline-none" />
+                                <button type="button" (click)="copyToClipboard(account.email, account.role + '-email')"
+                                    class="absolute inset-y-0 right-1 flex items-center text-slate-400 hover:text-[#2463eb]">
+                                    <span class="material-symbols-outlined text-sm">
+                                        {{ copiedField === account.role + '-email' ? 'check' : 'content_copy' }}
+                                    </span>
+                                </button>
+                            </div>
+
+                            <!-- Password (disabled) -->
+                            <div class="relative">
+                                <input type="text" [value]="account.password" disabled
+                                    class="w-full rounded-lg border border-slate-200 bg-white/70 py-2 pl-3 pr-8 text-xs text-slate-600 outline-none" />
+                                <button type="button"
+                                    (click)="copyToClipboard(account.password, account.role + '-pass')"
+                                    class="absolute inset-y-0 right-1 flex items-center text-slate-400 hover:text-[#2463eb]">
+                                    <span class="material-symbols-outlined text-sm">
+                                        {{ copiedField === account.role + '-pass' ? 'check' : 'content_copy' }}
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
 
             <!-- Footer links -->
             <div class="mt-8 border-t border-slate-100 pt-8">

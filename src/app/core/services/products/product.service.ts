@@ -162,7 +162,7 @@ export class ProductService {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     });
     return this._HttpClient.put(
-      `${Environment.baseUrl}api/products/{productid}`,
+      `${Environment.baseUrl}/api/products/${productid}`,
       data,
       { headers },
     );

@@ -7,6 +7,15 @@ import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { animate, style, transition, trigger } from '@angular/animations';
 
+interface DemoAccount {
+  label: string;
+  role: string;
+  email: string;
+  password: string;
+  icon: string;
+}
+
+
 const ROLE_ROUTES: Record<string, string> = {
   SystemAdmin: '/admin-dashboard',
   SalesManager: '/sales-analysis',
@@ -52,6 +61,32 @@ export class AdminLoginComponent {
     confirmPassword: [null, RxwebValidators.compare({ fieldName: 'password' })],
     rememberMe: []
   });
+
+
+  demoAccounts: DemoAccount[] = [
+    { label: 'System Admin', role: 'SystemAdmin', email: 'ahmedhanygjki3556@gmail.com', password: 'Eslam1045@', icon: 'admin_panel_settings' },
+    { label: 'Warehouse Manager', role: 'WarehouseManager', email: 'naribic615@fivejm.com', password: 'PD$jHT%qJ!d5', icon: 'warehouse' },
+    { label: 'HR Director', role: 'HRDirector', email: 'omarsallam884@gmail.com', password: 'HRManger#21976', icon: 'groups' },
+    { label: 'Sales Manager', role: 'SalesManager', email: 'yepego6870@jsncos.com', password: 'SalesManger#21976', icon: 'trending_up' },
+  ];
+
+  copiedField: string | null = null;
+
+  copyToClipboard(text: string, fieldId: string): void {
+    navigator.clipboard.writeText(text).then(() => {
+      this.copiedField = fieldId;
+      setTimeout(() => (this.copiedField = null), 1500);
+    });
+  }
+
+  fillDemoAccount(account: DemoAccount): void {
+    this.loginform.patchValue({
+      email: account.email,
+      password: account.password,
+      confirmPassword: account.password,
+    });
+    this._toastrService.info(`تم تعبئة بيانات حساب ${account.label}`, 'Demo Account');
+  }
 
   LoginSubmit() {
     if (this.loginform.valid) {
