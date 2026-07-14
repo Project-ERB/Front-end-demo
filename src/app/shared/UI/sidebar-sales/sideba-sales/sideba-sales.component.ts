@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from "@angular/router";
 import { AuthService } from '../../../../core/services/Auth/auth.service';
+import { SiedbarWarehouseComponent } from "../../siedbar-warehouse/siedbar-warehouse/siedbar-warehouse.component";
 
 @Component({
   selector: 'app-sideba-sales',

@@ -48,6 +48,46 @@
                 Main Menu
             </p>
 
+            <a routerLink="/sales-analysis" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">trending_up</span>
+                Sales Analysis
+            </a>
+
+            <!-- Categories -->
+            <a routerLink="/category-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">category</span>
+                Categories
+            </a>
+
+            <!-- Products -->
+            <a routerLink="/product-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                Products
+            </a>
+
+            <!-- Discounts -->
+            <a routerLink="/discount-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">percent</span>
+                Discounts
+            </a>
+
+            <!-- Orders -->
+            <a routerLink="/orders" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                Orders
+            </a>
+
+
             <a routerLink="/warehouse-dashboard" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
                 class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
                 (click)="onLinkClick()">
@@ -77,6 +117,14 @@
                 (click)="onLinkClick()">
                 <span class="material-symbols-outlined text-[20px]">query_stats</span>
                 Inventory Prediction
+            </a>
+
+            <!-- Financial Overview -->
+            <a routerLink="/FinancialOverview" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">request_quote</span>
+                Financial Overview
             </a>
         </nav>
 

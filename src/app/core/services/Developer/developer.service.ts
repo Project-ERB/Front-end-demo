@@ -6,22 +6,26 @@ import { isPlatformBrowser } from '@angular/common';
 import { Apollo, gql } from 'apollo-angular';
 
 const GET_ENDPOINTS = gql`
-  query GetEndpoints($first: Int, $after: String) {
-    endpoints(first: $first, after: $after) {
-      nodes {
-        path
-        method
-        isActive
-        __typename
-      }
-      pageInfo{
-        hasNextPage
-        hasPreviousPage
-        startCursor
-        endCursor
-        __typename
-      }
-      totalCount
+  query {
+    endpoints {
+      path
+      method
+      isActive
+      __typename
+    }
+  }
+`;
+
+const GET_AUTHORIZED_ENDPOINTS = gql`
+  query {
+    authorizedEndpoints {
+      id
+      path
+      method
+      isActive
+      roles
+      permissions
+      __typename
     }
   }
 `;
@@ -36,31 +40,9 @@ export class DeveloperService {
 
   private authorizedEndpointsQuery: any;
 
-  getAuthorizedEndpoints(first: number = 10, after?: string) {
+  getAuthorizedEndpoints() {
     return this.apollo.query({
-      query: gql`
-      query GetAuthorizedEndpoints($first: Int, $after: String) {
-        authorizedEndpoints(first: $first, after: $after) {
-          nodes {
-            id
-            path
-            method
-            isActive
-            roles
-            permissions
-            __typename
-          }
-          pageInfo {
-            hasNextPage
-            hasPreviousPage
-            startCursor
-            endCursor
-          }
-          totalCount
-        }
-      }
-    `,
-      variables: after ? { first, after } : { first },  // ✅ مش بيبعت after لو undefined
+      query: GET_AUTHORIZED_ENDPOINTS,
       fetchPolicy: 'network-only'
     });
   }
@@ -89,10 +71,9 @@ export class DeveloperService {
     return this.authorizedEndpointsQuery?.refetch();
   }
 
-  getEndpoints(first: number = 10, after?: string): Observable<any> {
+  getEndpoints(): Observable<any> {
     return this.apollo.watchQuery<any>({
-      query: GET_ENDPOINTS,
-      variables: { first, after }
+      query: GET_ENDPOINTS
     }).valueChanges;
   }
 

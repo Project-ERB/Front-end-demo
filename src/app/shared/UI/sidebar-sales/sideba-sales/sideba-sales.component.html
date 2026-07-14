@@ -98,6 +98,37 @@
                 Orders
             </a>
 
+            <a routerLink="/warehouse-dashboard" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">dashboard</span>
+                Warehouse Dashboard
+            </a>
+
+            <a routerLink="/warehouse-management" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">warehouse</span>
+                Warehouse Management
+            </a>
+
+            <!-- Inventory -->
+            <a routerLink="/warehouse-details" [queryParams]="{tab: 'inventory'}"
+                routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                Inventories
+            </a>
+
+            <!-- Inventory Prediction -->
+            <a routerLink="/inventory-prediction" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
+                class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"
+                (click)="onLinkClick()">
+                <span class="material-symbols-outlined text-[20px]">query_stats</span>
+                Inventory Prediction
+            </a>
+
             <!-- Financial Overview -->
             <a routerLink="/FinancialOverview" routerLinkActive="bg-[#1e3b8a]/10 text-[#1e3b8a]"
                 class="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors text-[#64748b] hover:bg-[#eff6ff] hover:text-[#1e3b8a]"

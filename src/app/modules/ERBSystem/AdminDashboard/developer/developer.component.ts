@@ -114,19 +114,6 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ─── Pagination ──────────────────────────────────────────────
-  pageSize = 10;
-  currentCursor: string | null = null;
-  previousCursors: string[] = [];
-  pageInfo: any = null;
-  totalCount = 0;
-
-  authorizedPageSize = 10;
-  authorizedCurrentCursor: string | null = null;
-  authorizedPreviousCursors: string[] = [];
-  authorizedPageInfo: any = null;
-  authorizedTotalCount = 0;
-
   // ─── State ───────────────────────────────────────────────────
   endpoints: Endpoint[] = [];
   rolesList: Role[] = [];
@@ -172,8 +159,6 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   // ─── Path Dropdown ───────────────────────────────────────────
   showPathDropdown = false;
   allEndpointsForSelect: Endpoint[] = [];
-  selectCursor: string | null = null;
-  selectPageInfo: any = null;
   loadingMoreEndpoints = false;
   pathSearch = '';
 
@@ -190,14 +175,14 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   }
 
   // ─── Endpoints ───────────────────────────────────────────────
-  loadEndpoints(after?: string) {
+  loadEndpoints() {
     this.loading = true;
-    this.subscription = this._developerService.getEndpoints(this.pageSize, after)
+    this.subscription = this._developerService.getEndpoints()
       .subscribe(({ data, loading, error }: any) => {
         this.loading = loading;
         this.error = error;
-        if (data?.endpoints?.nodes) {
-          this.endpoints = data.endpoints.nodes.map((node: any, index: number) => ({
+        if (data?.endpoints) {
+          this.endpoints = data.endpoints.map((node: any, index: number) => ({
             method: node.method || 'GET',
             path: node.path,
             isActive: node.isActive,
@@ -205,23 +190,8 @@ export class DeveloperComponent implements OnInit, OnDestroy {
             description: 'API Endpoint',
             selected: index === 0
           }));
-          this.pageInfo = data.endpoints.pageInfo;
-          this.totalCount = data.endpoints.totalCount;
         }
       });
-  }
-
-  nextPage() {
-    if (!this.pageInfo?.hasNextPage) return;
-    this.previousCursors.push(this.currentCursor!);
-    this.currentCursor = this.pageInfo.endCursor;
-    this.loadEndpoints(this.currentCursor!);
-  }
-
-  prevPage() {
-    if (!this.previousCursors.length) return;
-    this.currentCursor = this.previousCursors.pop() ?? null;
-    this.loadEndpoints(this.currentCursor ?? undefined);
   }
 
   // ─── Roles & Permissions ─────────────────────────────────────
@@ -253,8 +223,6 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.showModal = false;
     this.newEndpoint = { path: '', method: 0, roles: [], permissions: [] };
     this.allEndpointsForSelect = [];
-    this.selectCursor = null;
-    this.selectPageInfo = null;
     this.showPathDropdown = false;
     this.pathSearch = '';
   }
@@ -290,15 +258,13 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   }
 
   // ─── Authorized Endpoints ────────────────────────────────────
-  loadAuthorizedEndpoints(after?: string) {
-    this._developerService.getAuthorizedEndpoints(this.authorizedPageSize, after)
+  loadAuthorizedEndpoints() {
+    this._developerService.getAuthorizedEndpoints()
       .subscribe({
         next: ({ data }: any) => {
           this.loadingAuthorized = false;
-          if (data?.authorizedEndpoints?.nodes) {
-            this.authorizedEndpoints = data.authorizedEndpoints.nodes;
-            this.authorizedPageInfo = data.authorizedEndpoints.pageInfo;
-            this.authorizedTotalCount = data.authorizedEndpoints.totalCount;
+          if (data?.authorizedEndpoints) {
+            this.authorizedEndpoints = data.authorizedEndpoints;
           }
         },
         error: (err) => {
@@ -306,20 +272,6 @@ export class DeveloperComponent implements OnInit, OnDestroy {
           console.error(err);
         }
       });
-  }
-
-  nextAuthorizedPage() {
-    if (!this.authorizedPageInfo?.hasNextPage) return;
-    const nextCursor = this.authorizedPageInfo.endCursor;
-    this.authorizedPreviousCursors.push(this.authorizedCurrentCursor!);
-    this.authorizedCurrentCursor = nextCursor;
-    this.loadAuthorizedEndpoints(nextCursor);
-  }
-
-  prevAuthorizedPage() {
-    if (!this.authorizedPreviousCursors.length) return;
-    this.authorizedCurrentCursor = this.authorizedPreviousCursors.pop() ?? null;
-    this.loadAuthorizedEndpoints(this.authorizedCurrentCursor ?? undefined);
   }
 
   // ─── Edit Modal ──────────────────────────────────────────────
@@ -468,24 +420,19 @@ export class DeveloperComponent implements OnInit, OnDestroy {
   }
 
   // ─── Path Dropdown ───────────────────────────────────────────
-  loadEndpointsForSelect(after?: string) {
+  loadEndpointsForSelect() {
     if (this.loadingMoreEndpoints) return;
     this.loadingMoreEndpoints = true;
-    this._developerService.getEndpoints(10, after).subscribe(({ data }: any) => {
+    this._developerService.getEndpoints().subscribe(({ data }: any) => {
       this.loadingMoreEndpoints = false;
-      if (data?.endpoints?.nodes) {
-        const newItems = data.endpoints.nodes.map((node: any) => ({
+      if (data?.endpoints) {
+        this.allEndpointsForSelect = data.endpoints.map((node: any) => ({
           method: node.method || 'GET',
           path: node.path,
           isActive: node.isActive,
           __typename: node.__typename,
           description: 'API Endpoint',
         }));
-        this.allEndpointsForSelect = after
-          ? [...this.allEndpointsForSelect, ...newItems]
-          : newItems;
-        this.selectPageInfo = data.endpoints.pageInfo;
-        this.selectCursor = data.endpoints.pageInfo?.endCursor ?? null;
       }
     });
   }
@@ -501,14 +448,6 @@ export class DeveloperComponent implements OnInit, OnDestroy {
     this.newEndpoint.path = path;
     this.showPathDropdown = false;
     this.pathSearch = '';
-  }
-
-  onDropdownScroll(event: Event) {
-    const el = event.target as HTMLElement;
-    const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 20;
-    if (nearBottom && this.selectPageInfo?.hasNextPage && !this.loadingMoreEndpoints) {
-      this.loadEndpointsForSelect(this.selectCursor!);
-    }
   }
 
   // ─── Navigation ──────────────────────────────────────────────
@@ -568,5 +507,121 @@ export class DeveloperComponent implements OnInit, OnDestroy {
       ep.path.toLowerCase().includes(q) ||
       ep.method.toLowerCase().includes(q)
     );
+  }
+
+  // ─── Grouped Endpoints State ─────────────────────────────────
+  expandedGroups: Set<string> = new Set<string>();
+
+  // استخراج اسم القسم من الـ path
+  getGroupName(path: string): string {
+    if (!path) return 'OTHER';
+    const parts = path.replace(/^\/+/, '').split('/').filter(Boolean);
+    // نتجاوز 'api' لو أول جزء
+    const idx = parts[0]?.toLowerCase() === 'api' ? 1 : 0;
+    return (parts[idx] || 'OTHER').toUpperCase();
+  }
+
+  // أيقونات لكل قسم
+  getGroupIcon(name: string): string {
+    const icons: Record<string, string> = {
+      'AUTH': 'login',
+      'USERS': 'group',
+      'PRODUCTS': 'inventory_2',
+      'ORDERS': 'shopping_cart',
+      'CATEGORIES': 'category',
+      'PAYMENTS': 'payments',
+      'SETTINGS': 'settings',
+      'ROLES': 'admin_panel_settings',
+      'PERMISSIONS': 'vpn_key',
+      'BRANDS': 'branding_watermark',
+      'REVIEWS': 'rate_review',
+      'WISHLIST': 'favorite',
+      'CART': 'shopping_cart',
+      'CHECKOUT': 'point_of_sale',
+      'SHIPPING': 'local_shipping',
+      'NOTIFICATIONS': 'notifications',
+      'UPLOADS': 'cloud_upload',
+      'REPORTS': 'assessment',
+      'ANALYTICS': 'analytics',
+      'COUPONS': 'local_offer',
+      'SLIDERS': 'view_carousel',
+      'CONTACT': 'contact_mail',
+      'ABOUT': 'info',
+      'BLOG': 'article',
+    };
+    return icons[name] || 'folder';
+  }
+
+  // ألوان لكل قسم
+  getGroupColor(name: string): string {
+    const colors: Record<string, string> = {
+      'AUTH': 'text-orange-500 bg-orange-50 border-orange-100',
+      'USERS': 'text-blue-500 bg-blue-50 border-blue-100',
+      'PRODUCTS': 'text-purple-500 bg-purple-50 border-purple-100',
+      'ORDERS': 'text-green-500 bg-green-50 border-green-100',
+      'CATEGORIES': 'text-cyan-500 bg-cyan-50 border-cyan-100',
+      'PAYMENTS': 'text-yellow-600 bg-yellow-50 border-yellow-100',
+      'SETTINGS': 'text-gray-500 bg-gray-100 border-gray-200',
+      'ROLES': 'text-indigo-500 bg-indigo-50 border-indigo-100',
+      'PERMISSIONS': 'text-pink-500 bg-pink-50 border-pink-100',
+      'BRANDS': 'text-rose-500 bg-rose-50 border-rose-100',
+      'REVIEWS': 'text-amber-500 bg-amber-50 border-amber-100',
+      'WISHLIST': 'text-red-500 bg-red-50 border-red-100',
+      'CART': 'text-emerald-500 bg-emerald-50 border-emerald-100',
+      'CHECKOUT': 'text-teal-500 bg-teal-50 border-teal-100',
+      'SHIPPING': 'text-sky-500 bg-sky-50 border-sky-100',
+      'NOTIFICATIONS': 'text-violet-500 bg-violet-50 border-violet-100',
+      'UPLOADS': 'text-lime-600 bg-lime-50 border-lime-100',
+      'REPORTS': 'text-fuchsia-500 bg-fuchsia-50 border-fuchsia-100',
+      'ANALYTICS': 'text-blue-400 bg-blue-50 border-blue-100',
+      'COUPONS': 'text-yellow-500 bg-yellow-50 border-yellow-100',
+      'SLIDERS': 'text-pink-400 bg-pink-50 border-pink-100',
+      'CONTACT': 'text-teal-600 bg-teal-50 border-teal-100',
+      'ABOUT': 'text-gray-400 bg-gray-50 border-gray-100',
+      'BLOG': 'text-indigo-400 bg-indigo-50 border-indigo-100',
+    };
+    return colors[name] || 'text-gray-500 bg-gray-50 border-gray-200';
+  }
+
+  // فتح/قفل مجموعة
+  toggleGroup(groupName: string) {
+    if (this.expandedGroups.has(groupName)) {
+      this.expandedGroups.delete(groupName);
+    } else {
+      this.expandedGroups.add(groupName);
+    }
+  }
+
+  // فتح كل المجموعات
+  expandAllGroups() {
+    this.filteredGroupedEndpoints.forEach(g => this.expandedGroups.add(g.name));
+  }
+
+  // قفل كل المجموعات
+  collapseAllGroups() {
+    this.expandedGroups.clear();
+  }
+
+  // getter لعرض البيانات مجمعة
+  get filteredGroupedEndpoints() {
+    const filtered = this.filteredEndpoints;
+    const groups: Record<string, Endpoint[]> = {};
+
+    filtered.forEach(ep => {
+      const groupName = this.getGroupName(ep.path);
+      if (!groups[groupName]) {
+        groups[groupName] = [];
+      }
+      groups[groupName].push(ep);
+    });
+
+    return Object.keys(groups).sort().map(name => ({
+      name,
+      icon: this.getGroupIcon(name),
+      color: this.getGroupColor(name),
+      endpoints: groups[name],
+      expanded: this.expandedGroups.has(name),
+      count: groups[name].length
+    }));
   }
 }
