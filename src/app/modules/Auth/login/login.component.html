@@ -101,16 +101,6 @@
             </div>
           </label>
 
-          <label for="" class="flex flex-col">
-            <span class="text-[#111318] dark:text-gray-200 text-sm font-medium pb-2">Confirm Password</span>
-            <div class="relative flex w-full items-center">
-              <span class="material-symbols-outlined absolute left-3.5 text-gray-400 dark:text-gray-500">lock</span>
-              <input formControlName="confirmPassword" [type]="isPasswordVisible() ? 'text' : 'password'"
-                class="form-input w-full rounded-xl border border-gray-300 dark:border-gray-600 bg-white/90 dark:bg-gray-800/60 pl-11 pr-11 h-12 focus:ring-4 focus:ring-main/20 focus:border-main transition-all duration-300 hover:border-main/60 hover:-translate-y-0.5"
-                placeholder="Confirm your password" />
-            </div>
-          </label>
-
           <div class="flex items-center justify-end">
             <a (click)="ToForgotPassword()" class="text-sm font-medium text-main hover:underline cursor-pointer">Forgot
               Password?</a>

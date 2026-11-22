@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { AdminLoginComponent } from './admin-login.component';
 
@@ -8,7 +10,8 @@ describe('AdminLoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AdminLoginComponent]
+      imports: [AdminLoginComponent],
+      providers: [provideRouter([]), provideAnimations()]
     })
     .compileComponents();
 
