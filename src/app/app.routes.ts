@@ -14,12 +14,34 @@ export const routes: Routes = [
     title: 'Alexa',
   },
 
-  // ✅ Admin Login - standalone خارج أي layout
+  // ✅ Admin Login - standalone خارج أي layout مع subroutes للأقسام
   {
     path: 'admin-login',
     canActivate: [guestGuard],
     loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-login/admin-login.component').then((A) => A.AdminLoginComponent),
-    title: 'admin-login',
+    children: [
+      { path: '', redirectTo: 'HR-management', pathMatch: 'full' },
+      {
+        path: 'administration',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-login/administration/administration.component').then((m) => m.AdministrationComponent),
+        title: 'Administration Login',
+      },
+      {
+        path: 'HR-management',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-login/hr-management/hr-management.component').then((m) => m.HrManagementComponent),
+        title: 'HR Management Login',
+      },
+      {
+        path: 'warehouses',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-login/warehouses/warehouses.component').then((m) => m.WarehousesComponent),
+        title: 'Warehouses Login',
+      },
+      {
+        path: 'sales',
+        loadComponent: () => import('./modules/ERBSystem/AdminDashboard/admin-login/sales/sales.component').then((m) => m.SalesComponent),
+        title: 'Sales Login',
+      },
+    ],
   },
 
   // ✅ Auth Layout - للـ guests فقط
